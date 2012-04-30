@@ -1,0 +1,32 @@
+﻿using System.Collections;
+
+namespace EasyAssertions
+{
+    public static class FailureMessageFormatter
+    {
+        private static IFailureMessageFormatter current;
+        public static IFailureMessageFormatter Current
+        {
+            get { return current ?? DefaultFailureMessageFormatter.Instance; }
+        }
+
+        public static void Override(IFailureMessageFormatter newFormatter)
+        {
+            current = newFormatter;
+        }
+
+        public static void Default()
+        {
+            current = null;
+        }
+    }
+
+    public interface IFailureMessageFormatter
+    {
+        string NotEqual(object expected, object actual, string message = null);
+        string NotEqual(string expected, string actual, string message = null);
+        string NotSame(object expected, object actual, string message = null);
+        string DoNotMatch(IEnumerable expected, IEnumerable actual, string message = null);
+        string DoesNotContain(string expectedSubstring, string actual, string message = null);
+    }
+}

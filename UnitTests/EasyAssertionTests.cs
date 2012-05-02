@@ -1,4 +1,6 @@
-﻿using NSubstitute;
+﻿using System;
+using System.Linq.Expressions;
+using NSubstitute;
 using NUnit.Framework;
 
 namespace EasyAssertions.UnitTests
@@ -162,6 +164,76 @@ namespace EasyAssertions.UnitTests
             EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => "foo".ShouldContain("bar", "baz"));
 
             Assert.AreEqual("qux", result.Message);
+        }
+
+        [Test]
+        public void ShouldThrow_Throws_Passes()
+        {
+            ExceptionThrower thrower = new ExceptionThrower(new Exception());
+            Function.Call(() => thrower.Throw()).ShouldThrow<Exception>();
+        }
+
+        [Test]
+        public void ShouldThrow_Throws_ReturnsException()
+        {
+            Exception expectedException = new Exception();
+            ExceptionThrower thrower = new ExceptionThrower(expectedException);
+
+            Actual<Exception> result = Function.Call(() => thrower.Throw()).ShouldThrow<Exception>();
+
+            result.And.ShouldBe(expectedException);
+        }
+
+        [Test]
+        public void ShouldThrow_DoesNotThrow_FailsWithNoExceptionMessage()
+        {
+            Expression<Action> noThrow = () => "".Trim();
+            mockFormatter.NoException(typeof(Exception), noThrow, "foo").Returns("bar");
+
+            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() =>
+                Function.Call(noThrow).ShouldThrow<Exception>("foo"));
+
+            Assert.AreEqual("bar", result.Message);
+        }
+
+        [Test]
+        public void ShouldThrow_ThrowsWrongType_FailsWithWrongExceptionMessage()
+        {
+            ExceptionThrower thrower = new ExceptionThrower(new Exception());
+            Expression<Action> throwsException = () => thrower.Throw();
+            mockFormatter.WrongException(typeof(InvalidOperationException), typeof(Exception), throwsException, "foo").Returns("bar");
+
+            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() =>
+                Function.Call(throwsException).ShouldThrow<InvalidOperationException>("foo"));
+
+            Assert.AreEqual("bar", result.Message);
+        }
+
+        [Test]
+        public void ShouldThrow_ThrowsWrongType_FailsWithActualExceptionAsInnerException()
+        {
+            Exception expectedException = new Exception();
+            ExceptionThrower thrower = new ExceptionThrower(expectedException);
+
+            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() =>
+                Function.Call(() => thrower.Throw()).ShouldThrow<InvalidOperationException>());
+
+            Assert.AreSame(expectedException, result.InnerException);
+        }
+
+        private class ExceptionThrower
+        {
+            private readonly Exception exception;
+
+            public ExceptionThrower(Exception exception)
+            {
+                this.exception = exception;
+            }
+
+            public void Throw()
+            {
+                throw exception;
+            }
         }
 
         private class Equatable

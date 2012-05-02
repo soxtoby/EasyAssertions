@@ -1,4 +1,6 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
+using System.Linq.Expressions;
 
 namespace EasyAssertions
 {
@@ -28,5 +30,7 @@ namespace EasyAssertions
         string NotSame(object expected, object actual, string message = null);
         string DoNotMatch(IEnumerable expected, IEnumerable actual, string message = null);
         string DoesNotContain(string expectedSubstring, string actual, string message = null);
+        string NoException(Type expectedExceptionType, Expression<Action> function, string message = null);
+        string WrongException(Type expectedExceptionType, Type actualExceptionType, Expression<Action> function, string message = null);
     }
 }

@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq.Expressions;
 
 namespace EasyAssertions
 {
@@ -47,6 +49,44 @@ namespace EasyAssertions
             if (!actual.Contains(expectedToContain))
                 throw new EasyAssertionException(FailureMessageFormatter.Current.DoesNotContain(expectedToContain, actual, message));
             return new Actual<string>(actual);
+        }
+    }
+
+    public static class Function
+    {
+        public static AssertionFunction Call(Expression<Action> functionCall)
+        {
+            return new AssertionFunction(functionCall);
+        }
+    }
+
+    public class AssertionFunction
+    {
+        private readonly Expression<Action> functionCall;
+
+        public AssertionFunction(Expression<Action> functionCall)
+        {
+            this.functionCall = functionCall;
+        }
+
+        public Actual<TException> ShouldThrow<TException>(string message = null) where TException : Exception
+        {
+            try
+            {
+                functionCall.Compile()();
+            }
+            catch (TException e)
+            {
+                return new Actual<TException>(e);
+            }
+            catch (Exception actual)
+            {
+                // functionCall.Body + " should have thrown " + typeof(T).Name + ", but instead threw " + e.GetType().Name
+                throw new EasyAssertionException(FailureMessageFormatter.Current.WrongException(typeof(TException), actual.GetType(), functionCall, message), actual);
+            }
+
+            //functionCall.Body + " should have thrown " + typeof(TException).Name + ", but didn't throw at all."
+            throw new EasyAssertionException(FailureMessageFormatter.Current.NoException(typeof(TException), functionCall, message));
         }
     }
 }

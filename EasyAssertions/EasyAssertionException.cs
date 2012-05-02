@@ -12,5 +12,10 @@ namespace EasyAssertions
             : base(message)
         {
         }
+
+        public EasyAssertionException(string message, Exception innerException)
+            : base(message, innerException)
+        {
+        }
     }
 }

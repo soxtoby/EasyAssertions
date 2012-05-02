@@ -119,6 +119,56 @@ namespace EasyAssertions.UnitTests
             StringAssert.EndsWith(Environment.NewLine + "foo", result);
         }
 
+        [Test]
+        public void NoException_SimpleFunction()
+        {
+            string result = DefaultFailureMessageFormatter.Instance.NoException(typeof(InvalidOperationException), () => "".Trim());
+            Assert.AreEqual("\"\".Trim() didn't throw." + Environment.NewLine
+               + "Expected: <InvalidOperationException>", result);
+        }
+
+        [Test]
+        public void NoException_ClosureObjectMethod()
+        {
+            string str = "";
+            string result = DefaultFailureMessageFormatter.Instance.NoException(typeof(InvalidOperationException), () => str.Trim());
+            Assert.AreEqual("str.Trim() didn't throw." + Environment.NewLine
+               + "Expected: <InvalidOperationException>", result);
+        }
+
+        [Test]
+        public void NoException_IncludesMessage()
+        {
+            string result = DefaultFailureMessageFormatter.Instance.NoException(typeof(InvalidOperationException), () => "".Trim(), "foo");
+            StringAssert.EndsWith(Environment.NewLine + "foo", result);
+        }
+
+        [Test]
+        public void WrongException_SimpleFunction()
+        {
+            string result = DefaultFailureMessageFormatter.Instance.WrongException(typeof(InvalidOperationException), typeof(Exception), () => "".Trim());
+            Assert.AreEqual("Wrong exception type thrown by \"\".Trim()" + Environment.NewLine
+                + "Expected: <InvalidOperationException>" + Environment.NewLine
+                + "Actual:   <Exception>", result);
+        }
+
+        [Test]
+        public void WrongException_ClosureObjectMethod()
+        {
+            string str = "";
+            string result = DefaultFailureMessageFormatter.Instance.WrongException(typeof(InvalidOperationException), typeof(Exception), () => str.Trim());
+            Assert.AreEqual("Wrong exception type thrown by str.Trim()" + Environment.NewLine
+                + "Expected: <InvalidOperationException>" + Environment.NewLine
+                + "Actual:   <Exception>", result);
+        }
+
+        [Test]
+        public void WrongException_IncludesMessage()
+        {
+            string result = DefaultFailureMessageFormatter.Instance.WrongException(typeof(InvalidOperationException), typeof(Exception), () => "".Trim(), "foo");
+            StringAssert.EndsWith(Environment.NewLine + "foo", result);
+        }
+
         private class FakeObject
         {
             private readonly string toString;

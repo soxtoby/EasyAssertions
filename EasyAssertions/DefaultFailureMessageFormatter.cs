@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Linq.Expressions;
+using System.Text.RegularExpressions;
 
 namespace EasyAssertions
 {
@@ -99,6 +101,28 @@ namespace EasyAssertions
         {
             return Escapes.Aggregate(value, (s, escape) => s.Replace(escape.Key.ToString(CultureInfo.InvariantCulture), escape.Value));
         }
+
+        public string NoException(Type expectedExceptionType, Expression<Action> function, string message = null)
+        {
+            return CleanFunctionBody(function) + " didn't throw." + Environment.NewLine
+                + ExpectedText + '<' + expectedExceptionType.Name + '>'
+                + MessageOnNewLine(message);
+        }
+
+        public string WrongException(Type expectedExceptionType, Type actualExceptionType, Expression<Action> function, string message = null)
+        {
+            return "Wrong exception type thrown by " + CleanFunctionBody(function) + Environment.NewLine
+                + ExpectedText + '<' + expectedExceptionType.Name + '>' + Environment.NewLine
+                + ActualText + '<' + actualExceptionType.Name + '>'
+                + MessageOnNewLine(message);
+        }
+
+        private static string CleanFunctionBody(Expression<Action> function)
+        {
+            return MemberPattern.Replace(function.Body.ToString(), string.Empty);
+        }
+
+        private static readonly Regex MemberPattern = new Regex(@"value\(.*?\)\.", RegexOptions.Compiled);
 
         private static readonly Dictionary<char, string> Escapes = new Dictionary<char, string>
             {

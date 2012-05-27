@@ -10,8 +10,12 @@ namespace EasyAssertions
 {
     internal class DefaultFailureMessageFormatter : IFailureMessageFormatter
     {
-        private const string ExpectedText = "Expected: ";
-        private const string ActualText = "Actual:   ";
+        private const string ExpectedText = "should be ";
+        private const string ExpectedInstanceText = "should be instance ";
+        private const string ExpectedExceptionText = "should throw ";
+        private const string ActualText = "but was   ";
+        private const string ActualInstanceText = "but was            ";
+        private const string ActualExceptionText = "but threw    ";
         private const string ArrowPrefix = "           ";
         private const string Ellipses = "...";
 
@@ -21,7 +25,10 @@ namespace EasyAssertions
 
         public string NotSame(object expected, object actual, string message = null)
         {
-            return "Not the same object." + Environment.NewLine + NotEqual(expected, actual, message);
+            return TestExpression.Get()
+                + Environment.NewLine + ExpectedInstanceText + '<' + expected + '>'
+                + Environment.NewLine + ActualInstanceText + '<' + actual + '>'
+                + MessageOnNewLine(message);
         }
 
         public string DoNotMatch(IEnumerable expected, IEnumerable actual, string message = null)
@@ -30,7 +37,14 @@ namespace EasyAssertions
             List<object> actualList = actual.Cast<object>().ToList();
             int differenceIndex = Enumerable.Range(0, expectedList.Count)
                 .First(i => !Compare.ObjectsAreEqual(actualList[i], expectedList[i]));
-            return "Enumerables differ at index " + differenceIndex + '.' + Environment.NewLine + NotEqual(expectedList[differenceIndex], actualList[differenceIndex], message);
+
+            object expectedValue = expectedList[differenceIndex];
+            object actualValue = actualList[differenceIndex];
+
+            return TestExpression.Get() + " differs at index " + differenceIndex + '.'
+                + Environment.NewLine + ExpectedText + '<' + expectedValue + '>'
+                + Environment.NewLine + ActualText + '<' + actualValue + '>'
+                + MessageOnNewLine(message);
         }
 
         public string DoesNotContain(string expectedSubstring, string actual, string message = null)
@@ -42,7 +56,8 @@ namespace EasyAssertions
 
         public string NotEqual(object expected, object actual, string message = null)
         {
-            return ExpectedText + '<' + expected + '>'
+            return TestExpression.Get()
+                + Environment.NewLine + ExpectedText + '<' + expected + '>'
                 + Environment.NewLine + ActualText + '<' + actual + '>'
                 + MessageOnNewLine(message);
         }
@@ -64,10 +79,11 @@ namespace EasyAssertions
             arrowIndex += actualSnippet.Substring(0, arrowIndex).Count(c => Escapes.ContainsKey(c));
             string arrow = new string(' ', arrowIndex) + '^';
 
-            return "Strings differ at index " + differenceIndex + '.' + Environment.NewLine
+            return TestExpression.Get() + Environment.NewLine
                 + ExpectedText + '"' + Escape(expectedSnippet) + '"' + Environment.NewLine
                 + ActualText + '"' + Escape(actualSnippet) + '"' + Environment.NewLine
-                + ArrowPrefix + arrow
+                + ArrowPrefix + arrow + Environment.NewLine
+                + "Difference at index " + differenceIndex + '.'
                 + MessageOnNewLine(message);
         }
 
@@ -104,16 +120,17 @@ namespace EasyAssertions
 
         public string NoException(Type expectedExceptionType, Expression<Action> function, string message = null)
         {
-            return CleanFunctionBody(function) + " didn't throw." + Environment.NewLine
-                + ExpectedText + '<' + expectedExceptionType.Name + '>'
+            return CleanFunctionBody(function)
+                + Environment.NewLine + ExpectedExceptionText + '<' + expectedExceptionType.Name + '>'
+                + Environment.NewLine + "but didn't throw at all."
                 + MessageOnNewLine(message);
         }
 
         public string WrongException(Type expectedExceptionType, Type actualExceptionType, Expression<Action> function, string message = null)
         {
-            return "Wrong exception type thrown by " + CleanFunctionBody(function) + Environment.NewLine
-                + ExpectedText + '<' + expectedExceptionType.Name + '>' + Environment.NewLine
-                + ActualText + '<' + actualExceptionType.Name + '>'
+            return CleanFunctionBody(function)
+                + Environment.NewLine + ExpectedExceptionText + '<' + expectedExceptionType.Name + '>'
+                + Environment.NewLine + ActualExceptionText + '<' + actualExceptionType.Name + '>'
                 + MessageOnNewLine(message);
         }
 

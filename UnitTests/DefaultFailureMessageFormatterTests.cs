@@ -1,4 +1,5 @@
 ﻿using System;
+using NSubstitute;
 using NUnit.Framework;
 
 namespace EasyAssertions.UnitTests
@@ -6,13 +7,29 @@ namespace EasyAssertions.UnitTests
     [TestFixture]
     public class DefaultFailureMessageFormatterTests
     {
+        private const string TestExpression = "test expression";
+
+        [SetUp]
+        public void SetUp()
+        {
+            TestExpressionProvider expressionProvider = Substitute.For<TestExpressionProvider>();
+            expressionProvider.GetExpression().Returns(TestExpression);
+            EasyAssertions.TestExpression.OverrideProvider(expressionProvider);
+        }
+
+        [TearDown]
+        public void TearDown()
+        {
+            EasyAssertions.TestExpression.DefaultProvider();
+        }
+
         [Test]
         public void NotEqual_Objects_ToStringed()
         {
             string result = DefaultFailureMessageFormatter.Instance.NotEqual(new FakeObject("foo"), new FakeObject("bar"));
-            Assert.AreEqual(string.Format(
-                  "Expected: <foo>{0}"
-                + "Actual:   <bar>", Environment.NewLine), result);
+            Assert.AreEqual(TestExpression + Environment.NewLine
+                + "should be <foo>" + Environment.NewLine
+                + "but was   <bar>", result);
         }
 
         [Test]
@@ -26,53 +43,58 @@ namespace EasyAssertions.UnitTests
         public void NotEqual_SingleLineStrings()
         {
             string result = DefaultFailureMessageFormatter.Instance.NotEqual("acd", "abc");
-            Assert.AreEqual(string.Format("Strings differ at index 1.{0}"
-                + "Expected: \"acd\"{0}"
-                + "Actual:   \"abc\"{0}"
-                 + "            ^", Environment.NewLine), result);
+            Assert.AreEqual(TestExpression + Environment.NewLine
+                + "should be \"acd\"" + Environment.NewLine
+                + "but was   \"abc\"" + Environment.NewLine
+                 + "            ^" + Environment.NewLine
+                + "Difference at index 1.", result);
         }
 
         [Test]
         public void NotEqual_Strings_DifferenceOnLineTwo()
         {
             string result = DefaultFailureMessageFormatter.Instance.NotEqual("abc\ndfe", "abc\ndef");
-            Assert.AreEqual(string.Format("Strings differ at index 5.{0}"
-                + "Expected: \"abc\\ndfe\"{0}"
-                + "Actual:   \"abc\\ndef\"{0}"
-                  + "                 ^", Environment.NewLine), result);
+            Assert.AreEqual(TestExpression + Environment.NewLine
+                + "should be \"abc\\ndfe\"" + Environment.NewLine
+                + "but was   \"abc\\ndef\"" + Environment.NewLine
+                  + "                 ^" + Environment.NewLine
+                + "Difference at index 5.", result);
         }
 
         [Test]
         public void NotEqual_Strings_DifferenceFarAwayFromBeginning()
         {
             string result = DefaultFailureMessageFormatter.Instance.NotEqual("0123456789abcdefghijklmnopqrstuvwxyz0123456789abcdefghijklmnopqrstuvwxyz",
-                                                                          "0123456789abcdefghijklmnopqrstuvwxyz0123456789abcdefghijklmnpoqrstuvwxyz");
-            Assert.AreEqual(string.Format("Strings differ at index 60.{0}"
-                + "Expected: \"...789abcdefghijklmnopqrstuvwxyz\"{0}"
-                + "Actual:   \"...789abcdefghijklmnpoqrstuvwxyz\"{0}"
-                 + "                               ^", Environment.NewLine), result);
+                                                                             "0123456789abcdefghijklmnopqrstuvwxyz0123456789abcdefghijklmnpoqrstuvwxyz");
+            Assert.AreEqual(TestExpression + Environment.NewLine
+                + "should be \"...789abcdefghijklmnopqrstuvwxyz\"" + Environment.NewLine
+                + "but was   \"...789abcdefghijklmnpoqrstuvwxyz\"" + Environment.NewLine
+                 + "                               ^" + Environment.NewLine
+                + "Difference at index 60.", result);
         }
 
         [Test]
         public void NotEqual_Strings_DifferenceFarAwayFromEnd()
         {
             string result = DefaultFailureMessageFormatter.Instance.NotEqual("0123456789abcdefghijklmnopqrstuvwxyz0123456789abcdefghijklmnopqrstuvwxyz",
-                                                                          "0123456789abdcefghijklmnopqrstuvwxyz0123456789abcdefghijklmnopqrstuvwxyz");
-            Assert.AreEqual(string.Format("Strings differ at index 12.{0}"
-                + "Expected: \"0123456789abcdefghijklmnopqrstuvwxyz0123456789abcdefghijk...\"{0}"
-                + "Actual:   \"0123456789abdcefghijklmnopqrstuvwxyz0123456789abcdefghijk...\"{0}"
-                 + "                       ^", Environment.NewLine), result);
+                                                                             "0123456789abdcefghijklmnopqrstuvwxyz0123456789abcdefghijklmnopqrstuvwxyz");
+            Assert.AreEqual(TestExpression + Environment.NewLine
+                + "should be \"0123456789abcdefghijklmnopqrstuvwxyz0123456789abcdefghijk...\"" + Environment.NewLine
+                + "but was   \"0123456789abdcefghijklmnopqrstuvwxyz0123456789abcdefghijk...\"" + Environment.NewLine
+                 + "                       ^" + Environment.NewLine
+                + "Difference at index 12.", result);
         }
 
         [Test]
         public void NotEqual_Strings_DifferenceFarAwayFromBothEnds()
         {
             string result = DefaultFailureMessageFormatter.Instance.NotEqual("0123456789abcdefghijklmnopqrstuvwxyz0123456789abcdefghijklmnopqrstuvwxyz0123456789",
-                                                                          "0123456789abcdefghijkmlnopqrstuvwxyz0123456789abcdefghijklmnopqrstuvwxyz0123456789");
-            Assert.AreEqual(string.Format("Strings differ at index 21.{0}"
-                + "Expected: \"...456789abcdefghijklmnopqrstuvwxyz0123456789abcdefghijkl...\"{0}"
-                + "Actual:   \"...456789abcdefghijkmlnopqrstuvwxyz0123456789abcdefghijkl...\"{0}"
-                 + "                               ^", Environment.NewLine), result);
+                                                                             "0123456789abcdefghijkmlnopqrstuvwxyz0123456789abcdefghijklmnopqrstuvwxyz0123456789");
+            Assert.AreEqual(TestExpression + Environment.NewLine
+                + "should be \"...456789abcdefghijklmnopqrstuvwxyz0123456789abcdefghijkl...\"" + Environment.NewLine
+                + "but was   \"...456789abcdefghijkmlnopqrstuvwxyz0123456789abcdefghijkl...\"" + Environment.NewLine
+                 + "                               ^" + Environment.NewLine
+                + "Difference at index 21.", result);
         }
 
         [Test]
@@ -90,9 +112,9 @@ namespace EasyAssertions.UnitTests
 
             string result = DefaultFailureMessageFormatter.Instance.NotSame(expected, actual);
 
-            Assert.AreEqual("Not the same object." + Environment.NewLine
-                 + "Expected: <foo>" + Environment.NewLine
-                 + "Actual:   <bar>", result);
+            Assert.AreEqual(TestExpression + Environment.NewLine
+                 + "should be instance <foo>" + Environment.NewLine
+                 + "but was            <bar>", result);
         }
 
         [Test]
@@ -107,9 +129,9 @@ namespace EasyAssertions.UnitTests
         {
             string result = DefaultFailureMessageFormatter.Instance.DoNotMatch(new[] { 1, 2, 3 }, new[] { 1, 3, 2 });
 
-            Assert.AreEqual("Enumerables differ at index 1." + Environment.NewLine
-                + "Expected: <2>" + Environment.NewLine
-                + "Actual:   <3>", result);
+            Assert.AreEqual(TestExpression + " differs at index 1." + Environment.NewLine
+                + "should be <2>" + Environment.NewLine
+                + "but was   <3>", result);
         }
 
         [Test]
@@ -123,8 +145,9 @@ namespace EasyAssertions.UnitTests
         public void NoException_SimpleFunction()
         {
             string result = DefaultFailureMessageFormatter.Instance.NoException(typeof(InvalidOperationException), () => "".Trim());
-            Assert.AreEqual("\"\".Trim() didn't throw." + Environment.NewLine
-               + "Expected: <InvalidOperationException>", result);
+            Assert.AreEqual("\"\".Trim()" + Environment.NewLine
+                + "should throw <InvalidOperationException>" + Environment.NewLine
+                + "but didn't throw at all.", result);
         }
 
         [Test]
@@ -132,8 +155,9 @@ namespace EasyAssertions.UnitTests
         {
             string str = "";
             string result = DefaultFailureMessageFormatter.Instance.NoException(typeof(InvalidOperationException), () => str.Trim());
-            Assert.AreEqual("str.Trim() didn't throw." + Environment.NewLine
-               + "Expected: <InvalidOperationException>", result);
+            Assert.AreEqual("str.Trim()" + Environment.NewLine
+               + "should throw <InvalidOperationException>" + Environment.NewLine
+               + "but didn't throw at all.", result);
         }
 
         [Test]
@@ -147,9 +171,9 @@ namespace EasyAssertions.UnitTests
         public void WrongException_SimpleFunction()
         {
             string result = DefaultFailureMessageFormatter.Instance.WrongException(typeof(InvalidOperationException), typeof(Exception), () => "".Trim());
-            Assert.AreEqual("Wrong exception type thrown by \"\".Trim()" + Environment.NewLine
-                + "Expected: <InvalidOperationException>" + Environment.NewLine
-                + "Actual:   <Exception>", result);
+            Assert.AreEqual("\"\".Trim()" + Environment.NewLine
+                + "should throw <InvalidOperationException>" + Environment.NewLine
+                + "but threw    <Exception>", result);
         }
 
         [Test]
@@ -157,9 +181,9 @@ namespace EasyAssertions.UnitTests
         {
             string str = "";
             string result = DefaultFailureMessageFormatter.Instance.WrongException(typeof(InvalidOperationException), typeof(Exception), () => str.Trim());
-            Assert.AreEqual("Wrong exception type thrown by str.Trim()" + Environment.NewLine
-                + "Expected: <InvalidOperationException>" + Environment.NewLine
-                + "Actual:   <Exception>", result);
+            Assert.AreEqual("str.Trim()" + Environment.NewLine
+                + "should throw <InvalidOperationException>" + Environment.NewLine
+                + "but threw    <Exception>", result);
         }
 
         [Test]

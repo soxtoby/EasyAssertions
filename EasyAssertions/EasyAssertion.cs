@@ -8,12 +8,15 @@ namespace EasyAssertions
     {
         public static Actual<TActual> ShouldEqual<TActual, TExpected>(this TActual actual, TExpected expected, string message = null) where TActual : TExpected
         {
+            SourceExpressionProvider.Instance.RegisterAssertionMethod();
+
             if (!Compare.ObjectsAreEqual(actual, expected))
             {
                 string actualString = actual as string;
                 string expectedString = expected as string;
                 if (actualString != null && expectedString != null)
                     throw new EasyAssertionException(FailureMessageFormatter.Current.NotEqual(expectedString, actualString, message));
+
                 throw new EasyAssertionException(FailureMessageFormatter.Current.NotEqual(expected, actual, message));
             }
 
@@ -22,6 +25,8 @@ namespace EasyAssertions
 
         public static Actual<TActual> ShouldBe<TActual, TExpected>(this TActual actual, TExpected expected, string message = null) where TActual : TExpected
         {
+            SourceExpressionProvider.Instance.RegisterAssertionMethod();
+
             if (!ReferenceEquals(actual, expected))
                 throw new EasyAssertionException(FailureMessageFormatter.Current.NotSame(expected, actual, message));
 
@@ -30,6 +35,8 @@ namespace EasyAssertions
 
         public static Actual<TActual> ShouldMatch<TActual, TExpected>(this TActual actual, IEnumerable<TExpected> expected, string message = null) where TActual : IEnumerable<TExpected>
         {
+            SourceExpressionProvider.Instance.RegisterAssertionMethod();
+
             if (!Compare.CollectionsMatch(actual, expected))
                 throw new EasyAssertionException(FailureMessageFormatter.Current.DoNotMatch(expected, actual, message));
 
@@ -38,6 +45,8 @@ namespace EasyAssertions
 
         public static Actual<TExpected> ShouldBeA<TExpected>(this object actual, string message = null)
         {
+            SourceExpressionProvider.Instance.RegisterAssertionMethod();
+
             if (!(actual is TExpected))
                 throw new EasyAssertionException(FailureMessageFormatter.Current.NotEqual(typeof(TExpected), actual == null ? null : actual.GetType(), message));
 
@@ -46,8 +55,11 @@ namespace EasyAssertions
 
         public static Actual<string> ShouldContain(this string actual, string expectedToContain, string message = null)
         {
+            SourceExpressionProvider.Instance.RegisterAssertionMethod();
+
             if (!actual.Contains(expectedToContain))
                 throw new EasyAssertionException(FailureMessageFormatter.Current.DoesNotContain(expectedToContain, actual, message));
+
             return new Actual<string>(actual);
         }
     }

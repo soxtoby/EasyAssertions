@@ -11,7 +11,11 @@
 
         public T And
         {
-            get { return actual; }
+            get
+            {
+                SourceExpressionProvider.Instance.RegisterContinuation();
+                return actual;
+            }
         }
     }
 }

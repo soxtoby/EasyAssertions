@@ -1,12 +1,14 @@
-﻿namespace EasyAssertions
+﻿
+
+namespace EasyAssertions
 {
     public class Actual<T>
     {
-        private readonly T actual;
+        internal readonly T Value;
 
         public Actual(T actual)
         {
-            this.actual = actual;
+            Value = actual;
         }
 
         public T And
@@ -14,7 +16,7 @@
             get
             {
                 SourceExpressionProvider.Instance.RegisterContinuation();
-                return actual;
+                return Value;
             }
         }
     }

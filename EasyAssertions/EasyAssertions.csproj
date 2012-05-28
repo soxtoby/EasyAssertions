@@ -46,10 +46,19 @@
     <Compile Include="EasyAssertionException.cs" />
     <Compile Include="FailureMessageFormatter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SourceExpressions\Assertion.cs" />
+    <Compile Include="SourceExpressions\AssertionComponent.cs" />
+    <Compile Include="SourceExpressions\AssertionComponentGroup.cs" />
+    <Compile Include="SourceExpressions\BaseGroup.cs" />
+    <Compile Include="SourceExpressions\Continuation.cs" />
+    <Compile Include="SourceExpressions\ContinuationGroup.cs" />
+    <Compile Include="SourceExpressions\ExpressionSegment.cs" />
+    <Compile Include="SourceExpressions\SourceAddress.cs" />
     <Compile Include="TestExpression.cs" />
-    <Compile Include="SourceExpressionProvider.cs" />
+    <Compile Include="SourceExpressions\SourceExpressionProvider.cs" />
     <Compile Include="Utils.cs" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

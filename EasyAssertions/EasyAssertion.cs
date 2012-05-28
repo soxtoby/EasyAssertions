@@ -62,6 +62,14 @@ namespace EasyAssertions
 
             return new Actual<string>(actual);
         }
+
+        public static Actual<TActual> And<TActual>(this Actual<TActual> actual, Action<TActual> assert)
+        {
+            SourceExpressionProvider.Instance.EnterNestedContinuation(assert.Method);
+            assert(actual.Value);
+            SourceExpressionProvider.Instance.ExitNestedContinuation();
+            return actual;
+        }
     }
 
     public static class Function

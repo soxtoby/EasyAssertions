@@ -41,12 +41,39 @@ namespace EasyAssertions.UnitTests
         }
 
         [Test]
-        public void ContinuedAssertion_CombinesExpressions()
+        public void ContinuedAssertion_CombinesChainedExpressions()
         {
             TestClass expectedExpression = new TestClass(12);
             EasyAssertionException result = Assert.Throws<EasyAssertionException>(() =>
                 expectedExpression.ShouldBeA<TestClass>()
              .And.Value.ShouldEqual(2));
+
+            Assert.AreEqual("expectedExpression.Value" + Environment.NewLine
+                + "should be <2>" + Environment.NewLine
+                + "but was   <12>", result.Message);
+        }
+
+        [Test]
+        public void ExpressionInsideNestedAssertion_CombinesOuterAndInnerExpressions()
+        {
+            TestClass expectedExpression = new TestClass(12);
+            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() =>
+                expectedExpression.ShouldEqual(new TestClass(12))
+                    .And(tc => tc.Value.ShouldEqual(2)));
+
+            Assert.AreEqual("expectedExpression.Value" + Environment.NewLine
+                + "should be <2>" + Environment.NewLine
+                + "but was   <12>", result.Message);
+        }
+
+        [Test]
+        public void ExpressionAfterNestedAssertion_CombinesChainedExpressions()
+        {
+            TestClass expectedExpression = new TestClass(12);
+            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() =>
+                expectedExpression.ShouldBeA<TestClass>()
+                    .And(tc => tc.ShouldBeA<TestClass>())
+                    .And.Value.ShouldEqual(2));
 
             Assert.AreEqual("expectedExpression.Value" + Environment.NewLine
                 + "should be <2>" + Environment.NewLine

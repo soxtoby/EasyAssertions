@@ -1,3 +1,5 @@
+using System;
+
 namespace EasyAssertions
 {
     internal class ContinuationGroup : AssertionComponentGroup
@@ -14,6 +16,16 @@ namespace EasyAssertions
         {
             string expression = base.GetExpression();
             return expression.Replace(expressionAlias, ParentGroup.GetExpression());
+        }
+
+        public override ExpressionSegment GetSegment(string expressionSource, int fromIndex)
+        {
+            int endOfMethodName = GetMethodCallIndex(expressionSource, fromIndex);
+            return new ExpressionSegment
+                {
+                    Expression = String.Empty,
+                    IndexOfNextSegment = new BraceMatcher(expressionSource).MatchFrom(endOfMethodName)
+                };
         }
     }
 }

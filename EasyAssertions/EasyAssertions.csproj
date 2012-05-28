@@ -50,6 +50,7 @@
     <Compile Include="SourceExpressions\AssertionComponent.cs" />
     <Compile Include="SourceExpressions\AssertionComponentGroup.cs" />
     <Compile Include="SourceExpressions\BaseGroup.cs" />
+    <Compile Include="SourceExpressions\BraceMatcher.cs" />
     <Compile Include="SourceExpressions\Continuation.cs" />
     <Compile Include="SourceExpressions\ContinuationGroup.cs" />
     <Compile Include="SourceExpressions\ExpressionSegment.cs" />

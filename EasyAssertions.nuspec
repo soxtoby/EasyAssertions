@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <version>0.1.0</version>
+    <authors>Simon Oxtoby</authors>
+    <owners>soxtoby</owners>
+    <licenseUrl>http://www.opensource.org/licenses/mit-license.php</licenseUrl>
+    <id>EasyAssertions</id>
+    <title />
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Easy-to-use fluent assertions with actually useful failure messages.</description>
+    <copyright>Simon Oxtoby</copyright>
+    <language>en-AU</language>
+    <tags>testing assertion unittesting</tags>
+  </metadata>
+  <files>
+    <file src="EasyAssertions\bin\Release\EasyAssertions.dll" target="lib\net40\EasyAssertions.dll" />
+  </files>
+</package>

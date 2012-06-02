@@ -32,6 +32,13 @@ namespace EasyAssertions
                 + MessageOnNewLine(message);
         }
 
+        public string AreSame(object actual, string message = null)
+        {
+            return TestExpression.Get()
+                + Environment.NewLine + "shouldn't be instance <" + actual + '>'
+                + MessageOnNewLine(message);
+        }
+
         public string NotEmpty(IEnumerable actual, string message = null)
         {
             var actualList = actual.Cast<object>().ToList();

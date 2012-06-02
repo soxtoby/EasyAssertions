@@ -126,6 +126,23 @@ namespace EasyAssertions.UnitTests
         }
 
         [Test]
+        public void AreSame_ObjectToStringed()
+        {
+            string result = DefaultFailureMessageFormatter.Instance.AreSame(new FakeObject("foo"));
+
+            Assert.AreEqual(TestExpression + Environment.NewLine
+                + "shouldn't be instance <foo>", result);
+        }
+
+        [Test]
+        public void AreSame_IncludesMessage()
+        {
+            string result = DefaultFailureMessageFormatter.Instance.AreSame(null, "foo");
+
+            StringAssert.EndsWith(Environment.NewLine + "foo", result);
+        }
+
+        [Test]
         public void NotEmpty_SingleElement()
         {
             FakeObject[] enumerable = new[] { new FakeObject("foo") };

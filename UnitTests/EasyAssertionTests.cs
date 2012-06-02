@@ -92,6 +92,33 @@ namespace EasyAssertions.UnitTests
         }
 
         [Test]
+        public void ShouldNotBeThis_DifferentObject_Passes()
+        {
+            new object().ShouldNotBeThis(new object());
+        }
+
+        [Test]
+        public void ShouldNotBeThis_ReturnsActualValue()
+        {
+            object actual = new object();
+
+            Actual<object> result = actual.ShouldNotBeThis(new object());
+
+            Assert.AreSame(actual, result.And);
+        }
+
+        [Test]
+        public void ShouldNotBeThis_SameObject_FailsWithObjectsAreSameMessage()
+        {
+            object actual = new object();
+            mockFormatter.AreSame(actual, "foo").Returns("bar");
+
+            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldNotBeThis(actual, "foo"));
+
+            Assert.AreEqual("bar", result.Message);
+        }
+
+        [Test]
         public void ShouldBeEmpty_IsEmpty_Passes()
         {
             Enumerable.Empty<object>().ShouldBeEmpty();

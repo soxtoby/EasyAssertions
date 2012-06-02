@@ -8,6 +8,11 @@ namespace EasyAssertions
         {
         }
 
+        public override string ToString()
+        {
+            return Message + Environment.NewLine + Environment.NewLine + StackTrace;
+        }
+
         public EasyAssertionException(string message)
             : base(message)
         {

@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using NSubstitute;
 using NUnit.Framework;
@@ -85,6 +87,33 @@ namespace EasyAssertions.UnitTests
             mockFormatter.NotSame(expected, actual, "foo").Returns("bar");
 
             EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldBeThis(expected, "foo"));
+
+            Assert.AreEqual("bar", result.Message);
+        }
+
+        [Test]
+        public void ShouldBeEmpty_IsEmpty_Passes()
+        {
+            Enumerable.Empty<object>().ShouldBeEmpty();
+        }
+
+        [Test]
+        public void ShouldBeEmpty_ReturnsActualValue()
+        {
+            IEnumerable<object> actual = Enumerable.Empty<object>();
+
+            var result = actual.ShouldBeEmpty();
+
+            Assert.AreSame(actual, result.And);
+        }
+
+        [Test]
+        public void ShouldBeEmpty_NonEmpty_FailsWithEnumerableNotEmptyMessage()
+        {
+            int[] actual = new[] { 1 };
+            mockFormatter.NotEmpty(actual, "foo").Returns("bar");
+
+            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldBeEmpty("foo"));
 
             Assert.AreEqual("bar", result.Message);
         }

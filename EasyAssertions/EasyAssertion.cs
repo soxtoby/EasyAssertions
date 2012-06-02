@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 
@@ -31,6 +32,25 @@ namespace EasyAssertions
                 throw new EasyAssertionException(FailureMessageFormatter.Current.NotSame(expected, actual, message));
 
             return new Actual<TActual>(actual);
+        }
+
+        public static Actual<TActual> ShouldBeEmpty<TActual>(this TActual actual, string message = null) where TActual : IEnumerable
+        {
+            IEnumerator enumerator = actual.GetEnumerator();
+            bool empty = !enumerator.MoveNext();
+            Dispose(enumerator);
+
+            if (!empty)
+                throw new EasyAssertionException(FailureMessageFormatter.Current.NotEmpty(actual, message));
+
+            return new Actual<TActual>(actual);
+        }
+
+        private static void Dispose(IEnumerator enumerator)
+        {
+            IDisposable disposable = enumerator as IDisposable;
+            if (disposable != null)
+                disposable.Dispose();
         }
 
         public static Actual<TActual> ShouldMatch<TActual, TExpected>(this TActual actual, IEnumerable<TExpected> expected, string message = null) where TActual : IEnumerable<TExpected>

@@ -125,6 +125,48 @@ namespace EasyAssertions.UnitTests
         }
 
         [Test]
+        public void NotEmpty_ItemsToStringed()
+        {
+            FakeObject[] enumerable = new[] { new FakeObject("foo"), new FakeObject("bar") };
+
+            string result = DefaultFailureMessageFormatter.Instance.NotEmpty(enumerable);
+
+            Assert.AreEqual(TestExpression + Environment.NewLine
+                + "should be empty" + Environment.NewLine
+                + "but had 2 elements: [" + Environment.NewLine
+                + "    <foo>," + Environment.NewLine
+                + "    <bar>" + Environment.NewLine
+                + "]", result);
+        }
+
+        [Test]
+        public void NotEmpty_ManyItems_OnlyFirstThreeDisplayed()
+        {
+            FakeObject[] enumerable = new[] { new FakeObject("one"), new FakeObject("two"), new FakeObject("three"), new FakeObject("four") };
+
+            string result = DefaultFailureMessageFormatter.Instance.NotEmpty(enumerable);
+
+            Assert.AreEqual(TestExpression + Environment.NewLine
+                + "should be empty" + Environment.NewLine
+                + "but had 4 elements: [" + Environment.NewLine
+                + "    <one>," + Environment.NewLine
+                + "    <two>," + Environment.NewLine
+                + "    <three>," + Environment.NewLine
+                + "    ..." + Environment.NewLine
+                + "]", result);
+        }
+
+        [Test]
+        public void NotEmpty_IncludesMessage()
+        {
+            FakeObject[] enumerable = new[] { new FakeObject(String.Empty) };
+
+            string result = DefaultFailureMessageFormatter.Instance.NotEmpty(enumerable, "foo");
+
+            StringAssert.EndsWith(Environment.NewLine + "foo", result);
+        }
+
+        [Test]
         public void DoNotMatch_NonMatchingCollections()
         {
             string result = DefaultFailureMessageFormatter.Instance.DoNotMatch(new[] { 1, 2, 3 }, new[] { 1, 3, 2 });

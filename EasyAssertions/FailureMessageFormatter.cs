@@ -32,5 +32,6 @@ namespace EasyAssertions
         string DoesNotContain(string expectedSubstring, string actual, string message = null);
         string NoException(Type expectedExceptionType, Expression<Action> function, string message = null);
         string WrongException(Type expectedExceptionType, Type actualExceptionType, Expression<Action> function, string message = null);
+        string NotEmpty(IEnumerable actual, string message);
     }
 }

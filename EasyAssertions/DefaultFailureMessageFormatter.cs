@@ -18,6 +18,7 @@ namespace EasyAssertions
         private const string ActualExceptionText = "but threw    ";
         private const string ArrowPrefix = "           ";
         private const string Ellipses = "...";
+        private static readonly string EnumerableEllipses = Environment.NewLine + "    " + Ellipses;
 
         private DefaultFailureMessageFormatter() { }
 
@@ -29,6 +30,40 @@ namespace EasyAssertions
                 + Environment.NewLine + ExpectedInstanceText + '<' + expected + '>'
                 + Environment.NewLine + ActualInstanceText + '<' + actual + '>'
                 + MessageOnNewLine(message);
+        }
+
+        public string NotEmpty(IEnumerable actual, string message = null)
+        {
+            var actualList = actual.Cast<object>().ToList();
+
+            return TestExpression.Get()
+                + Environment.NewLine + "should be empty"
+                + Environment.NewLine + "but had " + actualList.Count + " elements: ["
+                + SelectFirstFew(3, actualList, EnumerableItem, EnumerableEllipses).Join(",")
+                + Environment.NewLine + "]"
+                + MessageOnNewLine(message);
+        }
+
+        private static string EnumerableItem(object i)
+        {
+            return Environment.NewLine + "    <" + i + '>';
+        }
+
+        private static IEnumerable<string> SelectFirstFew<T>(int count, IEnumerable<T> enumerable, Func<T, string> select, string extra)
+        {
+            using (IEnumerator<T> enumerator = enumerable.GetEnumerator())
+            {
+                int i = 0;
+                while (enumerator.MoveNext())
+                {
+                    if (i++ == count)
+                    {
+                        yield return extra;
+                        break;
+                    }
+                    yield return select(enumerator.Current);
+                }
+            }
         }
 
         public string DoNotMatch(IEnumerable expected, IEnumerable actual, string message = null)

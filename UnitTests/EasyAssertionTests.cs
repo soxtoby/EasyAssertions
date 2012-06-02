@@ -24,67 +24,67 @@ namespace EasyAssertions.UnitTests
         }
 
         [Test]
-        public void ShouldEqual_SameValue_Passes()
+        public void ShouldBe_SameValue_Passes()
         {
-            1.ShouldEqual(1);
-        }
-
-        [Test]
-        public void ShouldEqual_ReturnsActualValue()
-        {
-            Equatable actual = new Equatable(1);
-            Equatable expected = new Equatable(1);
-            Actual<Equatable> result = actual.ShouldEqual(expected);
-
-            Assert.AreSame(actual, result.And);
-        }
-
-        [Test]
-        public void ShouldEqual_DifferentObjects_FailsWithObjectsNotEqualMessage()
-        {
-            object obj1 = new object();
-            object obj2 = new object();
-            mockFormatter.NotEqual(obj2, obj1, "foo").Returns("bar");
-
-            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => obj1.ShouldEqual(obj2, "foo"));
-
-            Assert.AreEqual("bar", result.Message);
-        }
-
-        [Test]
-        public void ShouldEqual_DifferentStrings_FailsWithStringsNotEqualMessage()
-        {
-            mockFormatter.NotEqual("foo", "bar", "baz").Returns("qux");
-
-            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => "bar".ShouldEqual("foo", "baz"));
-
-            Assert.AreEqual("qux", result.Message);
-        }
-
-        [Test]
-        public void ShouldBe_SameObject_Passes()
-        {
-            object obj = new object();
-            obj.ShouldBe(obj);
+            1.ShouldBe(1);
         }
 
         [Test]
         public void ShouldBe_ReturnsActualValue()
         {
+            Equatable actual = new Equatable(1);
+            Equatable expected = new Equatable(1);
+            Actual<Equatable> result = actual.ShouldBe(expected);
+
+            Assert.AreSame(actual, result.And);
+        }
+
+        [Test]
+        public void ShouldBe_DifferentObjects_FailsWithObjectsNotEqualMessage()
+        {
+            object obj1 = new object();
+            object obj2 = new object();
+            mockFormatter.NotEqual(obj2, obj1, "foo").Returns("bar");
+
+            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => obj1.ShouldBe(obj2, "foo"));
+
+            Assert.AreEqual("bar", result.Message);
+        }
+
+        [Test]
+        public void ShouldBe_DifferentStrings_FailsWithStringsNotEqualMessage()
+        {
+            mockFormatter.NotEqual("foo", "bar", "baz").Returns("qux");
+
+            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => "bar".ShouldBe("foo", "baz"));
+
+            Assert.AreEqual("qux", result.Message);
+        }
+
+        [Test]
+        public void ShouldBeThis_SameObject_Passes()
+        {
             object obj = new object();
-            Actual<object> result = obj.ShouldBe(obj);
+            obj.ShouldBeThis(obj);
+        }
+
+        [Test]
+        public void ShouldBeThis_ReturnsActualValue()
+        {
+            object obj = new object();
+            Actual<object> result = obj.ShouldBeThis(obj);
 
             Assert.AreSame(obj, result.And);
         }
 
         [Test]
-        public void ShouldBe_DifferentObject_FailsWithObjectsNotSameMessage()
+        public void ShouldBeThis_DifferentObject_FailsWithObjectsNotSameMessage()
         {
             Equatable actual = new Equatable(1);
             Equatable expected = new Equatable(1);
             mockFormatter.NotSame(expected, actual, "foo").Returns("bar");
 
-            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldBe(expected, "foo"));
+            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldBeThis(expected, "foo"));
 
             Assert.AreEqual("bar", result.Message);
         }
@@ -181,7 +181,7 @@ namespace EasyAssertions.UnitTests
 
             Actual<Exception> result = Should.Throw<Exception>(() => thrower.Throw());
 
-            result.And.ShouldBe(expectedException);
+            result.And.ShouldBeThis(expectedException);
         }
 
         [Test]

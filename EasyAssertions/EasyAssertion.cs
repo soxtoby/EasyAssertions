@@ -6,7 +6,7 @@ namespace EasyAssertions
 {
     public static class EasyAssertion
     {
-        public static Actual<TActual> ShouldEqual<TActual, TExpected>(this TActual actual, TExpected expected, string message = null) where TActual : TExpected
+        public static Actual<TActual> ShouldBe<TActual, TExpected>(this TActual actual, TExpected expected, string message = null) where TActual : TExpected
         {
             SourceExpressionProvider.Instance.RegisterAssertionMethod();
 
@@ -23,7 +23,7 @@ namespace EasyAssertions
             return new Actual<TActual>(actual);
         }
 
-        public static Actual<TActual> ShouldBe<TActual, TExpected>(this TActual actual, TExpected expected, string message = null) where TActual : TExpected
+        public static Actual<TActual> ShouldBeThis<TActual, TExpected>(this TActual actual, TExpected expected, string message = null) where TActual : TExpected
         {
             SourceExpressionProvider.Instance.RegisterAssertionMethod();
 

@@ -10,7 +10,7 @@ namespace EasyAssertions
         {
             return Equals(other.FileName, FileName)
                 && other.LineIndex == LineIndex
-                    && other.ExpressionIndex == ExpressionIndex;
+                && other.ExpressionIndex == ExpressionIndex;
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using NUnit.Framework;
 
 namespace EasyAssertions.UnitTests
@@ -78,6 +79,52 @@ namespace EasyAssertions.UnitTests
             Assert.AreEqual("expectedExpression.Value" + Environment.NewLine
                 + "should be <2>" + Environment.NewLine
                 + "but was   <12>", result.Message);
+        }
+
+        [Test]
+        public void ExpressionInsideIndexedAssertion_IncludesIndex()
+        {
+            TestClass[] expectedExpression = new[] { null, new TestClass(12) };
+            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() =>
+                expectedExpression.ItemsSatisfy(
+                    tc => { },
+                    tc => tc.Value.ShouldBe(2)));
+
+            Assert.AreEqual("expectedExpression[1].Value" + Environment.NewLine
+                + "should be <2>" + Environment.NewLine
+                + "but was   <12>", result.Message);
+        }
+
+        [Test]
+        public void ExpressionAfterIndexedAssertions_CombinesChainedExpressions()
+        {
+            TestClass[] expectedExpression = new[] { new TestClass(12) };
+            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() =>
+                expectedExpression
+                    .ItemsSatisfy(tc => { })
+                    .And.Single().ShouldBe(new TestClass(2)));
+
+            Assert.AreEqual("expectedExpression.Single()" + Environment.NewLine
+                + "should be <(2)>" + Environment.NewLine
+                + "but was   <(12)>", result.Message);
+        }
+
+        [Test]
+        public void SeparateExpressionAfterIndexedAssertion()
+        {
+            TestClass expectedExpression = new TestClass(12);
+            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() =>
+                {
+                    new[] { 1 }
+                        .ItemsSatisfy(i => { });
+
+                    expectedExpression
+                        .ShouldBe(new TestClass(2));
+                });
+
+            Assert.AreEqual("expectedExpression" + Environment.NewLine
+                + "should be <(2)>" + Environment.NewLine
+                + "but was   <(12)>", result.Message);
         }
 
         private class TestClass

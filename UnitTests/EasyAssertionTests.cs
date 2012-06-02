@@ -174,6 +174,60 @@ namespace EasyAssertions.UnitTests
         }
 
         [Test]
+        public void ItemsSatisfy_ItemsSatisfyAssertions_Passes()
+        {
+            new[] { 1 }.ItemsSatisfy(i => { });
+        }
+
+        [Test]
+        public void ItemsSatisfy_ReturnsActualValue()
+        {
+            int[] actual = new[] { 1 };
+
+            Actual<IEnumerable<int>> result = actual.ItemsSatisfy(i => { });
+
+            Assert.AreSame(actual, result.And);
+        }
+
+        [Test]
+        public void ItemsSatisfy_CallsAssertionsWithMatchedItem()
+        {
+            bool gotFirstItem = false;
+            bool gotSecondItem = false;
+
+            new[] { 1, 2 }.ItemsSatisfy(
+                i => gotFirstItem = i == 1,
+                i => gotSecondItem = i == 2);
+
+            Assert.IsTrue(gotFirstItem, "first item");
+            Assert.IsTrue(gotSecondItem, "second item");
+        }
+
+        [Test]
+        public void ItemsSatisfy_WrongNumberOfItems_FailsWithEnumerableLengthMismatchMessage()
+        {
+            int[] actual = new[] { 1 };
+            mockFormatter.LengthMismatch(actual, 2).Returns("foo");
+
+            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ItemsSatisfy(i => { }, i => { }));
+
+            Assert.AreEqual("foo", result.Message);
+        }
+
+        [Test]
+        public void ItemsSatisfy_ItemDoesNotSatisyItsAssertion_FailsWithThrownException()
+        {
+            int[] actual = new[] { 1, 2 };
+            Exception failure = new Exception("foo");
+
+            Exception result = Assert.Throws<Exception>(() => actual.ItemsSatisfy(
+                i => { },
+                i => { throw failure; }));
+
+            Assert.AreSame(failure, result);
+        }
+
+        [Test]
         public void ShouldBeA_SubType_Passes()
         {
             object actual = new SubEquatable(1);

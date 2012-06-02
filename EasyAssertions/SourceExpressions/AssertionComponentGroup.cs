@@ -5,15 +5,25 @@ using System.Linq;
 
 namespace EasyAssertions
 {
-    internal abstract class AssertionComponentGroup : AssertionComponent
+    internal abstract class AssertionComponentGroup
     {
         private readonly List<AssertionComponent> calls = new List<AssertionComponent>();
+        public readonly AssertionComponentGroup ParentGroup;
 
-        protected AssertionComponentGroup(SourceAddress sourceAddress, string methodName) : base(sourceAddress, methodName) { }
+        protected AssertionComponentGroup(AssertionComponentGroup parentGroup)
+        {
+            ParentGroup = parentGroup;
+        }
 
-        public IEnumerable<AssertionComponent> MethodCalls { get { return calls; } }
+        public IEnumerable<AssertionComponent> MethodCalls
+        {
+            get { return calls; }
+        }
 
-        public SourceAddress InnerAssertionSourceAddress { get { return MethodCalls.First().SourceAddress; } }
+        public SourceAddress InnerAssertionSourceAddress
+        {
+            get { return MethodCalls.First().SourceAddress; }
+        }
 
         public virtual string GetExpression()
         {
@@ -31,9 +41,8 @@ namespace EasyAssertions
             return expression;
         }
 
-        public void AddMethod(AssertionComponent component)
+        public void AddComponent(AssertionComponent component)
         {
-            component.ParentGroup = this;
             calls.Add(component);
         }
     }

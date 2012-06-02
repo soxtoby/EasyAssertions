@@ -34,5 +34,6 @@ namespace EasyAssertions
         string WrongException(Type expectedExceptionType, Type actualExceptionType, Expression<Action> function, string message = null);
         string NotEmpty(IEnumerable actual, string message = null);
         string IsEmpty(string message = null);
+        string LengthMismatch(IEnumerable actual, int expectedLength, string message = null);
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 
 namespace EasyAssertions
@@ -79,6 +80,24 @@ namespace EasyAssertions
             return new Actual<TActual>(actual);
         }
 
+        public static Actual<IEnumerable<TItem>> ItemsSatisfy<TItem>(this IEnumerable<TItem> actual, params Action<TItem>[] assertions)
+        {
+            SourceExpressionProvider.Instance.RegisterAssertionMethod();
+
+            List<TItem> actualList = actual.ToList();
+            if (actualList.Count != assertions.Length)
+                throw new EasyAssertionException(FailureMessageFormatter.Current.LengthMismatch(actual, assertions.Length));
+
+            for (int i = 0; i < assertions.Length; i++)
+            {
+                SourceExpressionProvider.Instance.EnterIndexedAssertion(assertions[i].Method, i);
+                assertions[i](actualList[i]);
+                SourceExpressionProvider.Instance.ExitNestedAssertion();
+            }
+
+            return new Actual<IEnumerable<TItem>>(actual);
+        }
+
         public static Actual<TExpected> ShouldBeA<TExpected>(this object actual, string message = null)
         {
             SourceExpressionProvider.Instance.RegisterAssertionMethod();
@@ -101,9 +120,10 @@ namespace EasyAssertions
 
         public static Actual<TActual> And<TActual>(this Actual<TActual> actual, Action<TActual> assert)
         {
-            SourceExpressionProvider.Instance.EnterNestedContinuation(assert.Method);
+            SourceExpressionProvider.Instance.RegisterAssertionMethod();
+            SourceExpressionProvider.Instance.EnterNestedAssertion(assert.Method);
             assert(actual.Value);
-            SourceExpressionProvider.Instance.ExitNestedContinuation();
+            SourceExpressionProvider.Instance.ExitNestedAssertion();
             return actual;
         }
     }

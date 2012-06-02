@@ -2,7 +2,6 @@ namespace EasyAssertions
 {
     internal abstract class AssertionComponent
     {
-        public AssertionComponentGroup ParentGroup;
         public readonly SourceAddress SourceAddress;
         protected readonly string MethodName;
 

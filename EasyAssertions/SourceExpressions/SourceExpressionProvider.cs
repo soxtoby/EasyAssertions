@@ -20,7 +20,7 @@ namespace EasyAssertions
 
         public void RegisterAssertionMethod()
         {
-            RegisterMethod((address, methodName) => new Assertion(address, methodName));
+            RegisterMethod((address, methodName) => new AssertionMethod(address, methodName));
         }
 
         public void RegisterContinuation()
@@ -65,23 +65,30 @@ namespace EasyAssertions
         private void EnsureCurrentFrame(SourceAddress sourceAddress)
         {
             if (currentGroup == null)
-                currentGroup = new BaseGroup(sourceAddress, string.Empty);
+                currentGroup = new BaseGroup();
         }
 
         private void AddToCurrentFrame(AssertionComponent component)
         {
-            currentGroup.AddMethod(component);
+            currentGroup.AddComponent(component);
         }
 
-        public void EnterNestedContinuation(MethodInfo innerAssertion)
+        public void EnterNestedAssertion(MethodInfo innerAssertion)
         {
-            string expressionAlias = innerAssertion.GetParameters().First().Name;
-            ContinuationGroup continuationGroup = BuildComponent((address, methodName) => new ContinuationGroup(address, methodName, expressionAlias));
-            currentGroup.AddMethod(continuationGroup);
-            currentGroup = continuationGroup;
+            currentGroup = new NestedAssertionGroup(currentGroup, GetExpressionAlias(innerAssertion));
         }
 
-        public void ExitNestedContinuation()
+        public void EnterIndexedAssertion(MethodInfo innerAssertion, int index)
+        {
+            currentGroup = new IndexedAssertionGroup(currentGroup, GetExpressionAlias(innerAssertion), index);
+        }
+
+        private static string GetExpressionAlias(MethodInfo innerAssertion)
+        {
+            return innerAssertion.GetParameters().First().Name;
+        }
+
+        public void ExitNestedAssertion()
         {
             currentGroup = currentGroup.ParentGroup;
         }

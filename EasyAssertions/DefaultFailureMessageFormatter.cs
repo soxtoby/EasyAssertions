@@ -38,9 +38,7 @@ namespace EasyAssertions
 
             return TestExpression.Get()
                 + Environment.NewLine + "should be empty"
-                + Environment.NewLine + "but had " + actualList.Count + " elements: ["
-                + SelectFirstFew(3, actualList, EnumerableItem, EnumerableEllipses).Join(",")
-                + Environment.NewLine + "]"
+                + Environment.NewLine + ActualElements(actualList)
                 + MessageOnNewLine(message);
         }
 
@@ -51,7 +49,32 @@ namespace EasyAssertions
                 + MessageOnNewLine(message);
         }
 
-        private static string EnumerableItem(object i)
+        public string LengthMismatch(IEnumerable actual, int expectedLength, string message = null)
+        {
+            return TestExpression.Get()
+                + Environment.NewLine + "should have " + expectedLength + (expectedLength == 1 ? " element" : " elements")
+                + Environment.NewLine + ActualElements(actual.Cast<object>().ToList())
+                + MessageOnNewLine(message);
+        }
+
+        private static string ActualElements(ICollection<object> actualList)
+        {
+            if (actualList.None())
+                return "but was empty.";
+
+            string message = "but had " + actualList.Count;
+
+            if (actualList.Count == 1)
+                message += " element: <" + actualList.Single() + '>';
+            else
+                message += " elements: ["
+                    + SelectFirstFew(3, actualList, EnumerableElement, EnumerableEllipses).Join(",")
+                        + Environment.NewLine + "]";
+
+            return message;
+        }
+
+        private static string EnumerableElement(object i)
         {
             return Environment.NewLine + "    <" + i + '>';
         }

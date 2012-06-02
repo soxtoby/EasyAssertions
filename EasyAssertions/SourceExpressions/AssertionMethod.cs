@@ -1,8 +1,9 @@
+
 namespace EasyAssertions
 {
-    internal class Assertion : AssertionComponent
+    internal class AssertionMethod : AssertionComponent
     {
-        public Assertion(SourceAddress sourceAddress, string methodName) : base(sourceAddress, methodName) { }
+        public AssertionMethod(SourceAddress sourceAddress, string methodName) : base(sourceAddress, methodName) { }
 
         public override ExpressionSegment GetSegment(string expressionSource, int fromIndex)
         {
@@ -10,7 +11,7 @@ namespace EasyAssertions
             return new ExpressionSegment
                 {
                     Expression = expressionSource.Substring(fromIndex, assertionIndex - fromIndex),
-                    IndexOfNextSegment = fromIndex
+                    IndexOfNextSegment = new BraceMatcher(expressionSource).MatchFrom(assertionIndex) + 1
                 };
         }
     }

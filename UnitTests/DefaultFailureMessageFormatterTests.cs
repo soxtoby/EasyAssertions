@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using NSubstitute;
 using NUnit.Framework;
 
@@ -125,7 +126,19 @@ namespace EasyAssertions.UnitTests
         }
 
         [Test]
-        public void NotEmpty_ItemsToStringed()
+        public void NotEmpty_SingleElement()
+        {
+            FakeObject[] enumerable = new[] { new FakeObject("foo") };
+
+            string result = DefaultFailureMessageFormatter.Instance.NotEmpty(enumerable);
+
+            Assert.AreEqual(TestExpression + Environment.NewLine
+                + "should be empty" + Environment.NewLine
+                + "but had 1 element: <foo>", result);
+        }
+
+        [Test]
+        public void NotEmpty_TwoElements()
         {
             FakeObject[] enumerable = new[] { new FakeObject("foo"), new FakeObject("bar") };
 
@@ -196,6 +209,44 @@ namespace EasyAssertions.UnitTests
         public void DoNotMatch_IncludesMessage()
         {
             string result = DefaultFailureMessageFormatter.Instance.DoNotMatch(new[] { 1 }, new[] { 2 }, "foo");
+            StringAssert.EndsWith(Environment.NewLine + "foo", result);
+        }
+
+        [Test]
+        public void LengthMismatch_EmptyEnumerable()
+        {
+            string result = DefaultFailureMessageFormatter.Instance.LengthMismatch(Enumerable.Empty<object>(), 2);
+
+            Assert.AreEqual(TestExpression + Environment.NewLine
+                + "should have 2 elements" + Environment.NewLine
+                + "but was empty.", result);
+        }
+
+        [Test]
+        public void LengthMismatch_SingleElementExpected()
+        {
+            string result = DefaultFailureMessageFormatter.Instance.LengthMismatch(Enumerable.Empty<object>(), 1);
+
+            Assert.AreEqual(TestExpression + Environment.NewLine
+                + "should have 1 element" + Environment.NewLine
+                + "but was empty.", result);
+        }
+
+        [Test]
+        public void LengthMismatch_SingleElement()
+        {
+            string result = DefaultFailureMessageFormatter.Instance.LengthMismatch(new[] { new FakeObject("foo") }, 2);
+
+            Assert.AreEqual(TestExpression + Environment.NewLine
+                + "should have 2 elements" + Environment.NewLine
+                + "but had 1 element: <foo>", result);
+        }
+
+        [Test]
+        public void LengthMismatch_IncludesMessage()
+        {
+            string result = DefaultFailureMessageFormatter.Instance.LengthMismatch(Enumerable.Empty<object>(), 1, "foo");
+
             StringAssert.EndsWith(Environment.NewLine + "foo", result);
         }
 

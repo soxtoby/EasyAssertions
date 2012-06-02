@@ -44,6 +44,13 @@ namespace EasyAssertions
                 + MessageOnNewLine(message);
         }
 
+        public string IsEmpty(string message = null)
+        {
+            return TestExpression.Get()
+                + Environment.NewLine + "should not be empty, but was."
+                + MessageOnNewLine(message);
+        }
+
         private static string EnumerableItem(object i)
         {
             return Environment.NewLine + "    <" + i + '>';

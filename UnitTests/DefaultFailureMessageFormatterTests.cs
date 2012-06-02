@@ -167,6 +167,22 @@ namespace EasyAssertions.UnitTests
         }
 
         [Test]
+        public void IsEmpty()
+        {
+            string result = DefaultFailureMessageFormatter.Instance.IsEmpty();
+
+            Assert.AreEqual(TestExpression + Environment.NewLine + "should not be empty, but was.", result);
+        }
+
+        [Test]
+        public void IsEmpty_IncludesMessage()
+        {
+            string result = DefaultFailureMessageFormatter.Instance.IsEmpty("foo");
+
+            StringAssert.EndsWith(Environment.NewLine + "foo", result);
+        }
+
+        [Test]
         public void DoNotMatch_NonMatchingCollections()
         {
             string result = DefaultFailureMessageFormatter.Instance.DoNotMatch(new[] { 1, 2, 3 }, new[] { 1, 3, 2 });

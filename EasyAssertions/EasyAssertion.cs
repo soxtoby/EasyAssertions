@@ -36,14 +36,30 @@ namespace EasyAssertions
 
         public static Actual<TActual> ShouldBeEmpty<TActual>(this TActual actual, string message = null) where TActual : IEnumerable
         {
-            IEnumerator enumerator = actual.GetEnumerator();
-            bool empty = !enumerator.MoveNext();
-            Dispose(enumerator);
+            SourceExpressionProvider.Instance.RegisterAssertionMethod();
 
-            if (!empty)
+            if (!IsEmpty(actual))
                 throw new EasyAssertionException(FailureMessageFormatter.Current.NotEmpty(actual, message));
 
             return new Actual<TActual>(actual);
+        }
+
+        public static Actual<TActual> ShouldNotBeEmpty<TActual>(this TActual actual, string message = null) where TActual : IEnumerable
+        {
+            SourceExpressionProvider.Instance.RegisterAssertionMethod();
+
+            if (IsEmpty(actual))
+                throw new EasyAssertionException(FailureMessageFormatter.Current.IsEmpty(message));
+
+            return new Actual<TActual>(actual);
+        }
+
+        private static bool IsEmpty<TActual>(TActual actual) where TActual : IEnumerable
+        {
+            IEnumerator enumerator = actual.GetEnumerator();
+            bool empty = !enumerator.MoveNext();
+            Dispose(enumerator);
+            return empty;
         }
 
         private static void Dispose(IEnumerator enumerator)

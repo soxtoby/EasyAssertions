@@ -119,6 +119,33 @@ namespace EasyAssertions.UnitTests
         }
 
         [Test]
+        public void ShouldNotBeEmpty_NotEmpty_Passes()
+        {
+            new[] { 1 }.ShouldNotBeEmpty();
+        }
+
+        [Test]
+        public void ShouldNotBeEmpty_ReturnsActualValue()
+        {
+            int[] actual = new[] { 1 };
+
+            Actual<int[]> result = actual.ShouldNotBeEmpty();
+
+            Assert.AreSame(actual, result.And);
+        }
+
+        [Test]
+        public void ShouldNotBeEmpty_IsEmpty_FailsWithEnumerableEmptyMessage()
+        {
+            IEnumerable<object> actual = Enumerable.Empty<object>();
+            mockFormatter.IsEmpty("foo").Returns("bar");
+
+            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldNotBeEmpty("foo"));
+
+            Assert.AreEqual("bar", result.Message);
+        }
+
+        [Test]
         public void ShouldMatch_MatchingEnumerable_Passes()
         {
             new[] { 1, 2, 3 }.ShouldMatch(new[] { 1, 2, 3 });

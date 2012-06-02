@@ -211,7 +211,7 @@ namespace EasyAssertions.UnitTests
         {
             int[] actual = new[] { 1, 2 };
             int[] expected = new[] { 1, 2 };
-            Actual<int[]> result = actual.ShouldMatch(expected);
+            Actual<IEnumerable<int>> result = actual.ShouldMatch(expected);
 
             Assert.AreSame(actual, result.And);
         }

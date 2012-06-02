@@ -8,7 +8,7 @@ namespace EasyAssertions
 {
     public static class EasyAssertion
     {
-        public static Actual<TActual> ShouldBe<TActual, TExpected>(this TActual actual, TExpected expected, string message = null) where TActual : TExpected
+        public static Actual<TActual> ShouldBe<TActual, TExpected>(this TActual actual, TExpected expected, string message = null) where TExpected : TActual
         {
             SourceExpressionProvider.Instance.RegisterAssertionMethod();
 
@@ -25,7 +25,7 @@ namespace EasyAssertions
             return new Actual<TActual>(actual);
         }
 
-        public static Actual<TActual> ShouldNotBe<TActual, TNotExpected>(this TActual actual, TNotExpected notExpected, string message = null) where TActual : TNotExpected
+        public static Actual<TActual> ShouldNotBe<TActual, TNotExpected>(this TActual actual, TNotExpected notExpected, string message = null) where TNotExpected : TActual
         {
             SourceExpressionProvider.Instance.RegisterAssertionMethod();
 
@@ -35,7 +35,7 @@ namespace EasyAssertions
             return new Actual<TActual>(actual);
         }
 
-        public static Actual<TActual> ShouldBeThis<TActual, TExpected>(this TActual actual, TExpected expected, string message = null) where TActual : TExpected
+        public static Actual<TActual> ShouldBeThis<TActual, TExpected>(this TActual actual, TExpected expected, string message = null) where TExpected : TActual
         {
             SourceExpressionProvider.Instance.RegisterAssertionMethod();
 
@@ -45,7 +45,7 @@ namespace EasyAssertions
             return new Actual<TActual>(actual);
         }
 
-        public static Actual<TActual> ShouldNotBeThis<TActual, TNotExpected>(this TActual actual, TNotExpected notExpected, string message = null) where TActual : TNotExpected
+        public static Actual<TActual> ShouldNotBeThis<TActual, TNotExpected>(this TActual actual, TNotExpected notExpected, string message = null) where TNotExpected : TActual
         {
             SourceExpressionProvider.Instance.RegisterAssertionMethod();
 
@@ -90,14 +90,14 @@ namespace EasyAssertions
                 disposable.Dispose();
         }
 
-        public static Actual<TActual> ShouldMatch<TActual, TExpected>(this TActual actual, IEnumerable<TExpected> expected, string message = null) where TActual : IEnumerable<TExpected>
+        public static Actual<IEnumerable<TActual>> ShouldMatch<TActual, TExpected>(this IEnumerable<TActual> actual, IEnumerable<TExpected> expected, string message = null) where TExpected : TActual
         {
             SourceExpressionProvider.Instance.RegisterAssertionMethod();
 
             if (!Compare.CollectionsMatch(actual, expected))
                 throw new EasyAssertionException(FailureMessageFormatter.Current.DoNotMatch(expected, actual, message));
 
-            return new Actual<TActual>(actual);
+            return new Actual<IEnumerable<TActual>>(actual);
         }
 
         public static Actual<IEnumerable<TItem>> ItemsSatisfy<TItem>(this IEnumerable<TItem> actual, params Action<TItem>[] assertions)

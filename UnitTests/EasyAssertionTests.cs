@@ -170,7 +170,7 @@ namespace EasyAssertions.UnitTests
         public void ShouldThrow_Throws_Passes()
         {
             ExceptionThrower thrower = new ExceptionThrower(new Exception());
-            Function.Call(() => thrower.Throw()).ShouldThrow<Exception>();
+            Should.Throw<Exception>(() => thrower.Throw());
         }
 
         [Test]
@@ -179,7 +179,7 @@ namespace EasyAssertions.UnitTests
             Exception expectedException = new Exception();
             ExceptionThrower thrower = new ExceptionThrower(expectedException);
 
-            Actual<Exception> result = Function.Call(() => thrower.Throw()).ShouldThrow<Exception>();
+            Actual<Exception> result = Should.Throw<Exception>(() => thrower.Throw());
 
             result.And.ShouldBe(expectedException);
         }
@@ -191,7 +191,7 @@ namespace EasyAssertions.UnitTests
             mockFormatter.NoException(typeof(Exception), noThrow, "foo").Returns("bar");
 
             EasyAssertionException result = Assert.Throws<EasyAssertionException>(() =>
-                Function.Call(noThrow).ShouldThrow<Exception>("foo"));
+                Should.Throw<Exception>(noThrow, "foo"));
 
             Assert.AreEqual("bar", result.Message);
         }
@@ -204,7 +204,7 @@ namespace EasyAssertions.UnitTests
             mockFormatter.WrongException(typeof(InvalidOperationException), typeof(Exception), throwsException, "foo").Returns("bar");
 
             EasyAssertionException result = Assert.Throws<EasyAssertionException>(() =>
-                Function.Call(throwsException).ShouldThrow<InvalidOperationException>("foo"));
+                Should.Throw<InvalidOperationException>(throwsException, "foo"));
 
             Assert.AreEqual("bar", result.Message);
         }
@@ -216,7 +216,7 @@ namespace EasyAssertions.UnitTests
             ExceptionThrower thrower = new ExceptionThrower(expectedException);
 
             EasyAssertionException result = Assert.Throws<EasyAssertionException>(() =>
-                Function.Call(() => thrower.Throw()).ShouldThrow<InvalidOperationException>());
+                Should.Throw<InvalidOperationException>(() => thrower.Throw()));
 
             Assert.AreSame(expectedException, result.InnerException);
         }

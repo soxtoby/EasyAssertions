@@ -24,6 +24,78 @@ namespace EasyAssertions
 
         public static readonly DefaultFailureMessageFormatter Instance = new DefaultFailureMessageFormatter();
 
+        public string NotEqual(object expected, object actual, string message = null)
+        {
+            return TestExpression.Get()
+                + Environment.NewLine + ExpectedText + '<' + expected + '>'
+                + Environment.NewLine + ActualText + '<' + actual + '>'
+                + MessageOnNewLine(message);
+        }
+
+        public string NotEqual(string expected, string actual, string message = null)
+        {
+            int differenceIndex = Enumerable.Range(0, expected.Length)
+                .First(i => actual[i] != expected[i]);
+
+            const int maxStringWidth = 60;
+            const int maxArrowIndex = 20;
+
+            int from = Math.Max(0, differenceIndex - maxArrowIndex);
+
+            string expectedSnippet = GetSnippet(expected, from, maxStringWidth);
+            string actualSnippet = GetSnippet(actual, from, maxStringWidth);
+
+            int arrowIndex = differenceIndex - from;
+            arrowIndex += actualSnippet.Substring(0, arrowIndex).Count(c => Escapes.ContainsKey(c));
+            string arrow = new string(' ', arrowIndex) + '^';
+
+            return TestExpression.Get() + Environment.NewLine
+                + ExpectedText + '"' + Escape(expectedSnippet) + '"' + Environment.NewLine
+                + ActualText + '"' + Escape(actualSnippet) + '"' + Environment.NewLine
+                + ArrowPrefix + arrow + Environment.NewLine
+                + "Difference at index " + differenceIndex + '.'
+                + MessageOnNewLine(message);
+        }
+
+        private static string GetSnippet(string wholeString, int fromIndex, int maxLength)
+        {
+            int snippetLength = maxLength;
+            string prefix = string.Empty;
+            string suffix = string.Empty;
+
+            if (fromIndex > 0)
+            {
+                prefix = Ellipses;
+                snippetLength -= prefix.Length;
+                fromIndex += prefix.Length;
+            }
+
+            if (fromIndex + snippetLength >= wholeString.Length)
+            {
+                snippetLength = wholeString.Length - fromIndex;
+            }
+            else
+            {
+                suffix = Ellipses;
+                snippetLength -= suffix.Length;
+            }
+
+            return prefix + wholeString.Substring(fromIndex, snippetLength) + suffix;
+        }
+
+        private static string Escape(string value)
+        {
+            return Escapes.Aggregate(value, (s, escape) => s.Replace(escape.Key.ToString(CultureInfo.InvariantCulture), escape.Value));
+        }
+
+        public string AreEqual(object notExpected, object actual, string message = null)
+        {
+            return TestExpression.Get()
+                + Environment.NewLine + "should not be <" + notExpected + '>'
+                + Environment.NewLine + "but was       <" + actual + '>'
+                + MessageOnNewLine(message);
+        }
+
         public string NotSame(object expected, object actual, string message = null)
         {
             return TestExpression.Get()
@@ -124,70 +196,6 @@ namespace EasyAssertions
             return "Expected to contain: \"" + expectedSubstring + '"' + Environment.NewLine
                 + ActualText + actual
                 + MessageOnNewLine(message);
-        }
-
-        public string NotEqual(object expected, object actual, string message = null)
-        {
-            return TestExpression.Get()
-                + Environment.NewLine + ExpectedText + '<' + expected + '>'
-                + Environment.NewLine + ActualText + '<' + actual + '>'
-                + MessageOnNewLine(message);
-        }
-
-        public string NotEqual(string expected, string actual, string message = null)
-        {
-            int differenceIndex = Enumerable.Range(0, expected.Length)
-                .First(i => actual[i] != expected[i]);
-
-            const int maxStringWidth = 60;
-            const int maxArrowIndex = 20;
-
-            int from = Math.Max(0, differenceIndex - maxArrowIndex);
-
-            string expectedSnippet = GetSnippet(expected, from, maxStringWidth);
-            string actualSnippet = GetSnippet(actual, from, maxStringWidth);
-
-            int arrowIndex = differenceIndex - from;
-            arrowIndex += actualSnippet.Substring(0, arrowIndex).Count(c => Escapes.ContainsKey(c));
-            string arrow = new string(' ', arrowIndex) + '^';
-
-            return TestExpression.Get() + Environment.NewLine
-                + ExpectedText + '"' + Escape(expectedSnippet) + '"' + Environment.NewLine
-                + ActualText + '"' + Escape(actualSnippet) + '"' + Environment.NewLine
-                + ArrowPrefix + arrow + Environment.NewLine
-                + "Difference at index " + differenceIndex + '.'
-                + MessageOnNewLine(message);
-        }
-
-        private static string GetSnippet(string wholeString, int fromIndex, int maxLength)
-        {
-            int snippetLength = maxLength;
-            string prefix = string.Empty;
-            string suffix = string.Empty;
-
-            if (fromIndex > 0)
-            {
-                prefix = Ellipses;
-                snippetLength -= prefix.Length;
-                fromIndex += prefix.Length;
-            }
-
-            if (fromIndex + snippetLength >= wholeString.Length)
-            {
-                snippetLength = wholeString.Length - fromIndex;
-            }
-            else
-            {
-                suffix = Ellipses;
-                snippetLength -= suffix.Length;
-            }
-
-            return prefix + wholeString.Substring(fromIndex, snippetLength) + suffix;
-        }
-
-        private static string Escape(string value)
-        {
-            return Escapes.Aggregate(value, (s, escape) => s.Replace(escape.Key.ToString(CultureInfo.InvariantCulture), escape.Value));
         }
 
         public string NoException(Type expectedExceptionType, Expression<Action> function, string message = null)

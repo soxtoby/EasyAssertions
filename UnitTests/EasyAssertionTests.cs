@@ -64,6 +64,34 @@ namespace EasyAssertions.UnitTests
         }
 
         [Test]
+        public void ShouldNotBe_DifferentValue_Passes()
+        {
+            new Equatable(1).ShouldNotBe(new Equatable(2));
+        }
+
+        [Test]
+        public void ShouldNotBe_ReturnsActualValue()
+        {
+            Equatable actual = new Equatable(1);
+
+            Actual<Equatable> result = actual.ShouldNotBe(new Equatable(2));
+
+            Assert.AreSame(actual, result.Value);
+        }
+
+        [Test]
+        public void ShouldNotBe_EqualValue_FailsWithObjectsEqualMessage()
+        {
+            Equatable actual = new Equatable(1);
+            Equatable notExpected = new Equatable(1);
+            mockFormatter.AreEqual(notExpected, actual, "foo").Returns("bar");
+
+            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldNotBe(notExpected, "foo"));
+
+            Assert.AreEqual("bar", result.Message);
+        }
+
+        [Test]
         public void ShouldBeThis_SameObject_Passes()
         {
             object obj = new object();

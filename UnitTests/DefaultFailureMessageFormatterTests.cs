@@ -106,6 +106,24 @@ namespace EasyAssertions.UnitTests
         }
 
         [Test]
+        public void AreEqual_ObjectsToStringed()
+        {
+            string result = DefaultFailureMessageFormatter.Instance.AreEqual(new FakeObject("foo"), new FakeObject("bar"));
+
+            Assert.AreEqual(TestExpression + Environment.NewLine
+                + "should not be <foo>" + Environment.NewLine
+                + "but was       <bar>", result);
+        }
+
+        [Test]
+        public void AreEqual_IncludesMessage()
+        {
+            string result = DefaultFailureMessageFormatter.Instance.AreEqual(null, null, "foo");
+
+            StringAssert.EndsWith(Environment.NewLine + "foo", result);
+        }
+
+        [Test]
         public void NotSame_ObjectsToStringed()
         {
             FakeObject expected = new FakeObject("foo");

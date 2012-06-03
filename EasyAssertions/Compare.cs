@@ -41,6 +41,14 @@ namespace EasyAssertions
             return ObjectsAreEqual(actual, expected);
         }
 
+        public static bool IsEmpty<TActual>(TActual actual) where TActual : IEnumerable
+        {
+            IEnumerator enumerator = actual.GetEnumerator();
+            bool empty = !enumerator.MoveNext();
+            Dispose(enumerator);
+            return empty;
+        }
+
         private static void Dispose(object obj)
         {
             IDisposable disposable = obj as IDisposable;

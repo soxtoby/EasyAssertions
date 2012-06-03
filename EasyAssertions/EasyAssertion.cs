@@ -59,7 +59,7 @@ namespace EasyAssertions
         {
             SourceExpressionProvider.Instance.RegisterAssertionMethod();
 
-            if (!IsEmpty(actual))
+            if (!Compare.IsEmpty(actual))
                 throw new EasyAssertionException(FailureMessageFormatter.Current.NotEmpty(actual, message));
 
             return new Actual<TActual>(actual);
@@ -69,25 +69,10 @@ namespace EasyAssertions
         {
             SourceExpressionProvider.Instance.RegisterAssertionMethod();
 
-            if (IsEmpty(actual))
+            if (Compare.IsEmpty(actual))
                 throw new EasyAssertionException(FailureMessageFormatter.Current.IsEmpty(message));
 
             return new Actual<TActual>(actual);
-        }
-
-        private static bool IsEmpty<TActual>(TActual actual) where TActual : IEnumerable
-        {
-            IEnumerator enumerator = actual.GetEnumerator();
-            bool empty = !enumerator.MoveNext();
-            Dispose(enumerator);
-            return empty;
-        }
-
-        private static void Dispose(IEnumerator enumerator)
-        {
-            IDisposable disposable = enumerator as IDisposable;
-            if (disposable != null)
-                disposable.Dispose();
         }
 
         public static Actual<IEnumerable<TActual>> ShouldMatch<TActual, TExpected>(this IEnumerable<TActual> actual, IEnumerable<TExpected> expected, string message = null) where TExpected : TActual

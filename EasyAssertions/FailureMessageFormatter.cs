@@ -28,6 +28,7 @@ namespace EasyAssertions
         string NotEqual(object expected, object actual, string message = null);
         string NotEqual(string expected, string actual, string message = null);
         string AreEqual(object notExpected, object actual, string message = null);
+        string IsNull(string message = null);
         string NotSame(object expected, object actual, string message = null);
         string AreSame(object actual, string message = null);
         string DoNotMatch(IEnumerable expected, IEnumerable actual, string message = null);

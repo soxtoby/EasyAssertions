@@ -124,6 +124,23 @@ namespace EasyAssertions.UnitTests
         }
 
         [Test]
+        public void IsNull()
+        {
+            string result = DefaultFailureMessageFormatter.Instance.IsNull();
+
+            Assert.AreEqual(TestExpression + Environment.NewLine
+                + "should not be null, but was.", result);
+        }
+
+        [Test]
+        public void IsNull_IncludesMessage()
+        {
+            string result = DefaultFailureMessageFormatter.Instance.IsNull("foo");
+
+            StringAssert.EndsWith(Environment.NewLine + "foo", result);
+        }
+
+        [Test]
         public void NotSame_ObjectsToStringed()
         {
             FakeObject expected = new FakeObject("foo");

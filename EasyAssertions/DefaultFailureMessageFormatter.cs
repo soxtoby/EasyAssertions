@@ -64,6 +64,13 @@ namespace EasyAssertions
                 + MessageOnNewLine(message);
         }
 
+        public string IsNull(string message = null)
+        {
+            return TestExpression.Get()
+                 + Environment.NewLine + "should not be null, but was."
+                 + MessageOnNewLine(message);
+        }
+
         public string NotSame(object expected, object actual, string message = null)
         {
             return TestExpression.Get()

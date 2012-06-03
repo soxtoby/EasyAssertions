@@ -35,6 +35,24 @@ namespace EasyAssertions
             return new Actual<TActual>(actual);
         }
 
+        public static void ShouldBeNull<TActual>(this TActual actual, string message = null)
+        {
+            SourceExpressionProvider.Instance.RegisterAssertionMethod();
+
+            if (!Equals(actual, null))
+                throw new EasyAssertionException(FailureMessageFormatter.Current.NotEqual(null, actual, message));
+        }
+
+        public static Actual<TActual> ShouldNotBeNull<TActual>(this TActual actual, string message = null)
+        {
+            SourceExpressionProvider.Instance.RegisterAssertionMethod();
+
+            if (Equals(actual, null))
+                throw new EasyAssertionException(FailureMessageFormatter.Current.IsNull(message));
+
+            return new Actual<TActual>(actual);
+        }
+
         public static Actual<TActual> ShouldBeThis<TActual, TExpected>(this TActual actual, TExpected expected, string message = null) where TExpected : TActual
         {
             SourceExpressionProvider.Instance.RegisterAssertionMethod();

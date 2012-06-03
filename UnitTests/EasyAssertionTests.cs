@@ -92,6 +92,49 @@ namespace EasyAssertions.UnitTests
         }
 
         [Test]
+        public void ShouldBeNull_IsNull_Passes()
+        {
+            ((object)null).ShouldBeNull();
+        }
+
+        [Test]
+        public void ShouldBeNull_NotNull_FailsWithNotEqualToNullMessage()
+        {
+            object actual = new object();
+            mockFormatter.NotEqual(null, actual, "foo").Returns("bar");
+
+            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldBeNull("foo"));
+
+            Assert.AreEqual("bar", result.Message);
+        }
+
+        [Test]
+        public void ShouldNotBeNull_NotNull_Passes()
+        {
+            new object().ShouldNotBeNull();
+        }
+
+        [Test]
+        public void ShouldNotBeNull_ReturnsActualValue()
+        {
+            object actual = new object();
+
+            Actual<object> result = actual.ShouldNotBeNull();
+
+            Assert.AreSame(actual, result.And);
+        }
+
+        [Test]
+        public void ShouldNotBeNull_IsNull_FailsWithIsNullMessage()
+        {
+            mockFormatter.IsNull("foo").Returns("bar");
+
+            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => ((object)null).ShouldNotBeNull("foo"));
+
+            Assert.AreEqual("bar", result.Message);
+        }
+
+        [Test]
         public void ShouldBeThis_SameObject_Passes()
         {
             object obj = new object();

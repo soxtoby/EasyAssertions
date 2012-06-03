@@ -286,6 +286,64 @@ namespace EasyAssertions.UnitTests
         }
 
         [Test]
+        public void DoesNotContain()
+        {
+            string result = DefaultFailureMessageFormatter.Instance.DoesNotContain("bar", "foo");
+
+            Assert.AreEqual(TestExpression + Environment.NewLine
+                + "should contain \"bar\"" + Environment.NewLine
+                + "but was        \"foo\"", result);
+        }
+
+        [Test]
+        public void DoesNotContains_ActualIsLong_EndOfActualClipped()
+        {
+            string result = DefaultFailureMessageFormatter.Instance.DoesNotContain("foo",
+                "0123456789abcdefghijklmnopqrstuvwxyz0123456789abcdefghijklmnopqrstuvwxyz");
+
+            Assert.AreEqual(TestExpression + Environment.NewLine
+                + "should contain \"foo\"" + Environment.NewLine
+                + "but was        \"0123456789abcdefghijklmnopqrstuvwxyz0123456789abcdefghijk...\"", result);
+        }
+
+        [Test]
+        public void DoesNotContain_IncludesMessage()
+        {
+            string result = DefaultFailureMessageFormatter.Instance.DoesNotContain(string.Empty, string.Empty, "foo");
+
+            StringAssert.EndsWith(Environment.NewLine + "foo", result);
+        }
+
+        [Test]
+        public void DoesNotEndWith()
+        {
+            string result = DefaultFailureMessageFormatter.Instance.DoesNotEndWith("foo", "bar");
+
+            Assert.AreEqual(TestExpression + Environment.NewLine
+                + "should end with \"foo\"" + Environment.NewLine
+                + "but ends with   \"bar\"", result);
+        }
+
+        [Test]
+        public void DoesNotEndWith_ActualIsLong_StartOfActualClipped()
+        {
+            string result = DefaultFailureMessageFormatter.Instance.DoesNotEndWith("foo",
+                "0123456789abcdefghijklmnopqrstuvwxyz0123456789abcdefghijklmnopqrstuvwxyz");
+
+            Assert.AreEqual(TestExpression + Environment.NewLine
+                + "should end with \"foo\"" + Environment.NewLine
+                + "but ends with   \"...fghijklmnopqrstuvwxyz0123456789abcdefghijklmnopqrstuvwxyz\"", result);
+        }
+
+        [Test]
+        public void DoesNotEndWith_IncludesMessage()
+        {
+            string result = DefaultFailureMessageFormatter.Instance.DoesNotEndWith(string.Empty, string.Empty, "foo");
+
+            StringAssert.EndsWith(Environment.NewLine + "foo", result);
+        }
+
+        [Test]
         public void NoException_SimpleFunction()
         {
             string result = DefaultFailureMessageFormatter.Instance.NoException(typeof(InvalidOperationException), () => "".Trim());

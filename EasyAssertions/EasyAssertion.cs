@@ -123,6 +123,16 @@ namespace EasyAssertions
             return new Actual<string>(actual);
         }
 
+        public static Actual<string> ShouldEndWith(this string actual, string expectedEnd, string message = null)
+        {
+            SourceExpressionProvider.Instance.RegisterAssertionMethod();
+
+            if (!actual.EndsWith(expectedEnd))
+                throw new EasyAssertionException(FailureMessageFormatter.Current.DoesNotEndWith(expectedEnd, actual, message));
+
+            return new Actual<string>(actual);
+        }
+
         public static Actual<TActual> And<TActual>(this Actual<TActual> actual, Action<TActual> assert)
         {
             SourceExpressionProvider.Instance.RegisterAssertionMethod();

@@ -332,6 +332,33 @@ namespace EasyAssertions.UnitTests
         }
 
         [Test]
+        public void ShouldEndWith_StringEndWithExpected_Passes()
+        {
+            "foobar".ShouldEndWith("bar");
+        }
+
+        [Test]
+        public void ShouldEndWith_ReturnsActualValue()
+        {
+            string actual = "foobar";
+            Actual<string> result = actual.ShouldEndWith("bar");
+
+            Assert.AreSame(actual, result.Value);
+        }
+
+        [Test]
+        public void ShouldEndWith_StringDoesNotEndWithExpected_FailsWithStringDoesNotEndWithMessage()
+        {
+            string actual = "foobar";
+            string expectedEnd = "foo";
+            mockFormatter.DoesNotEndWith(expectedEnd, actual, "bar").Returns("baz");
+
+            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldEndWith(expectedEnd, "bar"));
+
+            Assert.AreEqual("baz", result.Message);
+        }
+
+        [Test]
         public void ShouldThrow_Throws_Passes()
         {
             ExceptionThrower thrower = new ExceptionThrower(new Exception());

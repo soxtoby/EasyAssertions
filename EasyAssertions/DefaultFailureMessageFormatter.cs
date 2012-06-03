@@ -18,6 +18,8 @@ namespace EasyAssertions
         private const string ActualExceptionText = "but threw    ";
         private const string ArrowPrefix = "           ";
         private const string Ellipses = "...";
+        private const int MaxStringWidth = 60;
+        private const int MaxArrowIndex = 20;
         private static readonly string EnumerableEllipses = Environment.NewLine + "    " + Ellipses;
 
         private DefaultFailureMessageFormatter() { }
@@ -37,13 +39,10 @@ namespace EasyAssertions
             int differenceIndex = Enumerable.Range(0, expected.Length)
                 .First(i => actual[i] != expected[i]);
 
-            const int maxStringWidth = 60;
-            const int maxArrowIndex = 20;
+            int from = Math.Max(0, differenceIndex - MaxArrowIndex);
 
-            int from = Math.Max(0, differenceIndex - maxArrowIndex);
-
-            string expectedSnippet = GetSnippet(expected, from, maxStringWidth);
-            string actualSnippet = GetSnippet(actual, from, maxStringWidth);
+            string expectedSnippet = GetSnippet(expected, from, MaxStringWidth);
+            string actualSnippet = GetSnippet(actual, from, MaxStringWidth);
 
             int arrowIndex = differenceIndex - from;
             arrowIndex += actualSnippet.Substring(0, arrowIndex).Count(c => Escapes.ContainsKey(c));
@@ -55,37 +54,6 @@ namespace EasyAssertions
                 + ArrowPrefix + arrow + Environment.NewLine
                 + "Difference at index " + differenceIndex + '.'
                 + MessageOnNewLine(message);
-        }
-
-        private static string GetSnippet(string wholeString, int fromIndex, int maxLength)
-        {
-            int snippetLength = maxLength;
-            string prefix = string.Empty;
-            string suffix = string.Empty;
-
-            if (fromIndex > 0)
-            {
-                prefix = Ellipses;
-                snippetLength -= prefix.Length;
-                fromIndex += prefix.Length;
-            }
-
-            if (fromIndex + snippetLength >= wholeString.Length)
-            {
-                snippetLength = wholeString.Length - fromIndex;
-            }
-            else
-            {
-                suffix = Ellipses;
-                snippetLength -= suffix.Length;
-            }
-
-            return prefix + wholeString.Substring(fromIndex, snippetLength) + suffix;
-        }
-
-        private static string Escape(string value)
-        {
-            return Escapes.Aggregate(value, (s, escape) => s.Replace(escape.Key.ToString(CultureInfo.InvariantCulture), escape.Value));
         }
 
         public string AreEqual(object notExpected, object actual, string message = null)
@@ -191,13 +159,6 @@ namespace EasyAssertions
                 + MessageOnNewLine(message);
         }
 
-        public string DoesNotContain(string expectedSubstring, string actual, string message = null)
-        {
-            return "Expected to contain: \"" + expectedSubstring + '"' + Environment.NewLine
-                + ActualText + actual
-                + MessageOnNewLine(message);
-        }
-
         public string NoException(Type expectedExceptionType, Expression<Action> function, string message = null)
         {
             return CleanFunctionBody(function)
@@ -214,18 +175,69 @@ namespace EasyAssertions
                 + MessageOnNewLine(message);
         }
 
+        private static readonly Regex MemberPattern = new Regex(@"value\(.*?\)\.", RegexOptions.Compiled);
+
         private static string CleanFunctionBody(Expression<Action> function)
         {
             return MemberPattern.Replace(function.Body.ToString(), string.Empty);
         }
 
-        private static readonly Regex MemberPattern = new Regex(@"value\(.*?\)\.", RegexOptions.Compiled);
+        public string DoesNotContain(string expectedSubstring, string actual, string message = null)
+        {
+            string actualSnippet = GetSnippet(actual, 0, MaxStringWidth);
+
+            return TestExpression.Get() + Environment.NewLine
+                + "should contain \"" + Escape(expectedSubstring) + '"' + Environment.NewLine
+                + "but was        \"" + Escape(actualSnippet) + '"'
+                + MessageOnNewLine(message);
+        }
+
+        public string DoesNotEndWith(string expectedEnd, string actual, string message = null)
+        {
+            int from = Math.Max(0, actual.Length - MaxStringWidth);
+
+            return TestExpression.Get()
+                + Environment.NewLine + "should end with \"" + Escape(expectedEnd) + '"'
+                    + Environment.NewLine + "but ends with   \"" + Escape(GetSnippet(actual, @from, MaxStringWidth)) + '"'
+                        + MessageOnNewLine(message);
+        }
+
+        private static string GetSnippet(string wholeString, int fromIndex, int maxLength)
+        {
+            int snippetLength = maxLength;
+            string prefix = string.Empty;
+            string suffix = string.Empty;
+
+            if (fromIndex > 0)
+            {
+                prefix = Ellipses;
+                snippetLength -= prefix.Length;
+                fromIndex += prefix.Length;
+            }
+
+            if (fromIndex + snippetLength >= wholeString.Length)
+            {
+                snippetLength = wholeString.Length - fromIndex;
+            }
+            else
+            {
+                suffix = Ellipses;
+                snippetLength -= suffix.Length;
+            }
+
+            return prefix + wholeString.Substring(fromIndex, snippetLength) + suffix;
+        }
 
         private static readonly Dictionary<char, string> Escapes = new Dictionary<char, string>
             {
                 { '\r', "\\r" },
                 { '\n', "\\n" }
             };
+
+        private static string Escape(string value)
+        {
+            return Escapes.Aggregate(value, (s, escape) => s.Replace(escape.Key.ToString(CultureInfo.InvariantCulture), escape.Value));
+        }
 
         private static string MessageOnNewLine(string message)
         {

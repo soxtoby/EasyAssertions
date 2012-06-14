@@ -13,6 +13,11 @@ namespace EasyAssertions
 
         public static bool CollectionsMatch(IEnumerable actual, IEnumerable expected)
         {
+            return CollectionsMatch(actual, expected, ObjectsMatch);
+        }
+
+        public static bool CollectionsMatch(IEnumerable actual, IEnumerable expected, Func<object, object, bool> areEqual)
+        {
             IEnumerator actualEnumerator = actual.GetEnumerator();
             IEnumerator expectedEnumerator = expected.GetEnumerator();
 
@@ -20,7 +25,7 @@ namespace EasyAssertions
             {
                 if (!expectedEnumerator.MoveNext())
                     return false;
-                if (!ObjectsMatch(actualEnumerator.Current, expectedEnumerator.Current))
+                if (!areEqual(actualEnumerator.Current, expectedEnumerator.Current))
                     return false;
             }
             bool equal = !expectedEnumerator.MoveNext();

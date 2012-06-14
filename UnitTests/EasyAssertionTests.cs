@@ -272,6 +272,33 @@ namespace EasyAssertions.UnitTests
         }
 
         [Test]
+        public void ShouldMatchCustomEquality_MatchingEnumerable_Passes()
+        {
+            new[] { 1, 2, 3 }
+                .ShouldMatch(new[] { 2, 4, 6 }, (a, e) => a == e / 2);
+        }
+
+        [Test]
+        public void ShouldMatchCustomEquality_ReturnsActualValue()
+        {
+            IEnumerable<int> actual = Enumerable.Empty<int>();
+            Actual<IEnumerable<int>> result = actual.ShouldMatch(Enumerable.Empty<int>(), (a, e) => a == e);
+
+            Assert.AreSame(actual, result.And);
+        }
+
+        [Test]
+        public void ShouldMatchCustomEquality_NonMatchingEnumerables_FailsWithEnumerablesDoNotMatch()
+        {
+            int[] actual = new[] { 1, 2, 4 };
+            int[] expected = new[] { 2, 4, 6 };
+            mockFormatter.DoNotMatch(expected, actual, "foo").Returns("bar");
+            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldMatch(expected, (a, e) => a == e / 2, "foo"));
+
+            Assert.AreEqual("bar", result.Message);
+        }
+
+        [Test]
         public void ItemsSatisfy_ItemsSatisfyAssertions_Passes()
         {
             new[] { 1 }.ItemsSatisfy(i => { });

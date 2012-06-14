@@ -103,6 +103,16 @@ namespace EasyAssertions
             return new Actual<IEnumerable<TActual>>(actual);
         }
 
+        public static Actual<IEnumerable<TActual>> ShouldMatch<TActual, TExpected>(this IEnumerable<TActual> actual, IEnumerable<TExpected> expected, Func<TActual, TExpected, bool> predicate, string message = null)
+        {
+            SourceExpressionProvider.Instance.RegisterAssertionMethod();
+
+            if (!Compare.CollectionsMatch(actual, expected, (a, e) => predicate((TActual)a, (TExpected)e)))
+                throw new EasyAssertionException(FailureMessageFormatter.Current.DoNotMatch(expected, actual, message));
+
+            return new Actual<IEnumerable<TActual>>(actual);
+        }
+
         public static Actual<IEnumerable<TItem>> ItemsSatisfy<TItem>(this IEnumerable<TItem> actual, params Action<TItem>[] assertions)
         {
             SourceExpressionProvider.Instance.RegisterAssertionMethod();

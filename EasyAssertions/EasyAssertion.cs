@@ -131,6 +131,21 @@ namespace EasyAssertions
             return new Actual<IEnumerable<TItem>>(actual);
         }
 
+        public static Actual<IEnumerable<TItem>> AllItemsSatisfy<TItem>(this IEnumerable<TItem> actual, Action<TItem> assertion)
+        {
+            SourceExpressionProvider.Instance.RegisterAssertionMethod();
+
+            int i = 0;
+            foreach (TItem item in actual)
+            {
+                SourceExpressionProvider.Instance.EnterIndexedAssertion(assertion.Method, i++);
+                assertion(item);
+                SourceExpressionProvider.Instance.ExitNestedAssertion();
+            }
+
+            return new Actual<IEnumerable<TItem>>(actual);
+        }
+
         public static Actual<TExpected> ShouldBeA<TExpected>(this object actual, string message = null)
         {
             SourceExpressionProvider.Instance.RegisterAssertionMethod();

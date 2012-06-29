@@ -353,6 +353,36 @@ namespace EasyAssertions.UnitTests
         }
 
         [Test]
+        public void AllItemsSatisfy_AllItemsSatisfyAssertion_Passes()
+        {
+            new[] { 1, 2, 3 }.AllItemsSatisfy(i => { });
+        }
+
+        [Test]
+        public void AllItemsSatisfy_ReturnsActualValue()
+        {
+            int[] actual = new[] { 1 };
+
+            Actual<IEnumerable<int>> result = actual.AllItemsSatisfy(i => { });
+
+            Assert.AreSame(actual, result.And);
+        }
+
+        [Test]
+        public void AllItemsSatify_ItemsDoNotSatisfyAssertion_FailsWithThrownException()
+        {
+            int[] actual = new[] { 1, 2 };
+            Exception failure = new Exception("foo");
+
+            Exception result = Assert.Throws<Exception>(() => actual.AllItemsSatisfy(i =>
+                {
+                    if (i > 1) throw failure;
+                }));
+
+            Assert.AreSame(failure, result);
+        }
+
+        [Test]
         public void ShouldBeA_SubType_Passes()
         {
             object actual = new SubEquatable(1);

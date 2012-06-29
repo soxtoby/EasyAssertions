@@ -18,21 +18,21 @@ namespace EasyAssertions
             return currentGroup.GetExpression();
         }
 
-        public void RegisterAssertionMethod()
+        public void RegisterAssertionMethod(int testFrameIndex, int assertionFrameIndex)
         {
-            RegisterMethod((address, methodName) => new AssertionMethod(address, methodName));
+            RegisterMethod((address, methodName) => new AssertionMethod(address, methodName), testFrameIndex + 1, assertionFrameIndex + 1);
         }
 
-        public void RegisterContinuation()
+        public void RegisterContinuation(int testFrameIndex, int continuationFrameIndex)
         {
-            RegisterMethod((address, methodName) => new Continuation(address, methodName));
+            RegisterMethod((address, methodName) => new Continuation(address, methodName), testFrameIndex + 1, continuationFrameIndex + 1);
         }
 
-        private void RegisterMethod(Func<SourceAddress, string, AssertionComponent> createMethod)
+        private void RegisterMethod(Func<SourceAddress, string, AssertionComponent> createMethod, int testFrameIndex, int assertionFrameIndex)
         {
-            AssertionComponent component = BuildComponent(createMethod);
+            AssertionComponent component = BuildComponent(createMethod, testFrameIndex + 1, assertionFrameIndex + 1);
             PopOldFrames(component.SourceAddress);
-            EnsureCurrentFrame(component.SourceAddress);
+            EnsureCurrentFrame();
             AddToCurrentFrame(component);
         }
 
@@ -62,7 +62,7 @@ namespace EasyAssertions
             currentGroup = currentGroup.ParentGroup;
         }
 
-        private void EnsureCurrentFrame(SourceAddress sourceAddress)
+        private void EnsureCurrentFrame()
         {
             if (currentGroup == null)
                 currentGroup = new BaseGroup();
@@ -93,7 +93,7 @@ namespace EasyAssertions
             currentGroup = currentGroup.ParentGroup;
         }
 
-        private static TComponent BuildComponent<TComponent>(Func<SourceAddress, string, TComponent> createComponent) where TComponent : AssertionComponent
+        private static TComponent BuildComponent<TComponent>(Func<SourceAddress, string, TComponent> createComponent, int testFrameIndex, int assertionFrameIndex) where TComponent : AssertionComponent
         {
             StackTrace stack = new StackTrace(true);
             StackFrame[] frames = stack.GetFrames();
@@ -101,9 +101,8 @@ namespace EasyAssertions
             if (frames == null)
                 throw new Exception("Couldn't get stack trace.");
 
-            int testFrameIndex = frames.IndexOf(f => f.GetMethod().DeclaringType.Namespace != "EasyAssertions"); // FIXME use attribute
-            StackFrame testFrame = frames[testFrameIndex];
-            StackFrame assertionFrame = frames[testFrameIndex - 1];
+            StackFrame testFrame = frames[testFrameIndex + 1];
+            StackFrame assertionFrame = frames[assertionFrameIndex + 1];
 
             SourceAddress componentAddress = new SourceAddress
                 {

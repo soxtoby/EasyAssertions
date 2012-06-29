@@ -47,7 +47,7 @@ namespace EasyAssertions.UnitTests
             TestClass expectedExpression = new TestClass(12);
             EasyAssertionException result = Assert.Throws<EasyAssertionException>(() =>
                 expectedExpression.ShouldBeA<TestClass>()
-             .And.Value.ShouldBe(2));
+                    .And.Value.ShouldBe(2));
 
             Assert.AreEqual("expectedExpression.Value" + Environment.NewLine
                 + "should be <2>" + Environment.NewLine

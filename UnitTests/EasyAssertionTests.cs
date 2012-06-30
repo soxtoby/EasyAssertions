@@ -26,13 +26,7 @@ namespace EasyAssertions.UnitTests
         }
 
         [Test]
-        public void ShouldBe_SameValue_Passes()
-        {
-            1.ShouldBe(1);
-        }
-
-        [Test]
-        public void ShouldBe_ReturnsActualValue()
+        public void ShouldBe_SameValueReturnsActualValue()
         {
             Equatable actual = new Equatable(1);
             Equatable expected = new Equatable(1);
@@ -64,13 +58,7 @@ namespace EasyAssertions.UnitTests
         }
 
         [Test]
-        public void ShouldBe_FloatsWithinDelta_Passes()
-        {
-            10f.ShouldBe(9f, 1f);
-        }
-
-        [Test]
-        public void ShouldBe_Floats_ReturnsActualValue()
+        public void ShouldBe_FloatsWithinDelta_ReturnsActualValue()
         {
             const float actual = 1f;
             Actual<float> result = actual.ShouldBe(1f, 1f);
@@ -91,13 +79,7 @@ namespace EasyAssertions.UnitTests
         }
 
         [Test]
-        public void ShouldBe_DoublesWithinDelta_Passes()
-        {
-            10d.ShouldBe(9d, 1d);
-        }
-
-        [Test]
-        public void ShouldBe_Doubles_ReturnsActualValue()
+        public void ShouldBe_DoublesWithinDelta_ReturnsActualValue()
         {
             const double actual = 1d;
 
@@ -119,13 +101,7 @@ namespace EasyAssertions.UnitTests
         }
 
         [Test]
-        public void ShouldNotBe_DifferentValue_Passes()
-        {
-            new Equatable(1).ShouldNotBe(new Equatable(2));
-        }
-
-        [Test]
-        public void ShouldNotBe_ReturnsActualValue()
+        public void ShouldNotBe_DifferentValue_ReturnsActualValue()
         {
             Equatable actual = new Equatable(1);
 
@@ -147,13 +123,7 @@ namespace EasyAssertions.UnitTests
         }
 
         [Test]
-        public void ShouldNotBe_FloatsOutsideDelta_Passes()
-        {
-            1f.ShouldNotBe(2f, 0);
-        }
-
-        [Test]
-        public void ShouldNotBe_Floats_ReturnsActualValue()
+        public void ShouldNotBe_FloatsOutsideDelta_ReturnsActualValue()
         {
             const float actual = 1f;
             Actual<float> result = actual.ShouldNotBe(2f, 0);
@@ -174,13 +144,17 @@ namespace EasyAssertions.UnitTests
         }
 
         [Test]
-        public void ShouldNotBe_DoublesOutsideDelta_Passes()
+        public void ShouldNotBe_DoublesOutsideDelta_ReturnsActualValue()
         {
-            1d.ShouldNotBe(2d, 0);
+            const double actual = 1d;
+
+            Actual<double> result = actual.ShouldNotBe(2d, 0);
+
+            Assert.AreEqual(actual, result.And);
         }
 
         [Test]
-        public void ShouldNotBe_Doubles_FailsWithObjectsEqualMessage()
+        public void ShouldNotBe_DoublesWithinDelta_FailsWithObjectsEqualMessage()
         {
             const double actual = 1d;
             const double notExpected = 2d;
@@ -209,13 +183,7 @@ namespace EasyAssertions.UnitTests
         }
 
         [Test]
-        public void ShouldNotBeNull_NotNull_Passes()
-        {
-            new object().ShouldNotBeNull();
-        }
-
-        [Test]
-        public void ShouldNotBeNull_ReturnsActualValue()
+        public void ShouldNotBeNull_NotNull_ReturnsActualValue()
         {
             object actual = new object();
 
@@ -235,14 +203,7 @@ namespace EasyAssertions.UnitTests
         }
 
         [Test]
-        public void ShouldBeThis_SameObject_Passes()
-        {
-            object obj = new object();
-            obj.ShouldBeThis(obj);
-        }
-
-        [Test]
-        public void ShouldBeThis_ReturnsActualValue()
+        public void ShouldBeThis_SameObject_ReturnsActualValue()
         {
             object obj = new object();
             Actual<object> result = obj.ShouldBeThis(obj);
@@ -263,13 +224,7 @@ namespace EasyAssertions.UnitTests
         }
 
         [Test]
-        public void ShouldNotBeThis_DifferentObject_Passes()
-        {
-            new object().ShouldNotBeThis(new object());
-        }
-
-        [Test]
-        public void ShouldNotBeThis_ReturnsActualValue()
+        public void ShouldNotBeThis_DifferentObject_ReturnsActualValue()
         {
             object actual = new object();
 
@@ -290,13 +245,7 @@ namespace EasyAssertions.UnitTests
         }
 
         [Test]
-        public void ShouldBeEmpty_IsEmpty_Passes()
-        {
-            Enumerable.Empty<object>().ShouldBeEmpty();
-        }
-
-        [Test]
-        public void ShouldBeEmpty_ReturnsActualValue()
+        public void ShouldBeEmpty_IsEmpty_ReturnsActualValue()
         {
             IEnumerable<object> actual = Enumerable.Empty<object>();
 
@@ -317,13 +266,7 @@ namespace EasyAssertions.UnitTests
         }
 
         [Test]
-        public void ShouldNotBeEmpty_NotEmpty_Passes()
-        {
-            new[] { 1 }.ShouldNotBeEmpty();
-        }
-
-        [Test]
-        public void ShouldNotBeEmpty_ReturnsActualValue()
+        public void ShouldNotBeEmpty_NotEmpty_ReturnsActualValue()
         {
             int[] actual = new[] { 1 };
 
@@ -344,13 +287,7 @@ namespace EasyAssertions.UnitTests
         }
 
         [Test]
-        public void ShouldMatch_MatchingEnumerable_Passes()
-        {
-            new[] { 1, 2, 3 }.ShouldMatch(new[] { 1, 2, 3 });
-        }
-
-        [Test]
-        public void ShouldMatch_ReturnsActualValue()
+        public void ShouldMatch_MatchingEnumerable_ReturnsActualValue()
         {
             int[] actual = new[] { 1, 2 };
             int[] expected = new[] { 1, 2 };
@@ -372,17 +309,10 @@ namespace EasyAssertions.UnitTests
         }
 
         [Test]
-        public void ShouldMatchCustomEquality_MatchingEnumerable_Passes()
+        public void ShouldMatchCustomEquality_MatchingEnumerable_ReturnsActualValue()
         {
-            new[] { 1, 2, 3 }
-                .ShouldMatch(new[] { 2, 4, 6 }, (a, e) => a == e / 2);
-        }
-
-        [Test]
-        public void ShouldMatchCustomEquality_ReturnsActualValue()
-        {
-            IEnumerable<int> actual = Enumerable.Empty<int>();
-            Actual<IEnumerable<int>> result = actual.ShouldMatch(Enumerable.Empty<int>(), (a, e) => a == e);
+            IEnumerable<int> actual = new[] { 1, 2 };
+            Actual<IEnumerable<int>> result = actual.ShouldMatch(new[] { 1, 2 }, (a, e) => a == e);
 
             Assert.AreSame(actual, result.And);
         }
@@ -399,13 +329,7 @@ namespace EasyAssertions.UnitTests
         }
 
         [Test]
-        public void ItemsSatisfy_ItemsSatisfyAssertions_Passes()
-        {
-            new[] { 1 }.ItemsSatisfy(i => { });
-        }
-
-        [Test]
-        public void ItemsSatisfy_ReturnsActualValue()
+        public void ItemsSatisfy_ItemsSatisfyAssertions_ReturnsActualValue()
         {
             int[] actual = new[] { 1 };
 
@@ -453,13 +377,7 @@ namespace EasyAssertions.UnitTests
         }
 
         [Test]
-        public void AllItemsSatisfy_AllItemsSatisfyAssertion_Passes()
-        {
-            new[] { 1, 2, 3 }.AllItemsSatisfy(i => { });
-        }
-
-        [Test]
-        public void AllItemsSatisfy_ReturnsActualValue()
+        public void AllItemsSatisfy_AllItemsSatisfyAssertion_ReturnsActualValue()
         {
             int[] actual = new[] { 1 };
 
@@ -483,16 +401,9 @@ namespace EasyAssertions.UnitTests
         }
 
         [Test]
-        public void ShouldBeA_SubType_Passes()
+        public void ShouldBeA_SubType_ReturnsTypedActual()
         {
             object actual = new SubEquatable(1);
-            actual.ShouldBeA<Equatable>();
-        }
-
-        [Test]
-        public void ShouldBeA_ReturnsTypedActual()
-        {
-            object actual = new Equatable(1);
             Actual<Equatable> result = actual.ShouldBeA<Equatable>();
 
             Assert.AreSame(actual, result.And);
@@ -510,13 +421,7 @@ namespace EasyAssertions.UnitTests
         }
 
         [Test]
-        public void ShouldContain_StringDoesContainsSubstring_Passes()
-        {
-            "1234".ShouldContain("23");
-        }
-
-        [Test]
-        public void ShouldContain_ReturnsActualValue()
+        public void ShouldContain_StringContainsSubstring_ReturnsActualValue()
         {
             Actual<string> result = "foo".ShouldContain("oo");
             Assert.AreEqual("foo", result.And);
@@ -532,13 +437,7 @@ namespace EasyAssertions.UnitTests
         }
 
         [Test]
-        public void ShouldEndWith_StringEndWithExpected_Passes()
-        {
-            "foobar".ShouldEndWith("bar");
-        }
-
-        [Test]
-        public void ShouldEndWith_ReturnsActualValue()
+        public void ShouldEndWith_StringEndsWithExpected_ReturnsActualValue()
         {
             string actual = "foobar";
             Actual<string> result = actual.ShouldEndWith("bar");
@@ -556,13 +455,6 @@ namespace EasyAssertions.UnitTests
             EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldEndWith(expectedEnd, "bar"));
 
             Assert.AreEqual("baz", result.Message);
-        }
-
-        [Test]
-        public void ShouldThrow_Throws_Passes()
-        {
-            ExceptionThrower thrower = new ExceptionThrower(new Exception());
-            Should.Throw<Exception>(() => thrower.Throw());
         }
 
         [Test]

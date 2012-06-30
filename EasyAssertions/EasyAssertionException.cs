@@ -4,10 +4,6 @@ namespace EasyAssertions
 {
     public class EasyAssertionException : Exception
     {
-        public EasyAssertionException()
-        {
-        }
-
         public override string ToString()
         {
             return Message + Environment.NewLine + Environment.NewLine + StackTrace;

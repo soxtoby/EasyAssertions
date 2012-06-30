@@ -11,6 +11,8 @@ namespace EasyAssertions
 
         public static readonly SourceExpressionProvider Instance = new SourceExpressionProvider();
 
+        static SourceExpressionProvider() { }
+
         private SourceExpressionProvider() { }
 
         public string GetExpression()
@@ -97,9 +99,6 @@ namespace EasyAssertions
         {
             StackTrace stack = new StackTrace(true);
             StackFrame[] frames = stack.GetFrames();
-
-            if (frames == null)
-                throw new Exception("Couldn't get stack trace.");
 
             StackFrame testFrame = frames[testFrameIndex + 1];
             StackFrame assertionFrame = frames[assertionFrameIndex + 1];

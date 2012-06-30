@@ -140,12 +140,7 @@ namespace EasyAssertions.UnitTests
             {
                 TestClass other = obj as TestClass;
                 return other != null
-             && other.Value == Value;
-            }
-
-            public override int GetHashCode()
-            {
-                return Value;
+                    && other.Value == Value;
             }
 
             public override string ToString()

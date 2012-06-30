@@ -373,6 +373,31 @@ namespace EasyAssertions.UnitTests
         }
 
         [Test]
+        public void ShouldBeThese_SameItems_ReturnsActualValue()
+        {
+            object a = new object();
+            object b = new object();
+            object[] actual = new[] { a, b };
+
+            Actual<IEnumerable<object>> result = actual.ShouldBeThese(new[] { a, b });
+
+            Assert.AreSame(actual, result.And);
+        }
+
+        [Test]
+        public void ShouldBeThese_DifferentItems_FailsWithEnumerablesNotSameMessage()
+        {
+            object a = new object();
+            object[] actual = new[] { a, new object() };
+            object[] expected = new[] { a, new object() };
+            mockFormatter.ItemsNotSame(expected, actual, "foo").Returns("bar");
+
+            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldBeThese(expected, "foo"));
+
+            Assert.AreSame("bar", result.Message);
+        }
+
+        [Test]
         public void ItemsSatisfy_ItemsSatisfyAssertions_ReturnsActualValue()
         {
             int[] actual = new[] { 1 };

@@ -178,6 +178,17 @@ namespace EasyAssertions
             return new Actual<IEnumerable<TActual>>(actual);
         }
 
+        public static Actual<IEnumerable<TActual>> ShouldBeThese<TActual, TExpected>(this IEnumerable<TActual> actual, IEnumerable<TExpected> expected, string message = null)
+        {
+            Assert(() =>
+                {
+                    if (!Compare.CollectionsMatch(actual, expected, ReferenceEquals))
+                        throw new EasyAssertionException(FailureMessageFormatter.Current.ItemsNotSame(expected, actual, message));
+                });
+
+            return new Actual<IEnumerable<TActual>>(actual);
+        }
+
         public static Actual<IEnumerable<TItem>> ItemsSatisfy<TItem>(this IEnumerable<TItem> actual, params Action<TItem>[] assertions)
         {
             Assert(() =>

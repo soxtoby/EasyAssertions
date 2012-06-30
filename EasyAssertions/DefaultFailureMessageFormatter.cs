@@ -152,18 +152,37 @@ namespace EasyAssertions
 
         public string DoNotMatch(IEnumerable expected, IEnumerable actual, string message = null)
         {
-            List<object> expectedList = expected.Cast<object>().ToList();
-            List<object> actualList = actual.Cast<object>().ToList();
-            int differenceIndex = Enumerable.Range(0, expectedList.Count)
-                .First(i => !Compare.ObjectsAreEqual(actualList[i], expectedList[i]));
-
-            object expectedValue = expectedList[differenceIndex];
-            object actualValue = actualList[differenceIndex];
+            object expectedValue, actualValue;
+            int differenceIndex = FindDifference(expected, actual, Compare.ObjectsAreEqual, out expectedValue, out actualValue);
 
             return TestExpression.Get() + " differs at index " + differenceIndex + '.'
                 + Environment.NewLine + ExpectedText + '<' + expectedValue + '>'
                 + Environment.NewLine + ActualText + '<' + actualValue + '>'
                 + MessageOnNewLine(message);
+        }
+
+        public string ItemsNotSame(IEnumerable expected, IEnumerable actual, string message = null)
+        {
+            object expectedValue, actualValue;
+            int differenceIndex = FindDifference(expected, actual, ReferenceEquals, out expectedValue, out actualValue);
+
+            return TestExpression.Get() + " differs at index " + differenceIndex + '.'
+                + Environment.NewLine + ExpectedInstanceText + '<' + expectedValue + '>'
+                + Environment.NewLine + ActualInstanceText + '<' + actualValue + '>'
+                + MessageOnNewLine(message);
+        }
+
+        private static int FindDifference(IEnumerable expected, IEnumerable actual, Func<object, object, bool> areEqual, out object expectedValue, out object actualValue)
+        {
+            List<object> expectedList = expected.Cast<object>().ToList();
+            List<object> actualList = actual.Cast<object>().ToList();
+
+            int differenceIndex = Enumerable.Range(0, expectedList.Count)
+                .First(i => !areEqual(actualList[i], expectedList[i]));
+
+            expectedValue = expectedList[differenceIndex];
+            actualValue = actualList[differenceIndex];
+            return differenceIndex;
         }
 
         public string NoException(Type expectedExceptionType, Expression<Action> function, string message = null)

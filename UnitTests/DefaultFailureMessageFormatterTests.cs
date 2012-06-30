@@ -102,6 +102,7 @@ namespace EasyAssertions.UnitTests
         public void NotEqual_Strings_IncludesMessage()
         {
             string result = DefaultFailureMessageFormatter.Instance.NotEqual("acd", "abc", "foo");
+
             StringAssert.EndsWith(Environment.NewLine + "foo", result);
         }
 
@@ -157,6 +158,7 @@ namespace EasyAssertions.UnitTests
         public void NotSame_IncludesMessage()
         {
             string result = DefaultFailureMessageFormatter.Instance.NotSame(new object(), new object(), "foo");
+
             StringAssert.EndsWith(Environment.NewLine + "foo", result);
         }
 
@@ -261,6 +263,27 @@ namespace EasyAssertions.UnitTests
         public void DoNotMatch_IncludesMessage()
         {
             string result = DefaultFailureMessageFormatter.Instance.DoNotMatch(new[] { 1 }, new[] { 2 }, "foo");
+
+            StringAssert.EndsWith(Environment.NewLine + "foo", result);
+        }
+
+        [Test]
+        public void ItemsNotSame_ToStringsItemsAtFirstDifference()
+        {
+            FakeObject same = new FakeObject("foo");
+
+            string result = DefaultFailureMessageFormatter.Instance.ItemsNotSame(new[] { same, new FakeObject("bar") }, new[] { same, new FakeObject("baz") });
+
+            Assert.AreEqual(TestExpression + " differs at index 1." + Environment.NewLine
+                + "should be instance <bar>" + Environment.NewLine
+                + "but was            <baz>", result);
+        }
+
+        [Test]
+        public void ItemsNotSame_IncludesMessage()
+        {
+            string result = DefaultFailureMessageFormatter.Instance.ItemsNotSame(new[] { new object() }, new[] { new object() }, "foo");
+
             StringAssert.EndsWith(Environment.NewLine + "foo", result);
         }
 
@@ -383,6 +406,7 @@ namespace EasyAssertions.UnitTests
         public void NoException_IncludesMessage()
         {
             string result = DefaultFailureMessageFormatter.Instance.NoException(typeof(InvalidOperationException), () => "".Trim(), "foo");
+
             StringAssert.EndsWith(Environment.NewLine + "foo", result);
         }
 
@@ -409,6 +433,7 @@ namespace EasyAssertions.UnitTests
         public void WrongException_IncludesMessage()
         {
             string result = DefaultFailureMessageFormatter.Instance.WrongException(typeof(InvalidOperationException), typeof(Exception), () => "".Trim(), "foo");
+
             StringAssert.EndsWith(Environment.NewLine + "foo", result);
         }
 

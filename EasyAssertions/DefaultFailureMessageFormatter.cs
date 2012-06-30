@@ -103,7 +103,7 @@ namespace EasyAssertions
                 + MessageOnNewLine(message);
         }
 
-        public string LengthMismatch(IEnumerable actual, int expectedLength, string message = null)
+        public string LengthMismatch(int expectedLength, IEnumerable actual, string message = null)
         {
             return TestExpression.Get()
                 + Environment.NewLine + "should have " + expectedLength + (expectedLength == 1 ? " element" : " elements")
@@ -123,7 +123,7 @@ namespace EasyAssertions
             else
                 message += " elements: ["
                     + SelectFirstFew(3, actualList, EnumerableElement, EnumerableEllipses).Join(",")
-                        + Environment.NewLine + "]";
+                    + Environment.NewLine + "]";
 
             return message;
         }

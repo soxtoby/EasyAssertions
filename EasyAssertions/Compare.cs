@@ -22,11 +22,6 @@ namespace EasyAssertions
             return Math.Abs(actual - notExpected) <= delta;
         }
 
-        public static bool CollectionsMatch(IEnumerable actual, IEnumerable expected)
-        {
-            return CollectionsMatch(actual, expected, ObjectsMatch);
-        }
-
         public static bool CollectionsMatch(IEnumerable actual, IEnumerable expected, Func<object, object, bool> areEqual)
         {
             IEnumerator actualEnumerator = actual.GetEnumerator();
@@ -47,12 +42,12 @@ namespace EasyAssertions
             return equal;
         }
 
-        private static bool ObjectsMatch(object actual, object expected)
+        public static bool ObjectsMatch(object actual, object expected)
         {
             IEnumerable actualEnumerable = actual as IEnumerable;
             IEnumerable expectedEnumerable = expected as IEnumerable;
             if (actualEnumerable != null && expectedEnumerable != null)
-                return CollectionsMatch(actualEnumerable, expectedEnumerable);
+                return CollectionsMatch(actualEnumerable, expectedEnumerable, ObjectsMatch);
 
             return ObjectsAreEqual(actual, expected);
         }

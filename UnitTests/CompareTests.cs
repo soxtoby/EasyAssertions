@@ -46,25 +46,25 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void CollectionsMatch_MatchingIEnumerables_AreEqual()
         {
-            Assert.IsTrue(Compare.CollectionsMatch(new[] { 1, 2, 3 }, new[] { 1, 2, 3 }));
+            Assert.IsTrue(Compare.CollectionsMatch(new[] { 1, 2, 3 }, new[] { 1, 2, 3 }, Compare.ObjectsMatch));
         }
 
         [Test]
         public void CollectionsMatch_NonMatchingIEnumerables_AreNotEqual()
         {
-            Assert.IsFalse(Compare.CollectionsMatch(new[] { 1, 2, 3 }, new[] { 1, 3, 2 }));
+            Assert.IsFalse(Compare.CollectionsMatch(new[] { 1, 2, 3 }, new[] { 1, 3, 2 }, Compare.ObjectsMatch));
         }
 
         [Test]
         public void CollectionsMatch_ActualIEnumerableLongerThanExpectedIEnumerable_AreNotEqual()
         {
-            Assert.IsFalse(Compare.CollectionsMatch(new[] { 1, 2, 3 }, new[] { 1, 2 }));
+            Assert.IsFalse(Compare.CollectionsMatch(new[] { 1, 2, 3 }, new[] { 1, 2 }, Compare.ObjectsMatch));
         }
 
         [Test]
         public void CollectionsMatch_ActualIEnumerableShorterThanExpectedIEnumerable_AreNotEqual()
         {
-            Assert.IsFalse(Compare.CollectionsMatch(new[] { 1, 2 }, new[] { 1, 2, 3 }));
+            Assert.IsFalse(Compare.CollectionsMatch(new[] { 1, 2 }, new[] { 1, 2, 3 }, Compare.ObjectsMatch));
         }
 
         [Test]
@@ -80,7 +80,7 @@ namespace EasyAssertions.UnitTests
                     new[] { 1, 2, 3 },
                     new[] { 4, 5, 6 }
                 };
-            Assert.IsTrue(Compare.CollectionsMatch(actual, expected));
+            Assert.IsTrue(Compare.CollectionsMatch(actual, expected, Compare.ObjectsMatch));
         }
 
         [Test]

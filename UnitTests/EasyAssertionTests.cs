@@ -318,6 +318,18 @@ namespace EasyAssertions.UnitTests
         }
 
         [Test]
+        public void ShouldMatchCustomEquality_DifferentLengths_FailsWithEnumerableLengthMismatchMessage()
+        {
+            int[] actual = new[] { 1, 2 };
+            int[] expected = new[] { 1, 2, 3 };
+            mockFormatter.LengthMismatch(3, actual, "foo").Returns("bar");
+
+            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldMatch(expected, (a, e) => a == e, "foo"));
+
+            Assert.AreEqual("bar", result.Message);
+        }
+
+        [Test]
         public void ShouldMatchCustomEquality_NonMatchingEnumerables_FailsWithEnumerablesDoNotMatch()
         {
             int[] actual = new[] { 1, 2, 4 };
@@ -385,6 +397,18 @@ namespace EasyAssertions.UnitTests
         }
 
         [Test]
+        public void ShouldBeThese_DifferentLength_FailsWithEnumerableLenthMismatchMessage()
+        {
+            object[] actual = new object[] { };
+            object[] expected = new[] { new object() };
+            mockFormatter.LengthMismatch(1, actual, "foo").Returns("bar");
+
+            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldBeThese(expected, "foo"));
+
+            Assert.AreEqual("bar", result.Message);
+        }
+
+        [Test]
         public void ShouldBeThese_DifferentItems_FailsWithEnumerablesNotSameMessage()
         {
             object a = new object();
@@ -425,7 +449,7 @@ namespace EasyAssertions.UnitTests
         public void ItemsSatisfy_WrongNumberOfItems_FailsWithEnumerableLengthMismatchMessage()
         {
             int[] actual = new[] { 1 };
-            mockFormatter.LengthMismatch(actual, 2).Returns("foo");
+            mockFormatter.LengthMismatch(2, actual).Returns("foo");
 
             EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ItemsSatisfy(i => { }, i => { }));
 

@@ -148,13 +148,7 @@ namespace EasyAssertions
 
         public static Actual<IEnumerable<TActual>> ShouldMatch<TActual, TExpected>(this IEnumerable<TActual> actual, IEnumerable<TExpected> expected, string message = null) where TExpected : TActual
         {
-            Assert(() =>
-                {
-                    if (!Compare.CollectionsMatch(actual, expected))
-                        throw new EasyAssertionException(FailureMessageFormatter.Current.DoNotMatch(expected, actual, message));
-                });
-
-            return new Actual<IEnumerable<TActual>>(actual);
+            return actual.ShouldMatch(expected, (a, e) => Compare.ObjectsMatch(a, e), message);
         }
 
         public static Actual<IEnumerable<float>> ShouldMatch(this IEnumerable<float> actual, IEnumerable<float> expected, float delta, string message = null)
@@ -171,7 +165,13 @@ namespace EasyAssertions
         {
             Assert(() =>
                 {
-                    if (!Compare.CollectionsMatch(actual, expected, (a, e) => predicate((TActual)a, (TExpected)e)))
+                    List<TActual> actualList = actual.ToList();
+                    List<TExpected> expectedList = expected.ToList();
+
+                    if (actualList.Count != expectedList.Count)
+                        throw new EasyAssertionException(FailureMessageFormatter.Current.LengthMismatch(expectedList.Count, actual, message));
+
+                    if (!Compare.CollectionsMatch(actualList, expectedList, (a, e) => predicate((TActual)a, (TExpected)e)))
                         throw new EasyAssertionException(FailureMessageFormatter.Current.DoNotMatch(expected, actual, message));
                 });
 
@@ -182,6 +182,12 @@ namespace EasyAssertions
         {
             Assert(() =>
                 {
+                    List<TActual> actualList = actual.ToList();
+                    List<TExpected> expectedList = expected.ToList();
+
+                    if (actualList.Count != expectedList.Count)
+                        throw new EasyAssertionException(FailureMessageFormatter.Current.LengthMismatch(expectedList.Count, actual, message));
+
                     if (!Compare.CollectionsMatch(actual, expected, ReferenceEquals))
                         throw new EasyAssertionException(FailureMessageFormatter.Current.ItemsNotSame(expected, actual, message));
                 });
@@ -195,7 +201,7 @@ namespace EasyAssertions
                 {
                     List<TItem> actualList = actual.ToList();
                     if (actualList.Count != assertions.Length)
-                        throw new EasyAssertionException(FailureMessageFormatter.Current.LengthMismatch(actual, assertions.Length));
+                        throw new EasyAssertionException(FailureMessageFormatter.Current.LengthMismatch(assertions.Length, actual));
 
                     for (int i = 0; i < assertions.Length; i++)
                         IndexedAssert(i, assertions[i].Method, () => assertions[i](actualList[i]));

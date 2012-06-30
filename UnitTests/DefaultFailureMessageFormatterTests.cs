@@ -290,7 +290,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void LengthMismatch_EmptyEnumerable()
         {
-            string result = DefaultFailureMessageFormatter.Instance.LengthMismatch(Enumerable.Empty<object>(), 2);
+            string result = DefaultFailureMessageFormatter.Instance.LengthMismatch(2, Enumerable.Empty<object>());
 
             Assert.AreEqual(TestExpression + Environment.NewLine
                 + "should have 2 elements" + Environment.NewLine
@@ -300,7 +300,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void LengthMismatch_SingleElementExpected()
         {
-            string result = DefaultFailureMessageFormatter.Instance.LengthMismatch(Enumerable.Empty<object>(), 1);
+            string result = DefaultFailureMessageFormatter.Instance.LengthMismatch(1, Enumerable.Empty<object>());
 
             Assert.AreEqual(TestExpression + Environment.NewLine
                 + "should have 1 element" + Environment.NewLine
@@ -310,7 +310,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void LengthMismatch_SingleElement()
         {
-            string result = DefaultFailureMessageFormatter.Instance.LengthMismatch(new[] { new FakeObject("foo") }, 2);
+            string result = DefaultFailureMessageFormatter.Instance.LengthMismatch(2, new[] { new FakeObject("foo") });
 
             Assert.AreEqual(TestExpression + Environment.NewLine
                 + "should have 2 elements" + Environment.NewLine
@@ -320,7 +320,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void LengthMismatch_IncludesMessage()
         {
-            string result = DefaultFailureMessageFormatter.Instance.LengthMismatch(Enumerable.Empty<object>(), 1, "foo");
+            string result = DefaultFailureMessageFormatter.Instance.LengthMismatch(1, Enumerable.Empty<object>(), "foo");
 
             StringAssert.EndsWith(Environment.NewLine + "foo", result);
         }

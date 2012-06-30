@@ -38,6 +38,50 @@ namespace EasyAssertions
             return new Actual<TActual>(actual);
         }
 
+        public static Actual<float> ShouldBe(this float actual, float expected, float delta, string message = null)
+        {
+            Assert(() =>
+                {
+                    if (Math.Abs(actual - expected) > delta)
+                        throw new EasyAssertionException(FailureMessageFormatter.Current.NotEqual(expected, actual, message));
+                });
+
+            return new Actual<float>(actual);
+        }
+
+        public static Actual<float> ShouldNotBe(this float actual, float notExpected, float delta, string message = null)
+        {
+            Assert(() =>
+                {
+                    if (Math.Abs(actual - notExpected) <= delta)
+                        throw new EasyAssertionException(FailureMessageFormatter.Current.AreEqual(notExpected, actual, message));
+                });
+
+            return new Actual<float>(actual);
+        }
+
+        public static Actual<double> ShouldBe(this double actual, double expected, double delta, string message = null)
+        {
+            Assert(() =>
+            {
+                if (Math.Abs(actual - expected) > delta)
+                    throw new EasyAssertionException(FailureMessageFormatter.Current.NotEqual(expected, actual, message));
+            });
+
+            return new Actual<double>(actual);
+        }
+
+        public static Actual<double> ShouldNotBe(this double actual, double notExpected, double delta, string message = null)
+        {
+            Assert(() =>
+            {
+                if (Math.Abs(actual - notExpected) <= delta)
+                    throw new EasyAssertionException(FailureMessageFormatter.Current.AreEqual(notExpected, actual, message));
+            });
+
+            return new Actual<double>(actual);
+        }
+
         public static void ShouldBeNull<TActual>(this TActual actual, string message = null)
         {
             Assert(() =>

@@ -64,6 +64,61 @@ namespace EasyAssertions.UnitTests
         }
 
         [Test]
+        public void ShouldBe_FloatsWithinDelta_Passes()
+        {
+            10f.ShouldBe(9f, 1f);
+        }
+
+        [Test]
+        public void ShouldBe_Floats_ReturnsActualValue()
+        {
+            const float actual = 1f;
+            Actual<float> result = actual.ShouldBe(1f, 1f);
+
+            Assert.AreEqual(actual, result.And);
+        }
+
+        [Test]
+        public void ShouldBe_FloatsOutsideDelta_FailsWithObjectsNotEqualMessage()
+        {
+            const float expected = 10f;
+            const float actual = 1f;
+            mockFormatter.NotEqual(expected, actual, "foo").Returns("bar");
+
+            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldBe(expected, 0, "foo"));
+
+            Assert.AreEqual("bar", result.Message);
+        }
+
+        [Test]
+        public void ShouldBe_DoublesWithinDelta_Passes()
+        {
+            10d.ShouldBe(9d, 1d);
+        }
+
+        [Test]
+        public void ShouldBe_Doubles_ReturnsActualValue()
+        {
+            const double actual = 1d;
+
+            Actual<double> result = actual.ShouldBe(1d, 0);
+
+            Assert.AreEqual(actual, result.And);
+        }
+
+        [Test]
+        public void ShouldBe_DoublesOutsideDelta_FailsWithObjectsNotEqualMessage()
+        {
+            const double expected = 10d;
+            const double actual = 1d;
+            mockFormatter.NotEqual(expected, actual, "foo").Returns("bar");
+
+            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldBe(expected, 1d, "foo"));
+
+            Assert.AreEqual("bar", result.Message);
+        }
+
+        [Test]
         public void ShouldNotBe_DifferentValue_Passes()
         {
             new Equatable(1).ShouldNotBe(new Equatable(2));
@@ -87,6 +142,51 @@ namespace EasyAssertions.UnitTests
             mockFormatter.AreEqual(notExpected, actual, "foo").Returns("bar");
 
             EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldNotBe(notExpected, "foo"));
+
+            Assert.AreEqual("bar", result.Message);
+        }
+
+        [Test]
+        public void ShouldNotBe_FloatsOutsideDelta_Passes()
+        {
+            1f.ShouldNotBe(2f, 0);
+        }
+
+        [Test]
+        public void ShouldNotBe_Floats_ReturnsActualValue()
+        {
+            const float actual = 1f;
+            Actual<float> result = actual.ShouldNotBe(2f, 0);
+
+            Assert.AreEqual(actual, result.And);
+        }
+
+        [Test]
+        public void ShouldNotBe_FloatsWithinDelta_FailsWithObjectsEqualMessage()
+        {
+            const float actual = 1f;
+            const float notExpected = 2f;
+            mockFormatter.AreEqual(notExpected, actual, "foo").Returns("bar");
+
+            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldNotBe(notExpected, 1f, "foo"));
+
+            Assert.AreEqual("bar", result.Message);
+        }
+
+        [Test]
+        public void ShouldNotBe_DoublesOutsideDelta_Passes()
+        {
+            1d.ShouldNotBe(2d, 0);
+        }
+
+        [Test]
+        public void ShouldNotBe_Doubles_FailsWithObjectsEqualMessage()
+        {
+            const double actual = 1d;
+            const double notExpected = 2d;
+            mockFormatter.AreEqual(notExpected, actual, "foo").Returns("bar");
+
+            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldNotBe(notExpected, 1d, "foo"));
 
             Assert.AreEqual("bar", result.Message);
         }

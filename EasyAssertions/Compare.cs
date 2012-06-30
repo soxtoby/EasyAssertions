@@ -11,6 +11,17 @@ namespace EasyAssertions
             return EqualityComparer<T>.Default.Equals(actual, expected);
         }
 
+        public static bool AreWithinDelta(float actual, float expected, float delta)
+        {
+            return Math.Abs(actual - expected) <=
+                delta;
+        }
+
+        public static bool AreWithinDelta(double actual, double notExpected, double delta)
+        {
+            return Math.Abs(actual - notExpected) <= delta;
+        }
+
         public static bool CollectionsMatch(IEnumerable actual, IEnumerable expected)
         {
             return CollectionsMatch(actual, expected, ObjectsMatch);

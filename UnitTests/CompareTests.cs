@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using NUnit.Framework;
 
 namespace EasyAssertions.UnitTests
@@ -16,6 +17,30 @@ namespace EasyAssertions.UnitTests
         public void ObjectsAreEqual_DifferentValues_AreNotEqual()
         {
             Assert.IsFalse(Compare.ObjectsAreEqual(1, 2));
+        }
+
+        [Test]
+        public void FloatsAreWithinDelta_WithinDelta()
+        {
+            Assert.IsTrue(Compare.AreWithinDelta(1f, 2f, 1f));
+        }
+
+        [Test]
+        public void FloatsAreWithinDelta_OutsideDelta()
+        {
+            Assert.IsFalse(Compare.AreWithinDelta(1f, 2f, 0.9f));
+        }
+
+        [Test]
+        public void DoublesAreWithinDelta_WithinDelta()
+        {
+            Assert.IsTrue(Compare.AreWithinDelta(1d, 2d, 1d));
+        }
+
+        [Test]
+        public void DoublesAreWithinDelta_OutsideDelta()
+        {
+            Assert.IsFalse(Compare.AreWithinDelta(1d, 2d, 0.9d));
         }
 
         [Test]
@@ -56,6 +81,18 @@ namespace EasyAssertions.UnitTests
                     new[] { 4, 5, 6 }
                 };
             Assert.IsTrue(Compare.CollectionsMatch(actual, expected));
+        }
+
+        [Test]
+        public void IsEmpty_Empty()
+        {
+            Assert.IsTrue(Compare.IsEmpty(Enumerable.Empty<int>()));
+        }
+
+        [Test]
+        public void IsEmpty_NotEmpty()
+        {
+            Assert.IsFalse(Compare.IsEmpty(new[] { 1 }));
         }
     }
 }

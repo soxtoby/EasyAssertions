@@ -42,7 +42,7 @@ namespace EasyAssertions
         {
             Assert(() =>
                 {
-                    if (Math.Abs(actual - expected) > delta)
+                    if (!Compare.AreWithinDelta(actual, expected, delta))
                         throw new EasyAssertionException(FailureMessageFormatter.Current.NotEqual(expected, actual, message));
                 });
 
@@ -53,7 +53,7 @@ namespace EasyAssertions
         {
             Assert(() =>
                 {
-                    if (Math.Abs(actual - notExpected) <= delta)
+                    if (Compare.AreWithinDelta(actual, notExpected, delta))
                         throw new EasyAssertionException(FailureMessageFormatter.Current.AreEqual(notExpected, actual, message));
                 });
 
@@ -64,7 +64,7 @@ namespace EasyAssertions
         {
             Assert(() =>
             {
-                if (Math.Abs(actual - expected) > delta)
+                if (!Compare.AreWithinDelta(actual, expected, delta))
                     throw new EasyAssertionException(FailureMessageFormatter.Current.NotEqual(expected, actual, message));
             });
 
@@ -75,7 +75,7 @@ namespace EasyAssertions
         {
             Assert(() =>
             {
-                if (Math.Abs(actual - notExpected) <= delta)
+                if (Compare.AreWithinDelta(actual, notExpected, delta))
                     throw new EasyAssertionException(FailureMessageFormatter.Current.AreEqual(notExpected, actual, message));
             });
 
@@ -155,6 +155,16 @@ namespace EasyAssertions
                 });
 
             return new Actual<IEnumerable<TActual>>(actual);
+        }
+
+        public static Actual<IEnumerable<float>> ShouldMatch(this IEnumerable<float> actual, IEnumerable<float> expected, float delta, string message = null)
+        {
+            return actual.ShouldMatch(expected, (a, e) => Compare.AreWithinDelta(a, e, delta), message);
+        }
+
+        public static Actual<IEnumerable<double>> ShouldMatch(this IEnumerable<double> actual, IEnumerable<double> expected, double delta, string message = null)
+        {
+            return actual.ShouldMatch(expected, (a, e) => Compare.AreWithinDelta(a, e, delta), message);
         }
 
         public static Actual<IEnumerable<TActual>> ShouldMatch<TActual, TExpected>(this IEnumerable<TActual> actual, IEnumerable<TExpected> expected, Func<TActual, TExpected, bool> predicate, string message = null)

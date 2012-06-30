@@ -329,6 +329,50 @@ namespace EasyAssertions.UnitTests
         }
 
         [Test]
+        public void ShouldMatch_FloatsWithinDelta_ReturnsActualValue()
+        {
+            float[] actual = new[] { 10f, 20f };
+
+            Actual<IEnumerable<float>> result = actual.ShouldMatch(new[] { 11f, 21f }, 1f);
+
+            Assert.AreSame(actual, result.And);
+        }
+
+        [Test]
+        public void ShouldMatch_FloatsOutsideDelta_FailsWithEnumerablesDoNotMatchMessage()
+        {
+            float[] actual = new[] { 10f, 20f };
+            float[] expected = new[] { 11f, 21f };
+            mockFormatter.DoNotMatch(expected, actual, "foo").Returns("bar");
+
+            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldMatch(expected, 0.9f, "foo"));
+
+            Assert.AreEqual("bar", result.Message);
+        }
+
+        [Test]
+        public void ShouldMatch_DoublesWithinDelta_ReturnsActualValue()
+        {
+            double[] actual = new[] { 10d, 20d };
+
+            Actual<IEnumerable<double>> result = actual.ShouldMatch(new[] { 11d, 21d }, 1d);
+
+            Assert.AreSame(actual, result.And);
+        }
+
+        [Test]
+        public void ShouldMatch_DoublesOutsideDelta_FailsWithEnumerablesDoNotMatchMessage()
+        {
+            double[] actual = new[] { 10d, 20d };
+            double[] expected = new[] { 11d, 21d };
+            mockFormatter.DoNotMatch(expected, actual, "foo").Returns("bar");
+
+            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldMatch(expected, 0.9d, "foo"));
+
+            Assert.AreEqual("bar", result.Message);
+        }
+
+        [Test]
         public void ItemsSatisfy_ItemsSatisfyAssertions_ReturnsActualValue()
         {
             int[] actual = new[] { 1 };

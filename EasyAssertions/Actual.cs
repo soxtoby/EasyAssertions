@@ -15,7 +15,7 @@ namespace EasyAssertions
         {
             get
             {
-                SourceExpressionProvider.Instance.RegisterContinuation(1, 0);
+                SourceExpressionProvider.Instance.RegisterContinuation(0);
                 return Value;
             }
         }

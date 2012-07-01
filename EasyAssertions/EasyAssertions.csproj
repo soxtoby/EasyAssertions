@@ -63,6 +63,7 @@
     <Compile Include="SourceExpressions\ExpressionSegment.cs" />
     <Compile Include="SourceExpressions\IndexedAssertionGroup.cs" />
     <Compile Include="SourceExpressions\SourceAddress.cs" />
+    <Compile Include="SourceExpressions\StackAnalyser.cs" />
     <Compile Include="TestExpression.cs" />
     <Compile Include="SourceExpressions\SourceExpressionProvider.cs" />
     <Compile Include="Utils.cs" />

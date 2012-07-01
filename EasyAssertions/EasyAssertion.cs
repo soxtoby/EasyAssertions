@@ -233,15 +233,16 @@ namespace EasyAssertions
 
         public static Actual<TActual> Assert<TActual>(this TActual actual, Action assert)
         {
-            SourceExpressionProvider.Instance.RegisterAssertionMethod(2, 1);
+            SourceExpressionProvider.Instance.RegisterAssertionMethod(1);
             assert();
             return new Actual<TActual>(actual);
         }
 
         public static Actual<TActual> Assert<TActual>(this TActual actual, Func<TActual, Actual<TActual>> assert)
         {
+            SourceExpressionProvider.Instance.RegisterAssertionMethod(1);
             Actual<TActual> ret = null;
-            actual.Assert(() => InnerAssert(assert.Method, () => ret = assert(actual)));
+            InnerAssert(assert.Method, () => ret = assert(actual));
             return ret;
         }
 

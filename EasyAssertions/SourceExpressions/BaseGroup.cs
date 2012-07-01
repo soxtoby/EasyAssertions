@@ -1,7 +1,12 @@
+using System.Linq;
+
 namespace EasyAssertions
 {
     internal class BaseGroup : AssertionComponentGroup
     {
-        public BaseGroup() : base(null) { }
+        public override SourceAddress Address
+        {
+            get { return MethodCalls.First().SourceAddress; }
+        }
     }
 }

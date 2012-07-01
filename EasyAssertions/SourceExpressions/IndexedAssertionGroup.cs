@@ -4,15 +4,15 @@ namespace EasyAssertions
     {
         private readonly int index;
 
-        public IndexedAssertionGroup(AssertionComponentGroup parentGroup, string expressionAlias, int index)
-            : base(parentGroup, expressionAlias)
+        public IndexedAssertionGroup(SourceAddress callAddress, string expressionAlias, int index)
+            : base(callAddress, expressionAlias)
         {
             this.index = index;
         }
 
-        protected override string GetParentExpression()
+        public override string GetExpression(string parentExpression)
         {
-            return ParentGroup.GetExpression() + '[' + index + ']';
+            return base.GetExpression(parentExpression + '[' + index + ']');
         }
     }
 }

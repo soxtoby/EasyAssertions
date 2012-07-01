@@ -1,5 +1,5 @@
 using System;
-using System.Diagnostics;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
@@ -7,7 +7,9 @@ namespace EasyAssertions
 {
     internal class SourceExpressionProvider : TestExpressionProvider
     {
-        private AssertionComponentGroup currentGroup;
+        private readonly List<AssertionComponentGroup> assertionGroupChain = new List<AssertionComponentGroup>();
+
+        private AssertionComponentGroup CurrentGroup { get { return assertionGroupChain.LastOrDefault(); } }
 
         public static readonly SourceExpressionProvider Instance = new SourceExpressionProvider();
 
@@ -17,72 +19,60 @@ namespace EasyAssertions
 
         public string GetExpression()
         {
-            return currentGroup.GetExpression();
+            return assertionGroupChain.Aggregate(string.Empty, (expression, group) => group.GetExpression(expression));
         }
 
-        public void RegisterAssertionMethod(int testFrameIndex, int assertionFrameIndex)
+        public void RegisterAssertionMethod(int assertionFrameIndex)
         {
-            RegisterMethod((address, methodName) => new AssertionMethod(address, methodName), testFrameIndex + 1, assertionFrameIndex + 1);
+            RegisterComponent((address, methodName) => new AssertionMethod(address, methodName), assertionFrameIndex + 1);
         }
 
-        public void RegisterContinuation(int testFrameIndex, int continuationFrameIndex)
+        public void RegisterContinuation(int continuationFrameIndex)
         {
-            RegisterMethod((address, methodName) => new Continuation(address, methodName), testFrameIndex + 1, continuationFrameIndex + 1);
+            RegisterComponent((address, methodName) => new Continuation(address, methodName), continuationFrameIndex + 1);
         }
 
-        private void RegisterMethod(Func<SourceAddress, string, AssertionComponent> createMethod, int testFrameIndex, int assertionFrameIndex)
+        private void RegisterComponent(Func<SourceAddress, string, AssertionComponent> createMethod, int assertionFrameIndex)
         {
-            AssertionComponent component = BuildComponent(createMethod, testFrameIndex + 1, assertionFrameIndex + 1);
-            PopOldFrames(component.SourceAddress);
-            EnsureCurrentFrame();
-            AddToCurrentFrame(component);
+            assertionFrameIndex++;
+
+            StackAnalyser analyser = StackAnalyser.ForCurrentStack();
+
+            PopStackBackToAssertion(assertionFrameIndex, analyser);
+
+            SourceAddress callAddress = analyser.GetCallAddress(assertionFrameIndex);
+            string assertionName = analyser.GetMethodName(assertionFrameIndex);
+            AssertionComponent method = createMethod(callAddress, assertionName);
+
+            CurrentGroup.AddComponent(method);
         }
 
-        private void PopOldFrames(SourceAddress sourceAddress)
+        private void PopStackBackToAssertion(int assertionFrameIndex, StackAnalyser analyser)
         {
-            while (SourceIsFromADifferentFrame(sourceAddress))
-                PopFrame();
+            int groupPosition = analyser.GetParentGroupPosition(assertionFrameIndex, assertionGroupChain);
+            assertionGroupChain.RemoveRange(groupPosition, assertionGroupChain.Count - groupPosition);
+
+            if (assertionGroupChain.None())
+                assertionGroupChain.Add(new BaseGroup());
         }
 
-        private bool SourceIsFromADifferentFrame(SourceAddress sourceAddress)
+        public void EnterNestedAssertion(MethodInfo innerAssertionMethod)
         {
-            return CurrentFrameIsPopulated
-                && !sourceAddress.Equals(currentGroup.InnerAssertionSourceAddress);
+            AddGroup(innerAssertionMethod, 2, (callAddress, expressionAlias) =>
+                new NestedAssertionGroup(callAddress, expressionAlias));
         }
 
-        private bool CurrentFrameIsPopulated
+        public void EnterIndexedAssertion(MethodInfo innerAssertionMethod, int index)
         {
-            get
-            {
-                return currentGroup != null
-                    && currentGroup.MethodCalls.Any();
-            }
+            AddGroup(innerAssertionMethod, 2, (callAddress, expressionAlias) =>
+                new IndexedAssertionGroup(callAddress, GetExpressionAlias(innerAssertionMethod), index));
         }
 
-        private void PopFrame()
+        private void AddGroup(MethodInfo innerAssertionMethod, int callFrameIndex, Func<SourceAddress, string, AssertionComponentGroup> createGroup)
         {
-            currentGroup = currentGroup.ParentGroup;
-        }
-
-        private void EnsureCurrentFrame()
-        {
-            if (currentGroup == null)
-                currentGroup = new BaseGroup();
-        }
-
-        private void AddToCurrentFrame(AssertionComponent component)
-        {
-            currentGroup.AddComponent(component);
-        }
-
-        public void EnterNestedAssertion(MethodInfo innerAssertion)
-        {
-            currentGroup = new NestedAssertionGroup(currentGroup, GetExpressionAlias(innerAssertion));
-        }
-
-        public void EnterIndexedAssertion(MethodInfo innerAssertion, int index)
-        {
-            currentGroup = new IndexedAssertionGroup(currentGroup, GetExpressionAlias(innerAssertion), index);
+            SourceAddress callerAddress = StackAnalyser.ForCurrentStack().GetCallAddress(callFrameIndex + 1);
+            string expressionAlias = GetExpressionAlias(innerAssertionMethod);
+            assertionGroupChain.Add(createGroup(callerAddress, expressionAlias));
         }
 
         private static string GetExpressionAlias(MethodInfo innerAssertion)
@@ -92,33 +82,7 @@ namespace EasyAssertions
 
         public void ExitNestedAssertion()
         {
-            currentGroup = currentGroup.ParentGroup;
-        }
-
-        private static TComponent BuildComponent<TComponent>(Func<SourceAddress, string, TComponent> createComponent, int testFrameIndex, int assertionFrameIndex) where TComponent : AssertionComponent
-        {
-            StackTrace stack = new StackTrace(true);
-            StackFrame[] frames = stack.GetFrames();
-
-            StackFrame testFrame = frames[testFrameIndex + 1];
-            StackFrame assertionFrame = frames[assertionFrameIndex + 1];
-
-            SourceAddress componentAddress = new SourceAddress
-                {
-                    FileName = testFrame.GetFileName(),
-                    LineIndex = testFrame.GetFileLineNumber() - 1,
-                    ExpressionIndex = testFrame.GetFileColumnNumber() - 1
-                };
-
-            return createComponent(componentAddress, GetComponentName(assertionFrame));
-        }
-
-        private static string GetComponentName(StackFrame assertionFrame)
-        {
-            string methodName = assertionFrame.GetMethod().Name;
-            return methodName.StartsWith("get_")
-                ? methodName.Substring(4)
-                : methodName;
+            assertionGroupChain.Remove(CurrentGroup);
         }
     }
 }

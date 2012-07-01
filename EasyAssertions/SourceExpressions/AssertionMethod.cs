@@ -1,4 +1,3 @@
-
 namespace EasyAssertions
 {
     internal class AssertionMethod : AssertionComponent

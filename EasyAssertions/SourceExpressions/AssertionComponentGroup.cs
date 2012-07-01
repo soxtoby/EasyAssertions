@@ -8,30 +8,23 @@ namespace EasyAssertions
     internal abstract class AssertionComponentGroup
     {
         private readonly List<AssertionComponent> calls = new List<AssertionComponent>();
-        public readonly AssertionComponentGroup ParentGroup;
-
-        protected AssertionComponentGroup(AssertionComponentGroup parentGroup)
-        {
-            ParentGroup = parentGroup;
-        }
 
         public IEnumerable<AssertionComponent> MethodCalls
         {
             get { return calls; }
         }
 
-        public SourceAddress InnerAssertionSourceAddress
-        {
-            get { return MethodCalls.First().SourceAddress; }
-        }
+        public abstract SourceAddress Address { get; }
 
-        public virtual string GetExpression()
+        public virtual string GetExpression(string parentExpression)
         {
-            string[] sourceLines = File.ReadAllLines(InnerAssertionSourceAddress.FileName);
-            string expressionSource = sourceLines.Skip(InnerAssertionSourceAddress.LineIndex).Join(Environment.NewLine);
+            SourceAddress assertionsAddress = calls.First().SourceAddress;
+
+            string[] sourceLines = File.ReadAllLines(assertionsAddress.FileName);
+            string expressionSource = sourceLines.Skip(assertionsAddress.LineIndex).Join(Environment.NewLine);
 
             string expression = string.Empty;
-            ExpressionSegment segment = new ExpressionSegment { IndexOfNextSegment = InnerAssertionSourceAddress.ExpressionIndex };
+            ExpressionSegment segment = new ExpressionSegment { IndexOfNextSegment = assertionsAddress.ExpressionIndex };
             foreach (AssertionComponent method in MethodCalls)
             {
                 segment = method.GetSegment(expressionSource, segment.IndexOfNextSegment);
@@ -43,6 +36,8 @@ namespace EasyAssertions
 
         public void AddComponent(AssertionComponent component)
         {
+            if (MethodCalls.Any() && !Equals(MethodCalls.First().SourceAddress, component.SourceAddress))
+                calls.Clear();
             calls.Add(component);
         }
     }

@@ -1,24 +1,25 @@
+using System.Text.RegularExpressions;
+
 namespace EasyAssertions
 {
     internal class NestedAssertionGroup : AssertionComponentGroup
     {
+        private const string WordBoundary = @"\b";
+        private readonly SourceAddress address;
         private readonly string expressionAlias;
 
-        public NestedAssertionGroup(AssertionComponentGroup parentGroup, string expressionAlias)
-            : base(parentGroup)
+        public NestedAssertionGroup(SourceAddress callAddress, string expressionAlias)
         {
+            address = callAddress;
             this.expressionAlias = expressionAlias;
         }
 
-        public override string GetExpression()
-        {
-            string expression = base.GetExpression();
-            return expression.Replace(expressionAlias, GetParentExpression());
-        }
+        public override SourceAddress Address { get { return address; } }
 
-        protected virtual string GetParentExpression()
+        public override string GetExpression(string parentExpression)
         {
-            return ParentGroup.GetExpression();
+            string expression = base.GetExpression(parentExpression);
+            return Regex.Replace(expression, WordBoundary + expressionAlias + WordBoundary, parentExpression);
         }
     }
 }

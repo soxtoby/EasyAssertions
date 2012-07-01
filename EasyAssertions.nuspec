@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
   <metadata>
-    <version>0.2.0</version>
+    <version>0.3.0</version>
     <authors>Simon Oxtoby</authors>
     <owners>soxtoby</owners>
     <licenseUrl>http://www.opensource.org/licenses/mit-license.php</licenseUrl>

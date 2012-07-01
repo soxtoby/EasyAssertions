@@ -11,7 +11,7 @@ namespace EasyAssertions
     {
         public static Actual<TActual> ShouldBe<TActual, TExpected>(this TActual actual, TExpected expected, string message = null) where TExpected : TActual
         {
-            Assert(() =>
+            return actual.Assert(() =>
                 {
                     if (!Compare.ObjectsAreEqual(actual, expected))
                     {
@@ -23,68 +23,56 @@ namespace EasyAssertions
                         throw new EasyAssertionException(FailureMessageFormatter.Current.NotEqual(expected, actual, message));
                     }
                 });
-
-            return new Actual<TActual>(actual);
         }
 
         public static Actual<TActual> ShouldNotBe<TActual, TNotExpected>(this TActual actual, TNotExpected notExpected, string message = null) where TNotExpected : TActual
         {
-            Assert(() =>
+            return actual.Assert(() =>
                 {
                     if (Compare.ObjectsAreEqual(actual, notExpected))
                         throw new EasyAssertionException(FailureMessageFormatter.Current.AreEqual(notExpected, actual, message));
                 });
-
-            return new Actual<TActual>(actual);
         }
 
         public static Actual<float> ShouldBe(this float actual, float expected, float delta, string message = null)
         {
-            Assert(() =>
+            return actual.Assert(() =>
                 {
                     if (!Compare.AreWithinDelta(actual, expected, delta))
                         throw new EasyAssertionException(FailureMessageFormatter.Current.NotEqual(expected, actual, message));
                 });
-
-            return new Actual<float>(actual);
         }
 
         public static Actual<float> ShouldNotBe(this float actual, float notExpected, float delta, string message = null)
         {
-            Assert(() =>
+            return actual.Assert(() =>
                 {
                     if (Compare.AreWithinDelta(actual, notExpected, delta))
                         throw new EasyAssertionException(FailureMessageFormatter.Current.AreEqual(notExpected, actual, message));
                 });
-
-            return new Actual<float>(actual);
         }
 
         public static Actual<double> ShouldBe(this double actual, double expected, double delta, string message = null)
         {
-            Assert(() =>
+            return actual.Assert(() =>
             {
                 if (!Compare.AreWithinDelta(actual, expected, delta))
                     throw new EasyAssertionException(FailureMessageFormatter.Current.NotEqual(expected, actual, message));
             });
-
-            return new Actual<double>(actual);
         }
 
         public static Actual<double> ShouldNotBe(this double actual, double notExpected, double delta, string message = null)
         {
-            Assert(() =>
+            return actual.Assert(() =>
             {
                 if (Compare.AreWithinDelta(actual, notExpected, delta))
                     throw new EasyAssertionException(FailureMessageFormatter.Current.AreEqual(notExpected, actual, message));
             });
-
-            return new Actual<double>(actual);
         }
 
         public static void ShouldBeNull<TActual>(this TActual actual, string message = null)
         {
-            Assert(() =>
+            actual.Assert(() =>
                 {
                     if (!Equals(actual, null))
                         throw new EasyAssertionException(FailureMessageFormatter.Current.NotEqual(null, actual, message));
@@ -93,77 +81,70 @@ namespace EasyAssertions
 
         public static Actual<TActual> ShouldNotBeNull<TActual>(this TActual actual, string message = null)
         {
-            Assert(() =>
+            return actual.Assert(() =>
                 {
                     if (Equals(actual, null))
                         throw new EasyAssertionException(FailureMessageFormatter.Current.IsNull(message));
                 });
-
-            return new Actual<TActual>(actual);
         }
 
         public static Actual<TActual> ShouldBeThis<TActual, TExpected>(this TActual actual, TExpected expected, string message = null) where TExpected : TActual
         {
-            Assert(() =>
+            return actual.Assert(() =>
                 {
                     if (!ReferenceEquals(actual, expected))
                         throw new EasyAssertionException(FailureMessageFormatter.Current.NotSame(expected, actual, message));
                 });
-
-            return new Actual<TActual>(actual);
         }
 
         public static Actual<TActual> ShouldNotBeThis<TActual, TNotExpected>(this TActual actual, TNotExpected notExpected, string message = null) where TNotExpected : TActual
         {
-            Assert(() =>
+            return actual.Assert(() =>
                 {
                     if (ReferenceEquals(actual, notExpected))
                         throw new EasyAssertionException(FailureMessageFormatter.Current.AreSame(actual, message));
                 });
-
-            return new Actual<TActual>(actual);
         }
 
         public static Actual<TActual> ShouldBeEmpty<TActual>(this TActual actual, string message = null) where TActual : IEnumerable
         {
-            Assert(() =>
+            return actual.Assert(() =>
                 {
                     if (!Compare.IsEmpty(actual))
                         throw new EasyAssertionException(FailureMessageFormatter.Current.NotEmpty(actual, message));
                 });
-
-            return new Actual<TActual>(actual);
         }
 
         public static Actual<TActual> ShouldNotBeEmpty<TActual>(this TActual actual, string message = null) where TActual : IEnumerable
         {
-            Assert(() =>
+            return actual.Assert(() =>
                 {
                     if (Compare.IsEmpty(actual))
                         throw new EasyAssertionException(FailureMessageFormatter.Current.IsEmpty(message));
                 });
-
-            return new Actual<TActual>(actual);
         }
 
         public static Actual<IEnumerable<TActual>> ShouldMatch<TActual, TExpected>(this IEnumerable<TActual> actual, IEnumerable<TExpected> expected, string message = null) where TExpected : TActual
         {
-            return actual.ShouldMatch(expected, (a, e) => Compare.ObjectsMatch(a, e), message);
+            return actual.Assert(innerActual =>
+                innerActual.ShouldMatch(expected, (a, e) => Compare.ObjectsMatch(a, e), message));
         }
 
         public static Actual<IEnumerable<float>> ShouldMatch(this IEnumerable<float> actual, IEnumerable<float> expected, float delta, string message = null)
         {
-            return actual.ShouldMatch(expected, (a, e) => Compare.AreWithinDelta(a, e, delta), message);
+            return actual.Assert(innerActual =>
+                innerActual.ShouldMatch(expected, (a, e) => Compare.AreWithinDelta(a, e, delta), message));
         }
 
         public static Actual<IEnumerable<double>> ShouldMatch(this IEnumerable<double> actual, IEnumerable<double> expected, double delta, string message = null)
         {
-            return actual.ShouldMatch(expected, (a, e) => Compare.AreWithinDelta(a, e, delta), message);
+            return actual.Assert(innerActual =>
+                innerActual.ShouldMatch(expected, (a, e) => Compare.AreWithinDelta(a, e, delta), message));
         }
 
         public static Actual<IEnumerable<TActual>> ShouldMatch<TActual, TExpected>(this IEnumerable<TActual> actual, IEnumerable<TExpected> expected, Func<TActual, TExpected, bool> predicate, string message = null)
         {
-            Assert(() =>
+            return actual.Assert(() =>
                 {
                     List<TActual> actualList = actual.ToList();
                     List<TExpected> expectedList = expected.ToList();
@@ -174,13 +155,11 @@ namespace EasyAssertions
                     if (!Compare.CollectionsMatch(actualList, expectedList, (a, e) => predicate((TActual)a, (TExpected)e)))
                         throw new EasyAssertionException(FailureMessageFormatter.Current.DoNotMatch(expected, actual, message));
                 });
-
-            return new Actual<IEnumerable<TActual>>(actual);
         }
 
         public static Actual<IEnumerable<TActual>> ShouldBeThese<TActual, TExpected>(this IEnumerable<TActual> actual, IEnumerable<TExpected> expected, string message = null)
         {
-            Assert(() =>
+            return actual.Assert(() =>
                 {
                     List<TActual> actualList = actual.ToList();
                     List<TExpected> expectedList = expected.ToList();
@@ -191,13 +170,11 @@ namespace EasyAssertions
                     if (!Compare.CollectionsMatch(actual, expected, ReferenceEquals))
                         throw new EasyAssertionException(FailureMessageFormatter.Current.ItemsNotSame(expected, actual, message));
                 });
-
-            return new Actual<IEnumerable<TActual>>(actual);
         }
 
         public static Actual<IEnumerable<TItem>> ItemsSatisfy<TItem>(this IEnumerable<TItem> actual, params Action<TItem>[] assertions)
         {
-            Assert(() =>
+            return actual.Assert(() =>
                 {
                     List<TItem> actualList = actual.ToList();
                     if (actualList.Count != assertions.Length)
@@ -206,25 +183,21 @@ namespace EasyAssertions
                     for (int i = 0; i < assertions.Length; i++)
                         IndexedAssert(i, assertions[i].Method, () => assertions[i](actualList[i]));
                 });
-
-            return new Actual<IEnumerable<TItem>>(actual);
         }
 
         public static Actual<IEnumerable<TItem>> AllItemsSatisfy<TItem>(this IEnumerable<TItem> actual, Action<TItem> assertion)
         {
-            Assert(() =>
+            return actual.Assert(() =>
                 {
                     int i = 0;
                     foreach (TItem item in actual)
                         IndexedAssert(i++, assertion.Method, () => assertion(item));
                 });
-
-            return new Actual<IEnumerable<TItem>>(actual);
         }
 
         public static Actual<TExpected> ShouldBeA<TExpected>(this object actual, string message = null)
         {
-            Assert(() =>
+            actual.Assert(() =>
                 {
                     if (!(actual is TExpected))
                         throw new EasyAssertionException(FailureMessageFormatter.Current.NotEqual(typeof(TExpected),
@@ -236,36 +209,40 @@ namespace EasyAssertions
 
         public static Actual<string> ShouldContain(this string actual, string expectedToContain, string message = null)
         {
-            Assert(() =>
+            return actual.Assert(() =>
                 {
                     if (!actual.Contains(expectedToContain))
                         throw new EasyAssertionException(FailureMessageFormatter.Current.DoesNotContain(expectedToContain, actual, message));
                 });
-
-            return new Actual<string>(actual);
         }
 
         public static Actual<string> ShouldEndWith(this string actual, string expectedEnd, string message = null)
         {
-            Assert(() =>
+            return actual.Assert(() =>
                 {
                     if (!actual.EndsWith(expectedEnd))
                         throw new EasyAssertionException(FailureMessageFormatter.Current.DoesNotEndWith(expectedEnd, actual, message));
                 });
-
-            return new Actual<string>(actual);
         }
 
         public static Actual<TActual> And<TActual>(this Actual<TActual> actual, Action<TActual> assert)
         {
-            Assert(() => InnerAssert(assert.Method, () => assert(actual.Value)));
+            actual.Assert(() => InnerAssert(assert.Method, () => assert(actual.Value)));
             return actual;
         }
 
-        public static void Assert(Action assert)
+        public static Actual<TActual> Assert<TActual>(this TActual actual, Action assert)
         {
             SourceExpressionProvider.Instance.RegisterAssertionMethod(2, 1);
             assert();
+            return new Actual<TActual>(actual);
+        }
+
+        public static Actual<TActual> Assert<TActual>(this TActual actual, Func<TActual, Actual<TActual>> assert)
+        {
+            Actual<TActual> ret = null;
+            actual.Assert(() => InnerAssert(assert.Method, () => ret = assert(actual)));
+            return ret;
         }
 
         public static void IndexedAssert(int index, MethodInfo itemAssertionMethod, Action assert)

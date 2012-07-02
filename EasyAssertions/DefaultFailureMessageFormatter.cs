@@ -88,11 +88,11 @@ namespace EasyAssertions
 
         public string NotEmpty(IEnumerable actual, string message = null)
         {
-            var actualList = actual.Cast<object>().ToList();
+            List<object> actualList = actual.Cast<object>().ToList();
 
             return TestExpression.Get()
                 + Environment.NewLine + "should be empty"
-                + Environment.NewLine + ActualElements(actualList)
+                + Environment.NewLine + ActualLengthElements(actualList)
                 + MessageOnNewLine(message);
         }
 
@@ -107,11 +107,11 @@ namespace EasyAssertions
         {
             return TestExpression.Get()
                 + Environment.NewLine + "should have " + expectedLength + (expectedLength == 1 ? " element" : " elements")
-                + Environment.NewLine + ActualElements(actual.Cast<object>().ToList())
+                + Environment.NewLine + ActualLengthElements(actual.Cast<object>().ToList())
                 + MessageOnNewLine(message);
         }
 
-        private static string ActualElements(ICollection<object> actualList)
+        private static string ActualLengthElements(ICollection<object> actualList)
         {
             if (actualList.None())
                 return "but was empty.";
@@ -128,9 +128,32 @@ namespace EasyAssertions
             return message;
         }
 
-        private static string EnumerableElement(object i)
+        public string DoesNotContain(object expected, IEnumerable actual, string message = null)
         {
-            return Environment.NewLine + "    <" + i + '>';
+            List<object> actualList = actual.Cast<object>().ToList();
+
+            return TestExpression.Get()
+                + Environment.NewLine + "should contain <" + expected + '>'
+                + Environment.NewLine + "but was " + ActualElements(actualList)
+                + MessageOnNewLine(message);
+        }
+
+        private static string ActualElements(ICollection<object> actualList)
+        {
+            if (actualList.None())
+                return "empty.";
+
+            if (actualList.Count == 1)
+                return "      [<" + actualList.Single() + ">]";
+
+            return "["
+                + SelectFirstFew(10, actualList, EnumerableElement, EnumerableEllipses).Join(",")
+                + Environment.NewLine + "]";
+        }
+
+        private static string EnumerableElement(object item)
+        {
+            return Environment.NewLine + "    <" + item + '>';
         }
 
         private static IEnumerable<string> SelectFirstFew<T>(int count, IEnumerable<T> enumerable, Func<T, string> select, string extra)

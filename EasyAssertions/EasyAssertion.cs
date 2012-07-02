@@ -157,6 +157,15 @@ namespace EasyAssertions
                 });
         }
 
+        public static Actual<IEnumerable<TActual>> ShouldContain<TActual, TExpected>(this IEnumerable<TActual> actual, TExpected expected, string message = null) where TExpected : TActual
+        {
+            return actual.Assert(() =>
+                {
+                    if (!actual.Contains(expected))
+                        throw new EasyAssertionException(FailureMessageFormatter.Current.DoesNotContain(expected, actual, message));
+                });
+        }
+
         public static Actual<IEnumerable<TActual>> ShouldBeThese<TActual, TExpected>(this IEnumerable<TActual> actual, IEnumerable<TExpected> expected, string message = null)
         {
             return actual.Assert(() =>

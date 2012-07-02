@@ -385,6 +385,28 @@ namespace EasyAssertions.UnitTests
         }
 
         [Test]
+        public void ShouldContain_CollectionContainsExpected_ReturnActualValue()
+        {
+            int[] actual = new[] { 1, 2 };
+
+            Actual<IEnumerable<int>> result = actual.ShouldContain(2);
+
+            Assert.AreSame(actual, result.And);
+        }
+
+        [Test]
+        public void ShouldContain_CollectionDoesNotContainExpected_FailsWithEnumerableDoesNotContainMessage()
+        {
+            int[] actual = new[] { 1, 2 };
+            int expected = 3;
+            mockFormatter.DoesNotContain(expected, actual, "foo").Returns("bar");
+
+            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldContain(expected, "foo"));
+
+            Assert.AreEqual("bar", result.Message);
+        }
+
+        [Test]
         public void ShouldBeThese_SameItems_ReturnsActualValue()
         {
             object a = new object();

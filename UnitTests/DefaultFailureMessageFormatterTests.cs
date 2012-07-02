@@ -250,6 +250,69 @@ namespace EasyAssertions.UnitTests
         }
 
         [Test]
+        public void CollectionDoesNotContain_EmptyCollection()
+        {
+            string result = DefaultFailureMessageFormatter.Instance.DoesNotContain(1, Enumerable.Empty<int>());
+
+            Assert.AreEqual(TestExpression + Environment.NewLine
+                + "should contain <1>" + Environment.NewLine
+                + "but was empty.", result);
+        }
+
+        [Test]
+        public void CollectionDoesNotContain_SingleItem()
+        {
+            string result = DefaultFailureMessageFormatter.Instance.DoesNotContain(1, new[] { 2 });
+
+            Assert.AreEqual(TestExpression + Environment.NewLine
+                + "should contain <1>" + Environment.NewLine
+                + "but was       [<2>]", result);
+        }
+
+        [Test]
+        public void CollectionDoesNotContain_MultipleItems()
+        {
+            string result = DefaultFailureMessageFormatter.Instance.DoesNotContain(1, new[] { 2, 3 });
+
+            Assert.AreEqual(TestExpression + Environment.NewLine
+                + "should contain <1>" + Environment.NewLine
+                + "but was [" + Environment.NewLine
+                + "    <2>," + Environment.NewLine
+                + "    <3>" + Environment.NewLine
+                + "]", result);
+        }
+
+        [Test]
+        public void CollectionDoesNotContain_LongActual_OnlyFirst10Displayed()
+        {
+            string result = DefaultFailureMessageFormatter.Instance.DoesNotContain(0, new[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 });
+
+            Assert.AreEqual(TestExpression + Environment.NewLine
+                + "should contain <0>" + Environment.NewLine
+                + "but was [" + Environment.NewLine
+                + "    <1>," + Environment.NewLine
+                + "    <2>," + Environment.NewLine
+                + "    <3>," + Environment.NewLine
+                + "    <4>," + Environment.NewLine
+                + "    <5>," + Environment.NewLine
+                + "    <6>," + Environment.NewLine
+                + "    <7>," + Environment.NewLine
+                + "    <8>," + Environment.NewLine
+                + "    <9>," + Environment.NewLine
+                + "    <10>," + Environment.NewLine
+                + "    ..." + Environment.NewLine
+                + "]", result);
+        }
+
+        [Test]
+        public void CollectionDoesNotContain_IncludesMessage()
+        {
+            string result = DefaultFailureMessageFormatter.Instance.DoesNotContain(0, Enumerable.Empty<int>(), "foo");
+
+            StringAssert.EndsWith(Environment.NewLine + "foo", result);
+        }
+
+        [Test]
         public void DoNotMatch_NonMatchingCollections()
         {
             string result = DefaultFailureMessageFormatter.Instance.DoNotMatch(new[] { 1, 2, 3 }, new[] { 1, 3, 2 });
@@ -326,7 +389,7 @@ namespace EasyAssertions.UnitTests
         }
 
         [Test]
-        public void DoesNotContain()
+        public void StringDoesNotContain()
         {
             string result = DefaultFailureMessageFormatter.Instance.DoesNotContain("bar", "foo");
 
@@ -336,7 +399,7 @@ namespace EasyAssertions.UnitTests
         }
 
         [Test]
-        public void DoesNotContains_ActualIsLong_EndOfActualClipped()
+        public void StringDoesNotContain_ActualIsLong_EndOfActualClipped()
         {
             string result = DefaultFailureMessageFormatter.Instance.DoesNotContain("foo",
                 "0123456789abcdefghijklmnopqrstuvwxyz0123456789abcdefghijklmnopqrstuvwxyz");
@@ -347,7 +410,7 @@ namespace EasyAssertions.UnitTests
         }
 
         [Test]
-        public void DoesNotContain_IncludesMessage()
+        public void StringDoesNotContain_IncludesMessage()
         {
             string result = DefaultFailureMessageFormatter.Instance.DoesNotContain(string.Empty, string.Empty, "foo");
 

@@ -355,6 +355,35 @@ namespace EasyAssertions.UnitTests
         }
 
         [Test]
+        public void DoesNotStartWith()
+        {
+            string result = DefaultFailureMessageFormatter.Instance.DoesNotStartWith("foo", "bar");
+
+            Assert.AreEqual(TestExpression + Environment.NewLine
+                + "should start with \"foo\"" + Environment.NewLine
+                + "but starts with   \"bar\"", result);
+        }
+
+        [Test]
+        public void DoesNotStartWith_ActualIsLong_EndOfActualClipped()
+        {
+            string result = DefaultFailureMessageFormatter.Instance.DoesNotStartWith("foo",
+                "0123456789abcdefghijklmnopqrstuvwxyz0123456789abcdefghijklmnopqrstuvwxyz");
+
+            Assert.AreEqual(TestExpression + Environment.NewLine
+                + "should start with \"foo\"" + Environment.NewLine
+                + "but starts with   \"0123456789abcdefghijklmnopqrstuvwxyz0123456789abcdefghijk...\"", result);
+        }
+
+        [Test]
+        public void DoesNotStartWith_IncludesMessage()
+        {
+            string result = DefaultFailureMessageFormatter.Instance.DoesNotStartWith(string.Empty, string.Empty, "foo");
+
+            StringAssert.EndsWith(Environment.NewLine + "foo", result);
+        }
+
+        [Test]
         public void DoesNotEndWith()
         {
             string result = DefaultFailureMessageFormatter.Instance.DoesNotEndWith("foo", "bar");

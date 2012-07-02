@@ -218,14 +218,22 @@ namespace EasyAssertions
                 + MessageOnNewLine(message);
         }
 
+        public string DoesNotStartWith(string expectedStart, string actual, string message = null)
+        {
+            return TestExpression.Get()
+                + Environment.NewLine + "should start with \"" + Escape(expectedStart) + '"'
+                + Environment.NewLine + "but starts with   \"" + Escape(GetSnippet(actual, 0, MaxStringWidth)) + '"'
+                + MessageOnNewLine(message);
+        }
+
         public string DoesNotEndWith(string expectedEnd, string actual, string message = null)
         {
             int from = Math.Max(0, actual.Length - MaxStringWidth);
 
             return TestExpression.Get()
                 + Environment.NewLine + "should end with \"" + Escape(expectedEnd) + '"'
-                    + Environment.NewLine + "but ends with   \"" + Escape(GetSnippet(actual, @from, MaxStringWidth)) + '"'
-                        + MessageOnNewLine(message);
+                + Environment.NewLine + "but ends with   \"" + Escape(GetSnippet(actual, @from, MaxStringWidth)) + '"'
+                + MessageOnNewLine(message);
         }
 
         private static string GetSnippet(string wholeString, int fromIndex, int maxLength)

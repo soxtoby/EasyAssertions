@@ -216,6 +216,15 @@ namespace EasyAssertions
                 });
         }
 
+        public static Actual<string> ShouldStartWith(this string actual, string expectedStart, string message = null)
+        {
+            return actual.Assert(() =>
+                {
+                    if (!actual.StartsWith(expectedStart))
+                        throw new EasyAssertionException(FailureMessageFormatter.Current.DoesNotStartWith(expectedStart, actual, message));
+                });
+        }
+
         public static Actual<string> ShouldEndWith(this string actual, string expectedEnd, string message = null)
         {
             return actual.Assert(() =>

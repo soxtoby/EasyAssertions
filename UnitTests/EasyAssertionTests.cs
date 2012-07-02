@@ -530,9 +530,32 @@ namespace EasyAssertions.UnitTests
         }
 
         [Test]
+        public void ShouldStartWith_StringStartsWithExpected_ReturnsActualValue()
+        {
+            string actual = "foobar";
+
+            Actual<string> result = actual.ShouldStartWith("foo");
+
+            Assert.AreSame(actual, result.And);
+        }
+
+        [Test]
+        public void ShouldStartWith_StringDoesNotStartWithExpected_FailsWithStringDoesNotStartWithMessage()
+        {
+            string actual = "foobar";
+            string expectedStart = "bar";
+            mockFormatter.DoesNotStartWith(expectedStart, actual, "foo").Returns("baz");
+
+            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldStartWith(expectedStart, "foo"));
+
+            Assert.AreEqual("baz", result.Message);
+        }
+
+        [Test]
         public void ShouldEndWith_StringEndsWithExpected_ReturnsActualValue()
         {
             string actual = "foobar";
+
             Actual<string> result = actual.ShouldEndWith("bar");
 
             Assert.AreSame(actual, result.Value);

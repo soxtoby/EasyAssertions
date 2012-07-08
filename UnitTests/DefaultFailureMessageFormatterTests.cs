@@ -354,6 +354,37 @@ namespace EasyAssertions.UnitTests
         }
 
         [Test]
+        public void CollectionDoesNotContainItems()
+        {
+            string result = DefaultFailureMessageFormatter.Instance.DoesNotContainItems(new[] { 1 }, Enumerable.Empty<int>());
+
+            Assert.AreEqual(ActualExpression + Environment.NewLine
+                + "should contain " + ExpectedExpression + Environment.NewLine
+                + "but was missing item 0 <1>" + Environment.NewLine
+                + "and was empty.", result);
+        }
+
+        [Test]
+        public void CollectionDoesNotContainItems_ExpectedIsNewCollection_ExpectedExpressionNotIncluded()
+        {
+            expressionProvider.GetExpectedExpression().Returns("new[] { 1 }");
+
+            string result = DefaultFailureMessageFormatter.Instance.DoesNotContainItems(new[] { 1 }, Enumerable.Empty<int>());
+
+            Assert.AreEqual(ActualExpression + Environment.NewLine
+                + "should contain expected item 0 <1>" + Environment.NewLine
+                + "but was empty.", result);
+        }
+
+        [Test]
+        public void CollectionDoesNotContainItems_IncludesMessage()
+        {
+            string result = DefaultFailureMessageFormatter.Instance.DoesNotContainItems(new[] { 1 }, Enumerable.Empty<int>(), "foo");
+
+            StringAssert.EndsWith(Environment.NewLine + "foo", result);
+        }
+
+        [Test]
         public void DoNotMatch_NonMatchingCollections()
         {
             string result = DefaultFailureMessageFormatter.Instance.DoNotMatch(new[] { 1, 2, 3 }, new[] { 1, 3, 2 });

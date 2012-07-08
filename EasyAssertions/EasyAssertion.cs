@@ -163,6 +163,20 @@ namespace EasyAssertions
                 });
         }
 
+        public static Actual<IEnumerable<TActual>> ShouldContainItems<TActual, TExpected>(this IEnumerable<TActual> actual, IEnumerable<TExpected> expected, string message = null) where TExpected : TActual
+        {
+            return actual.Assert(() =>
+                {
+                    HashSet<TActual> actualList = new HashSet<TActual>(actual);
+
+                    foreach (TExpected expectedItem in expected)
+                    {
+                        if (!actualList.Contains(expectedItem))
+                            throw new EasyAssertionException(FailureMessageFormatter.Current.DoesNotContainItems(expected, actual, message));
+                    }
+                });
+        }
+
         public static Actual<IEnumerable<TActual>> ShouldBeThese<TActual, TExpected>(this IEnumerable<TActual> actual, IEnumerable<TExpected> expected, string message = null)
         {
             return actual.Assert(() =>

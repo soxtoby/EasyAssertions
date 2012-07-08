@@ -146,17 +146,50 @@ namespace EasyAssertions
 
             return TestExpression.GetActual()
                 + Environment.NewLine + Expected("should contain ", expected)
-                + Environment.NewLine + "but was " + ActualElements(actualList)
+                + Environment.NewLine + "but was " + ActualElements(actualList, 6)
                 + MessageOnNewLine(message);
         }
 
-        private static string ActualElements(ICollection<object> actualList)
+        public string DoesNotContainItems(IEnumerable expected, IEnumerable actual, string message = null)
+        {
+            HashSet<object> actualItems = new HashSet<object>(actual.Cast<object>());
+            int missingItemIndex;
+            object missingItem;
+            FindMissingItem(expected, actualItems, out missingItemIndex, out missingItem);
+
+            return TestExpression.GetActual()
+                + ExpectedCollection(
+                      Environment.NewLine + "should contain {0}"
+                    + Environment.NewLine + "but was missing item " + missingItemIndex + ' ' + ObjectValue(missingItem)
+                    + Environment.NewLine + "and was " + ActualElements(actualItems, 0)
+                    ,
+                      Environment.NewLine + "should contain expected item " + missingItemIndex + ' ' + ObjectValue(missingItem)
+                    + Environment.NewLine + "but was " + ActualElements(actualItems, 0))
+                + MessageOnNewLine(message);
+        }
+
+        private static void FindMissingItem(IEnumerable expected, HashSet<object> actualItems, out int missingItemIndex, out object missingItem)
+        {
+            missingItemIndex = 0;
+            missingItem = null;
+            foreach (object expectedItem in expected)
+            {
+                if (!actualItems.Contains(expectedItem))
+                {
+                    missingItem = expectedItem;
+                    break;
+                }
+                missingItemIndex++;
+            }
+        }
+
+        private static string ActualElements(ICollection<object> actualList, int singleItemIndent)
         {
             if (actualList.None())
                 return "empty.";
 
             if (actualList.Count == 1)
-                return "      [" + ObjectValue(actualList.Single()) + "]";
+                return new string(' ', singleItemIndent) + '[' + ObjectValue(actualList.Single()) + ']';
 
             return "["
                 + SelectFirstFew(10, actualList, EnumerableElement, EnumerableEllipses).Join(",")
@@ -191,14 +224,14 @@ namespace EasyAssertions
             List<object> actualList = actual.Cast<object>().ToList();
 
             if (expectedList.Count != actualList.Count)
-                return TestExpression.GetActual() + ExpectedCollection()
+                return TestExpression.GetActual() + ExpectedCollection(" doesn't match {0}.", string.Empty)
                     + LengthDifference(expectedList.Count, actualList)
                     + MessageOnNewLine(message);
 
             object expectedValue, actualValue;
             int differenceIndex = FindDifference(expectedList, actualList, Compare.ObjectsAreEqual, out expectedValue, out actualValue);
 
-            return TestExpression.GetActual() + ExpectedCollection(" differs at index " + differenceIndex + '.')
+            return TestExpression.GetActual() + ExpectedCollection(" doesn't match {0}. D", " d") + "iffers at index " + differenceIndex + '.'
                 + Environment.NewLine + ExpectedText + ObjectValue(expectedValue)
                 + Environment.NewLine + ActualText + ObjectValue(actualValue)
                 + MessageOnNewLine(message);
@@ -210,18 +243,12 @@ namespace EasyAssertions
                 + Environment.NewLine + ActualLengthElements(actual.Cast<object>().ToList());
         }
 
-        private static string ExpectedCollection(string nextPartOfMessage = null)
+        private static string ExpectedCollection(string expectedMessage, string defaultMessage)
         {
-            nextPartOfMessage = nextPartOfMessage ?? string.Empty;
             string expectedExpression = TestExpression.GetExpected();
             return NewCollectionPattern.IsMatch(expectedExpression)
-                ? nextPartOfMessage
-                : " doesn't match " + expectedExpression + "." + Capitalize(nextPartOfMessage);
-        }
-
-        private static string Capitalize(string value)
-        {
-            return NonWhitespace.Replace(value, match => match.Value.ToUpper(), 1);
+                ? defaultMessage
+                : string.Format(expectedMessage, expectedExpression);
         }
 
         private static readonly Regex NewCollectionPattern = new Regex(@"^new.*\{.*\}");

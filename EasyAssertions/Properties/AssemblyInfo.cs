@@ -6,9 +6,9 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("EasyAssertions")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Easy-to-use fluent assertions with actually useful failure messages.")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("Simon Oxtoby")]
 [assembly: AssemblyProduct("EasyAssertions")]
 [assembly: AssemblyCopyright("© Simon Oxtoby 2012")]
 [assembly: AssemblyTrademark("")]
@@ -32,8 +32,8 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("0.3.0.0")]
-[assembly: AssemblyFileVersion("0.3.0.0")]
+[assembly: AssemblyVersion("0.4.0")]
+[assembly: AssemblyFileVersion("0.4.0")]
 
 [assembly: InternalsVisibleTo("EasyAssertions.UnitTests, PublicKey=00240000048000009400000006020000002400005253413100040000010001009732fe341bc1ad"
                                                                 + "7a67eaaca1b9b54ae7d12db0412bc105070e6b4bbd04a3daf59e6be85604cb63535301a7dba305"

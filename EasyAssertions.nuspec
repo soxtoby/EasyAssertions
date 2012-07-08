@@ -1,14 +1,14 @@
 <?xml version="1.0"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
   <metadata>
-    <version>0.3.0</version>
-    <authors>Simon Oxtoby</authors>
+    <version>$version$</version>
+    <authors>$author$</authors>
     <owners>soxtoby</owners>
     <licenseUrl>http://www.opensource.org/licenses/mit-license.php</licenseUrl>
-    <id>EasyAssertions</id>
+    <id>$id$</id>
     <title />
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>Easy-to-use fluent assertions with actually useful failure messages.</description>
+    <description>$description$</description>
     <copyright>Simon Oxtoby</copyright>
     <language>en-AU</language>
     <tags>testing assertion unittesting</tags>

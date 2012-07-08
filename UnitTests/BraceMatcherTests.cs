@@ -75,6 +75,16 @@ namespace EasyAssertions.UnitTests
             Assert.AreEqual(11, result);
         }
 
+        [Test]
+        public void FindNextComma()
+        {
+            BraceMatcher sut = new BraceMatcher("method(param1, param2, param3)", open: '\0', close: ',');
+
+            int result = sut.MatchFrom(0, initialDepth: 1);
+
+            Assert.AreEqual(13, result);
+        }
+
         private static BraceMatcher MakeBraceMatcher(string source)
         {
             return new BraceMatcher(source);

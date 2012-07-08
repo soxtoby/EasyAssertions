@@ -6,9 +6,14 @@
 
         private static TestExpressionProvider CurrentProvider { get { return (currentProvider ?? SourceExpressionProvider.Instance); } }
 
-        public static string Get()
+        public static string GetActual()
         {
-            return CurrentProvider.GetExpression();
+            return CurrentProvider.GetActualExpression();
+        }
+
+        public static string GetExpected()
+        {
+            return CurrentProvider.GetExpectedExpression();
         }
 
         public static void OverrideProvider(TestExpressionProvider provider)
@@ -24,6 +29,7 @@
 
     public interface TestExpressionProvider
     {
-        string GetExpression();
+        string GetActualExpression();
+        string GetExpectedExpression();
     }
 }

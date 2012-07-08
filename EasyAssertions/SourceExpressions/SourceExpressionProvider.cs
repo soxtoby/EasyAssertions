@@ -17,9 +17,14 @@ namespace EasyAssertions
 
         private SourceExpressionProvider() { }
 
-        public string GetExpression()
+        public string GetActualExpression()
         {
-            return assertionGroupChain.Aggregate(string.Empty, (expression, group) => group.GetExpression(expression));
+            return assertionGroupChain.Aggregate(string.Empty, (expression, group) => group.GetActualExpression(expression));
+        }
+
+        public string GetExpectedExpression()
+        {
+            return assertionGroupChain.Last().GetExpectedExpression();
         }
 
         public void RegisterAssertionMethod(int assertionFrameIndex)

@@ -11,7 +11,9 @@ namespace EasyAssertions
             MethodName = methodName;
         }
 
-        public abstract ExpressionSegment GetSegment(string expressionSource, int fromIndex);
+        public abstract ExpressionSegment GetActualSegment(string expressionSource, int fromIndex);
+
+        public abstract ExpressionSegment GetExpectedSegment(string expressionSource, int fromIndex);
 
         protected int GetMethodCallIndex(string expressionSource, int fromIndex)
         {

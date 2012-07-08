@@ -16,9 +16,9 @@ namespace EasyAssertions
 
         public override SourceAddress Address { get { return address; } }
 
-        public override string GetExpression(string parentExpression)
+        public override string GetActualExpression(string parentExpression)
         {
-            string expression = base.GetExpression(parentExpression);
+            string expression = base.GetActualExpression(parentExpression);
             return Regex.Replace(expression, WordBoundary + expressionAlias + WordBoundary, parentExpression);
         }
     }

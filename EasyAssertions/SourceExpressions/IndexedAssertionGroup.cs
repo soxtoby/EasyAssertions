@@ -10,9 +10,9 @@ namespace EasyAssertions
             this.index = index;
         }
 
-        public override string GetExpression(string parentExpression)
+        public override string GetActualExpression(string parentExpression)
         {
-            return base.GetExpression(parentExpression + '[' + index + ']');
+            return base.GetActualExpression(parentExpression + '[' + index + ']');
         }
     }
 }

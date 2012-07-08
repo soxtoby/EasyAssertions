@@ -1,17 +1,31 @@
 namespace EasyAssertions
 {
-    public class BraceMatcher
+    internal class BraceMatcher
     {
         private readonly string source;
+        private readonly char open;
+        private readonly char close;
 
-        public BraceMatcher(string source)
+        public static int FindClosingBrace(string source, int startIndex = 0, char open = '(', char close = ')')
         {
-            this.source = source;
+            return new BraceMatcher(source, open, close).MatchFrom(startIndex);
         }
 
-        public int MatchFrom(int startIndex)
+        public static int FindNext(string source, char charToFind, int startIndex = 0)
         {
-            int depth = 0;
+            return new BraceMatcher(source, '\0', charToFind).MatchFrom(startIndex, 1);
+        }
+
+        public BraceMatcher(string source, char open = '(', char close = ')')
+        {
+            this.source = source;
+            this.open = open;
+            this.close = close;
+        }
+
+        public int MatchFrom(int startIndex, int initialDepth = 0)
+        {
+            int depth = initialDepth;
             bool inString = false;
             bool escapeNextChar = false;
             for (int i = startIndex; i < source.Length; i++)
@@ -32,11 +46,11 @@ namespace EasyAssertions
                 }
                 else
                 {
-                    if (c == '(')
+                    if (c == open)
                     {
                         depth++;
                     }
-                    else if (c == ')')
+                    else if (c == close)
                     {
                         depth--;
                         if (depth == 0)

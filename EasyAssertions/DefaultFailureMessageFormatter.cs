@@ -28,9 +28,9 @@ namespace EasyAssertions
 
         public string NotEqual(object expected, object actual, string message = null)
         {
-            return TestExpression.Get()
-                + Environment.NewLine + ExpectedText + '<' + expected + '>'
-                + Environment.NewLine + ActualText + '<' + actual + '>'
+            return TestExpression.GetActual()
+                + Environment.NewLine + Expected(ExpectedText, expected)
+                + Environment.NewLine + ActualText + ObjectValue(actual)
                 + MessageOnNewLine(message);
         }
 
@@ -48,9 +48,9 @@ namespace EasyAssertions
             arrowIndex += actualSnippet.Substring(0, arrowIndex).Count(c => Escapes.ContainsKey(c));
             string arrow = new string(' ', arrowIndex) + '^';
 
-            return TestExpression.Get() + Environment.NewLine
-                + ExpectedText + '"' + Escape(expectedSnippet) + '"' + Environment.NewLine
-                + ActualText + '"' + Escape(actualSnippet) + '"' + Environment.NewLine
+            return TestExpression.GetActual() + Environment.NewLine
+                + Expected(ExpectedText, expected, expectedSnippet) + Environment.NewLine
+                + ActualText + StringValue(actualSnippet) + Environment.NewLine
                 + ArrowPrefix + arrow + Environment.NewLine
                 + "Difference at index " + differenceIndex + '.'
                 + MessageOnNewLine(message);
@@ -58,31 +58,44 @@ namespace EasyAssertions
 
         public string AreEqual(object notExpected, object actual, string message = null)
         {
-            return TestExpression.Get()
-                + Environment.NewLine + "should not be <" + notExpected + '>'
-                + Environment.NewLine + "but was       <" + actual + '>'
+            return TestExpression.GetActual()
+                + Environment.NewLine + Expected("should not be ", notExpected)
+                + Environment.NewLine + "but was       " + ObjectValue(actual)
                 + MessageOnNewLine(message);
+        }
+
+        private static string Expected(string expectationMessage, object expectedValue)
+        {
+            string expectedExpression = TestExpression.GetExpected();
+            string expectedValueOutput = string.Empty + expectedValue;
+
+            expectationMessage += expectedExpression == expectedValueOutput
+                ? ObjectValue(expectedValueOutput)
+                : expectedExpression
+                    + Environment.NewLine + new string(' ', expectationMessage.Length) + ObjectValue(expectedValueOutput);
+
+            return expectationMessage;
         }
 
         public string IsNull(string message = null)
         {
-            return TestExpression.Get()
+            return TestExpression.GetActual()
                  + Environment.NewLine + "should not be null, but was."
                  + MessageOnNewLine(message);
         }
 
         public string NotSame(object expected, object actual, string message = null)
         {
-            return TestExpression.Get()
-                + Environment.NewLine + ExpectedInstanceText + '<' + expected + '>'
-                + Environment.NewLine + ActualInstanceText + '<' + actual + '>'
+            return TestExpression.GetActual()
+                + Environment.NewLine + Expected(ExpectedInstanceText, expected)
+                + Environment.NewLine + ActualInstanceText + ObjectValue(actual)
                 + MessageOnNewLine(message);
         }
 
         public string AreSame(object actual, string message = null)
         {
-            return TestExpression.Get()
-                + Environment.NewLine + "shouldn't be instance <" + actual + '>'
+            return TestExpression.GetActual()
+                + Environment.NewLine + Expected("shouldn't be instance ", actual)
                 + MessageOnNewLine(message);
         }
 
@@ -90,7 +103,7 @@ namespace EasyAssertions
         {
             List<object> actualList = actual.Cast<object>().ToList();
 
-            return TestExpression.Get()
+            return TestExpression.GetActual()
                 + Environment.NewLine + "should be empty"
                 + Environment.NewLine + ActualLengthElements(actualList)
                 + MessageOnNewLine(message);
@@ -98,16 +111,15 @@ namespace EasyAssertions
 
         public string IsEmpty(string message = null)
         {
-            return TestExpression.Get()
+            return TestExpression.GetActual()
                 + Environment.NewLine + "should not be empty, but was."
                 + MessageOnNewLine(message);
         }
 
         public string LengthMismatch(int expectedLength, IEnumerable actual, string message = null)
         {
-            return TestExpression.Get()
-                + Environment.NewLine + "should have " + expectedLength + (expectedLength == 1 ? " element" : " elements")
-                + Environment.NewLine + ActualLengthElements(actual.Cast<object>().ToList())
+            return TestExpression.GetActual()
+                + LengthDifference(expectedLength, actual)
                 + MessageOnNewLine(message);
         }
 
@@ -119,7 +131,7 @@ namespace EasyAssertions
             string message = "but had " + actualList.Count;
 
             if (actualList.Count == 1)
-                message += " element: <" + actualList.Single() + '>';
+                message += " element: " + ObjectValue(actualList.Single());
             else
                 message += " elements: ["
                     + SelectFirstFew(3, actualList, EnumerableElement, EnumerableEllipses).Join(",")
@@ -132,8 +144,8 @@ namespace EasyAssertions
         {
             List<object> actualList = actual.Cast<object>().ToList();
 
-            return TestExpression.Get()
-                + Environment.NewLine + "should contain <" + expected + '>'
+            return TestExpression.GetActual()
+                + Environment.NewLine + Expected("should contain ", expected)
                 + Environment.NewLine + "but was " + ActualElements(actualList)
                 + MessageOnNewLine(message);
         }
@@ -144,7 +156,7 @@ namespace EasyAssertions
                 return "empty.";
 
             if (actualList.Count == 1)
-                return "      [<" + actualList.Single() + ">]";
+                return "      [" + ObjectValue(actualList.Single()) + "]";
 
             return "["
                 + SelectFirstFew(10, actualList, EnumerableElement, EnumerableEllipses).Join(",")
@@ -153,7 +165,7 @@ namespace EasyAssertions
 
         private static string EnumerableElement(object item)
         {
-            return Environment.NewLine + "    <" + item + '>';
+            return Environment.NewLine + "    " + ObjectValue(item);
         }
 
         private static IEnumerable<string> SelectFirstFew<T>(int count, IEnumerable<T> enumerable, Func<T, string> select, string extra)
@@ -175,23 +187,54 @@ namespace EasyAssertions
 
         public string DoNotMatch(IEnumerable expected, IEnumerable actual, string message = null)
         {
-            object expectedValue, actualValue;
-            int differenceIndex = FindDifference(expected, actual, Compare.ObjectsAreEqual, out expectedValue, out actualValue);
+            List<object> expectedList = expected.Cast<object>().ToList();
+            List<object> actualList = actual.Cast<object>().ToList();
 
-            return TestExpression.Get() + " differs at index " + differenceIndex + '.'
-                + Environment.NewLine + ExpectedText + '<' + expectedValue + '>'
-                + Environment.NewLine + ActualText + '<' + actualValue + '>'
+            if (expectedList.Count != actualList.Count)
+                return TestExpression.GetActual() + ExpectedCollection()
+                    + LengthDifference(expectedList.Count, actualList)
+                    + MessageOnNewLine(message);
+
+            object expectedValue, actualValue;
+            int differenceIndex = FindDifference(expectedList, actualList, Compare.ObjectsAreEqual, out expectedValue, out actualValue);
+
+            return TestExpression.GetActual() + ExpectedCollection(" differs at index " + differenceIndex + '.')
+                + Environment.NewLine + ExpectedText + ObjectValue(expectedValue)
+                + Environment.NewLine + ActualText + ObjectValue(actualValue)
                 + MessageOnNewLine(message);
         }
+
+        private static string LengthDifference(int expectedLength, IEnumerable actual)
+        {
+            return Environment.NewLine + "should have " + expectedLength + (expectedLength == 1 ? " element" : " elements")
+                + Environment.NewLine + ActualLengthElements(actual.Cast<object>().ToList());
+        }
+
+        private static string ExpectedCollection(string nextPartOfMessage = null)
+        {
+            nextPartOfMessage = nextPartOfMessage ?? string.Empty;
+            string expectedExpression = TestExpression.GetExpected();
+            return NewCollectionPattern.IsMatch(expectedExpression)
+                ? nextPartOfMessage
+                : " doesn't match " + expectedExpression + "." + Capitalize(nextPartOfMessage);
+        }
+
+        private static string Capitalize(string value)
+        {
+            return NonWhitespace.Replace(value, match => match.Value.ToUpper(), 1);
+        }
+
+        private static readonly Regex NewCollectionPattern = new Regex(@"^new.*\{.*\}");
+        private static readonly Regex NonWhitespace = new Regex(@"\S");
 
         public string ItemsNotSame(IEnumerable expected, IEnumerable actual, string message = null)
         {
             object expectedValue, actualValue;
             int differenceIndex = FindDifference(expected, actual, ReferenceEquals, out expectedValue, out actualValue);
 
-            return TestExpression.Get() + " differs at index " + differenceIndex + '.'
-                + Environment.NewLine + ExpectedInstanceText + '<' + expectedValue + '>'
-                + Environment.NewLine + ActualInstanceText + '<' + actualValue + '>'
+            return TestExpression.GetActual() + " differs at index " + differenceIndex + '.'
+                + Environment.NewLine + ExpectedInstanceText + ObjectValue(expectedValue)
+                + Environment.NewLine + ActualInstanceText + ObjectValue(actualValue)
                 + MessageOnNewLine(message);
         }
 
@@ -199,19 +242,24 @@ namespace EasyAssertions
         {
             List<object> expectedList = expected.Cast<object>().ToList();
             List<object> actualList = actual.Cast<object>().ToList();
+            return FindDifference(expectedList, actualList, areEqual, out expectedValue, out actualValue);
+        }
 
+        private static int FindDifference(IList<object> expectedList, IList<object> actualList, Func<object, object, bool> areEqual, out object expectedValue, out object actualValue)
+        {
             int differenceIndex = Enumerable.Range(0, expectedList.Count)
                 .First(i => !areEqual(actualList[i], expectedList[i]));
 
             expectedValue = expectedList[differenceIndex];
             actualValue = actualList[differenceIndex];
+
             return differenceIndex;
         }
 
         public string NoException(Type expectedExceptionType, Expression<Action> function, string message = null)
         {
             return CleanFunctionBody(function)
-                + Environment.NewLine + ExpectedExceptionText + '<' + expectedExceptionType.Name + '>'
+                + Environment.NewLine + ExpectedExceptionText + ObjectValue(expectedExceptionType.Name)
                 + Environment.NewLine + "but didn't throw at all."
                 + MessageOnNewLine(message);
         }
@@ -219,8 +267,8 @@ namespace EasyAssertions
         public string WrongException(Type expectedExceptionType, Type actualExceptionType, Expression<Action> function, string message = null)
         {
             return CleanFunctionBody(function)
-                + Environment.NewLine + ExpectedExceptionText + '<' + expectedExceptionType.Name + '>'
-                + Environment.NewLine + ActualExceptionText + '<' + actualExceptionType.Name + '>'
+                + Environment.NewLine + ExpectedExceptionText + ObjectValue(expectedExceptionType.Name)
+                + Environment.NewLine + ActualExceptionText + ObjectValue(actualExceptionType.Name)
                 + MessageOnNewLine(message);
         }
 
@@ -235,28 +283,43 @@ namespace EasyAssertions
         {
             string actualSnippet = GetSnippet(actual, 0, MaxStringWidth);
 
-            return TestExpression.Get() + Environment.NewLine
-                + "should contain \"" + Escape(expectedSubstring) + '"' + Environment.NewLine
-                + "but was        \"" + Escape(actualSnippet) + '"'
+            return TestExpression.GetActual()
+                + Environment.NewLine + Expected("should contain ", expectedSubstring, expectedSubstring)
+                + Environment.NewLine + "but was        " + StringValue(actualSnippet)
                 + MessageOnNewLine(message);
         }
 
         public string DoesNotStartWith(string expectedStart, string actual, string message = null)
         {
-            return TestExpression.Get()
-                + Environment.NewLine + "should start with \"" + Escape(expectedStart) + '"'
-                + Environment.NewLine + "but starts with   \"" + Escape(GetSnippet(actual, 0, MaxStringWidth)) + '"'
+            string actualSnippet = GetSnippet(actual, 0, MaxStringWidth);
+
+            return TestExpression.GetActual()
+                + Environment.NewLine + Expected("should start with ", expectedStart, expectedStart)
+                + Environment.NewLine + "but starts with   " + StringValue(actualSnippet)
                 + MessageOnNewLine(message);
         }
 
         public string DoesNotEndWith(string expectedEnd, string actual, string message = null)
         {
             int from = Math.Max(0, actual.Length - MaxStringWidth);
+            string actualSnippet = GetSnippet(actual, from, MaxStringWidth);
 
-            return TestExpression.Get()
-                + Environment.NewLine + "should end with \"" + Escape(expectedEnd) + '"'
-                + Environment.NewLine + "but ends with   \"" + Escape(GetSnippet(actual, @from, MaxStringWidth)) + '"'
+            return TestExpression.GetActual()
+                + Environment.NewLine + Expected("should end with ", expectedEnd, expectedEnd)
+                + Environment.NewLine + "but ends with   " + StringValue(actualSnippet)
                 + MessageOnNewLine(message);
+        }
+
+        private static string Expected(string expectationMessage, string expectedValue, string expectedSnippet)
+        {
+            string expectedExpression = TestExpression.GetExpected();
+
+            expectationMessage += expectedExpression.Trim('@', '"') == expectedValue
+                ? StringValue(expectedSnippet)
+                : expectedExpression
+                    + Environment.NewLine + new string(' ', expectationMessage.Length) + StringValue(expectedSnippet);
+
+            return expectationMessage;
         }
 
         private static string GetSnippet(string wholeString, int fromIndex, int maxLength)
@@ -290,6 +353,16 @@ namespace EasyAssertions
                 { '\r', "\\r" },
                 { '\n', "\\n" }
             };
+
+        private static string ObjectValue(object value)
+        {
+            return "<" + value + ">";
+        }
+
+        private static string StringValue(string expectedSnippet)
+        {
+            return '"' + Escape(expectedSnippet) + '"';
+        }
 
         private static string Escape(string value)
         {

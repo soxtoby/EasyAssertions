@@ -57,8 +57,10 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AssertionMethodTests.cs" />
     <Compile Include="BraceMatcherTests.cs" />
     <Compile Include="CompareTests.cs" />
+    <Compile Include="ContinuationTests.cs" />
     <Compile Include="DefaultFailureMessageFormatterTests.cs" />
     <Compile Include="EasyAssertionExceptionTests.cs" />
     <Compile Include="EasyAssertionTests.cs" />

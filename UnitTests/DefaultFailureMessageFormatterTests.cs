@@ -8,13 +8,16 @@ namespace EasyAssertions.UnitTests
     [TestFixture]
     public class DefaultFailureMessageFormatterTests
     {
-        private const string TestExpression = "test expression";
+        private TestExpressionProvider expressionProvider;
+        private const string ActualExpression = "test expression";
+        private const string ExpectedExpression = "expected expression";
 
         [SetUp]
         public void SetUp()
         {
-            TestExpressionProvider expressionProvider = Substitute.For<TestExpressionProvider>();
-            expressionProvider.GetExpression().Returns(TestExpression);
+            expressionProvider = Substitute.For<TestExpressionProvider>();
+            expressionProvider.GetActualExpression().Returns(ActualExpression);
+            expressionProvider.GetExpectedExpression().Returns(ExpectedExpression);
             EasyAssertions.TestExpression.OverrideProvider(expressionProvider);
         }
 
@@ -28,9 +31,22 @@ namespace EasyAssertions.UnitTests
         public void NotEqual_Objects_ToStringed()
         {
             string result = DefaultFailureMessageFormatter.Instance.NotEqual(new FakeObject("foo"), new FakeObject("bar"));
-            Assert.AreEqual(TestExpression + Environment.NewLine
-                + "should be <foo>" + Environment.NewLine
+            Assert.AreEqual(ActualExpression + Environment.NewLine
+                + "should be " + ExpectedExpression + Environment.NewLine
+                + "          <foo>" + Environment.NewLine
                 + "but was   <bar>", result);
+        }
+
+        [Test]
+        public void NotEqual_ExpectedIsLiteral_ExpectedExpressionNotIncluded()
+        {
+            expressionProvider.GetExpectedExpression().Returns("1");
+
+            string result = DefaultFailureMessageFormatter.Instance.NotEqual(1, 2);
+
+            Assert.AreEqual(ActualExpression + Environment.NewLine
+                + "should be <1>" + Environment.NewLine
+                + "but was   <2>", result);
         }
 
         [Test]
@@ -44,7 +60,72 @@ namespace EasyAssertions.UnitTests
         public void NotEqual_SingleLineStrings()
         {
             string result = DefaultFailureMessageFormatter.Instance.NotEqual("acd", "abc");
-            Assert.AreEqual(TestExpression + Environment.NewLine
+            Assert.AreEqual(ActualExpression + Environment.NewLine
+                + "should be " + ExpectedExpression + Environment.NewLine
+                + "          \"acd\"" + Environment.NewLine
+                + "but was   \"abc\"" + Environment.NewLine
+                 + "            ^" + Environment.NewLine
+                + "Difference at index 1.", result);
+        }
+
+        [Test]
+        public void StringsNotEqual_DifferenceOnLineTwo()
+        {
+            string result = DefaultFailureMessageFormatter.Instance.NotEqual("abc\ndfe", "abc\ndef");
+            Assert.AreEqual(ActualExpression + Environment.NewLine
+                + "should be " + ExpectedExpression + Environment.NewLine
+                + "          \"abc\\ndfe\"" + Environment.NewLine
+                + "but was   \"abc\\ndef\"" + Environment.NewLine
+                  + "                 ^" + Environment.NewLine
+                + "Difference at index 5.", result);
+        }
+
+        [Test]
+        public void StringsNotEqual_DifferenceFarAwayFromBeginning()
+        {
+            string result = DefaultFailureMessageFormatter.Instance.NotEqual("0123456789abcdefghijklmnopqrstuvwxyz0123456789abcdefghijklmnopqrstuvwxyz",
+                                                                             "0123456789abcdefghijklmnopqrstuvwxyz0123456789abcdefghijklmnpoqrstuvwxyz");
+            Assert.AreEqual(ActualExpression + Environment.NewLine
+                + "should be " + ExpectedExpression + Environment.NewLine
+                + "          \"...789abcdefghijklmnopqrstuvwxyz\"" + Environment.NewLine
+                + "but was   \"...789abcdefghijklmnpoqrstuvwxyz\"" + Environment.NewLine
+                 + "                               ^" + Environment.NewLine
+                + "Difference at index 60.", result);
+        }
+
+        [Test]
+        public void StringsNotEqual_DifferenceFarAwayFromEnd()
+        {
+            string result = DefaultFailureMessageFormatter.Instance.NotEqual("0123456789abcdefghijklmnopqrstuvwxyz0123456789abcdefghijklmnopqrstuvwxyz",
+                                                                             "0123456789abdcefghijklmnopqrstuvwxyz0123456789abcdefghijklmnopqrstuvwxyz");
+            Assert.AreEqual(ActualExpression + Environment.NewLine
+                + "should be " + ExpectedExpression + Environment.NewLine
+                + "          \"0123456789abcdefghijklmnopqrstuvwxyz0123456789abcdefghijk...\"" + Environment.NewLine
+                + "but was   \"0123456789abdcefghijklmnopqrstuvwxyz0123456789abcdefghijk...\"" + Environment.NewLine
+                 + "                       ^" + Environment.NewLine
+                + "Difference at index 12.", result);
+        }
+
+        [Test]
+        public void StringsNotEqual_DifferenceFarAwayFromBothEnds()
+        {
+            string result = DefaultFailureMessageFormatter.Instance.NotEqual("0123456789abcdefghijklmnopqrstuvwxyz0123456789abcdefghijklmnopqrstuvwxyz0123456789",
+                                                                             "0123456789abcdefghijkmlnopqrstuvwxyz0123456789abcdefghijklmnopqrstuvwxyz0123456789");
+            Assert.AreEqual(ActualExpression + Environment.NewLine
+                + "should be " + ExpectedExpression + Environment.NewLine
+                + "          \"...456789abcdefghijklmnopqrstuvwxyz0123456789abcdefghijkl...\"" + Environment.NewLine
+                + "but was   \"...456789abcdefghijkmlnopqrstuvwxyz0123456789abcdefghijkl...\"" + Environment.NewLine
+                 + "                               ^" + Environment.NewLine
+                + "Difference at index 21.", result);
+        }
+
+        [Test]
+        public void StringsNotEqual_ExpectedIsLiteral_ExpectedExpressionNotIncluded()
+        {
+            expressionProvider.GetExpectedExpression().Returns("@\"acd\"");
+
+            string result = DefaultFailureMessageFormatter.Instance.NotEqual("acd", "abc");
+            Assert.AreEqual(ActualExpression + Environment.NewLine
                 + "should be \"acd\"" + Environment.NewLine
                 + "but was   \"abc\"" + Environment.NewLine
                  + "            ^" + Environment.NewLine
@@ -52,54 +133,7 @@ namespace EasyAssertions.UnitTests
         }
 
         [Test]
-        public void NotEqual_Strings_DifferenceOnLineTwo()
-        {
-            string result = DefaultFailureMessageFormatter.Instance.NotEqual("abc\ndfe", "abc\ndef");
-            Assert.AreEqual(TestExpression + Environment.NewLine
-                + "should be \"abc\\ndfe\"" + Environment.NewLine
-                + "but was   \"abc\\ndef\"" + Environment.NewLine
-                  + "                 ^" + Environment.NewLine
-                + "Difference at index 5.", result);
-        }
-
-        [Test]
-        public void NotEqual_Strings_DifferenceFarAwayFromBeginning()
-        {
-            string result = DefaultFailureMessageFormatter.Instance.NotEqual("0123456789abcdefghijklmnopqrstuvwxyz0123456789abcdefghijklmnopqrstuvwxyz",
-                                                                             "0123456789abcdefghijklmnopqrstuvwxyz0123456789abcdefghijklmnpoqrstuvwxyz");
-            Assert.AreEqual(TestExpression + Environment.NewLine
-                + "should be \"...789abcdefghijklmnopqrstuvwxyz\"" + Environment.NewLine
-                + "but was   \"...789abcdefghijklmnpoqrstuvwxyz\"" + Environment.NewLine
-                 + "                               ^" + Environment.NewLine
-                + "Difference at index 60.", result);
-        }
-
-        [Test]
-        public void NotEqual_Strings_DifferenceFarAwayFromEnd()
-        {
-            string result = DefaultFailureMessageFormatter.Instance.NotEqual("0123456789abcdefghijklmnopqrstuvwxyz0123456789abcdefghijklmnopqrstuvwxyz",
-                                                                             "0123456789abdcefghijklmnopqrstuvwxyz0123456789abcdefghijklmnopqrstuvwxyz");
-            Assert.AreEqual(TestExpression + Environment.NewLine
-                + "should be \"0123456789abcdefghijklmnopqrstuvwxyz0123456789abcdefghijk...\"" + Environment.NewLine
-                + "but was   \"0123456789abdcefghijklmnopqrstuvwxyz0123456789abcdefghijk...\"" + Environment.NewLine
-                 + "                       ^" + Environment.NewLine
-                + "Difference at index 12.", result);
-        }
-
-        [Test]
-        public void NotEqual_Strings_DifferenceFarAwayFromBothEnds()
-        {
-            string result = DefaultFailureMessageFormatter.Instance.NotEqual("0123456789abcdefghijklmnopqrstuvwxyz0123456789abcdefghijklmnopqrstuvwxyz0123456789",
-                                                                             "0123456789abcdefghijkmlnopqrstuvwxyz0123456789abcdefghijklmnopqrstuvwxyz0123456789");
-            Assert.AreEqual(TestExpression + Environment.NewLine
-                + "should be \"...456789abcdefghijklmnopqrstuvwxyz0123456789abcdefghijkl...\"" + Environment.NewLine
-                + "but was   \"...456789abcdefghijkmlnopqrstuvwxyz0123456789abcdefghijkl...\"" + Environment.NewLine
-                 + "                               ^" + Environment.NewLine
-                + "Difference at index 21.", result);
-        }
-
-        [Test]
-        public void NotEqual_Strings_IncludesMessage()
+        public void StringsNotEqual_IncludesMessage()
         {
             string result = DefaultFailureMessageFormatter.Instance.NotEqual("acd", "abc", "foo");
 
@@ -111,8 +145,9 @@ namespace EasyAssertions.UnitTests
         {
             string result = DefaultFailureMessageFormatter.Instance.AreEqual(new FakeObject("foo"), new FakeObject("bar"));
 
-            Assert.AreEqual(TestExpression + Environment.NewLine
-                + "should not be <foo>" + Environment.NewLine
+            Assert.AreEqual(ActualExpression + Environment.NewLine
+                + "should not be " + ExpectedExpression + Environment.NewLine
+                + "              <foo>" + Environment.NewLine
                 + "but was       <bar>", result);
         }
 
@@ -129,7 +164,7 @@ namespace EasyAssertions.UnitTests
         {
             string result = DefaultFailureMessageFormatter.Instance.IsNull();
 
-            Assert.AreEqual(TestExpression + Environment.NewLine
+            Assert.AreEqual(ActualExpression + Environment.NewLine
                 + "should not be null, but was.", result);
         }
 
@@ -149,8 +184,9 @@ namespace EasyAssertions.UnitTests
 
             string result = DefaultFailureMessageFormatter.Instance.NotSame(expected, actual);
 
-            Assert.AreEqual(TestExpression + Environment.NewLine
-                 + "should be instance <foo>" + Environment.NewLine
+            Assert.AreEqual(ActualExpression + Environment.NewLine
+                 + "should be instance " + ExpectedExpression + Environment.NewLine
+                 + "                   <foo>" + Environment.NewLine
                  + "but was            <bar>", result);
         }
 
@@ -167,8 +203,9 @@ namespace EasyAssertions.UnitTests
         {
             string result = DefaultFailureMessageFormatter.Instance.AreSame(new FakeObject("foo"));
 
-            Assert.AreEqual(TestExpression + Environment.NewLine
-                + "shouldn't be instance <foo>", result);
+            Assert.AreEqual(ActualExpression + Environment.NewLine
+                + "shouldn't be instance " + ExpectedExpression + Environment.NewLine
+                + "                      <foo>", result);
         }
 
         [Test]
@@ -186,7 +223,7 @@ namespace EasyAssertions.UnitTests
 
             string result = DefaultFailureMessageFormatter.Instance.NotEmpty(enumerable);
 
-            Assert.AreEqual(TestExpression + Environment.NewLine
+            Assert.AreEqual(ActualExpression + Environment.NewLine
                 + "should be empty" + Environment.NewLine
                 + "but had 1 element: <foo>", result);
         }
@@ -198,7 +235,7 @@ namespace EasyAssertions.UnitTests
 
             string result = DefaultFailureMessageFormatter.Instance.NotEmpty(enumerable);
 
-            Assert.AreEqual(TestExpression + Environment.NewLine
+            Assert.AreEqual(ActualExpression + Environment.NewLine
                 + "should be empty" + Environment.NewLine
                 + "but had 2 elements: [" + Environment.NewLine
                 + "    <foo>," + Environment.NewLine
@@ -213,7 +250,7 @@ namespace EasyAssertions.UnitTests
 
             string result = DefaultFailureMessageFormatter.Instance.NotEmpty(enumerable);
 
-            Assert.AreEqual(TestExpression + Environment.NewLine
+            Assert.AreEqual(ActualExpression + Environment.NewLine
                 + "should be empty" + Environment.NewLine
                 + "but had 4 elements: [" + Environment.NewLine
                 + "    <one>," + Environment.NewLine
@@ -238,7 +275,7 @@ namespace EasyAssertions.UnitTests
         {
             string result = DefaultFailureMessageFormatter.Instance.IsEmpty();
 
-            Assert.AreEqual(TestExpression + Environment.NewLine + "should not be empty, but was.", result);
+            Assert.AreEqual(ActualExpression + Environment.NewLine + "should not be empty, but was.", result);
         }
 
         [Test]
@@ -254,8 +291,9 @@ namespace EasyAssertions.UnitTests
         {
             string result = DefaultFailureMessageFormatter.Instance.DoesNotContain(1, Enumerable.Empty<int>());
 
-            Assert.AreEqual(TestExpression + Environment.NewLine
-                + "should contain <1>" + Environment.NewLine
+            Assert.AreEqual(ActualExpression + Environment.NewLine
+                + "should contain " + ExpectedExpression + Environment.NewLine
+                + "               <1>" + Environment.NewLine
                 + "but was empty.", result);
         }
 
@@ -264,8 +302,9 @@ namespace EasyAssertions.UnitTests
         {
             string result = DefaultFailureMessageFormatter.Instance.DoesNotContain(1, new[] { 2 });
 
-            Assert.AreEqual(TestExpression + Environment.NewLine
-                + "should contain <1>" + Environment.NewLine
+            Assert.AreEqual(ActualExpression + Environment.NewLine
+                + "should contain " + ExpectedExpression + Environment.NewLine
+                + "               <1>" + Environment.NewLine
                 + "but was       [<2>]", result);
         }
 
@@ -274,8 +313,9 @@ namespace EasyAssertions.UnitTests
         {
             string result = DefaultFailureMessageFormatter.Instance.DoesNotContain(1, new[] { 2, 3 });
 
-            Assert.AreEqual(TestExpression + Environment.NewLine
-                + "should contain <1>" + Environment.NewLine
+            Assert.AreEqual(ActualExpression + Environment.NewLine
+                + "should contain " + ExpectedExpression + Environment.NewLine
+                + "               <1>" + Environment.NewLine
                 + "but was [" + Environment.NewLine
                 + "    <2>," + Environment.NewLine
                 + "    <3>" + Environment.NewLine
@@ -287,8 +327,9 @@ namespace EasyAssertions.UnitTests
         {
             string result = DefaultFailureMessageFormatter.Instance.DoesNotContain(0, new[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 });
 
-            Assert.AreEqual(TestExpression + Environment.NewLine
-                + "should contain <0>" + Environment.NewLine
+            Assert.AreEqual(ActualExpression + Environment.NewLine
+                + "should contain " + ExpectedExpression + Environment.NewLine
+                + "               <0>" + Environment.NewLine
                 + "but was [" + Environment.NewLine
                 + "    <1>," + Environment.NewLine
                 + "    <2>," + Environment.NewLine
@@ -317,9 +358,31 @@ namespace EasyAssertions.UnitTests
         {
             string result = DefaultFailureMessageFormatter.Instance.DoNotMatch(new[] { 1, 2, 3 }, new[] { 1, 3, 2 });
 
-            Assert.AreEqual(TestExpression + " differs at index 1." + Environment.NewLine
+            Assert.AreEqual(ActualExpression + " doesn't match " + ExpectedExpression + ". Differs at index 1." + Environment.NewLine
                 + "should be <2>" + Environment.NewLine
                 + "but was   <3>", result);
+        }
+
+        [Test]
+        public void DoNotMatch_ExpectedIsNewCollection_ExpectedExpressionNotIncluded()
+        {
+            expressionProvider.GetExpectedExpression().Returns("new List<int>() { 1, 2, 3 }");
+
+            string result = DefaultFailureMessageFormatter.Instance.DoNotMatch(new[] { 1, 2, 3 }, new[] { 1, 3, 2 });
+
+            Assert.AreEqual(ActualExpression + " differs at index 1." + Environment.NewLine
+                + "should be <2>" + Environment.NewLine
+                + "but was   <3>", result);
+        }
+
+        [Test]
+        public void DoNotMatch_LengthMismatch()
+        {
+            string result = DefaultFailureMessageFormatter.Instance.DoNotMatch(new[] { 1, 2 }, Enumerable.Empty<int>());
+
+            Assert.AreEqual(ActualExpression + " doesn't match " + ExpectedExpression + '.' + Environment.NewLine
+                + "should have 2 elements" + Environment.NewLine
+                + "but was empty.", result);
         }
 
         [Test]
@@ -337,7 +400,7 @@ namespace EasyAssertions.UnitTests
 
             string result = DefaultFailureMessageFormatter.Instance.ItemsNotSame(new[] { same, new FakeObject("bar") }, new[] { same, new FakeObject("baz") });
 
-            Assert.AreEqual(TestExpression + " differs at index 1." + Environment.NewLine
+            Assert.AreEqual(ActualExpression + " differs at index 1." + Environment.NewLine
                 + "should be instance <bar>" + Environment.NewLine
                 + "but was            <baz>", result);
         }
@@ -355,7 +418,7 @@ namespace EasyAssertions.UnitTests
         {
             string result = DefaultFailureMessageFormatter.Instance.LengthMismatch(2, Enumerable.Empty<object>());
 
-            Assert.AreEqual(TestExpression + Environment.NewLine
+            Assert.AreEqual(ActualExpression + Environment.NewLine
                 + "should have 2 elements" + Environment.NewLine
                 + "but was empty.", result);
         }
@@ -365,7 +428,7 @@ namespace EasyAssertions.UnitTests
         {
             string result = DefaultFailureMessageFormatter.Instance.LengthMismatch(1, Enumerable.Empty<object>());
 
-            Assert.AreEqual(TestExpression + Environment.NewLine
+            Assert.AreEqual(ActualExpression + Environment.NewLine
                 + "should have 1 element" + Environment.NewLine
                 + "but was empty.", result);
         }
@@ -375,7 +438,7 @@ namespace EasyAssertions.UnitTests
         {
             string result = DefaultFailureMessageFormatter.Instance.LengthMismatch(2, new[] { new FakeObject("foo") });
 
-            Assert.AreEqual(TestExpression + Environment.NewLine
+            Assert.AreEqual(ActualExpression + Environment.NewLine
                 + "should have 2 elements" + Environment.NewLine
                 + "but had 1 element: <foo>", result);
         }
@@ -393,8 +456,9 @@ namespace EasyAssertions.UnitTests
         {
             string result = DefaultFailureMessageFormatter.Instance.DoesNotContain("bar", "foo");
 
-            Assert.AreEqual(TestExpression + Environment.NewLine
-                + "should contain \"bar\"" + Environment.NewLine
+            Assert.AreEqual(ActualExpression + Environment.NewLine
+                + "should contain " + ExpectedExpression + Environment.NewLine
+                + "               \"bar\"" + Environment.NewLine
                 + "but was        \"foo\"", result);
         }
 
@@ -404,8 +468,9 @@ namespace EasyAssertions.UnitTests
             string result = DefaultFailureMessageFormatter.Instance.DoesNotContain("foo",
                 "0123456789abcdefghijklmnopqrstuvwxyz0123456789abcdefghijklmnopqrstuvwxyz");
 
-            Assert.AreEqual(TestExpression + Environment.NewLine
-                + "should contain \"foo\"" + Environment.NewLine
+            Assert.AreEqual(ActualExpression + Environment.NewLine
+                + "should contain " + ExpectedExpression + Environment.NewLine
+                + "               \"foo\"" + Environment.NewLine
                 + "but was        \"0123456789abcdefghijklmnopqrstuvwxyz0123456789abcdefghijk...\"", result);
         }
 
@@ -422,8 +487,9 @@ namespace EasyAssertions.UnitTests
         {
             string result = DefaultFailureMessageFormatter.Instance.DoesNotStartWith("foo", "bar");
 
-            Assert.AreEqual(TestExpression + Environment.NewLine
-                + "should start with \"foo\"" + Environment.NewLine
+            Assert.AreEqual(ActualExpression + Environment.NewLine
+                + "should start with " + ExpectedExpression + Environment.NewLine
+                + "                  \"foo\"" + Environment.NewLine
                 + "but starts with   \"bar\"", result);
         }
 
@@ -433,8 +499,9 @@ namespace EasyAssertions.UnitTests
             string result = DefaultFailureMessageFormatter.Instance.DoesNotStartWith("foo",
                 "0123456789abcdefghijklmnopqrstuvwxyz0123456789abcdefghijklmnopqrstuvwxyz");
 
-            Assert.AreEqual(TestExpression + Environment.NewLine
-                + "should start with \"foo\"" + Environment.NewLine
+            Assert.AreEqual(ActualExpression + Environment.NewLine
+                + "should start with " + ExpectedExpression + Environment.NewLine
+                + "                  \"foo\"" + Environment.NewLine
                 + "but starts with   \"0123456789abcdefghijklmnopqrstuvwxyz0123456789abcdefghijk...\"", result);
         }
 
@@ -451,8 +518,9 @@ namespace EasyAssertions.UnitTests
         {
             string result = DefaultFailureMessageFormatter.Instance.DoesNotEndWith("foo", "bar");
 
-            Assert.AreEqual(TestExpression + Environment.NewLine
-                + "should end with \"foo\"" + Environment.NewLine
+            Assert.AreEqual(ActualExpression + Environment.NewLine
+                + "should end with " + ExpectedExpression + Environment.NewLine
+                + "                \"foo\"" + Environment.NewLine
                 + "but ends with   \"bar\"", result);
         }
 
@@ -462,8 +530,9 @@ namespace EasyAssertions.UnitTests
             string result = DefaultFailureMessageFormatter.Instance.DoesNotEndWith("foo",
                 "0123456789abcdefghijklmnopqrstuvwxyz0123456789abcdefghijklmnopqrstuvwxyz");
 
-            Assert.AreEqual(TestExpression + Environment.NewLine
-                + "should end with \"foo\"" + Environment.NewLine
+            Assert.AreEqual(ActualExpression + Environment.NewLine
+                + "should end with " + ExpectedExpression + Environment.NewLine
+                + "                \"foo\"" + Environment.NewLine
                 + "but ends with   \"...fghijklmnopqrstuvwxyz0123456789abcdefghijklmnopqrstuvwxyz\"", result);
         }
 

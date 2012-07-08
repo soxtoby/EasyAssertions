@@ -318,18 +318,6 @@ namespace EasyAssertions.UnitTests
         }
 
         [Test]
-        public void ShouldMatchCustomEquality_DifferentLengths_FailsWithEnumerableLengthMismatchMessage()
-        {
-            int[] actual = new[] { 1, 2 };
-            int[] expected = new[] { 1, 2, 3 };
-            mockFormatter.LengthMismatch(3, actual, "foo").Returns("bar");
-
-            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldMatch(expected, (a, e) => a == e, "foo"));
-
-            Assert.AreEqual("bar", result.Message);
-        }
-
-        [Test]
         public void ShouldMatchCustomEquality_NonMatchingEnumerables_FailsWithEnumerablesDoNotMatch()
         {
             int[] actual = new[] { 1, 2, 4 };

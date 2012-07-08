@@ -149,9 +149,6 @@ namespace EasyAssertions
                     List<TActual> actualList = actual.ToList();
                     List<TExpected> expectedList = expected.ToList();
 
-                    if (actualList.Count != expectedList.Count)
-                        throw new EasyAssertionException(FailureMessageFormatter.Current.LengthMismatch(expectedList.Count, actual, message));
-
                     if (!Compare.CollectionsMatch(actualList, expectedList, (a, e) => predicate((TActual)a, (TExpected)e)))
                         throw new EasyAssertionException(FailureMessageFormatter.Current.DoNotMatch(expected, actual, message));
                 });

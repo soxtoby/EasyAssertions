@@ -13,7 +13,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{AEEA9F
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{874ECEBF-6B61-43B6-9758-31D7F5C476E0}"
 	ProjectSection(SolutionItems) = preProject
-		EasyAssertions.nuspec = EasyAssertions.nuspec
+		EasyAssertions\EasyAssertions.nuspec = EasyAssertions\EasyAssertions.nuspec
 		key.snk = key.snk
 		License.txt = License.txt
 		Readme.md = Readme.md

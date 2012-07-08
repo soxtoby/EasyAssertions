@@ -14,6 +14,6 @@
     <tags>testing assertion unittesting</tags>
   </metadata>
   <files>
-    <file src="EasyAssertions\bin\Release\EasyAssertions.dll" target="lib\net35\EasyAssertions.dll" />
+    <file src="bin\Release\EasyAssertions.dll" target="lib\net35\EasyAssertions.dll" />
   </files>
 </package>

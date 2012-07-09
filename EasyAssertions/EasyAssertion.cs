@@ -126,32 +126,31 @@ namespace EasyAssertions
 
         public static Actual<IEnumerable<TActual>> ShouldMatch<TActual, TExpected>(this IEnumerable<TActual> actual, IEnumerable<TExpected> expected, string message = null) where TExpected : TActual
         {
-            return actual.Assert(innerActual =>
-                innerActual.ShouldMatch(expected, (a, e) => Compare.ObjectsMatch(a, e), message));
+            return actual.Assert(() => AssertMatch(actual, expected, (a, e) => Compare.ObjectsMatch(a, e), message));
         }
 
         public static Actual<IEnumerable<float>> ShouldMatch(this IEnumerable<float> actual, IEnumerable<float> expected, float delta, string message = null)
         {
-            return actual.Assert(innerActual =>
-                innerActual.ShouldMatch(expected, (a, e) => Compare.AreWithinDelta(a, e, delta), message));
+            return actual.Assert(() => AssertMatch(actual, expected, (a, e) => Compare.AreWithinDelta(a, e, delta), message));
         }
 
         public static Actual<IEnumerable<double>> ShouldMatch(this IEnumerable<double> actual, IEnumerable<double> expected, double delta, string message = null)
         {
-            return actual.Assert(innerActual =>
-                innerActual.ShouldMatch(expected, (a, e) => Compare.AreWithinDelta(a, e, delta), message));
+            return actual.Assert(() => AssertMatch(actual, expected, (a, e) => Compare.AreWithinDelta(a, e, delta), message));
         }
 
         public static Actual<IEnumerable<TActual>> ShouldMatch<TActual, TExpected>(this IEnumerable<TActual> actual, IEnumerable<TExpected> expected, Func<TActual, TExpected, bool> predicate, string message = null)
         {
-            return actual.Assert(() =>
-                {
-                    List<TActual> actualList = actual.ToList();
-                    List<TExpected> expectedList = expected.ToList();
+            return actual.Assert(() => AssertMatch(actual, expected, predicate, message));
+        }
 
-                    if (!Compare.CollectionsMatch(actualList, expectedList, (a, e) => predicate((TActual)a, (TExpected)e)))
-                        throw new EasyAssertionException(FailureMessageFormatter.Current.DoNotMatch(expected, actual, message));
-                });
+        private static void AssertMatch<TActual, TExpected>(IEnumerable<TActual> actual, IEnumerable<TExpected> expected, Func<TActual, TExpected, bool> predicate, string message)
+        {
+            List<TActual> actualList = actual.ToList();
+            List<TExpected> expectedList = expected.ToList();
+
+            if (!Compare.CollectionsMatch(actualList, expectedList, (a, e) => predicate((TActual)a, (TExpected)e)))
+                throw new EasyAssertionException(FailureMessageFormatter.Current.DoNotMatch(expected, actual, message));
         }
 
         public static Actual<IEnumerable<TActual>> ShouldContain<TActual, TExpected>(this IEnumerable<TActual> actual, TExpected expected, string message = null) where TExpected : TActual

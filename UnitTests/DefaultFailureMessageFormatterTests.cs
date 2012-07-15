@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Linq.Expressions;
 using NSubstitute;
 using NUnit.Framework;
 
@@ -611,7 +612,8 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void NoException_SimpleFunction()
         {
-            string result = DefaultFailureMessageFormatter.Instance.NoException(typeof(InvalidOperationException), () => "".Trim());
+            Expression<Action> function = () => "".Trim();
+            string result = DefaultFailureMessageFormatter.Instance.NoException(typeof(InvalidOperationException), function);
             Assert.AreEqual("\"\".Trim()" + Environment.NewLine
                 + "should throw <InvalidOperationException>" + Environment.NewLine
                 + "but didn't throw at all.", result);
@@ -621,7 +623,8 @@ namespace EasyAssertions.UnitTests
         public void NoException_ClosureObjectMethod()
         {
             string str = "";
-            string result = DefaultFailureMessageFormatter.Instance.NoException(typeof(InvalidOperationException), () => str.Trim());
+            Expression<Action> function = () => str.Trim();
+            string result = DefaultFailureMessageFormatter.Instance.NoException(typeof(InvalidOperationException), function);
             Assert.AreEqual("str.Trim()" + Environment.NewLine
                + "should throw <InvalidOperationException>" + Environment.NewLine
                + "but didn't throw at all.", result);
@@ -630,7 +633,8 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void NoException_IncludesMessage()
         {
-            string result = DefaultFailureMessageFormatter.Instance.NoException(typeof(InvalidOperationException), () => "".Trim(), "foo");
+            Expression<Action> function = () => "".Trim();
+            string result = DefaultFailureMessageFormatter.Instance.NoException(typeof(InvalidOperationException), function, "foo");
 
             StringAssert.EndsWith(Environment.NewLine + "foo", result);
         }
@@ -638,7 +642,8 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void WrongException_SimpleFunction()
         {
-            string result = DefaultFailureMessageFormatter.Instance.WrongException(typeof(InvalidOperationException), typeof(Exception), () => "".Trim());
+            Expression<Action> function = () => "".Trim();
+            string result = DefaultFailureMessageFormatter.Instance.WrongException(typeof(InvalidOperationException), typeof(Exception), function);
             Assert.AreEqual("\"\".Trim()" + Environment.NewLine
                 + "should throw <InvalidOperationException>" + Environment.NewLine
                 + "but threw    <Exception>", result);
@@ -648,7 +653,8 @@ namespace EasyAssertions.UnitTests
         public void WrongException_ClosureObjectMethod()
         {
             string str = "";
-            string result = DefaultFailureMessageFormatter.Instance.WrongException(typeof(InvalidOperationException), typeof(Exception), () => str.Trim());
+            Expression<Action> function = () => str.Trim();
+            string result = DefaultFailureMessageFormatter.Instance.WrongException(typeof(InvalidOperationException), typeof(Exception), function);
             Assert.AreEqual("str.Trim()" + Environment.NewLine
                 + "should throw <InvalidOperationException>" + Environment.NewLine
                 + "but threw    <Exception>", result);
@@ -657,7 +663,8 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void WrongException_IncludesMessage()
         {
-            string result = DefaultFailureMessageFormatter.Instance.WrongException(typeof(InvalidOperationException), typeof(Exception), () => "".Trim(), "foo");
+            Expression<Action> function = () => "".Trim();
+            string result = DefaultFailureMessageFormatter.Instance.WrongException(typeof(InvalidOperationException), typeof(Exception), function, "foo");
 
             StringAssert.EndsWith(Environment.NewLine + "foo", result);
         }

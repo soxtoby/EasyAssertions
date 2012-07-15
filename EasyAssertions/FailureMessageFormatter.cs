@@ -36,8 +36,8 @@ namespace EasyAssertions
         string DoesNotContainItems(IEnumerable expected, IEnumerable actual, string message = null);
         string DoesNotOnlyContain(IEnumerable expected, IEnumerable actual, string message = null);
         string ItemsNotSame(IEnumerable expected, IEnumerable actual, string message = null);
-        string NoException(Type expectedExceptionType, Expression<Action> function, string message = null);
-        string WrongException(Type expectedExceptionType, Type actualExceptionType, Expression<Action> function, string message = null);
+        string NoException(Type expectedExceptionType, LambdaExpression function, string message = null);
+        string WrongException(Type expectedExceptionType, Type actualExceptionType, LambdaExpression function, string message = null);
         string NotEmpty(IEnumerable actual, string message = null);
         string IsEmpty(string message = null);
         string LengthMismatch(int expectedLength, IEnumerable actual, string message = null);

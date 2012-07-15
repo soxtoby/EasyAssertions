@@ -647,7 +647,7 @@ namespace EasyAssertions.UnitTests
 
             Actual<Exception> result = Should.Throw<Exception>(() => thrower.Throw());
 
-            result.And.ShouldBeThis(expectedException);
+            Assert.AreSame(expectedException, result.And);
         }
 
         [Test]
@@ -688,6 +688,29 @@ namespace EasyAssertions.UnitTests
         }
 
         [Test]
+        public void FuncShouldThrow_Throws_ReturnsException()
+        {
+            Exception expectedException = new Exception();
+            ExceptionThrower thrower = new ExceptionThrower(expectedException);
+
+            Actual<Exception> result = Should.Throw<Exception>(() => thrower.ThrowingProperty);
+
+            Assert.AreSame(expectedException, result.And);
+        }
+
+        [Test]
+        public void FuncShouldThrow_DoesNotThrow_FailsWithNoExceptionMessage()
+        {
+            Expression<Func<object>> noThrow = () => "".Length;
+            mockFormatter.NoException(typeof(Exception), noThrow, "foo").Returns("bar");
+
+            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() =>
+                Should.Throw<Exception>(noThrow, "foo"));
+
+            Assert.AreEqual("bar", result.Message);
+        }
+
+        [Test]
         public void Assert_Passes_ReturnsInnerActual()
         {
             Actual<int> result = 1.Assert(i => new Actual<int>(2));
@@ -702,6 +725,11 @@ namespace EasyAssertions.UnitTests
             public ExceptionThrower(Exception exception)
             {
                 this.exception = exception;
+            }
+
+            public object ThrowingProperty
+            {
+                get { throw exception; }
             }
 
             public void Throw()

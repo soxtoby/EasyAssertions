@@ -295,11 +295,21 @@ namespace EasyAssertions
 
     public static class Should
     {
+        public static Actual<TException> Throw<TException>(Expression<Func<object>> expression, string message = null) where TException : Exception
+        {
+            return Test<TException>(expression, message, () => expression.Compile()());
+        }
+
         public static Actual<TException> Throw<TException>(Expression<Action> expression, string message = null) where TException : Exception
+        {
+            return Test<TException>(expression, message, expression.Compile());
+        }
+
+        private static Actual<TException> Test<TException>(LambdaExpression expression, string message, Action executeExpression) where TException : Exception
         {
             try
             {
-                expression.Compile()();
+                executeExpression();
             }
             catch (TException e)
             {

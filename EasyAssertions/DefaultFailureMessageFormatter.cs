@@ -299,7 +299,7 @@ namespace EasyAssertions
             return differenceIndex;
         }
 
-        public string NoException(Type expectedExceptionType, Expression<Action> function, string message = null)
+        public string NoException(Type expectedExceptionType, LambdaExpression function, string message = null)
         {
             return CleanFunctionBody(function)
                 + Environment.NewLine + ExpectedExceptionText + ObjectValue(expectedExceptionType.Name)
@@ -307,7 +307,7 @@ namespace EasyAssertions
                 + MessageOnNewLine(message);
         }
 
-        public string WrongException(Type expectedExceptionType, Type actualExceptionType, Expression<Action> function, string message = null)
+        public string WrongException(Type expectedExceptionType, Type actualExceptionType, LambdaExpression function, string message = null)
         {
             return CleanFunctionBody(function)
                 + Environment.NewLine + ExpectedExceptionText + ObjectValue(expectedExceptionType.Name)
@@ -317,7 +317,7 @@ namespace EasyAssertions
 
         private static readonly Regex MemberPattern = new Regex(@"value\(.*?\)\.", RegexOptions.Compiled);
 
-        private static string CleanFunctionBody(Expression<Action> function)
+        private static string CleanFunctionBody(LambdaExpression function)
         {
             return MemberPattern.Replace(function.Body.ToString(), string.Empty);
         }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace EasyAssertions
 {
@@ -58,6 +59,20 @@ namespace EasyAssertions
             bool empty = !enumerator.MoveNext();
             Dispose(enumerator);
             return empty;
+        }
+
+        public static bool ContainsAllItems(IEnumerable actual, IEnumerable expected)
+        {
+            HashSet<object> actualSet = new HashSet<object>(actual.Cast<object>());
+            return expected.Cast<object>().All(actualSet.Contains);
+        }
+
+        public static bool ContainsOnlyExpectedItems(IEnumerable actual, IEnumerable expected)
+        {
+            HashSet<object> actualItems = new HashSet<object>(actual.Cast<object>());
+            HashSet<object> expectedItems = new HashSet<object>(expected.Cast<object>());
+            return expectedItems.All(actualItems.Contains)
+                && actualItems.All(expectedItems.Contains);
         }
 
         private static void Dispose(object obj)

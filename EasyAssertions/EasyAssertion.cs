@@ -166,13 +166,17 @@ namespace EasyAssertions
         {
             return actual.Assert(() =>
                 {
-                    HashSet<TActual> actualList = new HashSet<TActual>(actual);
+                    if (!Compare.ContainsAllItems(actual, expected))
+                        throw new EasyAssertionException(FailureMessageFormatter.Current.DoesNotContainItems(expected, actual, message));
+                });
+        }
 
-                    foreach (TExpected expectedItem in expected)
-                    {
-                        if (!actualList.Contains(expectedItem))
-                            throw new EasyAssertionException(FailureMessageFormatter.Current.DoesNotContainItems(expected, actual, message));
-                    }
+        public static Actual<IEnumerable<TActual>> ShouldOnlyContain<TActual, TExpected>(this IEnumerable<TActual> actual, IEnumerable<TExpected> expected, string message = null) where TExpected : TActual
+        {
+            return actual.Assert(() =>
+                {
+                    if (!Compare.ContainsOnlyExpectedItems(actual, expected))
+                        throw new EasyAssertionException(FailureMessageFormatter.Current.DoesNotOnlyContain(expected, actual, message));
                 });
         }
 

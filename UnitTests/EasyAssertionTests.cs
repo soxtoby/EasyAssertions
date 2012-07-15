@@ -417,6 +417,40 @@ namespace EasyAssertions.UnitTests
         }
 
         [Test]
+        public void ShouldOnlyOnlyContain_CollectionsHaveSameItems_ReturnsActualValue()
+        {
+            int[] actual = new[] { 1, 2 };
+
+            Actual<IEnumerable<int>> result = actual.ShouldOnlyContain(new[] { 2, 1 });
+
+            Assert.AreSame(actual, result.And);
+        }
+
+        [Test]
+        public void ShouldOnlyContain_MissingItem_FailsWithCollectionDoesNotOnlyContainMessage()
+        {
+            int[] actual = new[] { 1, 2 };
+            int[] expected = new[] { 1, 3 };
+            mockFormatter.DoesNotOnlyContain(expected, actual, "foo").Returns("bar");
+
+            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldOnlyContain(expected, "foo"));
+
+            Assert.AreEqual("bar", result.Message);
+        }
+
+        [Test]
+        public void ShouldOnlyContain_ExtraItem_FailsWithCollectionDoesNotOnlyContainMessage()
+        {
+            int[] actual = new[] { 1, 2 };
+            int[] expected = new[] { 1 };
+            mockFormatter.DoesNotOnlyContain(expected, actual, "foo").Returns("bar");
+
+            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldOnlyContain(expected, "foo"));
+
+            Assert.AreEqual("bar", result.Message);
+        }
+
+        [Test]
         public void ShouldBeThese_SameItems_ReturnsActualValue()
         {
             object a = new object();

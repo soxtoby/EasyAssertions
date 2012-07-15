@@ -385,6 +385,39 @@ namespace EasyAssertions.UnitTests
         }
 
         [Test]
+        public void DoesNotOnlyContain_MissingItem()
+        {
+            string result = DefaultFailureMessageFormatter.Instance.DoesNotOnlyContain(new[] { 1 }, new[] { 2 });
+
+            Assert.AreEqual(ActualExpression + Environment.NewLine
+                + "should contain " + ExpectedExpression + Environment.NewLine
+                + "but was missing item 0 <1>" + Environment.NewLine
+                + "and was [<2>]", result);
+        }
+
+        [Test]
+        public void DoesNotOnlyContain_ExtraItem()
+        {
+            string result = DefaultFailureMessageFormatter.Instance.DoesNotOnlyContain(new[] { 1 }, new[] { 1, 2 });
+
+            Assert.AreEqual(ActualExpression + Environment.NewLine
+                + "should only contain " + ExpectedExpression + Environment.NewLine
+                + "but also contains [<2>]", result);
+        }
+
+        [Test]
+        public void DoesNotOnlyContain_ExtraItems_ExpectedIsNewCollection_ExpectedExpressionNotIncluded()
+        {
+            expressionProvider.GetExpectedExpression().Returns("new[] { 1 }");
+
+            string result = DefaultFailureMessageFormatter.Instance.DoesNotOnlyContain(new[] { 1 }, new[] { 1, 2 });
+
+            Assert.AreEqual(ActualExpression + Environment.NewLine
+                + "should only contain [<1>]" + Environment.NewLine
+                + "but also contains [<2>]", result);
+        }
+
+        [Test]
         public void DoNotMatch_NonMatchingCollections()
         {
             string result = DefaultFailureMessageFormatter.Instance.DoNotMatch(new[] { 1, 2, 3 }, new[] { 1, 3, 2 });

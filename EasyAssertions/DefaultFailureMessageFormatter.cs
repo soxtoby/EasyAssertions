@@ -168,6 +168,23 @@ namespace EasyAssertions
                 + MessageOnNewLine(message);
         }
 
+        public string DoesNotOnlyContain(IEnumerable expected, IEnumerable actual, string message = null)
+        {
+            if (!Compare.ContainsAllItems(actual, expected))
+                return DoesNotContainItems(expected, actual, message);
+
+            HashSet<object> expectedItems = new HashSet<object>(expected.Cast<object>());
+            List<object> extraItems = actual.Cast<object>().Where(a => !expectedItems.Contains(a)).ToList();
+
+            return TestExpression.GetActual()
+                + ExpectedCollection(
+                      Environment.NewLine + "should only contain {0}"
+                    + Environment.NewLine + "but also contains " + ActualElements(extraItems, 0)
+                    ,
+                      Environment.NewLine + "should only contain " + ActualElements(expectedItems, 0, "nothing")
+                    + Environment.NewLine + "but also contains " + ActualElements(extraItems, 0));
+        }
+
         private static void FindMissingItem(IEnumerable expected, HashSet<object> actualItems, out int missingItemIndex, out object missingItem)
         {
             missingItemIndex = 0;
@@ -183,10 +200,10 @@ namespace EasyAssertions
             }
         }
 
-        private static string ActualElements(ICollection<object> actualList, int singleItemIndent)
+        private static string ActualElements(ICollection<object> actualList, int singleItemIndent, string emptyString = "empty.")
         {
             if (actualList.None())
-                return "empty.";
+                return emptyString;
 
             if (actualList.Count == 1)
                 return new string(' ', singleItemIndent) + '[' + ObjectValue(actualList.Single()) + ']';
@@ -252,7 +269,6 @@ namespace EasyAssertions
         }
 
         private static readonly Regex NewCollectionPattern = new Regex(@"^new.*\{.*\}");
-        private static readonly Regex NonWhitespace = new Regex(@"\S");
 
         public string ItemsNotSame(IEnumerable expected, IEnumerable actual, string message = null)
         {

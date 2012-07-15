@@ -14,8 +14,7 @@ namespace EasyAssertions
 
         public static bool AreWithinDelta(float actual, float expected, float delta)
         {
-            return Math.Abs(actual - expected) <=
-                delta;
+            return Math.Abs(actual - expected) <= delta;
         }
 
         public static bool AreWithinDelta(double actual, double notExpected, double delta)

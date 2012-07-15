@@ -711,11 +711,23 @@ namespace EasyAssertions.UnitTests
         }
 
         [Test]
-        public void Assert_Passes_ReturnsInnerActual()
+        public void ActionAssert_Passes_ReturnsActual()
         {
-            Actual<int> result = 1.Assert(i => new Actual<int>(2));
+            object actual = new object();
 
-            Assert.AreEqual(2, result.And);
+            Actual<object> result = actual.Assert(a => { });
+
+            Assert.AreSame(actual, result.And);
+        }
+
+        [Test]
+        public void FuncAssert_Passes_ReturnsInnerActual()
+        {
+            object innerActual = new object();
+
+            Actual<object> result = new object().Assert(i => new Actual<object>(innerActual));
+
+            Assert.AreEqual(innerActual, result.And);
         }
 
         private class ExceptionThrower

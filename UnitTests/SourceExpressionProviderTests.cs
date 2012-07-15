@@ -184,11 +184,21 @@ namespace EasyAssertions.UnitTests
         }
 
         [Test]
-        public void AssertionNestsAnotherAssertion_TakesExpressionFromOuterAssertion()
+        public void AssertionNestsAnotherAssertionInAction_TakesExpressionFromOuterAssertion()
         {
             object actualExpression = null;
 
-            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actualExpression.TestAssert());
+            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actualExpression.TestActionAssert());
+
+            StringAssert.StartsWith("actualExpression" + Environment.NewLine, result.Message);
+        }
+
+        [Test]
+        public void AssertionNestsAnotherAssertionInFunc_TakesExpressionFromOuterAssertion()
+        {
+            object actualExpression = null;
+
+            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actualExpression.TestFuncAssert());
 
             StringAssert.StartsWith("actualExpression" + Environment.NewLine, result.Message);
         }
@@ -218,7 +228,12 @@ namespace EasyAssertions.UnitTests
 
     static class TestAssertions
     {
-        public static Actual<object> TestAssert(this object actual)
+        public static Actual<object> TestActionAssert(this object actual)
+        {
+            return actual.Assert(a => { a.ShouldNotBeNull(); });
+        }
+
+        public static Actual<object> TestFuncAssert(this object actual)
         {
             return actual.Assert(a => a.ShouldNotBeNull());
         }

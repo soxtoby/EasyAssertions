@@ -356,12 +356,12 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void CollectionDoesNotContainItems()
         {
-            string result = DefaultFailureMessageFormatter.Instance.DoesNotContainItems(new[] { 1 }, Enumerable.Empty<int>());
+            string result = DefaultFailureMessageFormatter.Instance.DoesNotContainItems(new[] { 1, 2 }, new[] { 1 });
 
             Assert.AreEqual(ActualExpression + Environment.NewLine
                 + "should contain " + ExpectedExpression + Environment.NewLine
-                + "but was missing item 0 <1>" + Environment.NewLine
-                + "and was empty.", result);
+                + "but was missing item 1 <2>" + Environment.NewLine
+                + "and was [<1>]", result);
         }
 
         [Test]

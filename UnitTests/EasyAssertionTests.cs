@@ -687,6 +687,14 @@ namespace EasyAssertions.UnitTests
             Assert.AreSame(expectedException, result.InnerException);
         }
 
+        [Test]
+        public void Assert_Passes_ReturnsInnerActual()
+        {
+            Actual<int> result = 1.Assert(i => new Actual<int>(2));
+
+            Assert.AreEqual(2, result.And);
+        }
+
         private class ExceptionThrower
         {
             private readonly Exception exception;

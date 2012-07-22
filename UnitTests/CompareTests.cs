@@ -22,25 +22,25 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void FloatsAreWithinDelta_WithinDelta()
         {
-            Assert.IsTrue(Compare.AreWithinDelta(1f, 2f, 1f));
+            Assert.IsTrue(Compare.AreWithinTolerance(1f, 2f, 1f));
         }
 
         [Test]
         public void FloatsAreWithinDelta_OutsideDelta()
         {
-            Assert.IsFalse(Compare.AreWithinDelta(1f, 2f, 0.9f));
+            Assert.IsFalse(Compare.AreWithinTolerance(1f, 2f, 0.9f));
         }
 
         [Test]
         public void DoublesAreWithinDelta_WithinDelta()
         {
-            Assert.IsTrue(Compare.AreWithinDelta(1d, 2d, 1d));
+            Assert.IsTrue(Compare.AreWithinTolerance(1d, 2d, 1d));
         }
 
         [Test]
         public void DoublesAreWithinDelta_OutsideDelta()
         {
-            Assert.IsFalse(Compare.AreWithinDelta(1d, 2d, 0.9d));
+            Assert.IsFalse(Compare.AreWithinTolerance(1d, 2d, 0.9d));
         }
 
         [Test]

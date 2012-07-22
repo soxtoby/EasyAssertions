@@ -12,14 +12,14 @@ namespace EasyAssertions
             return EqualityComparer<T>.Default.Equals(actual, expected);
         }
 
-        public static bool AreWithinDelta(float actual, float expected, float delta)
+        public static bool AreWithinTolerance(float actual, float expected, float tolerance)
         {
-            return Math.Abs(actual - expected) <= delta;
+            return Math.Abs(actual - expected) <= tolerance;
         }
 
-        public static bool AreWithinDelta(double actual, double notExpected, double delta)
+        public static bool AreWithinTolerance(double actual, double notExpected, double tolerance)
         {
-            return Math.Abs(actual - notExpected) <= delta;
+            return Math.Abs(actual - notExpected) <= tolerance;
         }
 
         public static bool CollectionsMatch(IEnumerable actual, IEnumerable expected, Func<object, object, bool> areEqual)

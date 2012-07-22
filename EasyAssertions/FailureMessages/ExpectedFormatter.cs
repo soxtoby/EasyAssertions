@@ -14,23 +14,39 @@ namespace EasyAssertions
         public void EvaluateFormat(object current, Format format, ref bool handled, IOutput output, FormatDetails formatDetails)
         {
             FailureMessage.ExpectedWrapper expected = current as FailureMessage.ExpectedWrapper;
-            if (expected != null && format != null)
-            {
-                handled = true;
+            if (expected == null) return;
 
-                if (expected.Expression != null)
-                {
-                    string currentOutput = output.ToString();
-                    int indexIntoLine = currentOutput.Length - Environment.NewLine.Length - currentOutput.LastIndexOf(Environment.NewLine, StringComparison.Ordinal);
-                    string indent = new string(' ', indexIntoLine);
-                    output.Write(expected.Expression + Environment.NewLine + indent, formatDetails);
-                    formatDetails.Formatter.Format(output, format, current, formatDetails);
-                }
-                else
-                {
-                    formatDetails.Formatter.Format(output, format, current, formatDetails);
-                }
-            }
+            handled = true;
+
+            if (expected.Expression != null)
+                OutputExpectedExpression(expected, output, formatDetails);
+
+            if (format == null)
+                OutputExpectedValue(expected, output, formatDetails);
+            else
+                OutputFormattedExpected(current, format, output, formatDetails, expected);
+        }
+
+        private static void OutputExpectedExpression(FailureMessage.ExpectedWrapper expected, IOutput output, FormatDetails formatDetails)
+        {
+            output.Write(expected.Expression + Environment.NewLine + NewLineIndent(output), formatDetails);
+        }
+
+        private static void OutputExpectedValue(FailureMessage.ExpectedWrapper expected, IOutput output, FormatDetails formatDetails)
+        {
+            output.Write(string.Empty + expected.Value, formatDetails);
+        }
+
+        private static void OutputFormattedExpected(object current, Format format, IOutput output, FormatDetails formatDetails, FailureMessage.ExpectedWrapper expected)
+        {
+            formatDetails.Formatter.Format(output, format, current, formatDetails);
+        }
+
+        private static string NewLineIndent(IOutput output)
+        {
+            string currentOutput = output.ToString();
+            int indexIntoLine = currentOutput.Length - Environment.NewLine.Length - currentOutput.LastIndexOf(Environment.NewLine, StringComparison.Ordinal);
+            return new string(' ', indexIntoLine);
         }
     }
 }

@@ -19,7 +19,7 @@ namespace EasyAssertions
                     ExpectedValue = expected,
                     ActualValue = actual,
                     UserMessage = message,
-                    MessageTemplate = "should be {Expected:{Value}}{BR}"
+                    MessageTemplate = "should be {Expected}{BR}"
                                     + "but was   {ActualValue}"
                 }.ToString();
         }
@@ -35,7 +35,7 @@ namespace EasyAssertions
                     ExpectedValue = expected,
                     FailureIndex = differenceIndex,
                     UserMessage = message,
-                    MessageTemplate = "should be {Expected:{Value}}{BR}"
+                    MessageTemplate = "should be {Expected}{BR}"
                                     + "but was   {ActualValue}{BR}"
                                     + "          {Arrow}{BR}"
                                     + "Difference at index {FailureIndex}."
@@ -49,7 +49,7 @@ namespace EasyAssertions
                     ExpectedValue = notExpected,
                     ActualValue = actual,
                     UserMessage = message,
-                    MessageTemplate = "should not be {Expected:{Value}}{BR}"
+                    MessageTemplate = "should not be {Expected}{BR}"
                                     + "but was       {ActualValue}"
                 }.ToString();
         }
@@ -70,7 +70,7 @@ namespace EasyAssertions
                     ActualValue = actual,
                     ExpectedValue = expected,
                     UserMessage = message,
-                    MessageTemplate = "should be instance {Expected:{Value}}{BR}"
+                    MessageTemplate = "should be instance {Expected}{BR}"
                                     + "but was            {ActualValue}"
                 }.ToString();
         }
@@ -81,7 +81,7 @@ namespace EasyAssertions
                 {
                     ExpectedValue = actual,
                     UserMessage = message,
-                    MessageTemplate = "shouldn't be instance {Expected:{Value}}"
+                    MessageTemplate = "shouldn't be instance {Expected}"
                 }.ToString();
         }
 
@@ -135,7 +135,7 @@ namespace EasyAssertions
                     ActualItems = actualList,
                     ExpectedValue = expected,
                     UserMessage = message,
-                    MessageTemplate = "should contain {Expected:{Value}}{BR}"
+                    MessageTemplate = "should contain {Expected}{BR}"
                                     + "but was {ActualItems.Count:"
                                             + "empty."
                                            + "|      [{0.ActualItems[0]}]"
@@ -314,7 +314,7 @@ namespace EasyAssertions
                     ActualValue = actual,
                     ExpectedValue = expectedSubstring,
                     UserMessage = message,
-                    MessageTemplate = "should contain {Expected:{Value}}{BR}"
+                    MessageTemplate = "should contain {Expected}{BR}"
                                     + "but was        {ActualValue}"
                 }.ToString();
         }
@@ -329,7 +329,7 @@ namespace EasyAssertions
                     ExpectedValue = expectedToNotContain,
                     FailureIndex = matchIndex,
                     UserMessage = message,
-                    MessageTemplate = "shouldn't contain {Expected:{Value}}{BR}"
+                    MessageTemplate = "shouldn't contain {Expected}{BR}"
                                     + "but was           {ActualValue}{BR}"
                                     + "                  {Arrow}{BR}"
                                     + "Match at index {FailureIndex}."
@@ -343,7 +343,7 @@ namespace EasyAssertions
                     ActualValue = actual,
                     ExpectedValue = expectedStart,
                     UserMessage = message,
-                    MessageTemplate = "should start with {Expected:{Value}}{BR}"
+                    MessageTemplate = "should start with {Expected}{BR}"
                                     + "but starts with   {ActualValue}"
                 }.ToString();
         }
@@ -356,7 +356,7 @@ namespace EasyAssertions
                     ExpectedValue = expectedEnd,
                     UserMessage = message,
                     FailureIndex = actual.Length - 1,
-                    MessageTemplate = "should end with {Expected:{Value}}{BR}"
+                    MessageTemplate = "should end with {Expected}{BR}"
                                     + "but ends with   {ActualValue}"
                 }.ToString();
         }

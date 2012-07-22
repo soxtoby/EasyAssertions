@@ -9,6 +9,9 @@ namespace EasyAssertions
 {
     public static class EasyAssertion
     {
+        private static Func<string, Exception> createMessageException;
+        private static Func<string, Exception, Exception> createInnerExceptionException;
+
         public static Actual<TActual> ShouldBe<TActual, TExpected>(this TActual actual, TExpected expected, string message = null) where TExpected : TActual
         {
             return actual.Assert(() =>
@@ -18,9 +21,9 @@ namespace EasyAssertions
                         string actualString = actual as string;
                         string expectedString = expected as string;
                         if (actualString != null && expectedString != null)
-                            throw new EasyAssertionException(FailureMessageFormatter.Current.NotEqual(expectedString, actualString, message));
+                            throw Failure(FailureMessageFormatter.Current.NotEqual(expectedString, actualString, message));
 
-                        throw new EasyAssertionException(FailureMessageFormatter.Current.NotEqual(expected, actual, message));
+                        throw Failure(FailureMessageFormatter.Current.NotEqual(expected, actual, message));
                     }
                 });
         }
@@ -30,7 +33,7 @@ namespace EasyAssertions
             return actual.Assert(() =>
                 {
                     if (Compare.ObjectsAreEqual(actual, notExpected))
-                        throw new EasyAssertionException(FailureMessageFormatter.Current.AreEqual(notExpected, actual, message));
+                        throw Failure(FailureMessageFormatter.Current.AreEqual(notExpected, actual, message));
                 });
         }
 
@@ -39,7 +42,7 @@ namespace EasyAssertions
             return actual.Assert(() =>
                 {
                     if (!Compare.AreWithinDelta(actual, expected, delta))
-                        throw new EasyAssertionException(FailureMessageFormatter.Current.NotEqual(expected, actual, message));
+                        throw Failure(FailureMessageFormatter.Current.NotEqual(expected, actual, message));
                 });
         }
 
@@ -48,7 +51,7 @@ namespace EasyAssertions
             return actual.Assert(() =>
                 {
                     if (Compare.AreWithinDelta(actual, notExpected, delta))
-                        throw new EasyAssertionException(FailureMessageFormatter.Current.AreEqual(notExpected, actual, message));
+                        throw Failure(FailureMessageFormatter.Current.AreEqual(notExpected, actual, message));
                 });
         }
 
@@ -57,7 +60,7 @@ namespace EasyAssertions
             return actual.Assert(() =>
             {
                 if (!Compare.AreWithinDelta(actual, expected, delta))
-                    throw new EasyAssertionException(FailureMessageFormatter.Current.NotEqual(expected, actual, message));
+                    throw Failure(FailureMessageFormatter.Current.NotEqual(expected, actual, message));
             });
         }
 
@@ -66,7 +69,7 @@ namespace EasyAssertions
             return actual.Assert(() =>
             {
                 if (Compare.AreWithinDelta(actual, notExpected, delta))
-                    throw new EasyAssertionException(FailureMessageFormatter.Current.AreEqual(notExpected, actual, message));
+                    throw Failure(FailureMessageFormatter.Current.AreEqual(notExpected, actual, message));
             });
         }
 
@@ -75,7 +78,7 @@ namespace EasyAssertions
             actual.Assert(() =>
                 {
                     if (!Equals(actual, null))
-                        throw new EasyAssertionException(FailureMessageFormatter.Current.NotEqual(null, actual, message));
+                        throw Failure(FailureMessageFormatter.Current.NotEqual(null, actual, message));
                 });
         }
 
@@ -84,7 +87,7 @@ namespace EasyAssertions
             return actual.Assert(() =>
                 {
                     if (Equals(actual, null))
-                        throw new EasyAssertionException(FailureMessageFormatter.Current.IsNull(message));
+                        throw Failure(FailureMessageFormatter.Current.IsNull(message));
                 });
         }
 
@@ -93,7 +96,7 @@ namespace EasyAssertions
             return actual.Assert(() =>
                 {
                     if (!ReferenceEquals(actual, expected))
-                        throw new EasyAssertionException(FailureMessageFormatter.Current.NotSame(expected, actual, message));
+                        throw Failure(FailureMessageFormatter.Current.NotSame(expected, actual, message));
                 });
         }
 
@@ -102,7 +105,7 @@ namespace EasyAssertions
             return actual.Assert(() =>
                 {
                     if (ReferenceEquals(actual, notExpected))
-                        throw new EasyAssertionException(FailureMessageFormatter.Current.AreSame(actual, message));
+                        throw Failure(FailureMessageFormatter.Current.AreSame(actual, message));
                 });
         }
 
@@ -111,7 +114,7 @@ namespace EasyAssertions
             return actual.Assert(() =>
                 {
                     if (!Compare.IsEmpty(actual))
-                        throw new EasyAssertionException(FailureMessageFormatter.Current.NotEmpty(actual, message));
+                        throw Failure(FailureMessageFormatter.Current.NotEmpty(actual, message));
                 });
         }
 
@@ -120,7 +123,7 @@ namespace EasyAssertions
             return actual.Assert(() =>
                 {
                     if (Compare.IsEmpty(actual))
-                        throw new EasyAssertionException(FailureMessageFormatter.Current.IsEmpty(message));
+                        throw Failure(FailureMessageFormatter.Current.IsEmpty(message));
                 });
         }
 
@@ -150,7 +153,7 @@ namespace EasyAssertions
             List<TExpected> expectedList = expected.ToList();
 
             if (!Compare.CollectionsMatch(actualList, expectedList, (a, e) => predicate((TActual)a, (TExpected)e)))
-                throw new EasyAssertionException(FailureMessageFormatter.Current.DoNotMatch(expected, actual, message));
+                throw Failure(FailureMessageFormatter.Current.DoNotMatch(expected, actual, message));
         }
 
         public static Actual<IEnumerable<TActual>> ShouldContain<TActual, TExpected>(this IEnumerable<TActual> actual, TExpected expected, string message = null) where TExpected : TActual
@@ -158,7 +161,7 @@ namespace EasyAssertions
             return actual.Assert(() =>
                 {
                     if (!actual.Contains(expected))
-                        throw new EasyAssertionException(FailureMessageFormatter.Current.DoesNotContain(expected, actual, message));
+                        throw Failure(FailureMessageFormatter.Current.DoesNotContain(expected, actual, message));
                 });
         }
 
@@ -167,7 +170,7 @@ namespace EasyAssertions
             return actual.Assert(() =>
                 {
                     if (!Compare.ContainsAllItems(actual, expected))
-                        throw new EasyAssertionException(FailureMessageFormatter.Current.DoesNotContainItems(expected, actual, message));
+                        throw Failure(FailureMessageFormatter.Current.DoesNotContainItems(expected, actual, message));
                 });
         }
 
@@ -176,7 +179,7 @@ namespace EasyAssertions
             return actual.Assert(() =>
                 {
                     if (!Compare.ContainsOnlyExpectedItems(actual, expected))
-                        throw new EasyAssertionException(FailureMessageFormatter.Current.DoesNotOnlyContain(expected, actual, message));
+                        throw Failure(FailureMessageFormatter.Current.DoesNotOnlyContain(expected, actual, message));
                 });
         }
 
@@ -188,10 +191,10 @@ namespace EasyAssertions
                     List<TExpected> expectedList = expected.ToList();
 
                     if (actualList.Count != expectedList.Count)
-                        throw new EasyAssertionException(FailureMessageFormatter.Current.LengthMismatch(expectedList.Count, actual, message));
+                        throw Failure(FailureMessageFormatter.Current.LengthMismatch(expectedList.Count, actual, message));
 
                     if (!Compare.CollectionsMatch(actual, expected, ReferenceEquals))
-                        throw new EasyAssertionException(FailureMessageFormatter.Current.ItemsNotSame(expected, actual, message));
+                        throw Failure(FailureMessageFormatter.Current.ItemsNotSame(expected, actual, message));
                 });
         }
 
@@ -201,7 +204,7 @@ namespace EasyAssertions
                 {
                     List<TItem> actualList = actual.ToList();
                     if (actualList.Count != assertions.Length)
-                        throw new EasyAssertionException(FailureMessageFormatter.Current.LengthMismatch(assertions.Length, actual));
+                        throw Failure(FailureMessageFormatter.Current.LengthMismatch(assertions.Length, actual));
 
                     for (int i = 0; i < assertions.Length; i++)
                         IndexedAssert(i, assertions[i].Method, () => assertions[i](actualList[i]));
@@ -223,7 +226,7 @@ namespace EasyAssertions
             actual.Assert(() =>
                 {
                     if (!(actual is TExpected))
-                        throw new EasyAssertionException(FailureMessageFormatter.Current.NotEqual(typeof(TExpected),
+                        throw Failure(FailureMessageFormatter.Current.NotEqual(typeof(TExpected),
                             actual == null ? null : actual.GetType(), message));
                 });
 
@@ -235,7 +238,7 @@ namespace EasyAssertions
             return actual.Assert(() =>
                 {
                     if (!actual.Contains(expectedToContain))
-                        throw new EasyAssertionException(FailureMessageFormatter.Current.DoesNotContain(expectedToContain, actual, message));
+                        throw Failure(FailureMessageFormatter.Current.DoesNotContain(expectedToContain, actual, message));
                 });
         }
 
@@ -244,7 +247,7 @@ namespace EasyAssertions
             return actual.Assert(() =>
                 {
                     if (!actual.StartsWith(expectedStart))
-                        throw new EasyAssertionException(FailureMessageFormatter.Current.DoesNotStartWith(expectedStart, actual, message));
+                        throw Failure(FailureMessageFormatter.Current.DoesNotStartWith(expectedStart, actual, message));
                 });
         }
 
@@ -253,7 +256,7 @@ namespace EasyAssertions
             return actual.Assert(() =>
                 {
                     if (!actual.EndsWith(expectedEnd))
-                        throw new EasyAssertionException(FailureMessageFormatter.Current.DoesNotEndWith(expectedEnd, actual, message));
+                        throw Failure(FailureMessageFormatter.Current.DoesNotEndWith(expectedEnd, actual, message));
                 });
         }
 
@@ -298,6 +301,32 @@ namespace EasyAssertions
             assert();
             SourceExpressionProvider.Instance.ExitNestedAssertion();
         }
+
+        public static void UseFrameworkExceptions(Func<string, Exception> messageExceptionFactory, Func<string, Exception, Exception> innerExceptionExceptionFactory)
+        {
+            createMessageException = messageExceptionFactory;
+            createInnerExceptionException = innerExceptionExceptionFactory;
+        }
+
+        public static void UseEasyAssertionExceptions()
+        {
+            createMessageException = null;
+            createInnerExceptionException = null;
+        }
+
+        public static Exception Failure(string failureMessage)
+        {
+            return createMessageException != null
+                ? createMessageException(failureMessage)
+                : new EasyAssertionException(failureMessage);
+        }
+
+        public static Exception Failure(string failureMessage, Exception innerException)
+        {
+            return createInnerExceptionException != null
+                ? createInnerExceptionException(failureMessage, innerException)
+                : new EasyAssertionException(failureMessage, innerException);
+        }
     }
 
     public static class Should
@@ -324,10 +353,10 @@ namespace EasyAssertions
             }
             catch (Exception actual)
             {
-                throw new EasyAssertionException(FailureMessageFormatter.Current.WrongException(typeof(TException), actual.GetType(), expression, message), actual);
+                throw EasyAssertion.Failure(FailureMessageFormatter.Current.WrongException(typeof(TException), actual.GetType(), expression, message), actual);
             }
 
-            throw new EasyAssertionException(FailureMessageFormatter.Current.NoException(typeof(TException), expression, message));
+            throw EasyAssertion.Failure(FailureMessageFormatter.Current.NoException(typeof(TException), expression, message));
         }
     }
 }

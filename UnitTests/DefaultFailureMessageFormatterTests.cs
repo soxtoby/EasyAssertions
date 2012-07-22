@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using NSubstitute;
@@ -88,9 +89,9 @@ namespace EasyAssertions.UnitTests
                                                                              "0123456789abcdefghijklmnopqrstuvwxyz0123456789abcdefghijklmnpoqrstuvwxyz");
             Assert.AreEqual(ActualExpression + Environment.NewLine
                 + "should be " + ExpectedExpression + Environment.NewLine
-                + "          \"...789abcdefghijklmnopqrstuvwxyz\"" + Environment.NewLine
-                + "but was   \"...789abcdefghijklmnpoqrstuvwxyz\"" + Environment.NewLine
-                 + "                               ^" + Environment.NewLine
+                + "          \"...fghijklmnopqrstuvwxyz0123456789abcdefghijklmnopqrstuvwxyz\"" + Environment.NewLine
+                + "but was   \"...fghijklmnopqrstuvwxyz0123456789abcdefghijklmnpoqrstuvwxyz\"" + Environment.NewLine
+                 + "                                                           ^" + Environment.NewLine
                 + "Difference at index 60.", result);
         }
 
@@ -245,18 +246,25 @@ namespace EasyAssertions.UnitTests
         }
 
         [Test]
-        public void NotEmpty_ManyItems_OnlyFirstThreeDisplayed()
+        public void NotEmpty_ManyItems_OnlyFirstTenDisplayed()
         {
-            FakeObject[] enumerable = new[] { new FakeObject("one"), new FakeObject("two"), new FakeObject("three"), new FakeObject("four") };
+            IEnumerable<FakeObject> enumerable = Enumerable.Range(1, 11).Select(i => new FakeObject(i.ToString()));
 
             string result = DefaultFailureMessageFormatter.Instance.NotEmpty(enumerable);
 
             Assert.AreEqual(ActualExpression + Environment.NewLine
                 + "should be empty" + Environment.NewLine
-                + "but had 4 elements: [" + Environment.NewLine
-                + "    <one>," + Environment.NewLine
-                + "    <two>," + Environment.NewLine
-                + "    <three>," + Environment.NewLine
+                + "but had 11 elements: [" + Environment.NewLine
+                + "    <1>," + Environment.NewLine
+                + "    <2>," + Environment.NewLine
+                + "    <3>," + Environment.NewLine
+                + "    <4>," + Environment.NewLine
+                + "    <5>," + Environment.NewLine
+                + "    <6>," + Environment.NewLine
+                + "    <7>," + Environment.NewLine
+                + "    <8>," + Environment.NewLine
+                + "    <9>," + Environment.NewLine
+                + "    <10>," + Environment.NewLine
                 + "    ..." + Environment.NewLine
                 + "]", result);
         }
@@ -419,11 +427,32 @@ namespace EasyAssertions.UnitTests
         }
 
         [Test]
+        public void DoesNotOnlyContain_ExpectedIsEmpty_NotEmptyMessage()
+        {
+            FakeObject[] enumerable = new[] { new FakeObject("foo") };
+
+            string result = DefaultFailureMessageFormatter.Instance.DoesNotOnlyContain(Enumerable.Empty<object>(), enumerable);
+
+            Assert.AreEqual(ActualExpression + Environment.NewLine
+                + "should be empty" + Environment.NewLine
+                + "but had 1 element: <foo>", result);
+        }
+
+        [Test]
+        public void DoesNotOnlyContain_ExtraItems_IncludesMessage()
+        {
+            string result = DefaultFailureMessageFormatter.Instance.DoesNotOnlyContain(new[] { 1 }, new[] { 1, 2 }, "foo");
+
+            StringAssert.EndsWith(Environment.NewLine + "foo", result);
+        }
+
+        [Test]
         public void DoNotMatch_NonMatchingCollections()
         {
             string result = DefaultFailureMessageFormatter.Instance.DoNotMatch(new[] { 1, 2, 3 }, new[] { 1, 3, 2 });
 
-            Assert.AreEqual(ActualExpression + " doesn't match " + ExpectedExpression + ". Differs at index 1." + Environment.NewLine
+            Assert.AreEqual(ActualExpression + Environment.NewLine
+                + "doesn't match " + ExpectedExpression + ". Differs at index 1." + Environment.NewLine
                 + "should be <2>" + Environment.NewLine
                 + "but was   <3>", result);
         }
@@ -435,7 +464,8 @@ namespace EasyAssertions.UnitTests
 
             string result = DefaultFailureMessageFormatter.Instance.DoNotMatch(new[] { 1, 2, 3 }, new[] { 1, 3, 2 });
 
-            Assert.AreEqual(ActualExpression + " differs at index 1." + Environment.NewLine
+            Assert.AreEqual(ActualExpression + Environment.NewLine
+                + "differs at index 1." + Environment.NewLine
                 + "should be <2>" + Environment.NewLine
                 + "but was   <3>", result);
         }
@@ -445,7 +475,8 @@ namespace EasyAssertions.UnitTests
         {
             string result = DefaultFailureMessageFormatter.Instance.DoNotMatch(new[] { 1, 2 }, Enumerable.Empty<int>());
 
-            Assert.AreEqual(ActualExpression + " doesn't match " + ExpectedExpression + '.' + Environment.NewLine
+            Assert.AreEqual(ActualExpression + Environment.NewLine
+                + "doesn't match " + ExpectedExpression + '.' + Environment.NewLine
                 + "should have 2 elements" + Environment.NewLine
                 + "but was empty.", result);
         }
@@ -465,7 +496,8 @@ namespace EasyAssertions.UnitTests
 
             string result = DefaultFailureMessageFormatter.Instance.ItemsNotSame(new[] { same, new FakeObject("bar") }, new[] { same, new FakeObject("baz") });
 
-            Assert.AreEqual(ActualExpression + " differs at index 1." + Environment.NewLine
+            Assert.AreEqual(ActualExpression + Environment.NewLine
+                + "differs at index 1." + Environment.NewLine
                 + "should be instance <bar>" + Environment.NewLine
                 + "but was            <baz>", result);
         }

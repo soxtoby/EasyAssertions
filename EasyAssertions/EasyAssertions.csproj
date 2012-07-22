@@ -46,16 +46,24 @@
     <AssemblyOriginatorKeyFile>../key.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="SmartFormat">
+      <HintPath>..\lib\SmartFormat.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Actual.cs" />
     <Compile Include="Compare.cs" />
+    <Compile Include="FailureMessages\CollectionFailureMessage.cs" />
     <Compile Include="DefaultFailureMessageFormatter.cs" />
     <Compile Include="EasyAssertion.cs" />
     <Compile Include="EasyAssertionException.cs" />
     <Compile Include="FailureMessageFormatter.cs" />
+    <Compile Include="FailureMessages\ExpectedFormatter.cs" />
+    <Compile Include="FailureMessages\FailureMessage.cs" />
+    <Compile Include="FailureMessages\FunctionFailureMessage.cs" />
+    <Compile Include="FailureMessages\StringFailureMessage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SourceExpressions\AssertionMethod.cs" />
     <Compile Include="SourceExpressions\AssertionComponent.cs" />

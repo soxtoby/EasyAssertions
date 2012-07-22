@@ -590,7 +590,26 @@ namespace EasyAssertions.UnitTests
         public void ShouldContain_StringDoesNotContainSubstring_FailsWithStringDoesNotContainMessage()
         {
             mockFormatter.DoesNotContain("bar", "foo", "baz").Returns("qux");
+
             EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => "foo".ShouldContain("bar", "baz"));
+
+            Assert.AreEqual("qux", result.Message);
+        }
+
+        [Test]
+        public void ShouldNotContain_StringDoesNotContainSubstring_ReturnsActualValue()
+        {
+            Actual<string> result = "foo".ShouldNotContain("bar");
+
+            Assert.AreEqual("foo", result.And);
+        }
+
+        [Test]
+        public void ShouldNotContain_StringContainsSubstring_FailsWithStringContainsMessage()
+        {
+            mockFormatter.Contains("bar", "foobarbaz", "baz").Returns("qux");
+
+            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => "foobarbaz".ShouldNotContain("bar", "baz"));
 
             Assert.AreEqual("qux", result.Message);
         }

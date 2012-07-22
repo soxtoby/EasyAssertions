@@ -42,7 +42,7 @@ namespace EasyAssertions
                     .Substring(0, arrowIndex)
                     .Count(Escapes.ContainsKey);
 
-                return new string(' ', arrowIndex) + '^';
+                return new string(' ', arrowIndex + 1) + '^';   // + 1 for the quotes wrapped around string values
             }
         }
 

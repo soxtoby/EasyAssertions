@@ -37,7 +37,7 @@ namespace EasyAssertions
                     UserMessage = message,
                     MessageTemplate = "should be {Expected:{Value}}{BR}"
                                     + "but was   {ActualValue}{BR}"
-                                    + "           {Arrow}{BR}"
+                                    + "          {Arrow}{BR}"
                                     + "Difference at index {FailureIndex}."
                 }.ToString();
         }
@@ -316,6 +316,23 @@ namespace EasyAssertions
                     UserMessage = message,
                     MessageTemplate = "should contain {Expected:{Value}}{BR}"
                                     + "but was        {ActualValue}"
+                }.ToString();
+        }
+
+        public string Contains(string expectedToNotContain, string actual, string message = null)
+        {
+            int matchIndex = actual.IndexOf(expectedToNotContain, StringComparison.Ordinal);
+
+            return new StringFailureMessage
+                {
+                    ActualValue = actual,
+                    ExpectedValue = expectedToNotContain,
+                    FailureIndex = matchIndex,
+                    UserMessage = message,
+                    MessageTemplate = "shouldn't contain {Expected:{Value}}{BR}"
+                                    + "but was           {ActualValue}{BR}"
+                                    + "                  {Arrow}{BR}"
+                                    + "Match at index {FailureIndex}."
                 }.ToString();
         }
 

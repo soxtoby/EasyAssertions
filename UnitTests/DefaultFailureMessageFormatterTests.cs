@@ -580,6 +580,27 @@ namespace EasyAssertions.UnitTests
         }
 
         [Test]
+        public void StringContains()
+        {
+            string result = DefaultFailureMessageFormatter.Instance.Contains("bar", "foobarbaz");
+
+            Assert.AreEqual(ActualExpression + Environment.NewLine
+                + "shouldn't contain " + ExpectedExpression + Environment.NewLine
+                + "                  \"bar\"" + Environment.NewLine
+                + "but was           \"foobarbaz\"" + Environment.NewLine
+                 + "                      ^" + Environment.NewLine
+                + "Match at index 3.", result);
+        }
+
+        [Test]
+        public void StringContains_IncludesMessage()
+        {
+            string result = DefaultFailureMessageFormatter.Instance.Contains("bar", "foobarbaz", "qux");
+
+            StringAssert.EndsWith(Environment.NewLine + "qux", result);
+        }
+
+        [Test]
         public void DoesNotStartWith()
         {
             string result = DefaultFailureMessageFormatter.Instance.DoesNotStartWith("foo", "bar");

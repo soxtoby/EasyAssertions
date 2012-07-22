@@ -42,6 +42,7 @@ namespace EasyAssertions
         string IsEmpty(string message = null);
         string LengthMismatch(int expectedLength, IEnumerable actual, string message = null);
         string DoesNotContain(string expectedSubstring, string actual, string message = null);
+        string Contains(string expectedToNotContain, string actual, string message = null);
         string DoesNotStartWith(string expectedStart, string actual, string message = null);
         string DoesNotEndWith(string expectedEnd, string actual, string message = null);
     }

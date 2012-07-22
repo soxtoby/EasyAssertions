@@ -242,6 +242,15 @@ namespace EasyAssertions
                 });
         }
 
+        public static Actual<string> ShouldNotContain(this string actual, string expectedToNotContain, string message = null)
+        {
+            return actual.Assert(() =>
+                {
+                    if (actual.Contains(expectedToNotContain))
+                        throw Failure(FailureMessageFormatter.Current.Contains(expectedToNotContain, actual, message));
+                });
+        }
+
         public static Actual<string> ShouldStartWith(this string actual, string expectedStart, string message = null)
         {
             return actual.Assert(() =>

@@ -70,8 +70,7 @@ namespace EasyAssertions.UnitTests
             int expectedExpression = 2;
 
             EasyAssertionException result = Assert.Throws<EasyAssertionException>(() =>
-                actualExpression.ShouldBe(new TestClass(12))
-                    .And(a => a.Value.ShouldBe(expectedExpression)));
+                actualExpression.Assert(a => a.Value.ShouldBe(expectedExpression)));
 
             Assert.AreEqual("actualExpression.Value" + Environment.NewLine
                 + "should be expectedExpression" + Environment.NewLine
@@ -86,12 +85,11 @@ namespace EasyAssertions.UnitTests
             int expectedExpression = 2;
 
             EasyAssertionException result = Assert.Throws<EasyAssertionException>(() =>
-                actualExpression.ShouldBe(new TestClass(12))
-                    .And(tc =>
-                        {
-                            tc.Value.ShouldBe(12);
-                            tc.Value.ShouldBe(expectedExpression);
-                        }));
+                actualExpression.Assert(tc =>
+                    {
+                        tc.Value.ShouldBe(12);
+                        tc.Value.ShouldBe(expectedExpression);
+                    }));
 
             Assert.AreEqual("actualExpression.Value" + Environment.NewLine
                 + "should be expectedExpression" + Environment.NewLine
@@ -104,9 +102,9 @@ namespace EasyAssertions.UnitTests
         {
             TestClass actualExpression = new TestClass(12);
             EasyAssertionException result = Assert.Throws<EasyAssertionException>(() =>
-                actualExpression.ShouldBe(new TestClass(12))
-                    .And(a => a.Value.ShouldBe(12)
-                    .And(b => b.ToString().ShouldBe("2"))));
+                actualExpression
+                    .Assert(a => a.Value.ShouldBe(12)
+                        .And(b => b.ToString().ShouldBe("2"))));
 
             StringAssert.StartsWith("actualExpression.Value.ToString()" + Environment.NewLine, result.Message);
         }
@@ -118,8 +116,8 @@ namespace EasyAssertions.UnitTests
             int expectedExpression = 2;
 
             EasyAssertionException result = Assert.Throws<EasyAssertionException>(() =>
-                actualExpression.ShouldBeA<TestClass>()
-                    .And(tc => tc.ShouldBeA<TestClass>())
+                actualExpression
+                    .Assert(tc => tc.ShouldBeA<TestClass>())
                     .And.Value.ShouldBe(expectedExpression));
 
             Assert.AreEqual("actualExpression.Value" + Environment.NewLine

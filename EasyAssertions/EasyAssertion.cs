@@ -353,7 +353,16 @@ namespace EasyAssertions
         }
 
         /// <summary>
-        /// Provides access to an object's child properties without changing the method chaining context.
+        /// Provides access to an object's child properties without changing the assertion chaining context.
+        /// </summary>
+        public static Actual<TActual> Assert<TActual>(this TActual actual, Action<TActual> assert)
+        {
+            actual.RegisterAssert(() => RegisterInnerAssert(assert.Method, () => assert(actual)));
+            return new Actual<TActual>(actual);
+        }
+
+        /// <summary>
+        /// Provides access to an object's child properties without changing the assertion chaining context.
         /// </summary>
         public static Actual<TActual> And<TActual>(this Actual<TActual> actual, Action<TActual> assert)
         {

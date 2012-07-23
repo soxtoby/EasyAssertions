@@ -235,6 +235,18 @@ namespace EasyAssertions
         }
 
         /// <summary>
+        /// Asserts that a sequence does not contain any of the specified elements, using the default equality comparer.
+        /// </summary>
+        public static Actual<IEnumerable<TActual>> ShouldNotContainItems<TActual, TExpected>(this IEnumerable<TActual> actual, IEnumerable<TExpected> expectedToNotContain, string message = null) where TExpected : TActual
+        {
+            return actual.RegisterAssert(() =>
+            {
+                if (Compare.ContainsAny(actual, expectedToNotContain))
+                    throw Failure(FailureMessageFormatter.Current.Contains(expectedToNotContain, actual, message));
+            });
+        }
+
+        /// <summary>
         /// Asserts thats a sequence only contains the specified elements, and nothing else, in any order, using the default equality comparer.
         /// </summary>
         public static Actual<IEnumerable<TActual>> ShouldOnlyContain<TActual, TExpected>(this IEnumerable<TActual> actual, IEnumerable<TExpected> expected, string message = null) where TExpected : TActual

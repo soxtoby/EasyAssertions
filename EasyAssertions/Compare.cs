@@ -92,6 +92,18 @@ namespace EasyAssertions
         }
 
         /// <summary>
+        /// Determines whether a sequence contains any of the items in another sequence.
+        /// </summary>
+        public static bool ContainsAny(IEnumerable actual, IEnumerable itemsToLookFor)
+        {
+            if (IsEmpty(itemsToLookFor))
+                return true;
+
+            HashSet<object> actualSet = new HashSet<object>(actual.Cast<object>());
+            return itemsToLookFor.Cast<object>().Any(actualSet.Contains);
+        }
+
+        /// <summary>
         /// Determines whether a sequence contains all of the items in another sequence, and no other items.
         /// </summary>
         public static bool ContainsOnlyExpectedItems(IEnumerable actual, IEnumerable expected)

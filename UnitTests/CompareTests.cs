@@ -84,6 +84,24 @@ namespace EasyAssertions.UnitTests
         }
 
         [Test]
+        public void ContainsAny_EmptySequence_DoesNotContainItems()
+        {
+            Assert.IsFalse(Compare.ContainsAny(Enumerable.Empty<int>(), new[] { 1 }));
+        }
+
+        [Test]
+        public void ContainsAny_NothingToLookFor_DoesNotContainItems()
+        {
+            Assert.IsTrue(Compare.ContainsAny(new[] { 1 }, Enumerable.Empty<int>()));
+        }
+
+        [Test]
+        public void ContainsAny_ContainsItem()
+        {
+            Assert.IsTrue(Compare.ContainsAny(new[] { 1, 2 }, new[] { 3, 2 }));
+        }
+
+        [Test]
         public void IsEmpty_Empty()
         {
             Assert.IsTrue(Compare.IsEmpty(Enumerable.Empty<int>()));

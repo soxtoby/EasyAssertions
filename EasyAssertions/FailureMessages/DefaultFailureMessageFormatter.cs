@@ -170,6 +170,32 @@ namespace EasyAssertions
                 }.ToString();
         }
 
+        public string Contains(IEnumerable expectedToNotContain, IEnumerable actual, string message = null)
+        {
+            HashSet<object> actualSet = new HashSet<object>(actual.Cast<object>());
+            List<object> unexpectedList = expectedToNotContain.Cast<object>().ToList();
+            int unexpectedItemIndex = unexpectedList.FindIndex(actualSet.Contains);
+            object unexpectedItem = unexpectedItemIndex == -1 ? null
+                : unexpectedList[unexpectedItemIndex];
+            int itemIndexInActual = actual.Cast<object>().ToList().IndexOf(unexpectedItem);
+
+            return new CollectionFailureMessage
+                {
+                    ActualItems = actualSet,
+                    ExpectedValue = unexpectedItem,
+                    FailureIndex = itemIndexInActual,
+                    MessageTemplate = "shouldn't contain {ExpectedExpression:{0:"
+                                        + "{ExpectedExpression}{BR}"
+                                        + "but contained {ExpectedValue}{BR}"
+                                        + "and was {ActualSample}"
+                                    + "}|{0:"
+                                        + "{ExpectedValue}{BR}"
+                                        + "but was {ActualSample}"
+                                    + "}}{BR}"
+                                    + "Match at index {FailureIndex}."
+                }.ToString();
+        }
+
         public string DoesNotOnlyContain(IEnumerable expected, IEnumerable actual, string message = null)
         {
             if (expected.Cast<object>().None())

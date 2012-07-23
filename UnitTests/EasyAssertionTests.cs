@@ -417,6 +417,28 @@ namespace EasyAssertions.UnitTests
         }
 
         [Test]
+        public void ShouldNotContainItems_CollectionDoesNotContainAnyOfTheItems_ReturnsActualValue()
+        {
+            int[] actual = new[] { 1, 2 };
+
+            Actual<IEnumerable<int>> result = actual.ShouldNotContainItems(new[] { 3, 4 });
+
+            Assert.AreSame(actual, result.And);
+        }
+
+        [Test]
+        public void ShouldNotContainItems_CollectionContainsOneOfTheItems_FailsWithSequenceContainsItemMessage()
+        {
+            int[] actual = new[] { 1, 2 };
+            int[] expectedToNotContain = new[] { 3, 2 };
+            mockFormatter.Contains(expectedToNotContain, actual, "foo").Returns("bar");
+
+            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldNotContainItems(expectedToNotContain, "foo"));
+
+            Assert.AreEqual("bar", result.Message);
+        }
+
+        [Test]
         public void ShouldOnlyOnlyContain_CollectionsHaveSameItems_ReturnsActualValue()
         {
             int[] actual = new[] { 1, 2 };

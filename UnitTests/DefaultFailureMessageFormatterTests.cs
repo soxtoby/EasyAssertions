@@ -394,6 +394,37 @@ namespace EasyAssertions.UnitTests
         }
 
         [Test]
+        public void CollectionContains()
+        {
+            string result = DefaultFailureMessageFormatter.Instance.Contains(new[] { 1 }, new[] { 2, 1 });
+
+            Assert.AreEqual(ActualExpression + Environment.NewLine
+                + "shouldn't contain " + ExpectedExpression + Environment.NewLine
+                + "but contained <1>" + Environment.NewLine
+                + "and was [" + Environment.NewLine
+                + "    <2>," + Environment.NewLine
+                + "    <1>" + Environment.NewLine
+                + "]" + Environment.NewLine
+                + "Match at index 1.", result);
+        }
+
+        [Test]
+        public void CollectionContains_ExpectedIsNewCollection()
+        {
+            expressionProvider.GetExpectedExpression().Returns("new[] { 1 }");
+
+            string result = DefaultFailureMessageFormatter.Instance.Contains(new[] { 1 }, new[] { 2, 1 });
+
+            Assert.AreEqual(ActualExpression + Environment.NewLine
+                + "shouldn't contain <1>" + Environment.NewLine
+                + "but was [" + Environment.NewLine
+                + "    <2>," + Environment.NewLine
+                + "    <1>" + Environment.NewLine
+                + "]" + Environment.NewLine
+                + "Match at index 1.", result);
+        }
+
+        [Test]
         public void DoesNotOnlyContain_MissingItem()
         {
             string result = DefaultFailureMessageFormatter.Instance.DoesNotOnlyContain(new[] { 1 }, new[] { 2 });

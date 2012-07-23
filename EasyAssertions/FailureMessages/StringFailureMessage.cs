@@ -5,34 +5,39 @@ using System.Linq;
 
 namespace EasyAssertions
 {
+    /// <summary>
+    /// A helper class for building string assertion failure messages in a consistent format.
+    /// </summary>
     public class StringFailureMessage : FailureMessage
     {
         private const int MaxStringWidth = 60;
         private const int IdealArrowIndex = 20;
 
+        /// <summary>
+        /// The string value that the actual string value was compared against.
+        /// Outputs a snippet of the string around the <see cref="FailureMessage.FailureIndex"/>, wrapped in " ".
+        /// </summary>
         public override object ExpectedValue
         {
             get { return GetSnippet((string)RawExpectedValue); }
             set { RawExpectedValue = value; }
         }
 
+        /// <summary>
+        /// The string value being asserted on.
+        /// Outputs a snippet of the string around the <see cref="FailureMessage.FailureIndex"/>, wrapped in " ".
+        /// </summary>
         public override object ActualValue
         {
             get { return GetSnippet((string)RawActualValue); }
             set { RawActualValue = value; }
         }
 
-        public override string ExpectedExpression
-        {
-            get
-            {
-                string expectedExpression = TestExpression.GetExpected();
-                return expectedExpression.Trim('@', '"') == (string)RawExpectedValue
-                    ? null
-                    : expectedExpression;
-            }
-        }
-
+        /// <summary>
+        /// Outputs a ^ character.
+        /// When aligned with the actual or expected value in the <see cref="FailureMessage.MessageTemplate"/>,
+        /// the ^ character will line up with the character at the <see cref="FailureMessage.FailureIndex"/>.
+        /// </summary>
         public virtual string Arrow
         {
             get
@@ -46,7 +51,11 @@ namespace EasyAssertions
             }
         }
 
-        private string GetSnippet(string wholeString)
+        /// <summary>
+        /// Reduces a string down to a smaller snippet around the <see cref="FailureMessage.FailureIndex"/>,
+        /// to avoid blowing out the size of the failure message.
+        /// </summary>
+        protected string GetSnippet(string wholeString)
         {
             int fromIndex = SnippetStart(wholeString);
             int snippetLength = MaxStringWidth;
@@ -55,7 +64,7 @@ namespace EasyAssertions
 
             if (fromIndex > 0)
             {
-                prefix = Ellipses;
+                prefix = "...";
                 snippetLength -= prefix.Length;
                 fromIndex += prefix.Length;
             }
@@ -66,7 +75,7 @@ namespace EasyAssertions
             }
             else
             {
-                suffix = Ellipses;
+                suffix = "...";
                 snippetLength -= suffix.Length;
             }
 
@@ -78,7 +87,10 @@ namespace EasyAssertions
             return Math.Max(0, Math.Min(FailureIndex - IdealArrowIndex, wholeString.Length - MaxStringWidth));
         }
 
-        private static string Escape(string value)
+        /// <summary>
+        /// Escapes new-lines in a string value for output in the failure message.
+        /// </summary>
+        protected static string Escape(string value)
         {
             return Escapes.Aggregate(value, (s, escape) => s.Replace(escape.Key.ToString(CultureInfo.InvariantCulture), escape.Value));
         }

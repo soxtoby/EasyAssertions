@@ -5,26 +5,22 @@ using SmartFormat;
 
 namespace EasyAssertions
 {
+    /// <summary>
+    /// A helper class for building collection assertion failure messages in a consistent format.
+    /// </summary>
     public class CollectionFailureMessage : FailureMessage
     {
         private const int SampleSize = 10;
 
-        protected ICollection<object> RawActualItems;
+        /// <summary>
+        /// Provides access to the items in the expected collection without modification.
+        /// </summary>
+        public ICollection<object> RawExpectedItems { get; protected set; }
 
-        public virtual ICollection<object> ActualItems
-        {
-            get
-            {
-                return RawActualItems
-                    .Select(Output)
-                    .Cast<object>()
-                    .ToList();
-            }
-            set { RawActualItems = value; }
-        }
-
-        protected ICollection<object> RawExpectedItems;
-
+        /// <summary>
+        /// The collection of items that the actual collection is being compared against.
+        /// Objects are wrapped in &lt; &gt; and strings are wrapped in " ".
+        /// </summary>
         public virtual ICollection<object> ExpectedItems
         {
             get
@@ -37,17 +33,50 @@ namespace EasyAssertions
             set { RawExpectedItems = value; }
         }
 
+        /// <summary>
+        /// Provides access to the items in the actual collection without modification.
+        /// </summary>
+        public ICollection<object> RawActualItems { get; protected set; }
+
+        /// <summary>
+        /// The collection of items being asserted on.
+        /// Objects are wrapped in &lt; &gt; and strings are wrapped in " ".
+        /// </summary>
+        public virtual ICollection<object> ActualItems
+        {
+            get
+            {
+                return RawActualItems
+                    .Select(Output)
+                    .Cast<object>()
+                    .ToList();
+            }
+            set { RawActualItems = value; }
+        }
+
+        /// <summary>
+        /// Outputs a sample of the items in the <see cref="ExpectedItems"/> collection,
+        /// or "empty." if there are no items in the collection.
+        /// </summary>
         public string ExpectedSample
         {
             get { return Sample(ExpectedSampleItems); }
         }
 
+        /// <summary>
+        /// Outputs a sample of the items in the <see cref="ActualItems"/> collection,
+        /// or "empty." if there are no items in the collection.
+        /// </summary>
         public string ActualSample
         {
             get { return Sample(ActualSampleItems); }
         }
 
-        private string Sample(ICollection<object> items)
+        /// <summary>
+        /// Returns a sample of the first ten items in the given collection,
+        /// or "empty." if there are no items in the collection.
+        /// </summary>
+        protected virtual string Sample(ICollection<object> items)
         {
             switch (items.Count)
             {
@@ -60,6 +89,10 @@ namespace EasyAssertions
             }
         }
 
+        /// <summary>
+        /// The first ten items of the <see cref="ExpectedItems"/> collection,
+        /// with ellipses appended to the end if the collection contains more items.
+        /// </summary>
         public virtual ICollection<object> ExpectedSampleItems
         {
             get
@@ -70,6 +103,10 @@ namespace EasyAssertions
             }
         }
 
+        /// <summary>
+        /// The first ten items of the <see cref="ActualItems"/> collection,
+        /// with ellipses appended to the end if the collection contains more items.
+        /// </summary>
         public virtual ICollection<object> ActualSampleItems
         {
             get
@@ -80,6 +117,10 @@ namespace EasyAssertions
             }
         }
 
+        /// <summary>
+        /// The source representation of the <see cref="ExpectedItems"/> collection.
+        /// Returns null if the source representation is a collection initializer.
+        /// </summary>
         public override string ExpectedExpression
         {
             get

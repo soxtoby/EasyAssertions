@@ -7,6 +7,10 @@ using System.Reflection;
 
 namespace EasyAssertions
 {
+    /// <summary>
+    /// Contains the bulk of assertions provided by EasyAssertions.
+    /// Function assertions can be found in <see cref="Should"/>.
+    /// </summary>
     public static class EasyAssertion
     {
         private static Func<string, Exception> createMessageException;
@@ -44,7 +48,7 @@ namespace EasyAssertions
         }
 
         /// <summary>
-        /// Asserts that two float values are within a specified tolerance of eachother.
+        /// Asserts that two <see cref="float"/> values are within a specified tolerance of eachother.
         /// </summary>
         public static Actual<float> ShouldBe(this float actual, float expected, float tolerance, string message = null)
         {
@@ -56,7 +60,7 @@ namespace EasyAssertions
         }
 
         /// <summary>
-        /// Asserts that two float values are not within a specified tolerance of eachother.
+        /// Asserts that two <see cref="float"/> values are not within a specified tolerance of eachother.
         /// </summary>
         public static Actual<float> ShouldNotBe(this float actual, float notExpected, float tolerance, string message = null)
         {
@@ -68,7 +72,7 @@ namespace EasyAssertions
         }
 
         /// <summary>
-        /// Asserts that two double values are within a specified tolerance of eachother.
+        /// Asserts that two <see cref="double"/> values are within a specified tolerance of eachother.
         /// </summary>
         public static Actual<double> ShouldBe(this double actual, double expected, double delta, string message = null)
         {
@@ -80,7 +84,7 @@ namespace EasyAssertions
         }
 
         /// <summary>
-        /// Asserts that two double values are not within a specified tolerance of eachother.
+        /// Asserts that two <see cref="double"/> values are not within a specified tolerance of eachother.
         /// </summary>
         public static Actual<double> ShouldNotBe(this double actual, double notExpected, double delta, string message = null)
         {
@@ -165,8 +169,8 @@ namespace EasyAssertions
 
         /// <summary>
         /// Asserts that two sequences contain the same items in the same order.
-        /// Non-IEnumerable items are compared using the default equality comparer.
-        /// IEnumerable items are compared recursively.
+        /// <see cref="IEnumerable"/> items are compared recursively.
+        /// Non-<c>IEnumerable</c> items are compared using the default equality comparer.
         /// </summary>
         public static Actual<IEnumerable<TActual>> ShouldMatch<TActual, TExpected>(this IEnumerable<TActual> actual, IEnumerable<TExpected> expected, string message = null) where TExpected : TActual
         {
@@ -174,7 +178,7 @@ namespace EasyAssertions
         }
 
         /// <summary>
-        /// Asserts that two sequences contain the same float values (within a specified tolerance), in the same order.
+        /// Asserts that two sequences contain the same <see cref="float"/> values (within a specified tolerance), in the same order.
         /// </summary>
         public static Actual<IEnumerable<float>> ShouldMatch(this IEnumerable<float> actual, IEnumerable<float> expected, float delta, string message = null)
         {
@@ -182,7 +186,7 @@ namespace EasyAssertions
         }
 
         /// <summary>
-        /// Asserts that two sequences contain the same double values (within a specified tolerance), in the same order.
+        /// Asserts that two sequences contain the same <see cref="double"/> values (within a specified tolerance), in the same order.
         /// </summary>
         public static Actual<IEnumerable<double>> ShouldMatch(this IEnumerable<double> actual, IEnumerable<double> expected, double delta, string message = null)
         {
@@ -231,7 +235,7 @@ namespace EasyAssertions
         }
 
         /// <summary>
-        /// Asserts thats a sequence only contains the specified elements, in any order, using the default equality comparer.
+        /// Asserts thats a sequence only contains the specified elements, and nothing else, in any order, using the default equality comparer.
         /// </summary>
         public static Actual<IEnumerable<TActual>> ShouldOnlyContain<TActual, TExpected>(this IEnumerable<TActual> actual, IEnumerable<TExpected> expected, string message = null) where TExpected : TActual
         {
@@ -433,7 +437,7 @@ namespace EasyAssertions
         }
 
         /// <summary>
-        /// Overrides the exceptions used when assertions fail.
+        /// Overrides the expceptions used when assertions fail.
         /// Test frameworks will detect their own exception types and display the correct assertion failure messages.
         /// </summary>
         public static void UseFrameworkExceptions(Func<string, Exception> messageExceptionFactory, Func<string, Exception, Exception> innerExceptionExceptionFactory)
@@ -443,7 +447,7 @@ namespace EasyAssertions
         }
 
         /// <summary>
-        /// Throw EasyAssertionExceptions when assertions fail.
+        /// Throw <see cref="EasyAssertionException"/>s when assertions fail.
         /// </summary>
         public static void UseEasyAssertionExceptions()
         {
@@ -452,7 +456,7 @@ namespace EasyAssertions
         }
 
         /// <summary>
-        /// Creates an exception to be thrown for a failed assertion.
+        /// Creates an <see cref="Exception"/> to be thrown for a failed assertion.
         /// </summary>
         public static Exception Failure(string failureMessage)
         {
@@ -462,7 +466,7 @@ namespace EasyAssertions
         }
 
         /// <summary>
-        /// Creates an exception to be thrown for a failed assertion.
+        /// Creates an <see cref="Exception"/> to be thrown for a failed assertion.
         /// </summary>
         public static Exception Failure(string failureMessage, Exception innerException)
         {
@@ -472,6 +476,9 @@ namespace EasyAssertions
         }
     }
 
+    /// <summary>
+    /// Provides assertions on functions, which are unwieldly to pass into extension methods.
+    /// </summary>
     public static class Should
     {
         /// <summary>

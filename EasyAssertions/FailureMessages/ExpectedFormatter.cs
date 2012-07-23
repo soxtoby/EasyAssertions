@@ -5,7 +5,7 @@ using SmartFormat.Core.Parsing;
 
 namespace EasyAssertions
 {
-    public class ExpectedFormatter : IFormatter
+    internal class ExpectedFormatter : IFormatter
     {
         private ExpectedFormatter() { }
 

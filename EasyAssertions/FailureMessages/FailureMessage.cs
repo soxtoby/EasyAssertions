@@ -18,7 +18,7 @@ namespace EasyAssertions
         public override string ToString()
         {
             SmartFormatter formatter = Smart.CreateDefaultSmartFormat();
-            formatter.ErrorAction = ErrorAction.ThrowError;
+            formatter.ErrorAction = ErrorAction.OutputErrorInResult;
             formatter.FormatterExtensions.Insert(0, ExpectedFormatter.Instance);
             formatter.Parser.UseAlternativeEscapeChar('\\');
 

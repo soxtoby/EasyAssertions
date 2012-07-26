@@ -237,7 +237,7 @@ namespace EasyAssertions
             }
         }
 
-        public string DoNotMatch(IEnumerable expected, IEnumerable actual, string message = null)
+        public string DoNotMatch<TActual, TExpected>(IEnumerable<TExpected> expected, IEnumerable<TActual> actual, Func<TActual, TExpected, bool> predicate = null, string message = null)
         {
             List<object> expectedList = expected.Cast<object>().ToList();
             List<object> actualList = actual.Cast<object>().ToList();
@@ -258,7 +258,8 @@ namespace EasyAssertions
                     }.ToString();
 
             object expectedValue, actualValue;
-            int differenceIndex = FindDifference(expectedList, actualList, Compare.ObjectsAreEqual, out expectedValue, out actualValue);
+            Func<object, object, bool> equalityComparer = predicate != null ? (Func<object, object, bool>)((a, e) => predicate((TActual)a, (TExpected)e)) : Compare.ObjectsAreEqual;
+            int differenceIndex = FindDifference(expectedList, actualList, equalityComparer, out expectedValue, out actualValue);
 
             return new CollectionFailureMessage
                 {
@@ -270,8 +271,8 @@ namespace EasyAssertions
                                         + "doesn't match {}. Differs"
                                         + "|differs}"
                                     + " at index {FailureIndex}.{BR}"
-                                    + "should be {ExpectedValue}{BR}"
-                                    + "but was   {ActualValue}"
+                                    + "should match {ExpectedValue}{BR}"
+                                    + "but was      {ActualValue}"
                 }.ToString();
         }
 

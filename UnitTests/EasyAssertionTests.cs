@@ -301,7 +301,7 @@ namespace EasyAssertions.UnitTests
         {
             int[] expected = new[] { 3, 4 };
             int[] actual = new[] { 1, 2 };
-            mockFormatter.DoNotMatch(expected, actual, "foo").Returns("bar");
+            mockFormatter.DoNotMatch(expected, actual, Arg.Any<Func<int, int, bool>>(), "foo").Returns("bar");
 
             EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldMatch(expected, "foo"));
 
@@ -322,8 +322,9 @@ namespace EasyAssertions.UnitTests
         {
             int[] actual = new[] { 1, 2, 4 };
             int[] expected = new[] { 2, 4, 6 };
-            mockFormatter.DoNotMatch(expected, actual, "foo").Returns("bar");
-            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldMatch(expected, (a, e) => a == e / 2, "foo"));
+            Func<int, int, bool> predicate = (a, e) => a == e / 2;
+            mockFormatter.DoNotMatch(expected, actual, predicate, "foo").Returns("bar");
+            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldMatch(expected, predicate, "foo"));
 
             Assert.AreEqual("bar", result.Message);
         }
@@ -343,7 +344,7 @@ namespace EasyAssertions.UnitTests
         {
             float[] actual = new[] { 10f, 20f };
             float[] expected = new[] { 11f, 21f };
-            mockFormatter.DoNotMatch(expected, actual, "foo").Returns("bar");
+            mockFormatter.DoNotMatch(expected, actual, Arg.Any<Func<float, float, bool>>(), "foo").Returns("bar");
 
             EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldMatch(expected, 0.9f, "foo"));
 
@@ -365,7 +366,7 @@ namespace EasyAssertions.UnitTests
         {
             double[] actual = new[] { 10d, 20d };
             double[] expected = new[] { 11d, 21d };
-            mockFormatter.DoNotMatch(expected, actual, "foo").Returns("bar");
+            mockFormatter.DoNotMatch(expected, actual, Arg.Any<Func<double, double, bool>>(), "foo").Returns("bar");
 
             EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldMatch(expected, 0.9d, "foo"));
 

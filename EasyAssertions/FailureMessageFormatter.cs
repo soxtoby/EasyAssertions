@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq.Expressions;
 
 namespace EasyAssertions
@@ -49,7 +50,7 @@ namespace EasyAssertions
         string IsNull(string message = null);
         string NotSame(object expected, object actual, string message = null);
         string AreSame(object actual, string message = null);
-        string DoNotMatch(IEnumerable expected, IEnumerable actual, string message = null);
+        string DoNotMatch<TActual, TExpected>(IEnumerable<TExpected> expected, IEnumerable<TActual> actual, Func<TActual, TExpected, bool> predicate = null, string message = null);
         string DoesNotContain(object expected, IEnumerable actual, string message = null);
         string DoesNotContainItems(IEnumerable expected, IEnumerable actual, string message = null);
         string Contains(IEnumerable expectedToNotContain, IEnumerable actual, string message = null);

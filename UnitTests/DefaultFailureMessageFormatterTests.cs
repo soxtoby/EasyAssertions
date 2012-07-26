@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
 using NSubstitute;
@@ -484,8 +485,8 @@ namespace EasyAssertions.UnitTests
 
             Assert.AreEqual(ActualExpression + Environment.NewLine
                 + "doesn't match " + ExpectedExpression + ". Differs at index 1." + Environment.NewLine
-                + "should be <2>" + Environment.NewLine
-                + "but was   <3>", result);
+                + "should match <2>" + Environment.NewLine
+                + "but was      <3>", result);
         }
 
         [Test]
@@ -497,8 +498,8 @@ namespace EasyAssertions.UnitTests
 
             Assert.AreEqual(ActualExpression + Environment.NewLine
                 + "differs at index 1." + Environment.NewLine
-                + "should be <2>" + Environment.NewLine
-                + "but was   <3>", result);
+                + "should match <2>" + Environment.NewLine
+                + "but was      <3>", result);
         }
 
         [Test]
@@ -513,9 +514,21 @@ namespace EasyAssertions.UnitTests
         }
 
         [Test]
+        public void DoNotMatch_Predicate()
+        {
+            string result = DefaultFailureMessageFormatter.Instance.DoNotMatch(new[] { 1, 2, 3 }, new[] { "1", "3", "2" }, (s, i) => s == i.ToString(CultureInfo.InvariantCulture));
+
+            Assert.AreEqual(ActualExpression + Environment.NewLine
+                + "doesn't match " + ExpectedExpression + ". "
+                + "Differs at index 1." + Environment.NewLine
+                + "should match <2>" + Environment.NewLine
+                + "but was      \"3\"", result);
+        }
+
+        [Test]
         public void DoNotMatch_IncludesMessage()
         {
-            string result = DefaultFailureMessageFormatter.Instance.DoNotMatch(new[] { 1 }, new[] { 2 }, "foo");
+            string result = DefaultFailureMessageFormatter.Instance.DoNotMatch(new[] { 1 }, new[] { 2 }, message: "foo");
 
             StringAssert.EndsWith(Environment.NewLine + "foo", result);
         }

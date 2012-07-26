@@ -207,7 +207,7 @@ namespace EasyAssertions
             List<TExpected> expectedList = expected.ToList();
 
             if (!Compare.CollectionsMatch(actualList, expectedList, (a, e) => predicate((TActual)a, (TExpected)e)))
-                throw Failure(FailureMessageFormatter.Current.DoNotMatch(expected, actual, message));
+                throw Failure(FailureMessageFormatter.Current.DoNotMatch(expected, actual, predicate, message));
         }
 
         /// <summary>

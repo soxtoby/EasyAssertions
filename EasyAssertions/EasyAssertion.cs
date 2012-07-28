@@ -174,7 +174,7 @@ namespace EasyAssertions
         /// </summary>
         public static Actual<IEnumerable<TActual>> ShouldMatch<TActual, TExpected>(this IEnumerable<TActual> actual, IEnumerable<TExpected> expected, string message = null) where TExpected : TActual
         {
-            return actual.RegisterAssert(() => AssertMatch(actual, expected, (a, e) => Compare.ObjectsMatch(a, e), message));
+            return actual.RegisterAssert(() => AssertMatch(actual, expected, Compare.ObjectsMatch, message));
         }
 
         /// <summary>

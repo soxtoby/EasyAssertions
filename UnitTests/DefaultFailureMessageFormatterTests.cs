@@ -481,7 +481,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void DoNotMatch_NonMatchingCollections()
         {
-            string result = DefaultFailureMessageFormatter.Instance.DoNotMatch(new[] { 1, 2, 3 }, new[] { 1, 3, 2 });
+            string result = DefaultFailureMessageFormatter.Instance.DoNotMatch(new[] { 1, 2, 3 }, new[] { 1, 3, 2 }, Compare.ObjectsAreEqual);
 
             Assert.AreEqual(ActualExpression + Environment.NewLine
                 + "doesn't match " + ExpectedExpression + ". Differs at index 1." + Environment.NewLine
@@ -494,7 +494,7 @@ namespace EasyAssertions.UnitTests
         {
             expressionProvider.GetExpectedExpression().Returns("new List<int>() { 1, 2, 3 }");
 
-            string result = DefaultFailureMessageFormatter.Instance.DoNotMatch(new[] { 1, 2, 3 }, new[] { 1, 3, 2 });
+            string result = DefaultFailureMessageFormatter.Instance.DoNotMatch(new[] { 1, 2, 3 }, new[] { 1, 3, 2 }, Compare.ObjectsAreEqual);
 
             Assert.AreEqual(ActualExpression + Environment.NewLine
                 + "differs at index 1." + Environment.NewLine
@@ -505,7 +505,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void DoNotMatch_LengthMismatch()
         {
-            string result = DefaultFailureMessageFormatter.Instance.DoNotMatch(new[] { 1, 2 }, Enumerable.Empty<int>());
+            string result = DefaultFailureMessageFormatter.Instance.DoNotMatch(new[] { 1, 2 }, Enumerable.Empty<int>(), Compare.ObjectsAreEqual);
 
             Assert.AreEqual(ActualExpression + Environment.NewLine
                 + "doesn't match " + ExpectedExpression + '.' + Environment.NewLine
@@ -528,7 +528,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void DoNotMatch_IncludesMessage()
         {
-            string result = DefaultFailureMessageFormatter.Instance.DoNotMatch(new[] { 1 }, new[] { 2 }, message: "foo");
+            string result = DefaultFailureMessageFormatter.Instance.DoNotMatch(new[] { 1 }, new[] { 2 }, Compare.ObjectsAreEqual, "foo");
 
             StringAssert.EndsWith(Environment.NewLine + "foo", result);
         }

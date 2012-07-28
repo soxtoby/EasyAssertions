@@ -61,7 +61,12 @@ namespace EasyAssertions
         /// <see cref="IEnumerable"/> items are compared recursively.
         /// Non-<c>IEnumerable</c> items are compared using the default equality comparer.
         /// </summary>
-        public static bool ObjectsMatch(object actual, object expected)
+        public static bool ObjectsMatch<TActual, TExpected>(TActual actual, TExpected expected)
+        {
+            return ObjectsMatch((object)actual, (object)expected);
+        }
+
+        internal static bool ObjectsMatch(object actual, object expected)
         {
             IEnumerable actualEnumerable = actual as IEnumerable;
             IEnumerable expectedEnumerable = expected as IEnumerable;

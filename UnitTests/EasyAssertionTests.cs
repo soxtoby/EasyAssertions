@@ -301,7 +301,7 @@ namespace EasyAssertions.UnitTests
         {
             int[] expected = new[] { 3, 4 };
             int[] actual = new[] { 1, 2 };
-            mockFormatter.DoNotMatch(expected, actual, Arg.Any<Func<int, int, bool>>(), "foo").Returns("bar");
+            mockFormatter.DoNotMatch(expected, actual, Compare.ObjectsMatch, "foo").Returns("bar");
 
             EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldMatch(expected, "foo"));
 
@@ -344,11 +344,14 @@ namespace EasyAssertions.UnitTests
         {
             float[] actual = new[] { 10f, 20f };
             float[] expected = new[] { 11f, 21f };
-            mockFormatter.DoNotMatch(expected, actual, Arg.Any<Func<float, float, bool>>(), "foo").Returns("bar");
+            Func<float, float, bool> predicate = null;
+            mockFormatter.DoNotMatch(expected, actual, Arg.Do<Func<float, float, bool>>(p => predicate = p), "foo").Returns("bar");
 
             EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldMatch(expected, 0.9f, "foo"));
 
             Assert.AreEqual("bar", result.Message);
+            Assert.IsTrue(predicate(1f, 1.9f));
+            Assert.IsFalse(predicate(1f, 2f));
         }
 
         [Test]
@@ -366,11 +369,14 @@ namespace EasyAssertions.UnitTests
         {
             double[] actual = new[] { 10d, 20d };
             double[] expected = new[] { 11d, 21d };
-            mockFormatter.DoNotMatch(expected, actual, Arg.Any<Func<double, double, bool>>(), "foo").Returns("bar");
+            Func<double, double, bool> predicate = null;
+            mockFormatter.DoNotMatch(expected, actual, Arg.Do<Func<double, double, bool>>(p => predicate = p), "foo").Returns("bar");
 
             EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldMatch(expected, 0.9d, "foo"));
 
             Assert.AreEqual("bar", result.Message);
+            Assert.IsTrue(predicate(1d, 1.9d));
+            Assert.IsFalse(predicate(1d, 2d));
         }
 
         [Test]

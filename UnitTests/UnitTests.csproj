@@ -69,6 +69,7 @@
     <Compile Include="DefaultFailureMessageFormatterTests.cs" />
     <Compile Include="EasyAssertionExceptionTests.cs" />
     <Compile Include="EasyAssertionTests.cs" />
+    <Compile Include="ExpectedFormatterTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SourceExpressionProviderTests.cs" />
   </ItemGroup>

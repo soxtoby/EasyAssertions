@@ -184,6 +184,7 @@ namespace EasyAssertions
                     ActualItems = actualSet,
                     ExpectedValue = unexpectedItem,
                     FailureIndex = itemIndexInActual,
+                    UserMessage = message,
                     MessageTemplate = "shouldn't contain {ExpectedExpression:{0:"
                                         + "{ExpectedExpression}{BR}"
                                         + "but contained {ExpectedValue}{BR}"

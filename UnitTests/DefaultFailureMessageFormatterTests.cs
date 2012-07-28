@@ -426,6 +426,14 @@ namespace EasyAssertions.UnitTests
         }
 
         [Test]
+        public void CollectionContains_IncludesMessage()
+        {
+            string result = DefaultFailureMessageFormatter.Instance.Contains(new[] { 1 }, new[] { 1 }, "foo");
+
+            StringAssert.EndsWith(Environment.NewLine + "foo", result);
+        }
+
+        [Test]
         public void DoesNotOnlyContain_MissingItem()
         {
             string result = DefaultFailureMessageFormatter.Instance.DoesNotOnlyContain(new[] { 1 }, new[] { 2 });

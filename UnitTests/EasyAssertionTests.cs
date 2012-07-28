@@ -759,6 +759,22 @@ namespace EasyAssertions.UnitTests
         }
 
         [Test]
+        public void Assert_ReturnsActualValue()
+        {
+            Actual<string> result = "foo".Assert(s => s.Length.ShouldBe(3));
+
+            Assert.AreEqual("foo", result.And);
+        }
+
+        [Test]
+        public void And_ReturnsActualValue()
+        {
+            Actual<string> result = "foo".Assert(s => { }).And(s => s.Length.ShouldBe(3));
+
+            Assert.AreEqual("foo", result.And);
+        }
+
+        [Test]
         public void ActionAssert_Passes_ReturnsActual()
         {
             object actual = new object();

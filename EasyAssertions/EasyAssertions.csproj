@@ -60,8 +60,10 @@
     <Compile Include="EasyAssertion.cs" />
     <Compile Include="EasyAssertionException.cs" />
     <Compile Include="FailureMessageFormatter.cs" />
+    <Compile Include="FailureMessages\Expected.cs" />
     <Compile Include="FailureMessages\ExpectedFormatter.cs" />
     <Compile Include="FailureMessages\FailureMessage.cs" />
+    <Compile Include="FailureMessages\FailureMessageExpected.cs" />
     <Compile Include="FailureMessages\FunctionFailureMessage.cs" />
     <Compile Include="FailureMessages\StringFailureMessage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

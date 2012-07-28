@@ -13,12 +13,12 @@ namespace EasyAssertions
 
         public void EvaluateFormat(object current, Format format, ref bool handled, IOutput output, FormatDetails formatDetails)
         {
-            FailureMessage.ExpectedWrapper expected = current as FailureMessage.ExpectedWrapper;
+            Expected expected = current as Expected;
             if (expected == null) return;
 
             handled = true;
 
-            if (expected.Expression != null)
+            if (!string.IsNullOrEmpty(expected.Expression))
                 OutputExpectedExpression(expected, output, formatDetails);
 
             if (format == null)
@@ -27,17 +27,17 @@ namespace EasyAssertions
                 OutputFormattedExpected(current, format, output, formatDetails, expected);
         }
 
-        private static void OutputExpectedExpression(FailureMessage.ExpectedWrapper expected, IOutput output, FormatDetails formatDetails)
+        private static void OutputExpectedExpression(Expected expected, IOutput output, FormatDetails formatDetails)
         {
             output.Write(expected.Expression + Environment.NewLine + NewLineIndent(output), formatDetails);
         }
 
-        private static void OutputExpectedValue(FailureMessage.ExpectedWrapper expected, IOutput output, FormatDetails formatDetails)
+        private static void OutputExpectedValue(Expected expected, IOutput output, FormatDetails formatDetails)
         {
             output.Write(string.Empty + expected.Value, formatDetails);
         }
 
-        private static void OutputFormattedExpected(object current, Format format, IOutput output, FormatDetails formatDetails, FailureMessage.ExpectedWrapper expected)
+        private static void OutputFormattedExpected(object current, Format format, IOutput output, FormatDetails formatDetails, Expected expected)
         {
             formatDetails.Formatter.Format(output, format, current, formatDetails);
         }
@@ -45,7 +45,10 @@ namespace EasyAssertions
         private static string NewLineIndent(IOutput output)
         {
             string currentOutput = output.ToString();
-            int indexIntoLine = currentOutput.Length - Environment.NewLine.Length - currentOutput.LastIndexOf(Environment.NewLine, StringComparison.Ordinal);
+            int previousNewLine = currentOutput.LastIndexOf(Environment.NewLine, StringComparison.Ordinal);
+            int startOfLine = previousNewLine < 0 ? 0
+                : previousNewLine + Environment.NewLine.Length;
+            int indexIntoLine = currentOutput.Length - startOfLine;
             return new string(' ', indexIntoLine);
         }
     }

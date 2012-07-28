@@ -84,7 +84,7 @@ namespace EasyAssertions
         /// Alternatively, a format for the expected value can be specified after a colon like so:
         ///     "{Expected:format_string}"
         /// </remarks>
-        public virtual ExpectedWrapper Expected { get { return new ExpectedWrapper(this); } }
+        public virtual Expected Expected { get { return new FailureMessageExpected(this); } }
 
         /// <summary>
         /// The source representation of the actual value.
@@ -127,26 +127,6 @@ namespace EasyAssertions
             return value is string
                 ? "\"" + value + "\""
                 : "<" + value + ">";
-        }
-
-        public class ExpectedWrapper
-        {
-            private readonly FailureMessage failureMessage;
-
-            public ExpectedWrapper(FailureMessage failureMessage)
-            {
-                this.failureMessage = failureMessage;
-            }
-
-            /// <summary>
-            /// The source representation of the expected value, as provided by the parent <see cref="FailureMessage"/>.
-            /// </summary>
-            public string Expression { get { return failureMessage.ExpectedExpression; } }
-
-            /// <summary>
-            /// The expected value, as provided by the parent <see cref="FailureMessage"/>.
-            /// </summary>
-            public object Value { get { return failureMessage.ExpectedValue; } }
         }
     }
 }

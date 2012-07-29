@@ -26,5 +26,12 @@ namespace EasyAssertions
         {
             return !enumerable.Any();
         }
+
+        public static string NullIfEmpty(this string value)
+        {
+            return value == string.Empty
+                ? null
+                : value;
+        }
     }
 }

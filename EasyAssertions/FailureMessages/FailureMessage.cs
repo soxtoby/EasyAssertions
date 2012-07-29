@@ -89,7 +89,14 @@ namespace EasyAssertions
         /// <summary>
         /// The source representation of the actual value.
         /// </summary>
-        public virtual string ActualExpression { get { return TestExpression.GetActual(); } }
+        public virtual string ActualExpression
+        {
+            get
+            {
+                return TestExpression.GetActual().NullIfEmpty()
+                    ?? "Actual value";
+            }
+        }
 
         /// <summary>
         /// The source representation of the expected value.
@@ -100,12 +107,12 @@ namespace EasyAssertions
         {
             get
             {
-                string expectedExpression = TestExpression.GetExpected();
-                string expectedValueOutput = String.Empty + RawExpectedValue;
+                string expectedExpression = TestExpression.GetExpected() ?? string.Empty;
+                string expectedValueOutput = string.Empty + RawExpectedValue;
 
                 return expectedExpression.Trim('@', '"') == expectedValueOutput
-                    ? null
-                    : expectedExpression;
+                        ? null
+                        : expectedExpression.NullIfEmpty();
             }
         }
 

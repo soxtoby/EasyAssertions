@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq.Expressions;
-
-namespace EasyAssertions
+﻿namespace EasyAssertions
 {
     /// <summary>
     /// Provides access to a builder for the standard set of assertion failure messages.
@@ -24,7 +19,6 @@ namespace EasyAssertions
         /// <summary>
         /// Overrides the message formatter used to provide the standard set of assertion failure messages.
         /// </summary>
-        /// <param name="newFormatter"></param>
         public static void Override(IFailureMessageFormatter newFormatter)
         {
             current = newFormatter;
@@ -37,35 +31,5 @@ namespace EasyAssertions
         {
             current = null;
         }
-    }
-
-    /// <summary>
-    /// The standard set of assertion failure messages.
-    /// </summary>
-    public interface IFailureMessageFormatter
-    {
-        string NotEqual(object expected, object actual, string message = null);
-        string NotEqual(string expected, string actual, string message = null);
-        string AreEqual(object notExpected, object actual, string message = null);
-        string IsNull(string message = null);
-        string NotSame(object expected, object actual, string message = null);
-        string AreSame(object actual, string message = null);
-        string DoNotMatch<TActual, TExpected>(IEnumerable<TExpected> expected, IEnumerable<TActual> actual, Func<TActual, TExpected, bool> predicate, string message = null);
-        string DoesNotContain(object expected, IEnumerable actual, string message = null);
-        string DoesNotContainItems(IEnumerable expected, IEnumerable actual, string message = null);
-        string Contains(IEnumerable expectedToNotContain, IEnumerable actual, string message = null);
-        string DoesNotOnlyContain(IEnumerable expected, IEnumerable actual, string message = null);
-        string ItemsNotSame(IEnumerable expected, IEnumerable actual, string message = null);
-        string NoException(Type expectedExceptionType, LambdaExpression function, string message = null);
-        string WrongException(Type expectedExceptionType, Type actualExceptionType, LambdaExpression function, string message = null);
-        string NotEmpty(IEnumerable actual, string message = null);
-        string IsEmpty(string message = null);
-        string LengthMismatch(int expectedLength, IEnumerable actual, string message = null);
-        string DoesNotContain(string expectedSubstring, string actual, string message = null);
-        string Contains(string expectedToNotContain, string actual, string message = null);
-        string DoesNotStartWith(string expectedStart, string actual, string message = null);
-        string DoesNotEndWith(string expectedEnd, string actual, string message = null);
-        string NotGreaterThan(object expected, object actual, string message = null);
-        string NotLessThan(object expected, object actual, string message = null);
     }
 }

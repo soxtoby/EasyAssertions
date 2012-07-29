@@ -1,4 +1,5 @@
-﻿namespace EasyAssertions
+﻿
+namespace EasyAssertions
 {
     /// <summary>
     /// Generic assertions.
@@ -22,6 +23,23 @@
                         throw EasyAssertions.Failure(FailureMessageFormatter.Current.NotEqual(expected, actual, message));
                     }
                 });
+        }
+
+        /// <summary>
+        /// Asserts that a nullable value is equal to another value, using the default equality comparer.
+        /// </summary>
+        public static Actual<TActual> ShouldBe<TActual>(this TActual? actual, TActual expected, string message = null) where TActual : struct
+        {
+            actual.RegisterAssert(() =>
+                {
+                    if (!actual.HasValue)
+                        throw EasyAssertions.Failure(FailureMessageFormatter.Current.NotEqual(expected, actual, message));
+
+                    if (!Compare.ObjectsAreEqual(actual.Value, expected))
+                        throw EasyAssertions.Failure(FailureMessageFormatter.Current.NotEqual(expected, actual, message));
+                });
+
+            return new Actual<TActual>(actual.Value);
         }
 
         /// <summary>

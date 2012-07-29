@@ -39,6 +39,40 @@ namespace EasyAssertions.UnitTests
         }
 
         [Test]
+        public void NullableShouldBe_ValueEqualsExpected_ReturnsActualValue()
+        {
+            int? actual = 1;
+
+            Actual<int> result = actual.ShouldBe(1);
+
+            Assert.AreEqual(1, result.And);
+        }
+
+        [Test]
+        public void NullableShouldBe_NoValue_FailsWithObjectsNotEqualMessage()
+        {
+            int? actual = null;
+            const int expected = 1;
+            MockFormatter.NotEqual(expected, actual, "foo").Returns("bar");
+
+            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldBe(expected, "foo"));
+
+            Assert.AreEqual("bar", result.Message);
+        }
+
+        [Test]
+        public void NullableShouldBe_ValueIsDifferent_FailsWithObjectsNotEqualMessage()
+        {
+            int? actual = 1;
+            const int expected = 2;
+            MockFormatter.NotEqual(expected, actual, "foo").Returns("bar");
+
+            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldBe(expected, "foo"));
+
+            Assert.AreEqual("bar", result.Message);
+        }
+
+        [Test]
         public void ShouldNotBe_DifferentValue_ReturnsActualValue()
         {
             Equatable actual = new Equatable(1);

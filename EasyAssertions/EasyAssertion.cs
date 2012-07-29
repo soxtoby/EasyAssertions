@@ -178,6 +178,16 @@ namespace EasyAssertions
         }
 
         /// <summary>
+        /// Asserts that a sequence contains the specified items in the specified order.
+        /// <see cref="IEnumerable"/> items are compared recursively.
+        /// Non-<c>IEnumerable</c> items are compared using the default equality comparer.
+        /// </summary>
+        public static Actual<IEnumerable<TActual>> ShouldMatch<TActual, TExpected>(this IEnumerable<TActual> actual, params TExpected[] expectedItems) where TExpected : TActual
+        {
+            return actual.RegisterAssert(() => AssertMatch(actual, expectedItems, Compare.ObjectsMatch));
+        }
+
+        /// <summary>
         /// Asserts that two sequences contain the same <see cref="float"/> values (within a specified tolerance), in the same order.
         /// </summary>
         public static Actual<IEnumerable<float>> ShouldMatch(this IEnumerable<float> actual, IEnumerable<float> expected, float delta, string message = null)
@@ -201,7 +211,7 @@ namespace EasyAssertions
             return actual.RegisterAssert(() => AssertMatch(actual, expected, predicate, message));
         }
 
-        private static void AssertMatch<TActual, TExpected>(IEnumerable<TActual> actual, IEnumerable<TExpected> expected, Func<TActual, TExpected, bool> predicate, string message)
+        private static void AssertMatch<TActual, TExpected>(IEnumerable<TActual> actual, IEnumerable<TExpected> expected, Func<TActual, TExpected, bool> predicate, string message = null)
         {
             List<TActual> actualList = actual.ToList();
             List<TExpected> expectedList = expected.ToList();

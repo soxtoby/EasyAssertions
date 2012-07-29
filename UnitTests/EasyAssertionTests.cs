@@ -309,6 +309,27 @@ namespace EasyAssertions.UnitTests
         }
 
         [Test]
+        public void ShouldMatchParams_MatchingParams_ReturnsActualValue()
+        {
+            int[] actual = new[] { 1, 2, 3 };
+
+            Actual<IEnumerable<int>> result = actual.ShouldMatch(1, 2, 3);
+
+            Assert.AreSame(actual, result.And);
+        }
+
+        [Test]
+        public void ShouldMatchParams_EnumerableDoesNotMatchParams_FailsWIthEnumerablesDoNotMatchMessage()
+        {
+            int[] actual = new[] { 1, 2 };
+            mockFormatter.DoNotMatch(ArgMatches(new[] { 3, 4 }), actual, Compare.ObjectsMatch).Returns("foo");
+
+            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldMatch(3, 4));
+
+            Assert.AreEqual("foo", result.Message);
+        }
+
+        [Test]
         public void ShouldMatchCustomEquality_MatchingEnumerable_ReturnsActualValue()
         {
             IEnumerable<int> actual = new[] { 1, 2 };
@@ -885,6 +906,11 @@ namespace EasyAssertions.UnitTests
         private class SubEquatable : Equatable
         {
             public SubEquatable(int value) : base(value) { }
+        }
+
+        private static IEnumerable<TItem> ArgMatches<TItem>(IEnumerable<TItem> expected)
+        {
+            return Arg.Is<IEnumerable<TItem>>(arg => Compare.CollectionsMatch(arg, expected, Compare.ObjectsAreEqual));
         }
     }
 }

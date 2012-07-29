@@ -1,59 +1,72 @@
+using System.Collections.Generic;
+using System.Linq;
+
 namespace EasyAssertions
 {
     internal class BraceMatcher
     {
-        private readonly string source;
-        private readonly char open;
-        private readonly char close;
+        private const char OpenParen = '(';
+        private const char CloseParen = ')';
+        private const char OpenBrace = '{';
+        private const char CloseBrace = '}';
+        private const char DoubleQuotes = '"';
+        private const char Backslash = '\\';
+        private const char Null = '\0';
 
-        public static int FindClosingBrace(string source, int startIndex = 0, char open = '(', char close = ')')
+        private readonly string source;
+        private readonly Stack<char> expectedClosingBraces = new Stack<char>();
+
+        public static int FindClosingBrace(string source, int startIndex = 0)
         {
-            return new BraceMatcher(source, open, close).MatchFrom(startIndex);
+            return new BraceMatcher(source).MatchFrom(startIndex, Null);
         }
 
         public static int FindNext(string source, char charToFind, int startIndex = 0)
         {
-            return new BraceMatcher(source, '\0', charToFind).MatchFrom(startIndex, 1);
+            return new BraceMatcher(source).MatchFrom(startIndex, charToFind);
         }
 
-        public BraceMatcher(string source, char open = '(', char close = ')')
+        public BraceMatcher(string source)
         {
             this.source = source;
-            this.open = open;
-            this.close = close;
         }
 
-        public int MatchFrom(int startIndex, int initialDepth = 0)
+        public int MatchFrom(int startIndex, char charToFind)
         {
-            int depth = initialDepth;
             bool inString = false;
             bool escapeNextChar = false;
             for (int i = startIndex; i < source.Length; i++)
             {
                 char c = source[i];
 
-                if (!escapeNextChar && c == '"')
-                {
+                if (!escapeNextChar && c == DoubleQuotes)
                     inString = !inString;
-                }
 
                 if (inString)
                 {
                     if (escapeNextChar)
                         escapeNextChar = false;
-                    else if (c == '\\')
+                    else if (c == Backslash)
                         escapeNextChar = true;
                 }
                 else
                 {
-                    if (c == open)
+                    if (c == OpenParen)
                     {
-                        depth++;
+                        expectedClosingBraces.Push(CloseParen);
                     }
-                    else if (c == close)
+                    else if (c == OpenBrace)
                     {
-                        depth--;
-                        if (depth == 0)
+                        expectedClosingBraces.Push(CloseBrace);
+                    }
+                    else if (expectedClosingBraces.None() && c == charToFind)
+                    {
+                        return i;
+                    }
+                    else if (expectedClosingBraces.Any() && c == expectedClosingBraces.Peek())
+                    {
+                        expectedClosingBraces.Pop();
+                        if (charToFind == Null && expectedClosingBraces.None())
                             return i;
                     }
                 }

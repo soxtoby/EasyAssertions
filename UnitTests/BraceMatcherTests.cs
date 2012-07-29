@@ -6,11 +6,9 @@ namespace EasyAssertions.UnitTests
     public class BraceMatcherTests
     {
         [Test]
-        public void UnmatchesBraces_ReturnsNegativeOne()
+        public void UnmatchedBraces_ReturnsNegativeOne()
         {
-            BraceMatcher sut = MakeBraceMatcher("(");
-
-            int result = sut.MatchFrom(0);
+            int result = BraceMatcher.FindClosingBrace("(");
 
             Assert.AreEqual(-1, result);
         }
@@ -18,9 +16,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void EmptyBraces()
         {
-            BraceMatcher sut = MakeBraceMatcher("()");
-
-            int result = sut.MatchFrom(0);
+            int result = BraceMatcher.FindClosingBrace("()");
 
             Assert.AreEqual(1, result);
         }
@@ -28,9 +24,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void TwoPairs_MatchesFirstPairOnly()
         {
-            BraceMatcher sut = MakeBraceMatcher("()()");
-
-            int result = sut.MatchFrom(0);
+            int result = BraceMatcher.FindClosingBrace("()()");
 
             Assert.AreEqual(1, result);
         }
@@ -38,9 +32,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void TwoPairs_StartAfterFirst_MatchesSecondPair()
         {
-            BraceMatcher sut = MakeBraceMatcher("()()");
-
-            int result = sut.MatchFrom(2);
+            int result = BraceMatcher.FindClosingBrace("()()", 2);
 
             Assert.AreEqual(3, result);
         }
@@ -48,9 +40,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void NestedBraces()
         {
-            BraceMatcher sut = MakeBraceMatcher("(())");
-
-            int result = sut.MatchFrom(0);
+            int result = BraceMatcher.FindClosingBrace("(())");
 
             Assert.AreEqual(3, result);
         }
@@ -58,9 +48,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void BracesInsideString_AreIgnored()
         {
-            BraceMatcher sut = MakeBraceMatcher(@"( "")"" )");
-
-            int result = sut.MatchFrom(0);
+            int result = BraceMatcher.FindClosingBrace(@"( "")"" )");
 
             Assert.AreEqual(6, result);
         }
@@ -68,26 +56,41 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void BracesInsideStringWithEscapedQuotes_AreIgnored()
         {
-            BraceMatcher sut = MakeBraceMatcher(@"( "" \"" ) "" )");
-
-            int result = sut.MatchFrom(0);
+            int result = BraceMatcher.FindClosingBrace(@"( "" \"" ) "" )");
 
             Assert.AreEqual(11, result);
         }
 
         [Test]
-        public void FindNextComma()
+        public void FindNextComma_ReturnsIndexOfComma()
         {
-            BraceMatcher sut = new BraceMatcher("method(param1, param2, param3)", open: '\0', close: ',');
-
-            int result = sut.MatchFrom(0, initialDepth: 1);
+            int result = BraceMatcher.FindNext("method(param1, param2, param3)", ',', 7);
 
             Assert.AreEqual(13, result);
         }
 
-        private static BraceMatcher MakeBraceMatcher(string source)
+        [Test]
+        public void FindNextComma_NoComma_ReturnsNegativeOne()
         {
-            return new BraceMatcher(source);
+            int result = BraceMatcher.FindNext("foo", ',');
+
+            Assert.AreEqual(-1, result);
+        }
+
+        [Test]
+        public void FindNextComma_IgnoresCommasInsideBraces()
+        {
+            int result = BraceMatcher.FindNext("new[] { 1, 2 }, param2, param3", ',');
+
+            Assert.AreEqual(14, result);
+        }
+
+        [Test]
+        public void FindNextComma_NoCommaOutsideBraces_ReturnsNegativeOne()
+        {
+            int result = BraceMatcher.FindNext("new[] { 1, 2 }", ',');
+
+            Assert.AreEqual(-1, result);
         }
     }
 }

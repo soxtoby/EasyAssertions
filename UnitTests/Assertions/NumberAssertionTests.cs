@@ -113,5 +113,27 @@ namespace EasyAssertions.UnitTests
 
             Assert.AreEqual("bar", result.Message);
         }
+
+        [Test]
+        public void ShouldBeLessThan_IsLessThan_ReturnsActualValue()
+        {
+            const int actual = 1;
+
+            Actual<int> result = actual.ShouldBeLessThan(2);
+
+            Assert.AreEqual(actual, result.And);
+        }
+
+        [Test]
+        public void ShouldBeLessThan_NotLessThan_FailsWithNotLessThanMessage()
+        {
+            const int actual = 2;
+            const int expected = 1;
+            MockFormatter.NotLessThan(expected, actual, "foo").Returns("bar");
+
+            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldBeLessThan(expected, "foo"));
+
+            Assert.AreEqual("bar", result.Message);
+        }
     }
 }

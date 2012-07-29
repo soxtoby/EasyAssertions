@@ -399,5 +399,17 @@ namespace EasyAssertions
                                     + "but was                {ActualValue}"
                 }.ToString();
         }
+
+        public string NotLessThan(object expected, object actual, string message = null)
+        {
+            return new FailureMessage
+                {
+                    ExpectedValue = expected,
+                    ActualValue = actual,
+                    UserMessage = message,
+                    MessageTemplate = "should be less than {Expected}{BR}"
+                                    + "but was             {ActualValue}"
+                }.ToString();
+        }
     }
 }

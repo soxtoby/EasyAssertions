@@ -66,5 +66,17 @@ namespace EasyAssertions
                         throw EasyAssertions.Failure(FailureMessageFormatter.Current.NotGreaterThan(expected, actual, message));
                 });
         }
+
+        /// <summary>
+        /// Asserts that one value is less than another.
+        /// </summary>
+        public static Actual<TActual> ShouldBeLessThan<TActual, TExpected>(this TActual actual, TExpected expected, string message = null) where TActual : IComparable<TExpected>
+        {
+            return actual.RegisterAssert(() =>
+            {
+                if (actual.CompareTo(expected) >= 0)
+                    throw EasyAssertions.Failure(FailureMessageFormatter.Current.NotLessThan(expected, actual, message));
+            });
+        }
     }
 }

@@ -1,4 +1,6 @@
-﻿namespace EasyAssertions
+﻿using System;
+
+namespace EasyAssertions
 {
     /// <summary>
     /// Number-related assertions.
@@ -50,6 +52,18 @@
                 {
                     if (Compare.AreWithinTolerance(actual, notExpected, delta))
                         throw EasyAssertions.Failure(FailureMessageFormatter.Current.AreEqual(notExpected, actual, message));
+                });
+        }
+
+        /// <summary>
+        /// Asserts that one value is greater than another.
+        /// </summary>
+        public static Actual<TActual> ShouldBeGreaterThan<TActual, TExpected>(this TActual actual, TExpected expected, string message = null) where TActual : IComparable<TExpected>
+        {
+            return actual.RegisterAssert(() =>
+                {
+                    if (actual.CompareTo(expected) <= 0)
+                        throw EasyAssertions.Failure(FailureMessageFormatter.Current.NotGreaterThan(expected, actual, message));
                 });
         }
     }

@@ -774,6 +774,25 @@ namespace EasyAssertions.UnitTests
             StringAssert.EndsWith(Environment.NewLine + "foo", result);
         }
 
+        [Test]
+        public void NotGreaterThan()
+        {
+            string result = DefaultFailureMessageFormatter.Instance.NotGreaterThan(2, 1);
+
+            Assert.AreEqual(ActualExpression + Environment.NewLine
+                + "should be greater than " + ExpectedExpression + Environment.NewLine
+                + "                       <2>" + Environment.NewLine
+                + "but was                <1>", result);
+        }
+
+        [Test]
+        public void NotGreaterThan_IncludesMessage()
+        {
+            string result = DefaultFailureMessageFormatter.Instance.NotGreaterThan(2, 1, "foo");
+
+            StringAssert.EndsWith(Environment.NewLine + "foo", result);
+        }
+
         private class FakeObject
         {
             private readonly string toString;

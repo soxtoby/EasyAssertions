@@ -65,5 +65,6 @@ namespace EasyAssertions
         string Contains(string expectedToNotContain, string actual, string message = null);
         string DoesNotStartWith(string expectedStart, string actual, string message = null);
         string DoesNotEndWith(string expectedEnd, string actual, string message = null);
+        string NotGreaterThan(object expected, object actual, string message = null);
     }
 }

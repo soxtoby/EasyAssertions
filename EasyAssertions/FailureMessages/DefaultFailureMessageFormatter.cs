@@ -387,5 +387,17 @@ namespace EasyAssertions
                                     + "but ends with   {ActualValue}"
                 }.ToString();
         }
+
+        public string NotGreaterThan(object expected, object actual, string message = null)
+        {
+            return new FailureMessage
+                {
+                    ActualValue = actual,
+                    ExpectedValue = expected,
+                    UserMessage = message,
+                    MessageTemplate = "should be greater than {Expected}{BR}"
+                                    + "but was                {ActualValue}"
+                }.ToString();
+        }
     }
 }

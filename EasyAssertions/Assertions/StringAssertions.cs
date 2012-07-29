@@ -13,7 +13,7 @@
             return actual.RegisterAssert(() =>
                 {
                     if (!actual.Contains(expectedToContain))
-                        throw EasyAssertions.Failure(FailureMessageFormatter.Current.DoesNotContain(expectedToContain, actual, message));
+                        throw EasyAssertion.Failure(FailureMessageFormatter.Current.DoesNotContain(expectedToContain, actual, message));
                 });
         }
 
@@ -25,7 +25,7 @@
             return actual.RegisterAssert(() =>
                 {
                     if (actual.Contains(expectedToNotContain))
-                        throw EasyAssertions.Failure(FailureMessageFormatter.Current.Contains(expectedToNotContain, actual, message));
+                        throw EasyAssertion.Failure(FailureMessageFormatter.Current.Contains(expectedToNotContain, actual, message));
                 });
         }
 
@@ -37,7 +37,7 @@
             return actual.RegisterAssert(() =>
                 {
                     if (!actual.StartsWith(expectedStart))
-                        throw EasyAssertions.Failure(FailureMessageFormatter.Current.DoesNotStartWith(expectedStart, actual, message));
+                        throw EasyAssertion.Failure(FailureMessageFormatter.Current.DoesNotStartWith(expectedStart, actual, message));
                 });
         }
 
@@ -49,7 +49,7 @@
             return actual.RegisterAssert(() =>
                 {
                     if (!actual.EndsWith(expectedEnd))
-                        throw EasyAssertions.Failure(FailureMessageFormatter.Current.DoesNotEndWith(expectedEnd, actual, message));
+                        throw EasyAssertion.Failure(FailureMessageFormatter.Current.DoesNotEndWith(expectedEnd, actual, message));
                 });
         }
     }

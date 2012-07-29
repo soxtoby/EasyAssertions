@@ -6,7 +6,7 @@ namespace EasyAssertions
     /// <summary>
     /// Framework methods for chaining assertions, defining new assertions, or customizing assertion exceptions.
     /// </summary>
-    public static class EasyAssertions
+    public static class EasyAssertion
     {
         private static Func<string, Exception> createMessageException;
         private static Func<string, Exception, Exception> createInnerExceptionException;

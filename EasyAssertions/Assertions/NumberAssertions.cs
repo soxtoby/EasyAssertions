@@ -15,7 +15,7 @@ namespace EasyAssertions
             return actual.RegisterAssert(() =>
                 {
                     if (!Compare.AreWithinTolerance(actual, expected, tolerance))
-                        throw EasyAssertions.Failure(FailureMessageFormatter.Current.NotEqual(expected, actual, message));
+                        throw EasyAssertion.Failure(FailureMessageFormatter.Current.NotEqual(expected, actual, message));
                 });
         }
 
@@ -27,7 +27,7 @@ namespace EasyAssertions
             return actual.RegisterAssert(() =>
                 {
                     if (Compare.AreWithinTolerance(actual, notExpected, tolerance))
-                        throw EasyAssertions.Failure(FailureMessageFormatter.Current.AreEqual(notExpected, actual, message));
+                        throw EasyAssertion.Failure(FailureMessageFormatter.Current.AreEqual(notExpected, actual, message));
                 });
         }
 
@@ -39,7 +39,7 @@ namespace EasyAssertions
             return actual.RegisterAssert(() =>
                 {
                     if (!Compare.AreWithinTolerance(actual, expected, delta))
-                        throw EasyAssertions.Failure(FailureMessageFormatter.Current.NotEqual(expected, actual, message));
+                        throw EasyAssertion.Failure(FailureMessageFormatter.Current.NotEqual(expected, actual, message));
                 });
         }
 
@@ -51,7 +51,7 @@ namespace EasyAssertions
             return actual.RegisterAssert(() =>
                 {
                     if (Compare.AreWithinTolerance(actual, notExpected, delta))
-                        throw EasyAssertions.Failure(FailureMessageFormatter.Current.AreEqual(notExpected, actual, message));
+                        throw EasyAssertion.Failure(FailureMessageFormatter.Current.AreEqual(notExpected, actual, message));
                 });
         }
 
@@ -63,7 +63,7 @@ namespace EasyAssertions
             return actual.RegisterAssert(() =>
                 {
                     if (actual.CompareTo(expected) <= 0)
-                        throw EasyAssertions.Failure(FailureMessageFormatter.Current.NotGreaterThan(expected, actual, message));
+                        throw EasyAssertion.Failure(FailureMessageFormatter.Current.NotGreaterThan(expected, actual, message));
                 });
         }
 
@@ -75,7 +75,7 @@ namespace EasyAssertions
             return actual.RegisterAssert(() =>
             {
                 if (actual.CompareTo(expected) >= 0)
-                    throw EasyAssertions.Failure(FailureMessageFormatter.Current.NotLessThan(expected, actual, message));
+                    throw EasyAssertion.Failure(FailureMessageFormatter.Current.NotLessThan(expected, actual, message));
             });
         }
     }

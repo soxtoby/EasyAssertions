@@ -52,14 +52,14 @@ namespace EasyAssertions.UnitTests
                 Func<string, Exception> exceptionFactory = Substitute.For<Func<string, Exception>>();
                 exceptionFactory("foo").Returns(expectedException);
 
-                EasyAssertions.UseFrameworkExceptions(exceptionFactory, null);
-                Exception result = EasyAssertions.Failure("foo");
+                EasyAssertion.UseFrameworkExceptions(exceptionFactory, null);
+                Exception result = EasyAssertion.Failure("foo");
 
                 Assert.AreSame(expectedException, result);
             }
             finally
             {
-                EasyAssertions.UseEasyAssertionExceptions();
+                EasyAssertion.UseEasyAssertionExceptions();
             }
         }
 
@@ -73,25 +73,25 @@ namespace EasyAssertions.UnitTests
                 Func<string, Exception, Exception> exceptionFactory = Substitute.For<Func<string, Exception, Exception>>();
                 exceptionFactory("foo", expectedInnerException).Returns(expectedResultException);
 
-                EasyAssertions.UseFrameworkExceptions(null, exceptionFactory);
-                Exception result = EasyAssertions.Failure("foo", expectedInnerException);
+                EasyAssertion.UseFrameworkExceptions(null, exceptionFactory);
+                Exception result = EasyAssertion.Failure("foo", expectedInnerException);
 
                 Assert.AreSame(expectedResultException, result);
             }
             finally
             {
-                EasyAssertions.UseEasyAssertionExceptions();
+                EasyAssertion.UseEasyAssertionExceptions();
             }
         }
 
         [Test]
         public void UseEasyAssertionExceptions_ResetsExceptions()
         {
-            EasyAssertions.UseFrameworkExceptions(s => new Exception(s), (s, exception) => new Exception(s, exception));
-            EasyAssertions.UseEasyAssertionExceptions();
+            EasyAssertion.UseFrameworkExceptions(s => new Exception(s), (s, exception) => new Exception(s, exception));
+            EasyAssertion.UseEasyAssertionExceptions();
 
-            Assert.IsInstanceOf<EasyAssertionException>(EasyAssertions.Failure("foo"));
-            Assert.IsInstanceOf<EasyAssertionException>(EasyAssertions.Failure("foo", new Exception()));
+            Assert.IsInstanceOf<EasyAssertionException>(EasyAssertion.Failure("foo"));
+            Assert.IsInstanceOf<EasyAssertionException>(EasyAssertion.Failure("foo", new Exception()));
         }
     }
 }

@@ -18,7 +18,7 @@ namespace EasyAssertions
             return actual.RegisterAssert(() =>
                 {
                     if (!Compare.IsEmpty(actual))
-                        throw EasyAssertions.Failure(FailureMessageFormatter.Current.NotEmpty(actual, message));
+                        throw EasyAssertion.Failure(FailureMessageFormatter.Current.NotEmpty(actual, message));
                 });
         }
 
@@ -30,7 +30,7 @@ namespace EasyAssertions
             return actual.RegisterAssert(() =>
                 {
                     if (Compare.IsEmpty(actual))
-                        throw EasyAssertions.Failure(FailureMessageFormatter.Current.IsEmpty(message));
+                        throw EasyAssertion.Failure(FailureMessageFormatter.Current.IsEmpty(message));
                 });
         }
 
@@ -84,7 +84,7 @@ namespace EasyAssertions
             List<TExpected> expectedList = expected.ToList();
 
             if (!Compare.CollectionsMatch(actualList, expectedList, (a, e) => predicate((TActual)a, (TExpected)e)))
-                throw EasyAssertions.Failure(FailureMessageFormatter.Current.DoNotMatch(expected, actual, predicate, message));
+                throw EasyAssertion.Failure(FailureMessageFormatter.Current.DoNotMatch(expected, actual, predicate, message));
         }
 
         /// <summary>
@@ -95,7 +95,7 @@ namespace EasyAssertions
             return actual.RegisterAssert(() =>
                 {
                     if (!actual.Contains(expected))
-                        throw EasyAssertions.Failure(FailureMessageFormatter.Current.DoesNotContain(expected, actual, message));
+                        throw EasyAssertion.Failure(FailureMessageFormatter.Current.DoesNotContain(expected, actual, message));
                 });
         }
 
@@ -107,7 +107,7 @@ namespace EasyAssertions
             return actual.RegisterAssert(() =>
                 {
                     if (!Compare.ContainsAllItems(actual, expected))
-                        throw EasyAssertions.Failure(FailureMessageFormatter.Current.DoesNotContainItems(expected, actual, message));
+                        throw EasyAssertion.Failure(FailureMessageFormatter.Current.DoesNotContainItems(expected, actual, message));
                 });
         }
 
@@ -119,7 +119,7 @@ namespace EasyAssertions
             return actual.RegisterAssert(() =>
                 {
                     if (Compare.ContainsAny(actual, expectedToNotContain))
-                        throw EasyAssertions.Failure(FailureMessageFormatter.Current.Contains(expectedToNotContain, actual, message));
+                        throw EasyAssertion.Failure(FailureMessageFormatter.Current.Contains(expectedToNotContain, actual, message));
                 });
         }
 
@@ -131,7 +131,7 @@ namespace EasyAssertions
             return actual.RegisterAssert(() =>
                 {
                     if (!Compare.ContainsOnlyExpectedItems(actual, expected))
-                        throw EasyAssertions.Failure(FailureMessageFormatter.Current.DoesNotOnlyContain(expected, actual, message));
+                        throw EasyAssertion.Failure(FailureMessageFormatter.Current.DoesNotOnlyContain(expected, actual, message));
                 });
         }
 
@@ -146,10 +146,10 @@ namespace EasyAssertions
                     List<TExpected> expectedList = expected.ToList();
 
                     if (actualList.Count != expectedList.Count)
-                        throw EasyAssertions.Failure(FailureMessageFormatter.Current.LengthMismatch(expectedList.Count, actual, message));
+                        throw EasyAssertion.Failure(FailureMessageFormatter.Current.LengthMismatch(expectedList.Count, actual, message));
 
                     if (!Compare.CollectionsMatch(actual, expected, ReferenceEquals))
-                        throw EasyAssertions.Failure(FailureMessageFormatter.Current.ItemsNotSame(expected, actual, message));
+                        throw EasyAssertion.Failure(FailureMessageFormatter.Current.ItemsNotSame(expected, actual, message));
                 });
         }
 
@@ -162,10 +162,10 @@ namespace EasyAssertions
                 {
                     List<TItem> actualList = actual.ToList();
                     if (actualList.Count != assertions.Length)
-                        throw EasyAssertions.Failure(FailureMessageFormatter.Current.LengthMismatch(assertions.Length, actual));
+                        throw EasyAssertion.Failure(FailureMessageFormatter.Current.LengthMismatch(assertions.Length, actual));
 
                     for (int i = 0; i < assertions.Length; i++)
-                        EasyAssertions.RegisterIndexedAssert(i, assertions[i].Method, () => assertions[i](actualList[i]));
+                        EasyAssertion.RegisterIndexedAssert(i, assertions[i].Method, () => assertions[i](actualList[i]));
                 });
         }
 
@@ -178,7 +178,7 @@ namespace EasyAssertions
                 {
                     int i = 0;
                     foreach (TItem item in actual)
-                        EasyAssertions.RegisterIndexedAssert(i++, assertion.Method, () => assertion(item));
+                        EasyAssertion.RegisterIndexedAssert(i++, assertion.Method, () => assertion(item));
                 });
         }
     }

@@ -57,7 +57,7 @@
     <Compile Include="Actual.cs" />
     <Compile Include="Assertions\CollectionAssertions.cs" />
     <Compile Include="Compare.cs" />
-    <Compile Include="Assertions\EasyAssertions.cs" />
+    <Compile Include="Assertions\EasyAssertion.cs" />
     <Compile Include="FailureMessages\CollectionFailureMessage.cs" />
     <Compile Include="FailureMessages\DefaultFailureMessageFormatter.cs" />
     <Compile Include="Assertions\ObjectAssertions.cs" />

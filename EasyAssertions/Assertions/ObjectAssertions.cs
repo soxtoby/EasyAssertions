@@ -18,9 +18,9 @@ namespace EasyAssertions
                         string actualString = actual as string;
                         string expectedString = expected as string;
                         if (actualString != null && expectedString != null)
-                            throw EasyAssertions.Failure(FailureMessageFormatter.Current.NotEqual(expectedString, actualString, message));
+                            throw EasyAssertion.Failure(FailureMessageFormatter.Current.NotEqual(expectedString, actualString, message));
 
-                        throw EasyAssertions.Failure(FailureMessageFormatter.Current.NotEqual(expected, actual, message));
+                        throw EasyAssertion.Failure(FailureMessageFormatter.Current.NotEqual(expected, actual, message));
                     }
                 });
         }
@@ -33,10 +33,10 @@ namespace EasyAssertions
             actual.RegisterAssert(() =>
                 {
                     if (!actual.HasValue)
-                        throw EasyAssertions.Failure(FailureMessageFormatter.Current.NotEqual(expected, actual, message));
+                        throw EasyAssertion.Failure(FailureMessageFormatter.Current.NotEqual(expected, actual, message));
 
                     if (!Compare.ObjectsAreEqual(actual.Value, expected))
-                        throw EasyAssertions.Failure(FailureMessageFormatter.Current.NotEqual(expected, actual, message));
+                        throw EasyAssertion.Failure(FailureMessageFormatter.Current.NotEqual(expected, actual, message));
                 });
 
             return new Actual<TActual>(actual.Value);
@@ -50,7 +50,7 @@ namespace EasyAssertions
             return actual.RegisterAssert(() =>
                 {
                     if (Compare.ObjectsAreEqual(actual, notExpected))
-                        throw EasyAssertions.Failure(FailureMessageFormatter.Current.AreEqual(notExpected, actual, message));
+                        throw EasyAssertion.Failure(FailureMessageFormatter.Current.AreEqual(notExpected, actual, message));
                 });
         }
 
@@ -62,7 +62,7 @@ namespace EasyAssertions
             actual.RegisterAssert(() =>
                 {
                     if (!Equals(actual, null))
-                        throw EasyAssertions.Failure(FailureMessageFormatter.Current.NotEqual(null, actual, message));
+                        throw EasyAssertion.Failure(FailureMessageFormatter.Current.NotEqual(null, actual, message));
                 });
         }
 
@@ -74,7 +74,7 @@ namespace EasyAssertions
             return actual.RegisterAssert(() =>
                 {
                     if (Equals(actual, null))
-                        throw EasyAssertions.Failure(FailureMessageFormatter.Current.IsNull(message));
+                        throw EasyAssertion.Failure(FailureMessageFormatter.Current.IsNull(message));
                 });
         }
 
@@ -86,7 +86,7 @@ namespace EasyAssertions
             return actual.RegisterAssert(() =>
                 {
                     if (!ReferenceEquals(actual, expected))
-                        throw EasyAssertions.Failure(FailureMessageFormatter.Current.NotSame(expected, actual, message));
+                        throw EasyAssertion.Failure(FailureMessageFormatter.Current.NotSame(expected, actual, message));
                 });
         }
 
@@ -98,7 +98,7 @@ namespace EasyAssertions
             return actual.RegisterAssert(() =>
                 {
                     if (ReferenceEquals(actual, notExpected))
-                        throw EasyAssertions.Failure(FailureMessageFormatter.Current.AreSame(actual, message));
+                        throw EasyAssertion.Failure(FailureMessageFormatter.Current.AreSame(actual, message));
                 });
         }
 
@@ -110,7 +110,7 @@ namespace EasyAssertions
             actual.RegisterAssert(() =>
                 {
                     if (!(actual is TExpected))
-                        throw EasyAssertions.Failure(FailureMessageFormatter.Current.NotEqual(typeof(TExpected),
+                        throw EasyAssertion.Failure(FailureMessageFormatter.Current.NotEqual(typeof(TExpected),
                             actual == null ? null : actual.GetType(), message));
                 });
 

@@ -36,10 +36,10 @@ namespace EasyAssertions
             }
             catch (Exception actual)
             {
-                throw EasyAssertions.Failure(FailureMessageFormatter.Current.WrongException(typeof(TException), actual.GetType(), expression, message), actual);
+                throw EasyAssertion.Failure(FailureMessageFormatter.Current.WrongException(typeof(TException), actual.GetType(), expression, message), actual);
             }
 
-            throw EasyAssertions.Failure(FailureMessageFormatter.Current.NoException(typeof(TException), expression, message));
+            throw EasyAssertion.Failure(FailureMessageFormatter.Current.NoException(typeof(TException), expression, message));
         }
     }
 }

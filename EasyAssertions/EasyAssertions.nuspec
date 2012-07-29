@@ -15,6 +15,7 @@
   </metadata>
   <files>
     <file src="bin\Release\EasyAssertions.dll" target="lib\net35\EasyAssertions.dll" />
+    <file src="bin\Release\EasyAssertions.xml" target="lib\net35\EasyAssertions.xml" />
     <file src="bin\Release\SmartFormat.dll" target="lib\net35\SmartFormat.dll" />
   </files>
 </package>

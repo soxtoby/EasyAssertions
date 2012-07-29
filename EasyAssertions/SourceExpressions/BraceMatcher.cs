@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace EasyAssertions
 {
-    internal class BraceMatcher
+    internal abstract class BraceMatcher
     {
         private const char OpenParen = '(';
         private const char CloseParen = ')';
@@ -11,67 +11,115 @@ namespace EasyAssertions
         private const char CloseBrace = '}';
         private const char DoubleQuotes = '"';
         private const char Backslash = '\\';
-        private const char Null = '\0';
 
         private readonly string source;
-        private readonly Stack<char> expectedClosingBraces = new Stack<char>();
+        protected readonly Stack<char> ExpectedClosingBraces = new Stack<char>();
+        private bool inString;
+        private bool escapeNextChar;
 
         public static int FindClosingBrace(string source, int startIndex = 0)
         {
-            return new BraceMatcher(source).MatchFrom(startIndex, Null);
+            return new ClosingBraceFinder(source).MatchFrom(startIndex);
         }
 
         public static int FindNext(string source, char charToFind, int startIndex = 0)
         {
-            return new BraceMatcher(source).MatchFrom(startIndex, charToFind);
+            return new CharFinder(source, charToFind).MatchFrom(startIndex);
         }
 
-        public BraceMatcher(string source)
+        protected BraceMatcher(string source)
         {
             this.source = source;
         }
 
-        public int MatchFrom(int startIndex, char charToFind)
+        private int MatchFrom(int startIndex)
         {
-            bool inString = false;
-            bool escapeNextChar = false;
-            for (int i = startIndex; i < source.Length; i++)
+            inString = false;
+            escapeNextChar = false;
+            return source
+                .IndexOfOrDefault(EvaluateChar, startIndex, -1);
+        }
+
+        private bool EvaluateChar(char c)
+        {
+            if (IsUnescapedQuotes(c))
+                inString = !inString;
+
+            return inString
+                ? EvaluateStringChar(c)
+                : EvaluateCodeChar(c);
+        }
+
+        private bool IsUnescapedQuotes(char c)
+        {
+            return !escapeNextChar
+                && c == DoubleQuotes;
+        }
+
+        private bool EvaluateStringChar(char c)
+        {
+            if (escapeNextChar)
+                escapeNextChar = false;
+            else if (c == Backslash)
+                escapeNextChar = true;
+            return false;
+        }
+
+        protected virtual bool EvaluateCodeChar(char c)
+        {
+            switch (c)
             {
-                char c = source[i];
-
-                if (!escapeNextChar && c == DoubleQuotes)
-                    inString = !inString;
-
-                if (inString)
-                {
-                    if (escapeNextChar)
-                        escapeNextChar = false;
-                    else if (c == Backslash)
-                        escapeNextChar = true;
-                }
-                else
-                {
-                    if (c == OpenParen)
-                    {
-                        expectedClosingBraces.Push(CloseParen);
-                    }
-                    else if (c == OpenBrace)
-                    {
-                        expectedClosingBraces.Push(CloseBrace);
-                    }
-                    else if (expectedClosingBraces.None() && c == charToFind)
-                    {
-                        return i;
-                    }
-                    else if (expectedClosingBraces.Any() && c == expectedClosingBraces.Peek())
-                    {
-                        expectedClosingBraces.Pop();
-                        if (charToFind == Null && expectedClosingBraces.None())
-                            return i;
-                    }
-                }
+                case OpenParen:
+                    ExpectedClosingBraces.Push(CloseParen);
+                    break;
+                case OpenBrace:
+                    ExpectedClosingBraces.Push(CloseBrace);
+                    break;
+                default:
+                    if (IsExpectedClosingBrace(c))
+                        return EvaluateClosingBrace();
+                    break;
             }
-            return -1;
+            return false;
+        }
+
+        private bool IsExpectedClosingBrace(char c)
+        {
+            return ExpectedClosingBraces.Any() && c == ExpectedClosingBraces.Peek();
+        }
+
+        protected virtual bool EvaluateClosingBrace()
+        {
+            ExpectedClosingBraces.Pop();
+            return false;
+        }
+    }
+
+    internal class ClosingBraceFinder : BraceMatcher
+    {
+        public ClosingBraceFinder(string source) : base(source) { }
+
+        protected override bool EvaluateClosingBrace()
+        {
+            base.EvaluateClosingBrace();
+            return ExpectedClosingBraces.None();
+        }
+    }
+
+    internal class CharFinder : BraceMatcher
+    {
+        private readonly char charToFind;
+
+        public CharFinder(string source, char charToFind)
+            : base(source)
+        {
+            this.charToFind = charToFind;
+        }
+
+        protected override bool EvaluateCodeChar(char c)
+        {
+            return ExpectedClosingBraces.None() && c == charToFind
+                || base.EvaluateCodeChar(c);
         }
     }
 }

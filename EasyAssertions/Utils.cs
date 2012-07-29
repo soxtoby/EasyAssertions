@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
@@ -32,6 +33,18 @@ namespace EasyAssertions
             return value == string.Empty
                 ? null
                 : value;
+        }
+
+        public static int IndexOfOrDefault<T>(this IEnumerable<T> sequence, Func<T, bool> predicate, int startIndex, int defaultValue)
+        {
+            int i = startIndex;
+            foreach (T item in sequence.Skip(startIndex))
+            {
+                if (predicate(item))
+                    return i;
+                i++;
+            }
+            return defaultValue;
         }
     }
 }

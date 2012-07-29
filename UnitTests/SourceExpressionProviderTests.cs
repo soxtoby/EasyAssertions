@@ -201,6 +201,20 @@ namespace EasyAssertions.UnitTests
             StringAssert.StartsWith("actualExpression" + Environment.NewLine, result.Message);
         }
 
+        [Test]
+        public void SameAssertionCalledTwice()
+        {
+            AssertMethod("foo");
+            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => AssertMethod("bar"));
+
+            StringAssert.StartsWith("foo", result.Message);
+        }
+
+        private static void AssertMethod(string foo)
+        {
+            foo.ShouldBe("foo");
+        }
+
         private class TestClass
         {
             public readonly int Value;

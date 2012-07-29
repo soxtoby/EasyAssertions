@@ -1,5 +1,3 @@
-using System;
-
 namespace EasyAssertions
 {
     internal class Continuation : AssertionComponent
@@ -18,12 +16,12 @@ namespace EasyAssertions
 
         private ExpressionSegment GetSegment(string expressionSource, int fromIndex)
         {
-            int endOfContinuationProperty = GetMethodCallIndex(expressionSource, fromIndex) + MethodName.Length + 1;
-            return new ExpressionSegment
-                {
-                    Expression = String.Empty,
-                    IndexOfNextSegment = endOfContinuationProperty
-                };
+            int startOfContinuationProperty = GetMethodCallIndex(expressionSource, fromIndex);
+            if (startOfContinuationProperty == -1)
+                return new ExpressionSegment { IndexOfNextSegment = fromIndex };
+
+            int endOfContinuationProperty = startOfContinuationProperty + MethodName.Length + 1;
+            return new ExpressionSegment { IndexOfNextSegment = endOfContinuationProperty };
         }
     }
 }

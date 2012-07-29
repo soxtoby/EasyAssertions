@@ -7,22 +7,28 @@ namespace EasyAssertions
         public override ExpressionSegment GetActualSegment(string expressionSource, int fromIndex)
         {
             int assertionIndex = GetMethodCallIndex(expressionSource, fromIndex);
+            if (assertionIndex == -1)
+                return new ExpressionSegment { IndexOfNextSegment = fromIndex };
+
             return new ExpressionSegment
                 {
                     Expression = expressionSource.Substring(fromIndex, assertionIndex - fromIndex),
-                    IndexOfNextSegment = IndexOfNextSegment(expressionSource, assertionIndex)
+                    IndexOfNextSegment = AfterClosingParen(expressionSource, assertionIndex)
                 };
         }
 
         public override ExpressionSegment GetExpectedSegment(string expressionSource, int fromIndex)
         {
             int assertionIndex = GetMethodCallIndex(expressionSource, fromIndex);
-            int startOfFirstParam = expressionSource.IndexOf('(', assertionIndex) + 1;
-            int endOfFirstParam = BraceMatcher.FindNext(expressionSource, ',', startOfFirstParam);
-            int endOfMethodCall = IndexOfNextSegment(expressionSource, assertionIndex);
+            if (assertionIndex == -1)
+                return new ExpressionSegment { IndexOfNextSegment = fromIndex };
 
-            if (endOfFirstParam < 0 || endOfFirstParam > endOfMethodCall)
-                endOfFirstParam = endOfMethodCall - 1;
+            int startOfFirstParam = AfterOpeningParen(expressionSource, assertionIndex);
+            int endOfFirstParam = BeforeNextComma(expressionSource, startOfFirstParam);
+            int endOfMethodCall = AfterClosingParen(expressionSource, assertionIndex);
+
+            if (EndOfFirstParamIsInvalid(endOfFirstParam, endOfMethodCall))
+                endOfFirstParam = BeforeClosingParen(endOfMethodCall);
 
             return new ExpressionSegment
                 {
@@ -31,9 +37,29 @@ namespace EasyAssertions
                 };
         }
 
-        private static int IndexOfNextSegment(string expressionSource, int assertionIndex)
+        private static int AfterOpeningParen(string expressionSource, int assertionIndex)
+        {
+            return expressionSource.IndexOf('(', assertionIndex) + 1;
+        }
+
+        private static int BeforeNextComma(string expressionSource, int startOfFirstParam)
+        {
+            return BraceMatcher.FindNext(expressionSource, ',', startOfFirstParam);
+        }
+
+        private static int AfterClosingParen(string expressionSource, int assertionIndex)
         {
             return BraceMatcher.FindClosingBrace(expressionSource, assertionIndex) + 1;
+        }
+
+        private static bool EndOfFirstParamIsInvalid(int endOfFirstParam, int endOfMethodCall)
+        {
+            return endOfFirstParam < 0 || endOfFirstParam > endOfMethodCall;
+        }
+
+        private static int BeforeClosingParen(int endOfMethodCall)
+        {
+            return endOfMethodCall - 1;
         }
     }
 }

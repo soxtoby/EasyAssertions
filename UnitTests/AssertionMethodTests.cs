@@ -23,6 +23,16 @@ namespace EasyAssertions.UnitTests
         }
 
         [Test]
+        public void GetActualSegment_NoMethodCallInSource_ReturnsEmptySegment()
+        {
+            const int fromIndex = 1;
+            ExpressionSegment result = sut.GetActualSegment("some.actual.someOtherMethod(param)", fromIndex);
+
+            Assert.AreEqual(string.Empty, result.Expression);
+            Assert.AreEqual(fromIndex, result.IndexOfNextSegment);
+        }
+
+        [Test]
         public void GetExpectedSegment_FirstParameter()
         {
             ExpressionSegment result = sut.GetExpectedSegment("actual.method(expected, \"message\").someOtherMethod()", 0);
@@ -38,6 +48,16 @@ namespace EasyAssertions.UnitTests
 
             Assert.AreEqual("expected", result.Expression);
             Assert.AreEqual(23, result.IndexOfNextSegment);
+        }
+
+        [Test]
+        public void GetExpectedSegment_NoMethodCallInSource_ReturnsEmptySegment()
+        {
+            const int fromIndex = 1;
+            ExpressionSegment result = sut.GetExpectedSegment("actual.someOtherMethod(expected)", fromIndex);
+
+            Assert.AreEqual(string.Empty, result.Expression);
+            Assert.AreEqual(fromIndex, result.IndexOfNextSegment);
         }
     }
 }

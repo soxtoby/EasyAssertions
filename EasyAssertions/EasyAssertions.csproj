@@ -54,10 +54,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Actual.cs" />
+    <Compile Include="Assertions\CollectionAssertions.cs" />
     <Compile Include="Compare.cs" />
+    <Compile Include="Assertions\EasyAssertions.cs" />
     <Compile Include="FailureMessages\CollectionFailureMessage.cs" />
     <Compile Include="FailureMessages\DefaultFailureMessageFormatter.cs" />
-    <Compile Include="EasyAssertion.cs" />
+    <Compile Include="Assertions\ObjectAssertions.cs" />
     <Compile Include="EasyAssertionException.cs" />
     <Compile Include="FailureMessageFormatter.cs" />
     <Compile Include="FailureMessages\Expected.cs" />
@@ -66,7 +68,9 @@
     <Compile Include="FailureMessages\FailureMessageExpected.cs" />
     <Compile Include="FailureMessages\FunctionFailureMessage.cs" />
     <Compile Include="FailureMessages\StringFailureMessage.cs" />
+    <Compile Include="Assertions\NumberAssertions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Assertions\FunctionAssertions.cs" />
     <Compile Include="SourceExpressions\AssertionMethod.cs" />
     <Compile Include="SourceExpressions\AssertionComponent.cs" />
     <Compile Include="SourceExpressions\AssertionComponentGroup.cs" />
@@ -78,6 +82,7 @@
     <Compile Include="SourceExpressions\IndexedAssertionGroup.cs" />
     <Compile Include="SourceExpressions\SourceAddress.cs" />
     <Compile Include="SourceExpressions\StackAnalyser.cs" />
+    <Compile Include="Assertions\StringAssertions.cs" />
     <Compile Include="TestExpression.cs" />
     <Compile Include="SourceExpressions\SourceExpressionProvider.cs" />
     <Compile Include="Utils.cs" />

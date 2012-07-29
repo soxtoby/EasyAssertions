@@ -63,12 +63,18 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssertionMethodTests.cs" />
+    <Compile Include="Assertions\CollectionAssertionTests.cs" />
+    <Compile Include="Assertions\AssertionTests.cs" />
+    <Compile Include="Assertions\EasyAssertionTests.cs" />
+    <Compile Include="Assertions\FunctionAssertionTests.cs" />
+    <Compile Include="Assertions\NumberAssertionTests.cs" />
+    <Compile Include="Assertions\ObjectAssertionTests.cs" />
+    <Compile Include="Assertions\StringAssertionTests.cs" />
     <Compile Include="BraceMatcherTests.cs" />
     <Compile Include="CompareTests.cs" />
     <Compile Include="ContinuationTests.cs" />
     <Compile Include="DefaultFailureMessageFormatterTests.cs" />
     <Compile Include="EasyAssertionExceptionTests.cs" />
-    <Compile Include="EasyAssertionTests.cs" />
     <Compile Include="ExpectedFormatterTests.cs" />
     <Compile Include="FailureMessageTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

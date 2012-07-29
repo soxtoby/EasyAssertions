@@ -21,13 +21,13 @@ namespace EasyAssertions.UnitTests
             expressionProvider = Substitute.For<TestExpressionProvider>();
             expressionProvider.GetActualExpression().Returns(ActualExpression);
             expressionProvider.GetExpectedExpression().Returns(ExpectedExpression);
-            EasyAssertions.TestExpression.OverrideProvider(expressionProvider);
+            TestExpression.OverrideProvider(expressionProvider);
         }
 
         [TearDown]
         public void TearDown()
         {
-            EasyAssertions.TestExpression.DefaultProvider();
+            TestExpression.DefaultProvider();
         }
 
         [Test]
@@ -273,7 +273,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void NotEmpty_IncludesMessage()
         {
-            FakeObject[] enumerable = new[] { new FakeObject(String.Empty) };
+            FakeObject[] enumerable = new[] { new FakeObject(string.Empty) };
 
             string result = DefaultFailureMessageFormatter.Instance.NotEmpty(enumerable, "foo");
 

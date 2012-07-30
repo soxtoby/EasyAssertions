@@ -204,15 +204,12 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void SameAssertionCalledTwice()
         {
-            AssertMethod("foo");
-            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => AssertMethod("bar"));
+            const string foo = "foo";
+            EasyAssertionException result = null;
+            for (int i = 0; i < 2; i++)
+                result = Assert.Throws<EasyAssertionException>(() => foo.ShouldBe("bar"));
 
             StringAssert.StartsWith("foo", result.Message);
-        }
-
-        private static void AssertMethod(string foo)
-        {
-            foo.ShouldBe("foo");
         }
 
         private class TestClass

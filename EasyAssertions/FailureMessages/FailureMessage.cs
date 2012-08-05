@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using SmartFormat;
 using SmartFormat.Core;
 
@@ -108,12 +109,50 @@ namespace EasyAssertions
             get
             {
                 string expectedExpression = TestExpression.GetExpected() ?? string.Empty;
-                string expectedValueOutput = string.Empty + RawExpectedValue;
 
-                return expectedExpression.Trim('@', '"') == expectedValueOutput
+                return MatchesExpectedValueOutput(expectedExpression)
+                    || IsStringLiteral(expectedExpression)
+                    || IsNumericLiteral(expectedExpression)
+                    || IsBooleanLiteral(expectedExpression)
+                    || IsCharLiteral(expectedExpression)
+                    || IsNullLiteral(expectedExpression)
                         ? null
                         : expectedExpression.NullIfEmpty();
             }
+        }
+
+        private bool MatchesExpectedValueOutput(string expectedExpression)
+        {
+            string expectedValueOutput = string.Empty + RawExpectedValue;
+            return expectedExpression == expectedValueOutput;
+        }
+
+        private static bool IsStringLiteral(string expectedExpression)
+        {
+            return expectedExpression.TrimStart('@').FirstOrDefault() == '"';
+        }
+
+        private static bool IsNumericLiteral(string expectedExpression)
+        {
+            char firstChar = expectedExpression.FirstOrDefault();
+            return firstChar >= 48
+                && firstChar <= 57;
+        }
+
+        private bool IsBooleanLiteral(string expectedExpression)
+        {
+            return RawExpectedValue is bool
+                && expectedExpression == RawExpectedValue.ToString().ToLower();
+        }
+
+        private static bool IsCharLiteral(string expectedExpression)
+        {
+            return expectedExpression.FirstOrDefault() == '\'';
+        }
+
+        private static bool IsNullLiteral(string expectedExpression)
+        {
+            return expectedExpression == "null";
         }
 
         /// <summary>

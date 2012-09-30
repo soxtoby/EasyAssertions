@@ -7,6 +7,20 @@ namespace EasyAssertions
     /// </summary>
     public static class NumberAssertions
     {
+        private const string EqualityComparisonError = "Don't compare floating point numbers for direct equality. Please specify a tolerance instead.";
+
+        [Obsolete(EqualityComparisonError, true)]
+        public static void ShouldBe(this object actual, float expected, string message = null) { }
+
+        [Obsolete(EqualityComparisonError, true)]
+        public static void ShouldBe(this object actual, double expected, string message = null) { }
+
+        [Obsolete(EqualityComparisonError, true)]
+        public static void ShouldBe(this float actual, float expected, string message = null) { }
+
+        [Obsolete(EqualityComparisonError, true)]
+        public static void ShouldBe(this double actual, double expected, string message = null) { }
+
         /// <summary>
         /// Asserts that two <see cref="float"/> values are within a specified tolerance of eachother.
         /// </summary>

@@ -6,6 +6,19 @@ namespace EasyAssertions.UnitTests
     [TestFixture]
     public class NumberAssertionTests : AssertionTests
     {
+        /* // None of the lines in the following method should compile 
+        public void ShouldNotCompile()
+        {
+            new object().ShouldBe(1f);
+            new object().ShouldBe(1f, "message");
+            1f.ShouldBe(1f);
+            1f.ShouldBe(1f, "message");
+            new object().ShouldBe(1d);
+            new object().ShouldBe(1d, "message");
+            1d.ShouldBe(1d);
+            1d.ShouldBe(1d, "message");
+        }/**/
+
         [Test]
         public void ShouldBe_FloatsWithinDelta_ReturnsActualValue()
         {

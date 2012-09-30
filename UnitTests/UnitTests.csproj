@@ -80,6 +80,7 @@
     <Compile Include="FunctionFailureMessageTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SourceExpressionProviderTests.cs" />
+    <Compile Include="StringFailureMessageTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

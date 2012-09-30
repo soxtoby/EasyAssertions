@@ -70,10 +70,15 @@ namespace EasyAssertions
             set { RawActualValue = value; }
         }
 
+        private string userMessage;
         /// <summary>
         /// A user-provided message that will be appended to the message output.
         /// </summary>
-        public virtual string UserMessage { get; set; }
+        public virtual string UserMessage
+        {
+            get { return EscapeForTemplate(userMessage); }
+            set { userMessage = value; }
+        }
 
         /// <summary>
         /// When referenced in the <see cref="MessageTemplate"/>, will output the <see cref="ExpectedExpression"/>,
@@ -94,8 +99,9 @@ namespace EasyAssertions
         {
             get
             {
-                return TestExpression.GetActual().NullIfEmpty()
-                    ?? "Actual value";
+                return EscapeForTemplate(
+                    TestExpression.GetActual().NullIfEmpty()
+                    ?? "Actual value");
             }
         }
 
@@ -117,7 +123,7 @@ namespace EasyAssertions
                     || IsCharLiteral(expectedExpression)
                     || IsNullLiteral(expectedExpression)
                         ? null
-                        : expectedExpression.NullIfEmpty();
+                        : EscapeForTemplate(expectedExpression.NullIfEmpty());
             }
         }
 
@@ -166,13 +172,25 @@ namespace EasyAssertions
         public readonly string BR = Environment.NewLine;
 
         /// <summary>
-        /// Wraps objects in &lt; &gt; and strings in " ".
+        /// Wraps objects in &lt; &gt; and strings in " ", and escapes the result for SmartFormat.
         /// </summary>
         protected static string Output(object value)
         {
-            return value is string
-                ? "\"" + value + "\""
-                : "<" + (value ?? "null") + ">";
+            return EscapeForTemplate(
+                value is string
+                    ? "\"" + value + "\""
+                    : "<" + (value ?? "null") + ">");
+        }
+
+        /// <summary>
+        /// Escapes a string value for SmartFormat so that it isn't interpreted as part of the template.
+        /// </summary>
+        protected static string EscapeForTemplate(string outputString)
+        {
+            return outputString == null ? null
+                : outputString
+                    .Replace("{", "\\{")
+                    .Replace("}", "\\}");
         }
     }
 }

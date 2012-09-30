@@ -117,5 +117,45 @@ namespace EasyAssertions.UnitTests
 
             Assert.AreEqual("<null>", sut.ActualValue);
         }
+
+        [Test]
+        public void ActualExpression_IsEscaped()
+        {
+            testExpression.GetActualExpression().Returns("{foo}");
+
+            Assert.AreEqual(@"\{foo\}", sut.ActualExpression);
+        }
+
+        [Test]
+        public void ExpectedExpression_IsEscaped()
+        {
+            testExpression.GetExpectedExpression().Returns("{foo}");
+
+            Assert.AreEqual(@"\{foo\}", sut.ExpectedExpression);
+        }
+
+        [Test]
+        public void ActualValue_IsEscaped()
+        {
+            sut.ActualValue = "{foo}";
+
+            Assert.AreEqual(@"""\{foo\}""", sut.ActualValue);
+        }
+
+        [Test]
+        public void ExectedValue_IsEscaped()
+        {
+            sut.ExpectedValue = "{foo}";
+
+            Assert.AreEqual(@"""\{foo\}""", sut.ExpectedValue);
+        }
+
+        [Test]
+        public void UserMessage_IsEscaped()
+        {
+            sut.UserMessage = "{foo}";
+
+            Assert.AreEqual(@"\{foo\}", sut.UserMessage);
+        }
     }
 }

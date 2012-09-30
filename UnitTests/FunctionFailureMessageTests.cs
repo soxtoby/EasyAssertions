@@ -33,6 +33,15 @@ namespace EasyAssertions.UnitTests
             Assert.AreEqual("val", sut.ActualExpression);
         }
 
+        [Test]
+        public void ActualExpresson_IsEscaped()
+        {
+            object foo = new object();
+            FunctionFailureMessage sut = FailureMessage(() => new[] { foo });
+
+            Assert.AreEqual(@"new [] \{foo\}", sut.ActualExpression);
+        }
+
         private static FunctionFailureMessage FailureMessage(Expression<Func<object>> func)
         {
             return new FunctionFailureMessage(func);

@@ -23,7 +23,7 @@ namespace EasyAssertions
         /// <summary>
         /// Outputs the source representation of the <see cref="Function"/>.
         /// </summary>
-        public override string ActualExpression { get { return CleanFunctionBody(Function); } }
+        public override string ActualExpression { get { return OutputFunctionBody(Function); } }
 
         /// <summary>
         /// The <see cref="Type"/> of exception that the <see cref="Function"/> was expected to throw.
@@ -54,12 +54,12 @@ namespace EasyAssertions
         private static readonly Regex MemberPattern = new Regex(@"value\(.*?\)\.", RegexOptions.Compiled);
         private static readonly Regex BoxingPattern = new Regex(@"^Convert\((.*)\)$", RegexOptions.Compiled);
 
-        private static string CleanFunctionBody(LambdaExpression function)
+        private static string OutputFunctionBody(LambdaExpression function)
         {
             string body = function.Body.ToString();
             body = MemberPattern.Replace(body, string.Empty);
             body = BoxingPattern.Replace(body, "$1");
-            return body;
+            return EscapeForTemplate(body);
         }
     }
 }

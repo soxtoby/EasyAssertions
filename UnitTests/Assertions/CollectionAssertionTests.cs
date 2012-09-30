@@ -52,6 +52,48 @@ namespace EasyAssertions.UnitTests
         }
 
         [Test]
+        public void ShouldBeSingular_IsSingular_ReturnsActualValue()
+        {
+            int[] actual = new[] { 1 };
+
+            Actual<int[]> result = actual.ShouldBeSingular();
+
+            Assert.AreSame(actual, result.And);
+        }
+
+        [Test]
+        public void ShouldBeSingular_IsNotSingular_FailsWithLengthMismatchMessage()
+        {
+            int[] actual = new int[] { };
+            MockFormatter.LengthMismatch(1, actual, "foo").Returns("bar");
+
+            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldBeSingular("foo"));
+
+            Assert.AreEqual("bar", result.Message);
+        }
+
+        [Test]
+        public void ShouldBeLength_IsExpectedLength_ReturnsActualValue()
+        {
+            int[] actual = new[] { 1, 2, 3 };
+
+            Actual<int[]> result = actual.ShouldBeLength(3);
+
+            Assert.AreSame(actual, result.And);
+        }
+
+        [Test]
+        public void ShouldBeLength_IsDifferentLength_FailsWithLengthMismatchMessage()
+        {
+            int[] actual = new[] { 1, 2, 3 };
+            MockFormatter.LengthMismatch(2, actual, "foo").Returns("bar");
+
+            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldBeLength(2, "foo"));
+
+            Assert.AreEqual("bar", result.Message);
+        }
+
+        [Test]
         public void ShouldMatch_MatchingEnumerable_ReturnsActualValue()
         {
             int[] actual = new[] { 1, 2 };

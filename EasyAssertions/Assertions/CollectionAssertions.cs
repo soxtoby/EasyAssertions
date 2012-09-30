@@ -35,6 +35,30 @@ namespace EasyAssertions
         }
 
         /// <summary>
+        /// Asserts that a sequnce contains exactly one element.
+        /// </summary>
+        public static Actual<TActual> ShouldBeSingular<TActual>(this TActual actual, string message = null) where TActual : IEnumerable
+        {
+            return actual.RegisterAssert(() =>
+                {
+                    if (actual.Cast<object>().Count() != 1)
+                        throw EasyAssertion.Failure(FailureMessageFormatter.Current.LengthMismatch(1, actual, message));
+                });
+        }
+
+        /// <summary>
+        /// Asserts that a sequence contains a specific number of elements.
+        /// </summary>
+        public static Actual<TActual> ShouldBeLength<TActual>(this TActual actual, int expectedLength, string message = null) where TActual : IEnumerable
+        {
+            return actual.RegisterAssert(() =>
+            {
+                if (actual.Cast<object>().Count() != expectedLength)
+                    throw EasyAssertion.Failure(FailureMessageFormatter.Current.LengthMismatch(expectedLength, actual, message));
+            });
+        }
+
+        /// <summary>
         /// Asserts that two sequences contain the same items in the same order.
         /// <see cref="IEnumerable"/> items are compared recursively.
         /// Non-<c>IEnumerable</c> items are compared using the default equality comparer.

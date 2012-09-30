@@ -13,12 +13,12 @@ namespace EasyAssertions
             return Message + Environment.NewLine + Environment.NewLine + StackTrace;
         }
 
-        public EasyAssertionException(string message)
+        internal EasyAssertionException(string message)
             : base(message)
         {
         }
 
-        public EasyAssertionException(string message, Exception innerException)
+        internal EasyAssertionException(string message, Exception innerException)
             : base(message, innerException)
         {
         }

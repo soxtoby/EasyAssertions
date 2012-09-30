@@ -16,6 +16,17 @@ namespace EasyAssertions.UnitTests
         }
 
         [Test]
+        public void ShouldBe_ActualNotAFloat_FailsWithTypesNotEqualMessage()
+        {
+            object actual = new object();
+            MockFormatter.NotEqual(typeof(float), typeof(object), "foo").Returns("bar");
+
+            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldBe(1f, 1f, "foo"));
+
+            Assert.AreEqual("bar", result.Message);
+        }
+
+        [Test]
         public void ShouldBe_FloatsOutsideDelta_FailsWithObjectsNotEqualMessage()
         {
             const float expected = 10f;
@@ -35,6 +46,17 @@ namespace EasyAssertions.UnitTests
             Actual<double> result = actual.ShouldBe(1d, 0);
 
             Assert.AreEqual(actual, result.And);
+        }
+
+        [Test]
+        public void ShouldBe_ActualNotADouble_FailsWithTypesNotEqualMessage()
+        {
+            object actual = new object();
+            MockFormatter.NotEqual(typeof(double), typeof(object), "foo").Returns("bar");
+
+            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldBe(1d, 1d, "foo"));
+
+            Assert.AreEqual("bar", result.Message);
         }
 
         [Test]

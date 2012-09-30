@@ -209,7 +209,7 @@ namespace EasyAssertions.UnitTests
         }
 
         [Test]
-        public void ShouldContain_CollectionContainsExpected_ReturnActualValue()
+        public void ShouldContain_CollectionContainsExpected_ReturnsActualValue()
         {
             int[] actual = new[] { 1, 2 };
 
@@ -226,6 +226,27 @@ namespace EasyAssertions.UnitTests
             MockFormatter.DoesNotContain(expected, actual, message: "foo").Returns("bar");
 
             EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldContain(expected, "foo"));
+
+            Assert.AreEqual("bar", result.Message);
+        }
+
+        [Test]
+        public void ShouldNotCOntain_CollectionDoesNotContainExpected_ReturnsActualValue()
+        {
+            IEnumerable<int> actual = Enumerable.Empty<int>();
+
+            Actual<IEnumerable<int>> result = actual.ShouldNotContain(1);
+
+            Assert.AreSame(actual, result.And);
+        }
+
+        [Test]
+        public void ShouldNotContain_CollectionContainsItem_FailsWithEnumerableContainsItemMessage()
+        {
+            int[] actual = new[] { 1 };
+            MockFormatter.Contains(1, actual, message: "foo").Returns("bar");
+
+            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldNotContain(1, "foo"));
 
             Assert.AreEqual("bar", result.Message);
         }

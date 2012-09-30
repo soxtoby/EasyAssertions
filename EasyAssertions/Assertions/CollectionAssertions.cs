@@ -137,6 +137,18 @@ namespace EasyAssertions
         }
 
         /// <summary>
+        /// Asserts that a sequence does not contain a specified element, using the default equality comparer.
+        /// </summary>
+        public static Actual<TActual> ShouldNotContain<TActual, TItem>(this TActual actual, TItem expectedToNotContain, string message = null) where TActual : IEnumerable<TItem>
+        {
+            return actual.RegisterAssert(() =>
+                {
+                    if (actual.Contains(expectedToNotContain))
+                        throw EasyAssertion.Failure(FailureMessageFormatter.Current.Contains(expectedToNotContain, actual, message: message));
+                });
+        }
+
+        /// <summary>
         /// Asserts that a sequence does not contain any of the specified elements, using the default equality comparer.
         /// </summary>
         public static Actual<TActual> ShouldNotContainItems<TActual, TItem>(this TActual actual, IEnumerable<TItem> expectedToNotContain, string message = null) where TActual : IEnumerable<TItem>

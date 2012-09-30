@@ -52,10 +52,14 @@ namespace EasyAssertions
         }
 
         private static readonly Regex MemberPattern = new Regex(@"value\(.*?\)\.", RegexOptions.Compiled);
+        private static readonly Regex BoxingPattern = new Regex(@"^Convert\((.*)\)$", RegexOptions.Compiled);
 
         private static string CleanFunctionBody(LambdaExpression function)
         {
-            return MemberPattern.Replace(function.Body.ToString(), string.Empty);
+            string body = function.Body.ToString();
+            body = MemberPattern.Replace(body, string.Empty);
+            body = BoxingPattern.Replace(body, "$1");
+            return body;
         }
     }
 }

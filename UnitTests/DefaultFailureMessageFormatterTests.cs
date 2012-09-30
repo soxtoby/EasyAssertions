@@ -136,6 +136,18 @@ namespace EasyAssertions.UnitTests
         }
 
         [Test]
+        public void StringsNotEqual_ActualShorterThanExpected()
+        {
+            string result = DefaultFailureMessageFormatter.Instance.NotEqual("ab", "a");
+            Assert.AreEqual(ActualExpression + Environment.NewLine
+                + "should be " + ExpectedExpression + Environment.NewLine
+                + "          \"ab\"" + Environment.NewLine
+                + "but was   \"a\"" + Environment.NewLine
+                 + "            ^" + Environment.NewLine
+                + "Difference at index 1.", result);
+        }
+
+        [Test]
         public void StringsNotEqual_IncludesMessage()
         {
             string result = DefaultFailureMessageFormatter.Instance.NotEqual("acd", "abc", "foo");

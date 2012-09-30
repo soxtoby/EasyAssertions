@@ -27,7 +27,7 @@ namespace EasyAssertions
         public string NotEqual(string expected, string actual, string message = null)
         {
             int differenceIndex = Enumerable.Range(0, expected.Length)
-                .FirstOrDefault(i => actual[i] != expected[i]);
+                .FirstOrDefault(i => i == actual.Length || actual[i] != expected[i]);
 
             return new StringFailureMessage
                 {

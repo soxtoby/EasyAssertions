@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using NSubstitute;
 using NUnit.Framework;
@@ -222,7 +223,7 @@ namespace EasyAssertions.UnitTests
         {
             int[] actual = new[] { 1, 2 };
             const int expected = 3;
-            MockFormatter.DoesNotContain(expected, actual, "foo").Returns("bar");
+            MockFormatter.DoesNotContain(expected, actual, message: "foo").Returns("bar");
 
             EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldContain(expected, "foo"));
 
@@ -345,6 +346,27 @@ namespace EasyAssertions.UnitTests
         }
 
         [Test]
+        public void KeyedCollectionShouldContainKey_ContainsKeys_ReturnsActualValue()
+        {
+            TestKeyedCollection actual = new TestKeyedCollection { "foo", "bar" };
+
+            Actual<KeyedCollection<char, string>> result = actual.ShouldContainKey('b');
+
+            Assert.AreSame(actual, result.And);
+        }
+
+        [Test]
+        public void KeyedCollectionShouldContainKey_DoesNotContainKey_FailsWithDoesNotContainKeyMessage()
+        {
+            TestKeyedCollection actual = new TestKeyedCollection();
+            MockFormatter.DoesNotContain('a', actual, "key", "foo").Returns("bar");
+
+            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldContainKey('a', "foo"));
+
+            Assert.AreEqual("bar", result.Message);
+        }
+
+        [Test]
         public void ItemsSatisfy_ItemsSatisfyAssertions_ReturnsActualValue()
         {
             int[] actual = new[] { 1 };
@@ -419,6 +441,14 @@ namespace EasyAssertions.UnitTests
         private static IEnumerable<TItem> ArgMatches<TItem>(IEnumerable<TItem> expected)
         {
             return Arg.Is<IEnumerable<TItem>>(arg => Compare.CollectionsMatch(arg, expected, Compare.ObjectsAreEqual));
+        }
+
+        private class TestKeyedCollection : KeyedCollection<char, string>
+        {
+            protected override char GetKeyForItem(string item)
+            {
+                return item[0];
+            }
         }
     }
 }

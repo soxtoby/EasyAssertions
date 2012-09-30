@@ -48,7 +48,7 @@ namespace EasyAssertions
         /// <summary>
         /// Sequence should contain a particular item, but didn't.
         /// </summary>
-        string DoesNotContain(object expected, IEnumerable actual, string message = null);
+        string DoesNotContain(object expected, IEnumerable actual, string itemType = null, string message = null);
 
         /// <summary>
         /// Sequence should contain all the items in another sequence, but didn't.

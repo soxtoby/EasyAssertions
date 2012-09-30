@@ -368,9 +368,20 @@ namespace EasyAssertions.UnitTests
         }
 
         [Test]
+        public void CollectionDoesNotContain_WithItemType_ItemTypeIncluded()
+        {
+            string result = DefaultFailureMessageFormatter.Instance.DoesNotContain(1, Enumerable.Empty<int>(), "foo");
+
+            Assert.AreEqual(ActualExpression + Environment.NewLine
+                + "should contain foo " + ExpectedExpression + Environment.NewLine
+                + "                   <1>" + Environment.NewLine
+                + "but was empty.", result);
+        }
+
+        [Test]
         public void CollectionDoesNotContain_IncludesMessage()
         {
-            string result = DefaultFailureMessageFormatter.Instance.DoesNotContain(0, Enumerable.Empty<int>(), "foo");
+            string result = DefaultFailureMessageFormatter.Instance.DoesNotContain(0, Enumerable.Empty<int>(), message: "foo");
 
             StringAssert.EndsWith(Environment.NewLine + "foo", result);
         }

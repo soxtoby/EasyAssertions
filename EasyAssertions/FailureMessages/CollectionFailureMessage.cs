@@ -12,6 +12,16 @@ namespace EasyAssertions
     {
         private const int SampleSize = 10;
 
+        private string itemType;
+        /// <summary>
+        /// The nature of the item being asserted on (e.g. "key" or "value").
+        /// </summary>
+        public string ItemType
+        {
+            get { return EscapeForTemplate(itemType); }
+            set { itemType = value; }
+        }
+
         /// <summary>
         /// Provides access to the items in the expected collection without modification.
         /// </summary>

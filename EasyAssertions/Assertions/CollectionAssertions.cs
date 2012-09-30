@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace EasyAssertions
@@ -119,7 +120,7 @@ namespace EasyAssertions
             return actual.RegisterAssert(() =>
                 {
                     if (!actual.Contains(expected))
-                        throw EasyAssertion.Failure(FailureMessageFormatter.Current.DoesNotContain(expected, actual, message));
+                        throw EasyAssertion.Failure(FailureMessageFormatter.Current.DoesNotContain(expected, actual, message: message));
                 });
         }
 
@@ -174,6 +175,18 @@ namespace EasyAssertions
 
                     if (!Compare.CollectionsMatch(actual, expected, ReferenceEquals))
                         throw EasyAssertion.Failure(FailureMessageFormatter.Current.ItemsNotSame(expected, actual, message));
+                });
+        }
+
+        /// <summary>
+        /// Asserts that a <see cref="KeyedCollection{TKey,TItem}"/> contains an item for the specified key.
+        /// </summary>
+        public static Actual<KeyedCollection<TKey, TItem>> ShouldContainKey<TKey, TItem>(this KeyedCollection<TKey, TItem> actual, TKey expectedKey, string message = null)
+        {
+            return actual.RegisterAssert(() =>
+                {
+                    if (!actual.Contains(expectedKey))
+                        throw EasyAssertion.Failure(FailureMessageFormatter.Current.DoesNotContain(expectedKey, actual, "key", message));
                 });
         }
 

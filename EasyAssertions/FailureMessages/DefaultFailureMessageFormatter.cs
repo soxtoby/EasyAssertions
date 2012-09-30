@@ -126,7 +126,7 @@ namespace EasyAssertions
                 }.ToString();
         }
 
-        public string DoesNotContain(object expected, IEnumerable actual, string message = null)
+        public string DoesNotContain(object expected, IEnumerable actual, string itemType = null, string message = null)
         {
             List<object> actualList = actual.Cast<object>().ToList();
 
@@ -134,8 +134,9 @@ namespace EasyAssertions
                 {
                     ActualItems = actualList,
                     ExpectedValue = expected,
+                    ItemType = itemType,
                     UserMessage = message,
-                    MessageTemplate = "should contain {Expected}{BR}"
+                    MessageTemplate = "should contain {ItemType:{} |}{Expected}{BR}"
                                     + "but was {ActualItems.Count:"
                                             + "empty."
                                            + "|      [{0.ActualItems[0]}]"

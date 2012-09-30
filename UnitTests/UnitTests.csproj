@@ -71,6 +71,7 @@
     <Compile Include="Assertions\ObjectAssertionTests.cs" />
     <Compile Include="Assertions\StringAssertionTests.cs" />
     <Compile Include="BraceMatcherTests.cs" />
+    <Compile Include="CollectionFailureMessageTests.cs" />
     <Compile Include="CompareTests.cs" />
     <Compile Include="ContinuationTests.cs" />
     <Compile Include="DefaultFailureMessageFormatterTests.cs" />

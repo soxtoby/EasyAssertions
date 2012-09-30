@@ -168,11 +168,11 @@ namespace EasyAssertions
         /// <summary>
         /// Wraps objects in &lt; &gt; and strings in " ".
         /// </summary>
-        protected string Output(object value)
+        protected static string Output(object value)
         {
             return value is string
                 ? "\"" + value + "\""
-                : "<" + value + ">";
+                : "<" + (value ?? "null") + ">";
         }
     }
 }

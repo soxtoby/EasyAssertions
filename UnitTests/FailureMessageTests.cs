@@ -109,5 +109,13 @@ namespace EasyAssertions.UnitTests
 
             Assert.IsNull(sut.ExpectedExpression);
         }
+
+        [Test]
+        public void ActualValue_Null_ReturnsNullString()
+        {
+            sut.ActualValue = null;
+
+            Assert.AreEqual("<null>", sut.ActualValue);
+        }
     }
 }

@@ -266,38 +266,38 @@ namespace EasyAssertions.UnitTests
         }
 
         [Test]
-        public void ShouldBeThese_SameItems_ReturnsActualValue()
+        public void ShouldMatchReferences_SameItems_ReturnsActualValue()
         {
             object a = new object();
             object b = new object();
             object[] actual = new[] { a, b };
 
-            Actual<IEnumerable<object>> result = actual.ShouldBeThese(new[] { a, b });
+            Actual<IEnumerable<object>> result = actual.ShouldMatchReferences(new[] { a, b });
 
             Assert.AreSame(actual, result.And);
         }
 
         [Test]
-        public void ShouldBeThese_DifferentLength_FailsWithEnumerableLenthMismatchMessage()
+        public void ShouldMatchReferences_DifferentLength_FailsWithEnumerableLenthMismatchMessage()
         {
             object[] actual = new object[] { };
             object[] expected = new[] { new object() };
             MockFormatter.LengthMismatch(1, actual, "foo").Returns("bar");
 
-            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldBeThese(expected, "foo"));
+            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldMatchReferences(expected, "foo"));
 
             Assert.AreEqual("bar", result.Message);
         }
 
         [Test]
-        public void ShouldBeThese_DifferentItems_FailsWithEnumerablesNotSameMessage()
+        public void ShouldMatchReferences_DifferentItems_FailsWithEnumerablesNotSameMessage()
         {
             object a = new object();
             object[] actual = new[] { a, new object() };
             object[] expected = new[] { a, new object() };
             MockFormatter.ItemsNotSame(expected, actual, "foo").Returns("bar");
 
-            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldBeThese(expected, "foo"));
+            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldMatchReferences(expected, "foo"));
 
             Assert.AreSame("bar", result.Message);
         }

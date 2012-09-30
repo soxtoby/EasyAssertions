@@ -81,7 +81,7 @@ namespace EasyAssertions
         /// <summary>
         /// Asserts that two object instances are the same instance.
         /// </summary>
-        public static Actual<TActual> ShouldBeThis<TActual, TExpected>(this TActual actual, TExpected expected, string message = null) where TExpected : TActual
+        public static Actual<TActual> ShouldReferTo<TActual, TExpected>(this TActual actual, TExpected expected, string message = null) where TExpected : TActual
         {
             return actual.RegisterAssert(() =>
                 {
@@ -93,7 +93,7 @@ namespace EasyAssertions
         /// <summary>
         /// Asserts that two object instances are different instances.
         /// </summary>
-        public static Actual<TActual> ShouldNotBeThis<TActual, TNotExpected>(this TActual actual, TNotExpected notExpected, string message = null) where TNotExpected : TActual
+        public static Actual<TActual> ShouldNotReferTo<TActual, TNotExpected>(this TActual actual, TNotExpected notExpected, string message = null) where TNotExpected : TActual
         {
             return actual.RegisterAssert(() =>
                 {

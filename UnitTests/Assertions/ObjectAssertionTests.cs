@@ -132,43 +132,43 @@ namespace EasyAssertions.UnitTests
         }
 
         [Test]
-        public void ShouldBeThis_SameObject_ReturnsActualValue()
+        public void ShouldReferTo_SameObject_ReturnsActualValue()
         {
             object obj = new object();
-            Actual<object> result = obj.ShouldBeThis(obj);
+            Actual<object> result = obj.ShouldReferTo(obj);
 
             Assert.AreSame(obj, result.And);
         }
 
         [Test]
-        public void ShouldBeThis_DifferentObject_FailsWithObjectsNotSameMessage()
+        public void ShouldReferTo_DifferentObject_FailsWithObjectsNotSameMessage()
         {
             Equatable actual = new Equatable(1);
             Equatable expected = new Equatable(1);
             MockFormatter.NotSame(expected, actual, "foo").Returns("bar");
 
-            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldBeThis(expected, "foo"));
+            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldReferTo(expected, "foo"));
 
             Assert.AreEqual("bar", result.Message);
         }
 
         [Test]
-        public void ShouldNotBeThis_DifferentObject_ReturnsActualValue()
+        public void ShouldNotReferTo_DifferentObject_ReturnsActualValue()
         {
             object actual = new object();
 
-            Actual<object> result = actual.ShouldNotBeThis(new object());
+            Actual<object> result = actual.ShouldNotReferTo(new object());
 
             Assert.AreSame(actual, result.And);
         }
 
         [Test]
-        public void ShouldNotBeThis_SameObject_FailsWithObjectsAreSameMessage()
+        public void ShouldNotReferTo_SameObject_FailsWithObjectsAreSameMessage()
         {
             object actual = new object();
             MockFormatter.AreSame(actual, "foo").Returns("bar");
 
-            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldNotBeThis(actual, "foo"));
+            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldNotReferTo(actual, "foo"));
 
             Assert.AreEqual("bar", result.Message);
         }

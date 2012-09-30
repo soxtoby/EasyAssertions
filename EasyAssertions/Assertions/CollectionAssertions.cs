@@ -138,7 +138,7 @@ namespace EasyAssertions
         /// <summary>
         /// Asserts that two sequences contain the same object instances in the same order.
         /// </summary>
-        public static Actual<IEnumerable<TActual>> ShouldBeThese<TActual, TExpected>(this IEnumerable<TActual> actual, IEnumerable<TExpected> expected, string message = null)
+        public static Actual<IEnumerable<TActual>> ShouldMatchReferences<TActual, TExpected>(this IEnumerable<TActual> actual, IEnumerable<TExpected> expected, string message = null) where TExpected : TActual
         {
             return actual.RegisterAssert(() =>
                 {

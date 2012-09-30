@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using NUnit.Framework;
 
 namespace EasyAssertions.UnitTests
@@ -12,11 +11,9 @@ namespace EasyAssertions.UnitTests
         {
             TestClass actualExpression = new TestClass(12);
             TestClass expectedExpression = new TestClass(2);
-            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actualExpression.ShouldBe(expectedExpression));
-            Assert.AreEqual("actualExpression" + Environment.NewLine
-                + "should be expectedExpression" + Environment.NewLine
-                + "          <(2)>" + Environment.NewLine
-                + "but was   <(12)>", result.Message);
+            Assert.Throws<EasyAssertionException>(() => actualExpression.ShouldBe(expectedExpression));
+
+            Assert.AreEqual("actualExpression", SourceExpressionProvider.Instance.GetActualExpression());
         }
 
         [Test]
@@ -24,12 +21,10 @@ namespace EasyAssertions.UnitTests
         {
             TestClass actualExpression = new TestClass(12);
             TestClass expectedExpression = new TestClass(2);
-            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actualExpression
+            Assert.Throws<EasyAssertionException>(() => actualExpression
                 .ShouldBe(expectedExpression));
-            Assert.AreEqual("actualExpression" + Environment.NewLine
-                + "should be expectedExpression" + Environment.NewLine
-                + "          <(2)>" + Environment.NewLine
-                + "but was   <(12)>", result.Message);
+
+            Assert.AreEqual("actualExpression", SourceExpressionProvider.Instance.GetActualExpression());
         }
 
         [Test]
@@ -37,14 +32,11 @@ namespace EasyAssertions.UnitTests
         {
             TestClass actualExpression = new TestClass(12);
             TestClass expectedExpression = new TestClass(2);
-            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() =>
+            Assert.Throws<EasyAssertionException>(() =>
                 actualExpression.ShouldBeA<TestClass>()
                     .And.ShouldBe(expectedExpression));
 
-            Assert.AreEqual("actualExpression" + Environment.NewLine
-                + "should be expectedExpression" + Environment.NewLine
-                + "          <(2)>" + Environment.NewLine
-                + "but was   <(12)>", result.Message);
+            Assert.AreEqual("actualExpression", SourceExpressionProvider.Instance.GetActualExpression());
         }
 
         [Test]
@@ -53,14 +45,11 @@ namespace EasyAssertions.UnitTests
             TestClass actualExpression = new TestClass(12);
             int expectedExpression = 2;
 
-            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() =>
+            Assert.Throws<EasyAssertionException>(() =>
                 actualExpression.ShouldBeA<TestClass>()
                     .And.Value.ShouldBe(expectedExpression));
 
-            Assert.AreEqual("actualExpression.Value" + Environment.NewLine
-                + "should be expectedExpression" + Environment.NewLine
-                + "          <2>" + Environment.NewLine
-                + "but was   <12>", result.Message);
+            Assert.AreEqual("actualExpression.Value", SourceExpressionProvider.Instance.GetActualExpression());
         }
 
         [Test]
@@ -69,13 +58,10 @@ namespace EasyAssertions.UnitTests
             TestClass actualExpression = new TestClass(12);
             int expectedExpression = 2;
 
-            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() =>
+            Assert.Throws<EasyAssertionException>(() =>
                 actualExpression.Assert(a => a.Value.ShouldBe(expectedExpression)));
 
-            Assert.AreEqual("actualExpression.Value" + Environment.NewLine
-                + "should be expectedExpression" + Environment.NewLine
-                + "          <2>" + Environment.NewLine
-                + "but was   <12>", result.Message);
+            Assert.AreEqual("actualExpression.Value", SourceExpressionProvider.Instance.GetActualExpression());
         }
 
         [Test]
@@ -84,29 +70,26 @@ namespace EasyAssertions.UnitTests
             TestClass actualExpression = new TestClass(12);
             int expectedExpression = 2;
 
-            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() =>
+            Assert.Throws<EasyAssertionException>(() =>
                 actualExpression.Assert(tc =>
                     {
                         tc.Value.ShouldBe(12);
                         tc.Value.ShouldBe(expectedExpression);
                     }));
 
-            Assert.AreEqual("actualExpression.Value" + Environment.NewLine
-                + "should be expectedExpression" + Environment.NewLine
-                + "          <2>" + Environment.NewLine
-                + "but was   <12>", result.Message);
+            Assert.AreEqual("actualExpression.Value", SourceExpressionProvider.Instance.GetActualExpression());
         }
 
         [Test]
         public void ExpressionTwoLevelsIn_CombinesOuterMiddleAndInnerExpressions()
         {
             TestClass actualExpression = new TestClass(12);
-            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() =>
+            Assert.Throws<EasyAssertionException>(() =>
                 actualExpression
                     .Assert(a => a.Value.ShouldBe(12)
                         .And(b => b.ToString().ShouldBe("2"))));
 
-            StringAssert.StartsWith("actualExpression.Value.ToString()" + Environment.NewLine, result.Message);
+            Assert.AreEqual("actualExpression.Value.ToString()", SourceExpressionProvider.Instance.GetActualExpression());
         }
 
         [Test]
@@ -115,15 +98,12 @@ namespace EasyAssertions.UnitTests
             TestClass actualExpression = new TestClass(12);
             int expectedExpression = 2;
 
-            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() =>
+            Assert.Throws<EasyAssertionException>(() =>
                 actualExpression
                     .Assert(tc => tc.ShouldBeA<TestClass>())
                     .And.Value.ShouldBe(expectedExpression));
 
-            Assert.AreEqual("actualExpression.Value" + Environment.NewLine
-                + "should be expectedExpression" + Environment.NewLine
-                + "          <2>" + Environment.NewLine
-                + "but was   <12>", result.Message);
+            Assert.AreEqual("actualExpression.Value", SourceExpressionProvider.Instance.GetActualExpression());
         }
 
         [Test]
@@ -132,15 +112,12 @@ namespace EasyAssertions.UnitTests
             TestClass[] actualExpression = new[] { null, new TestClass(12) };
             int expectedExpression = 2;
 
-            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() =>
+            Assert.Throws<EasyAssertionException>(() =>
                 actualExpression.ItemsSatisfy(
                     tc => { },
                     tc => tc.Value.ShouldBe(expectedExpression)));
 
-            Assert.AreEqual("actualExpression[1].Value" + Environment.NewLine
-                + "should be expectedExpression" + Environment.NewLine
-                + "          <2>" + Environment.NewLine
-                + "but was   <12>", result.Message);
+            Assert.AreEqual("actualExpression[1].Value", SourceExpressionProvider.Instance.GetActualExpression());
         }
 
         [Test]
@@ -149,15 +126,12 @@ namespace EasyAssertions.UnitTests
             TestClass[] actualExpression = new[] { new TestClass(12) };
             TestClass expectedExpression = new TestClass(2);
 
-            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() =>
+            Assert.Throws<EasyAssertionException>(() =>
                 actualExpression
                     .ItemsSatisfy(tc => { })
                     .And.Single().ShouldBe(expectedExpression));
 
-            Assert.AreEqual("actualExpression.Single()" + Environment.NewLine
-                + "should be expectedExpression" + Environment.NewLine
-                + "          <(2)>" + Environment.NewLine
-                + "but was   <(12)>", result.Message);
+            Assert.AreEqual("actualExpression.Single()", SourceExpressionProvider.Instance.GetActualExpression());
         }
 
         [Test]
@@ -166,7 +140,7 @@ namespace EasyAssertions.UnitTests
             TestClass actualExpression = new TestClass(12);
             TestClass expectedExpression = new TestClass(2);
 
-            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() =>
+            Assert.Throws<EasyAssertionException>(() =>
                 {
                     new[] { 1 }
                         .ItemsSatisfy(i => { });
@@ -175,10 +149,7 @@ namespace EasyAssertions.UnitTests
                         .ShouldBe(expectedExpression);
                 });
 
-            Assert.AreEqual("actualExpression" + Environment.NewLine
-                + "should be expectedExpression" + Environment.NewLine
-                + "          <(2)>" + Environment.NewLine
-                + "but was   <(12)>", result.Message);
+            Assert.AreEqual("actualExpression", SourceExpressionProvider.Instance.GetActualExpression());
         }
 
         [Test]
@@ -186,9 +157,9 @@ namespace EasyAssertions.UnitTests
         {
             object actualExpression = null;
 
-            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actualExpression.TestActionAssert());
+            Assert.Throws<EasyAssertionException>(() => actualExpression.TestActionAssert());
 
-            StringAssert.StartsWith("actualExpression" + Environment.NewLine, result.Message);
+            Assert.AreEqual("actualExpression", SourceExpressionProvider.Instance.GetActualExpression());
         }
 
         [Test]
@@ -196,20 +167,19 @@ namespace EasyAssertions.UnitTests
         {
             object actualExpression = null;
 
-            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actualExpression.TestFuncAssert());
+            Assert.Throws<EasyAssertionException>(() => actualExpression.TestFuncAssert());
 
-            StringAssert.StartsWith("actualExpression" + Environment.NewLine, result.Message);
+            Assert.AreEqual("actualExpression", SourceExpressionProvider.Instance.GetActualExpression());
         }
 
         [Test]
         public void SameAssertionCalledTwice()
         {
             const string foo = "foo";
-            EasyAssertionException result = null;
             for (int i = 0; i < 2; i++)
-                result = Assert.Throws<EasyAssertionException>(() => foo.ShouldBe("bar"));
+                Assert.Throws<EasyAssertionException>(() => foo.ShouldBe("bar"));
 
-            StringAssert.StartsWith("foo", result.Message);
+            Assert.AreEqual("foo", SourceExpressionProvider.Instance.GetActualExpression());
         }
 
         private class TestClass

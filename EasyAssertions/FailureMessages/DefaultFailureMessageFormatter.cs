@@ -171,6 +171,21 @@ namespace EasyAssertions
                 }.ToString();
         }
 
+        public string Contains(object expectedToNotContain, IEnumerable actual, string itemType = null, string message = null)
+        {
+            List<object> actualList = actual.Cast<object>().ToList();
+
+            return new CollectionFailureMessage
+                {
+                    ActualItems = actualList,
+                    ExpectedValue = expectedToNotContain,
+                    ItemType = itemType,
+                    UserMessage = message,
+                    MessageTemplate = "shouldn't contain {ItemType:{} |}{Expected}{BR}"
+                                    + "but was {ActualSample}"
+                }.ToString();
+        }
+
         public string Contains(IEnumerable expectedToNotContain, IEnumerable actual, string message = null)
         {
             HashSet<object> actualSet = new HashSet<object>(actual.Cast<object>());

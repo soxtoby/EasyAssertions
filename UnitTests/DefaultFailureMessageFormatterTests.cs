@@ -368,7 +368,7 @@ namespace EasyAssertions.UnitTests
         }
 
         [Test]
-        public void CollectionDoesNotContain_WithItemType_ItemTypeIncluded()
+        public void CollectionDoesNotContain_IncludesItemType()
         {
             string result = DefaultFailureMessageFormatter.Instance.DoesNotContain(1, Enumerable.Empty<int>(), "foo");
 
@@ -420,6 +420,36 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void CollectionContains()
         {
+            string result = DefaultFailureMessageFormatter.Instance.Contains(new FakeObject("foo"), Enumerable.Empty<object>());
+
+            Assert.AreEqual(ActualExpression + Environment.NewLine
+                + "shouldn't contain " + ExpectedExpression + Environment.NewLine
+                + "                  <foo>" + Environment.NewLine
+                + "but was empty.", result);
+        }
+
+        [Test]
+        public void CollectionContains_IncludesItemType()
+        {
+            string result = DefaultFailureMessageFormatter.Instance.Contains(new FakeObject("foo"), Enumerable.Empty<object>(), "bar");
+
+            Assert.AreEqual(ActualExpression + Environment.NewLine
+                + "shouldn't contain bar " + ExpectedExpression + Environment.NewLine
+                + "                      <foo>" + Environment.NewLine
+                + "but was empty.", result);
+        }
+
+        [Test]
+        public void CollectionContains_IncludesMessage()
+        {
+            string result = DefaultFailureMessageFormatter.Instance.Contains((object)null, Enumerable.Empty<object>(), message: "foo");
+
+            StringAssert.EndsWith(Environment.NewLine + "foo", result);
+        }
+
+        [Test]
+        public void CollectionContainsItems()
+        {
             string result = DefaultFailureMessageFormatter.Instance.Contains(new[] { 1 }, new[] { 2, 1 });
 
             Assert.AreEqual(ActualExpression + Environment.NewLine
@@ -433,7 +463,7 @@ namespace EasyAssertions.UnitTests
         }
 
         [Test]
-        public void CollectionContains_ExpectedIsNewCollection()
+        public void CollectionContainsItems_ExpectedIsNewCollection()
         {
             expressionProvider.GetExpectedExpression().Returns("new[] { 1 }");
 
@@ -449,7 +479,7 @@ namespace EasyAssertions.UnitTests
         }
 
         [Test]
-        public void CollectionContains_IncludesMessage()
+        public void CollectionContainsItems_IncludesMessage()
         {
             string result = DefaultFailureMessageFormatter.Instance.Contains(new[] { 1 }, new[] { 1 }, "foo");
 

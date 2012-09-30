@@ -191,6 +191,18 @@ namespace EasyAssertions
         }
 
         /// <summary>
+        /// Asserts that a <see cref="KeyedCollection{TKey,TItem}"/> does not contain an item for the specified key.
+        /// </summary>
+        public static Actual<KeyedCollection<TKey, TItem>> ShouldNotContainKey<TKey, TItem>(this KeyedCollection<TKey, TItem> actual, TKey notExpectedKey, string message = null)
+        {
+            return actual.RegisterAssert(() =>
+                {
+                    if (actual.Contains(notExpectedKey))
+                        throw EasyAssertion.Failure(FailureMessageFormatter.Current.Contains(notExpectedKey, actual, "key", message));
+                });
+        }
+
+        /// <summary>
         /// Asserts that a sequence of items satisfies a matched sequence of assertions.
         /// </summary>
         public static Actual<IEnumerable<TItem>> ItemsSatisfy<TItem>(this IEnumerable<TItem> actual, params Action<TItem>[] assertions)

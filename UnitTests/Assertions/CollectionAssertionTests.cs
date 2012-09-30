@@ -367,6 +367,27 @@ namespace EasyAssertions.UnitTests
         }
 
         [Test]
+        public void KeyedCollectionShouldNotContainKey_DoesNotContainKey_ReturnsActualValue()
+        {
+            TestKeyedCollection actual = new TestKeyedCollection();
+
+            Actual<KeyedCollection<char, string>> result = actual.ShouldNotContainKey('a');
+
+            Assert.AreSame(actual, result.And);
+        }
+
+        [Test]
+        public void KeyedCollectionShouldNotContainKey_ContainsKey_FailsWithContainsKeyMessage()
+        {
+            TestKeyedCollection actual = new TestKeyedCollection { "foo" };
+            MockFormatter.Contains('f', actual, "key", "bar").Returns("baz");
+
+            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldNotContainKey('f', "bar"));
+
+            Assert.AreEqual("baz", result.Message);
+        }
+
+        [Test]
         public void ItemsSatisfy_ItemsSatisfyAssertions_ReturnsActualValue()
         {
             int[] actual = new[] { 1 };

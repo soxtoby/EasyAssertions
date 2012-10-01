@@ -170,5 +170,85 @@ namespace EasyAssertions.UnitTests
 
             Assert.AreEqual("bar", result.Message);
         }
+
+        [Test]
+        public void FloatShouldBeNaN_IsNaN_Passes()
+        {
+            const float actual = float.NaN;
+
+            actual.ShouldBeNaN();
+        }
+
+        [Test]
+        public void FloatShouldBeNaN_IsNotNaN_FailsWithObjectsNotEqualMessage()
+        {
+            const float actual = 1f;
+            MockFormatter.NotEqual(float.NaN, actual, "foo").Returns("bar");
+
+            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldBeNaN("foo"));
+
+            Assert.AreEqual("bar", result.Message);
+        }
+
+        [Test]
+        public void FloatShouldNotBeNaN_IsNotNaN_ReturnsActualValue()
+        {
+            const float actual = 1f;
+
+            Actual<float> result = actual.ShouldNotBeNaN();
+
+            Assert.AreEqual(actual, result.And);
+        }
+
+        [Test]
+        public void FloatShouldNotBeNaN_IsNaN_FailsWithObjectsEqualMessage()
+        {
+            const float actual = float.NaN;
+            MockFormatter.AreEqual(float.NaN, actual, "foo").Returns("bar");
+
+            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldNotBeNaN("foo"));
+
+            Assert.AreEqual("bar", result.Message);
+        }
+
+        [Test]
+        public void DoubleShouldBeNaN_IsNaN_Passes()
+        {
+            const double actual = double.NaN;
+
+            actual.ShouldBeNaN();
+        }
+
+        [Test]
+        public void DoubleShouldBeNaN_IsNotNaN_FailsWithObjectsNotEqualMessage()
+        {
+            const double actual = 1d;
+            MockFormatter.NotEqual(double.NaN, actual, "foo").Returns("bar");
+
+            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldBeNaN("foo"));
+
+            Assert.AreEqual("bar", result.Message);
+        }
+
+        [Test]
+        public void DoubleShouldNotBeNaN_IsNotNaN_ReturnsActualValue()
+        {
+            const double actual = 1f;
+
+            Actual<double> result = actual.ShouldNotBeNaN();
+
+            Assert.AreEqual(actual, result.And);
+        }
+
+        [Test]
+        public void DobleShouldNotBeNaN_IsNaN_FailsWithObjectsEqualMessage()
+        {
+            const double actual = double.NaN;
+            MockFormatter.AreEqual(double.NaN, actual, "foo").Returns("bar");
+
+            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldNotBeNaN("foo"));
+
+            Assert.AreEqual("bar", result.Message);
+        }
     }
 }

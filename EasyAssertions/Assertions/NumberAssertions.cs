@@ -98,5 +98,53 @@ namespace EasyAssertions
                     throw EasyAssertion.Failure(FailureMessageFormatter.Current.NotLessThan(expected, actual, message));
             });
         }
+
+        /// <summary>
+        /// Asserts that a <see cref="float"/> value is NaN.
+        /// </summary>
+        public static void ShouldBeNaN(this float actual, string message = null)
+        {
+            actual.RegisterAssert(() =>
+                {
+                    if (!float.IsNaN(actual))
+                        throw EasyAssertion.Failure(FailureMessageFormatter.Current.NotEqual(float.NaN, actual, message));
+                });
+        }
+
+        /// <summary>
+        /// Asserts that a <see cref="float"/> value is not NaN.
+        /// </summary>
+        public static Actual<float> ShouldNotBeNaN(this float actual, string message = null)
+        {
+            return actual.RegisterAssert(() =>
+                {
+                    if (float.IsNaN(actual))
+                        throw EasyAssertion.Failure(FailureMessageFormatter.Current.AreEqual(float.NaN, actual, message));
+                });
+        }
+
+        /// <summary>
+        /// Asserts that a <see cref="double"/> value is NaN.
+        /// </summary>
+        public static void ShouldBeNaN(this double actual, string message = null)
+        {
+            actual.RegisterAssert(() =>
+                {
+                    if (!double.IsNaN(actual))
+                        throw EasyAssertion.Failure(FailureMessageFormatter.Current.NotEqual(double.NaN, actual, message));
+                });
+        }
+
+        /// <summary>
+        /// Asserts that a <see cref="double"/> value is not NaN.
+        /// </summary>
+        public static Actual<double> ShouldNotBeNaN(this double actual, string message = null)
+        {
+            return actual.RegisterAssert(() =>
+                {
+                    if (double.IsNaN(actual))
+                        throw EasyAssertion.Failure(FailureMessageFormatter.Current.AreEqual(double.NaN, actual, message));
+                });
+        }
     }
 }

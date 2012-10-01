@@ -12,6 +12,7 @@
     <copyright>Simon Oxtoby</copyright>
     <language>en-AU</language>
     <tags>testing assertion unittesting</tags>
+    <projectUrl>https://github.com/soxtoby/EasyAssertions</projectUrl>
     <releaseNotes>
       New Assertions:
       - ShouldBeSingular &amp; ShouldBeLength, for asserting on IEnumerable length.

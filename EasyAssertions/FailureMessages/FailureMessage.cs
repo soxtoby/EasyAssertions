@@ -34,7 +34,7 @@ namespace EasyAssertions
         /// E.g. "should be empty."
         /// </summary>
         /// <remarks>
-        /// See https://github.com/scottrippey/SmartFormat/wiki and http://www.codeproject.com/Articles/42310/Custom-Formatting-in-NET-Enhancing-String-Format-t
+        /// See https://github.com/scottrippey/SmartFormat.NET/wiki and http://www.codeproject.com/Articles/42310/Custom-Formatting-in-NET-Enhancing-String-Format-t
         /// for more information about the SmartFormat syntax.
         /// Note that { and } should be escaped as \{ and \}, rather than doubling the braces as in .NET composite format strings.
         /// </remarks>

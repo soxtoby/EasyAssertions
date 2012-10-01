@@ -9,7 +9,7 @@ namespace EasyAssertions
         /// <summary>
         /// Asserts that two objects are equal, using the default equality comparer.
         /// </summary>
-        public static Actual<TActual> ShouldBe<TActual>(this TActual actual, TActual expected, string message = null)
+        public static Actual<TActual> ShouldBe<TActual, TExpected>(this TActual actual, TExpected expected, string message = null) where TExpected : TActual
         {
             return actual.RegisterAssert(() =>
                 {
@@ -45,7 +45,7 @@ namespace EasyAssertions
         /// <summary>
         /// Asserts that two objects are not equal, using the default equality comparer.
         /// </summary>
-        public static Actual<TActual> ShouldNotBe<TActual>(this TActual actual, TActual notExpected, string message = null)
+        public static Actual<TActual> ShouldNotBe<TActual, TNotExpected>(this TActual actual, TNotExpected notExpected, string message = null) where TNotExpected : TActual
         {
             return actual.RegisterAssert(() =>
                 {
@@ -81,7 +81,7 @@ namespace EasyAssertions
         /// <summary>
         /// Asserts that two object instances are the same instance.
         /// </summary>
-        public static Actual<TActual> ShouldReferTo<TActual>(this TActual actual, TActual expected, string message = null)
+        public static Actual<TActual> ShouldReferTo<TActual, TExpected>(this TActual actual, TExpected expected, string message = null) where TExpected : TActual
         {
             return actual.RegisterAssert(() =>
                 {
@@ -93,7 +93,7 @@ namespace EasyAssertions
         /// <summary>
         /// Asserts that two object instances are different instances.
         /// </summary>
-        public static Actual<TActual> ShouldNotReferTo<TActual>(this TActual actual, TActual notExpected, string message = null)
+        public static Actual<TActual> ShouldNotReferTo<TActual, TNotExpected>(this TActual actual, TNotExpected notExpected, string message = null) where TNotExpected : TActual
         {
             return actual.RegisterAssert(() =>
                 {

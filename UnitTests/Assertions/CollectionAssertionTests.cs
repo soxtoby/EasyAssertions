@@ -99,7 +99,7 @@ namespace EasyAssertions.UnitTests
         {
             int[] actual = new[] { 1, 2 };
             int[] expected = new[] { 1, 2 };
-            Actual<int[]> result = actual.ShouldMatch(expected.AsEnumerable());
+            Actual<IEnumerable<int>> result = actual.ShouldMatch(expected.AsEnumerable());
 
             Assert.AreSame(actual, result.And);
         }
@@ -121,7 +121,7 @@ namespace EasyAssertions.UnitTests
         {
             int[] actual = new[] { 1, 2, 3 };
 
-            Actual<int[]> result = actual.ShouldMatch(1, 2, 3);
+            Actual<IEnumerable<int>> result = actual.ShouldMatch(1, 2, 3);
 
             Assert.AreSame(actual, result.And);
         }
@@ -163,7 +163,7 @@ namespace EasyAssertions.UnitTests
         {
             float[] actual = new[] { 10f, 20f };
 
-            Actual<float[]> result = actual.ShouldMatch(new[] { 11f, 21f }, 1f);
+            Actual<IEnumerable<float>> result = actual.ShouldMatch(new[] { 11f, 21f }, 1f);
 
             Assert.AreSame(actual, result.And);
         }
@@ -188,7 +188,7 @@ namespace EasyAssertions.UnitTests
         {
             double[] actual = new[] { 10d, 20d };
 
-            Actual<double[]> result = actual.ShouldMatch(new[] { 11d, 21d }, 1d);
+            Actual<IEnumerable<double>> result = actual.ShouldMatch(new[] { 11d, 21d }, 1d);
 
             Assert.AreSame(actual, result.And);
         }
@@ -213,7 +213,7 @@ namespace EasyAssertions.UnitTests
         {
             int[] actual = new[] { 1, 2 };
 
-            Actual<int[]> result = actual.ShouldContain(2);
+            Actual<IEnumerable<int>> result = actual.ShouldContain(2);
 
             Assert.AreSame(actual, result.And);
         }
@@ -256,7 +256,7 @@ namespace EasyAssertions.UnitTests
         {
             int[] actual = new[] { 1, 2, 3 };
 
-            Actual<int[]> result = actual.ShouldContainItems(new[] { 2, 3, 1 });
+            Actual<IEnumerable<int>> result = actual.ShouldContainItems(new[] { 2, 3, 1 });
 
             Assert.AreSame(actual, result.And);
         }
@@ -278,7 +278,7 @@ namespace EasyAssertions.UnitTests
         {
             int[] actual = new[] { 1, 2 };
 
-            Actual<int[]> result = actual.ShouldNotContainItems(new[] { 3, 4 });
+            Actual<IEnumerable<int>> result = actual.ShouldNotContainItems(new[] { 3, 4 });
 
             Assert.AreSame(actual, result.And);
         }
@@ -300,7 +300,7 @@ namespace EasyAssertions.UnitTests
         {
             int[] actual = new[] { 1, 2 };
 
-            Actual<int[]> result = actual.ShouldOnlyContain(new[] { 2, 1 });
+            Actual<IEnumerable<int>> result = actual.ShouldOnlyContain(new[] { 2, 1 });
 
             Assert.AreSame(actual, result.And);
         }
@@ -336,7 +336,7 @@ namespace EasyAssertions.UnitTests
             object b = new object();
             object[] actual = new[] { a, b };
 
-            Actual<object[]> result = actual.ShouldMatchReferences(new[] { a, b });
+            Actual<IEnumerable<object>> result = actual.ShouldMatchReferences(new[] { a, b });
 
             Assert.AreSame(actual, result.And);
         }

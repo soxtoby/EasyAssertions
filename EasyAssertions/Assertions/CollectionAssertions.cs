@@ -62,7 +62,7 @@ namespace EasyAssertions
         /// <see cref="IEnumerable"/> items are compared recursively.
         /// Non-<c>IEnumerable</c> items are compared using the default equality comparer.
         /// </summary>
-        public static Actual<TActual> ShouldMatch<TActual, TItem>(this TActual actual, IEnumerable<TItem> expected, string message = null) where TActual : IEnumerable<TItem>
+        public static Actual<IEnumerable<TActual>> ShouldMatch<TActual, TExpected>(this IEnumerable<TActual> actual, IEnumerable<TExpected> expected, string message = null) where TExpected : TActual
         {
             return actual.RegisterAssert(() => AssertMatch(actual, expected, Compare.ObjectsMatch, message));
         }
@@ -72,7 +72,7 @@ namespace EasyAssertions
         /// <see cref="IEnumerable"/> items are compared recursively.
         /// Non-<c>IEnumerable</c> items are compared using the default equality comparer.
         /// </summary>
-        public static Actual<TActual> ShouldMatch<TActual, TItem>(this TActual actual, params TItem[] expectedItems) where TActual : IEnumerable<TItem>
+        public static Actual<IEnumerable<TActual>> ShouldMatch<TActual, TExpected>(this IEnumerable<TActual> actual, params TExpected[] expectedItems) where TExpected : TActual
         {
             return actual.RegisterAssert(() => AssertMatch(actual, expectedItems, Compare.ObjectsMatch));
         }
@@ -80,15 +80,15 @@ namespace EasyAssertions
         /// <summary>
         /// Asserts that two sequences contain the same <see cref="float"/> values (within a specified tolerance), in the same order.
         /// </summary>
-        public static Actual<TActual> ShouldMatch<TActual>(this TActual actual, IEnumerable<float> expected, float delta, string message = null) where TActual : IEnumerable<float>
+        public static Actual<IEnumerable<float>> ShouldMatch(this IEnumerable<float> actual, IEnumerable<float> expected, float delta, string message = null)
         {
-            return actual.RegisterAssert(() => AssertMatch(actual, expected, (a, e) => Compare.AreWithinTolerance(a, e, delta), message));
+            return actual.RegisterAssert(() => AssertMatch(actual, expected, (a, e) => Compare.AreWithinTolerance((float)a, (float)e, delta), message));
         }
 
         /// <summary>
         /// Asserts that two sequences contain the same <see cref="double"/> values (within a specified tolerance), in the same order.
         /// </summary>
-        public static Actual<TActual> ShouldMatch<TActual>(this TActual actual, IEnumerable<double> expected, double delta, string message = null) where TActual : IEnumerable<double>
+        public static Actual<IEnumerable<double>> ShouldMatch(this IEnumerable<double> actual, IEnumerable<double> expected, double delta, string message = null)
         {
             return actual.RegisterAssert(() => AssertMatch(actual, expected, (a, e) => Compare.AreWithinTolerance(a, e, delta), message));
         }
@@ -113,7 +113,7 @@ namespace EasyAssertions
         /// <summary>
         /// Asserts that a sequence contains a specified element, using the default equality comparer.
         /// </summary>
-        public static Actual<TActual> ShouldContain<TActual, TItem>(this TActual actual, TItem expected, string message = null) where TActual : IEnumerable<TItem>
+        public static Actual<IEnumerable<TActual>> ShouldContain<TActual, TExpected>(this IEnumerable<TActual> actual, TExpected expected, string message = null) where TExpected : TActual
         {
             return actual.RegisterAssert(() =>
                 {
@@ -125,7 +125,7 @@ namespace EasyAssertions
         /// <summary>
         /// Asserts that a sequence contains all specified elements, in any order, using the default equality comparer.
         /// </summary>
-        public static Actual<TActual> ShouldContainItems<TActual, TItem>(this TActual actual, IEnumerable<TItem> expected, string message = null) where TActual : IEnumerable<TItem>
+        public static Actual<IEnumerable<TActual>> ShouldContainItems<TActual, TExpected>(this IEnumerable<TActual> actual, IEnumerable<TExpected> expected, string message = null) where TExpected : TActual
         {
             return actual.RegisterAssert(() =>
                 {
@@ -149,7 +149,7 @@ namespace EasyAssertions
         /// <summary>
         /// Asserts that a sequence does not contain any of the specified elements, using the default equality comparer.
         /// </summary>
-        public static Actual<TActual> ShouldNotContainItems<TActual, TItem>(this TActual actual, IEnumerable<TItem> expectedToNotContain, string message = null) where TActual : IEnumerable<TItem>
+        public static Actual<IEnumerable<TActual>> ShouldNotContainItems<TActual, TExpected>(this IEnumerable<TActual> actual, IEnumerable<TExpected> expectedToNotContain, string message = null) where TExpected : TActual
         {
             return actual.RegisterAssert(() =>
                 {
@@ -161,7 +161,7 @@ namespace EasyAssertions
         /// <summary>
         /// Asserts thats a sequence only contains the specified elements, and nothing else, in any order, using the default equality comparer.
         /// </summary>
-        public static Actual<TActual> ShouldOnlyContain<TActual, TItem>(this TActual actual, IEnumerable<TItem> expected, string message = null) where TActual : IEnumerable<TItem>
+        public static Actual<IEnumerable<TActual>> ShouldOnlyContain<TActual, TExpected>(this IEnumerable<TActual> actual, IEnumerable<TExpected> expected, string message = null) where TExpected : TActual
         {
             return actual.RegisterAssert(() =>
                 {
@@ -173,12 +173,12 @@ namespace EasyAssertions
         /// <summary>
         /// Asserts that two sequences contain the same object instances in the same order.
         /// </summary>
-        public static Actual<TActual> ShouldMatchReferences<TActual, TItem>(this TActual actual, IEnumerable<TItem> expected, string message = null) where TActual : IEnumerable<TItem>
+        public static Actual<IEnumerable<TActual>> ShouldMatchReferences<TActual, TExpected>(this IEnumerable<TActual> actual, IEnumerable<TExpected> expected, string message = null) where TExpected : TActual
         {
             return actual.RegisterAssert(() =>
                 {
-                    List<TItem> actualList = actual.ToList();
-                    List<TItem> expectedList = expected.ToList();
+                    List<TActual> actualList = actual.ToList();
+                    List<TExpected> expectedList = expected.ToList();
 
                     if (actualList.Count != expectedList.Count)
                         throw EasyAssertion.Failure(FailureMessageFormatter.Current.LengthMismatch(expectedList.Count, actual, message));

@@ -175,17 +175,28 @@ namespace EasyAssertions
         /// </summary>
         public static Actual<IEnumerable<TActual>> ShouldMatchReferences<TActual, TExpected>(this IEnumerable<TActual> actual, IEnumerable<TExpected> expected, string message = null) where TExpected : TActual
         {
-            return actual.RegisterAssert(() =>
-                {
-                    List<TActual> actualList = actual.ToList();
-                    List<TExpected> expectedList = expected.ToList();
+            return actual.RegisterAssert(() => AssertMatchesReferences(actual, expected, message));
+        }
 
-                    if (actualList.Count != expectedList.Count)
-                        throw EasyAssertion.Failure(FailureMessageFormatter.Current.LengthMismatch(expectedList.Count, actual, message));
+        /// <summary>
+        /// Asserts that a sequence contains the specified object instances in the same order.
+        /// </summary>
+        public static Actual<IEnumerable<TActual>> ShouldMatchReferences<TActual, TExpected>(this IEnumerable<TActual> actual, params TExpected[] expected) where TExpected : TActual
+        {
+            return actual.RegisterAssert(() => AssertMatchesReferences(actual, expected));
+        }
 
-                    if (!Compare.CollectionsMatch(actual, expected, ReferenceEquals))
-                        throw EasyAssertion.Failure(FailureMessageFormatter.Current.ItemsNotSame(expected, actual, message));
-                });
+        private static void AssertMatchesReferences<TActual, TExpected>(IEnumerable<TActual> actual, IEnumerable<TExpected> expected, string message = null)
+            where TExpected : TActual
+        {
+            List<TActual> actualList = actual.ToList();
+            List<TExpected> expectedList = expected.ToList();
+
+            if (actualList.Count != expectedList.Count)
+                throw EasyAssertion.Failure(FailureMessageFormatter.Current.LengthMismatch(expectedList.Count, actual, message));
+
+            if (!Compare.CollectionsMatch(actual, expected, ReferenceEquals))
+                throw EasyAssertion.Failure(FailureMessageFormatter.Current.ItemsNotSame(expected, actual, message));
         }
 
         /// <summary>

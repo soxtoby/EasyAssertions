@@ -231,7 +231,7 @@ namespace EasyAssertions.UnitTests
         }
 
         [Test]
-        public void ShouldNotCOntain_CollectionDoesNotContainExpected_ReturnsActualValue()
+        public void ShouldNotContain_CollectionDoesNotContainExpected_ReturnsActualValue()
         {
             IEnumerable<int> actual = Enumerable.Empty<int>();
 
@@ -336,7 +336,7 @@ namespace EasyAssertions.UnitTests
             object b = new object();
             object[] actual = new[] { a, b };
 
-            Actual<IEnumerable<object>> result = actual.ShouldMatchReferences(new[] { a, b });
+            Actual<IEnumerable<object>> result = actual.ShouldMatchReferences(new[] { a, b }.AsEnumerable());
 
             Assert.AreSame(actual, result.And);
         }
@@ -362,6 +362,42 @@ namespace EasyAssertions.UnitTests
             MockFormatter.ItemsNotSame(expected, actual, "foo").Returns("bar");
 
             EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldMatchReferences(expected, "foo"));
+
+            Assert.AreSame("bar", result.Message);
+        }
+
+        [Test]
+        public void ShouldMatchReferencesParams_SameItems_ReturnsActualValue()
+        {
+            object a = new object();
+            object b = new object();
+            object[] actual = new[] { a, b };
+
+            Actual<IEnumerable<object>> result = actual.ShouldMatchReferences(a, b);
+
+            Assert.AreSame(actual, result.And);
+        }
+
+        [Test]
+        public void ShouldMatchReferencesParams_DifferentLength_FailsWithEnumerableLenthMismatchMessage()
+        {
+            object[] actual = new object[] { };
+            MockFormatter.LengthMismatch(1, actual).Returns("bar");
+
+            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldMatchReferences(new object()));
+
+            Assert.AreEqual("bar", result.Message);
+        }
+
+        [Test]
+        public void ShouldMatchReferencesParams_DifferentItems_FailsWithEnumerablesNotSameMessage()
+        {
+            object a = new object();
+            object[] actual = new[] { a, new object() };
+            object[] expected = new[] { a, new object() };
+            MockFormatter.ItemsNotSame(expected, actual).Returns("bar");
+
+            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldMatchReferences(expected));
 
             Assert.AreSame("bar", result.Message);
         }

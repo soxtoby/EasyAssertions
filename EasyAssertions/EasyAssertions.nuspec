@@ -12,6 +12,29 @@
     <copyright>Simon Oxtoby</copyright>
     <language>en-AU</language>
     <tags>testing assertion unittesting</tags>
+    <releaseNotes>
+      New Assertions:
+      - ShouldBeSingular &amp; ShouldBeLength, for asserting on IEnumerable length.
+      - ShouldNotContain, for asserting that a collection does not contain a specific item.
+      - ShouldContainKey &amp; ShouldNotContainKey, for asserting whether or not a KeyedCollection contains an item for the specified key.
+      - ShouldBeNaN &amp; ShouldNotBeNaN for floats &amp; doubles.
+      - ShouldMatchReferences that takes a param array of expected instances.
+
+      Breaking Changes:
+      - ShouldBeThis renamed to ShouldReferTo.
+      - ShouldNotBeThis renamed to ShouldNotReferTo.
+      - ShouldBeThese renamed to ShouldMatchReferences.
+      - Calling ShouldBe with two float or double values to test equality has been marked as obsolete and will no longer compile.
+      - EasyAssertionConstructor is now marked as internal. Use EasyAssertion.Failure() instead.
+
+      Other Changes/Fixes:
+      - Number, bool, char &amp; null literals will no longer appear twice in exception messages.
+      - Null values appear in exception messages as &lt;null&gt; instead of &lt;&gt;.
+      - Fixed IndexOutOfRangeException when actual string is shorter than expected string.
+      - Failing Func expressions returning value types are no longer wrapped in "Convert()" (may still appear inside expression).
+      - FailureMessage expressions &amp; outputs are escaped for SmartFormat, so it doesn't try to evaluate bits that look like placeholders (e.g new { someVar }).
+      - ShouldBe assertions for floats &amp; double now accept any object for the actual value type. Assertion will fail if object is not of the correct type.
+    </releaseNotes>
   </metadata>
   <files>
     <file src="bin\Release\EasyAssertions.dll" target="lib\net35\EasyAssertions.dll" />

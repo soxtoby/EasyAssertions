@@ -87,7 +87,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void UseEasyAssertionExceptions_ResetsExceptions()
         {
-            EasyAssertion.UseFrameworkExceptions(s => new Exception(s), (s, exception) => new Exception(s, exception));
+            EasyAssertion.UseFrameworkExceptions(Substitute.For<Func<string, Exception>>(), Substitute.For<Func<string, Exception, Exception>>());
             EasyAssertion.UseEasyAssertionExceptions();
 
             Assert.IsInstanceOf<EasyAssertionException>(EasyAssertion.Failure("foo"));

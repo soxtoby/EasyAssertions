@@ -40,11 +40,7 @@ namespace EasyAssertions
         /// </summary>
         public static Actual<TActual> ShouldBeSingular<TActual>(this TActual actual, string message = null) where TActual : IEnumerable
         {
-            return actual.RegisterAssert(() =>
-                {
-                    if (actual.Cast<object>().Count() != 1)
-                        throw EasyAssertion.Failure(FailureMessageFormatter.Current.LengthMismatch(1, actual, message));
-                });
+            return actual.RegisterAssert(() => AssertLength(actual, 1, message));
         }
 
         /// <summary>
@@ -52,11 +48,13 @@ namespace EasyAssertions
         /// </summary>
         public static Actual<TActual> ShouldBeLength<TActual>(this TActual actual, int expectedLength, string message = null) where TActual : IEnumerable
         {
-            return actual.RegisterAssert(() =>
-            {
-                if (actual.Cast<object>().Count() != expectedLength)
-                    throw EasyAssertion.Failure(FailureMessageFormatter.Current.LengthMismatch(expectedLength, actual, message));
-            });
+            return actual.RegisterAssert(() => AssertLength(actual, expectedLength, message));
+        }
+
+        private static void AssertLength<TActual>(TActual actual, int expectedLength, string message) where TActual : IEnumerable
+        {
+            if (actual.Cast<object>().Count() != expectedLength)
+                throw EasyAssertion.Failure(FailureMessageFormatter.Current.LengthMismatch(expectedLength, actual, message));
         }
 
         /// <summary>

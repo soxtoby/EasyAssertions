@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 
 namespace EasyAssertions
@@ -47,7 +46,10 @@ namespace EasyAssertions
         {
             SourceAddress assertionsAddress = calls.First().SourceAddress;
 
-            string[] sourceLines = File.ReadAllLines(assertionsAddress.FileName);
+            string[] sourceLines;
+            if (!Utils.TryReadAllLines(assertionsAddress, out sourceLines))
+                return;
+
             string expressionSource = sourceLines.Skip(assertionsAddress.LineIndex).Join(Environment.NewLine);
 
             ExpressionSegment segment = new ExpressionSegment { IndexOfNextSegment = assertionsAddress.ExpressionIndex };

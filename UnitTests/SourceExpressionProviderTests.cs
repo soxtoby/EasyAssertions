@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
+using System.Linq.Expressions;
 using NUnit.Framework;
 
 namespace EasyAssertions.UnitTests
@@ -170,6 +172,16 @@ namespace EasyAssertions.UnitTests
             Assert.Throws<EasyAssertionException>(() => actualExpression.TestFuncAssert());
 
             Assert.AreEqual("actualExpression", SourceExpressionProvider.Instance.GetActualExpression());
+        }
+
+        [Test]
+        public void StackFrameHasNoSource_IsIgnored()
+        {
+            Expression<Action> assert = () => ObjectAssertions.ShouldBe("foo", "bar", null);    // Compiled expression has no source file
+
+            Assert.Throws<EasyAssertionException>(() => assert.Compile()());
+
+            Assert.AreEqual(string.Empty, SourceExpressionProvider.Instance.GetActualExpression());
         }
 
         [Test]

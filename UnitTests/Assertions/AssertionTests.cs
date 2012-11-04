@@ -3,8 +3,7 @@ using NUnit.Framework;
 
 namespace EasyAssertions.UnitTests
 {
-    [TestFixture]
-    public class AssertionTests
+    public abstract class AssertionTests
     {
         protected IFailureMessageFormatter MockFormatter;
 

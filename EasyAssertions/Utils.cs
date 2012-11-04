@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 
@@ -45,6 +46,25 @@ namespace EasyAssertions
                 i++;
             }
             return defaultValue;
+        }
+
+        public static bool TryReadAllLines(SourceAddress assertionsAddress, out string[] sourceLines)
+        {
+            sourceLines = null;
+
+            string fileName = assertionsAddress.FileName;
+            if (fileName == null)
+                return false;
+
+            try
+            {
+                sourceLines = File.ReadAllLines(fileName);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
     }
 }

@@ -18,6 +18,7 @@ namespace EasyAssertions
         {
             return actual.RegisterAssert(() =>
                 {
+                    ObjectAssertions.AssertType<TActual>(actual, message);
                     if (!Compare.IsEmpty(actual))
                         throw EasyAssertion.Failure(FailureMessageFormatter.Current.NotEmpty(actual, message));
                 });
@@ -30,6 +31,7 @@ namespace EasyAssertions
         {
             return actual.RegisterAssert(() =>
                 {
+                    ObjectAssertions.AssertType<TActual>(actual, message);
                     if (Compare.IsEmpty(actual))
                         throw EasyAssertion.Failure(FailureMessageFormatter.Current.IsEmpty(message));
                 });
@@ -53,6 +55,7 @@ namespace EasyAssertions
 
         private static void AssertLength<TActual>(TActual actual, int expectedLength, string message) where TActual : IEnumerable
         {
+            ObjectAssertions.AssertType<TActual>(actual, message);
             if (actual.Cast<object>().Count() != expectedLength)
                 throw EasyAssertion.Failure(FailureMessageFormatter.Current.LengthMismatch(expectedLength, actual, message));
         }
@@ -64,6 +67,8 @@ namespace EasyAssertions
         /// </summary>
         public static Actual<IEnumerable<TActual>> ShouldMatch<TActual, TExpected>(this IEnumerable<TActual> actual, IEnumerable<TExpected> expected, string message = null) where TExpected : TActual
         {
+            if (expected == null) throw new ArgumentNullException("expected");
+
             return actual.RegisterAssert(() => AssertMatch(actual, expected, Compare.ObjectsMatch, message));
         }
 
@@ -103,6 +108,8 @@ namespace EasyAssertions
 
         private static void AssertMatch<TActual, TExpected>(IEnumerable<TActual> actual, IEnumerable<TExpected> expected, Func<TActual, TExpected, bool> predicate, string message = null)
         {
+            ObjectAssertions.AssertType<IEnumerable<TActual>>(actual, message);
+
             List<TActual> actualList = actual.ToList();
             List<TExpected> expectedList = expected.ToList();
 

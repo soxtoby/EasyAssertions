@@ -1,5 +1,6 @@
 using NSubstitute;
 using NUnit.Framework;
+using System;
 
 namespace EasyAssertions.UnitTests
 {
@@ -24,6 +25,24 @@ namespace EasyAssertions.UnitTests
         }
 
         [Test]
+        public void ShouldContain_ActualIsNull_FailsWithTypesNotEqualMessage()
+        {
+            MockFormatter.NotEqual(typeof(string), null, "message").Returns("foo");
+
+            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => ((string)null).ShouldContain("expected", "message"));
+
+            Assert.AreEqual("foo", result.Message);
+        }
+
+        [Test]
+        public void ShouldContain_ExpectedIsNull_ThrowsArgumentNullException()
+        {
+            ArgumentNullException result = Assert.Throws<ArgumentNullException>(() => "".ShouldContain(null));
+
+            Assert.AreEqual("expectedToContain", result.ParamName);
+        }
+
+        [Test]
         public void ShouldNotContain_StringDoesNotContainSubstring_ReturnsActualValue()
         {
             Actual<string> result = "foo".ShouldNotContain("bar");
@@ -39,6 +58,24 @@ namespace EasyAssertions.UnitTests
             EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => "foobarbaz".ShouldNotContain("bar", "baz"));
 
             Assert.AreEqual("qux", result.Message);
+        }
+
+        [Test]
+        public void ShouldNotContain_ActualIsNull_FailsWithTypesNotEqualMessage()
+        {
+            MockFormatter.NotEqual(typeof(string), null, "message").Returns("foo");
+
+            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => ((string)null).ShouldNotContain("expected", "message"));
+
+            Assert.AreEqual("foo", result.Message);
+        }
+
+        [Test]
+        public void ShouldNotContain_ExpectedIsNull_ThrowsArgumentNullException()
+        {
+            ArgumentNullException result = Assert.Throws<ArgumentNullException>(() => "".ShouldNotContain(null));
+
+            Assert.AreEqual("expectedToNotContain", result.ParamName);
         }
 
         [Test]
@@ -64,6 +101,24 @@ namespace EasyAssertions.UnitTests
         }
 
         [Test]
+        public void ShouldStartWith_ActualIsNull_FailsWithTypesNotEqualMessage()
+        {
+            MockFormatter.NotEqual(typeof(string), null, "message").Returns("foo");
+
+            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => ((string)null).ShouldStartWith("expected", "message"));
+
+            Assert.AreEqual("foo", result.Message);
+        }
+
+        [Test]
+        public void ShouldStartWith_ExpectedIsNull_ThrowsArgumentNullException()
+        {
+            ArgumentNullException result = Assert.Throws<ArgumentNullException>(() => "".ShouldStartWith(null));
+
+            Assert.AreEqual("expectedStart", result.ParamName);
+        }
+
+        [Test]
         public void ShouldEndWith_StringEndsWithExpected_ReturnsActualValue()
         {
             const string actual = "foobar";
@@ -83,6 +138,25 @@ namespace EasyAssertions.UnitTests
             EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldEndWith(expectedEnd, "bar"));
 
             Assert.AreEqual("baz", result.Message);
+        }
+
+        [Test]
+        public void ShouldEndWith_ActualIsNull_FailsWithTypesNotEqualMessage()
+        {
+            MockFormatter.NotEqual(typeof(string), null, "message").Returns("foo");
+
+            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => ((string)null).ShouldEndWith("expected", "message"));
+
+            Assert.AreEqual("foo", result.Message);
+
+        }
+
+        [Test]
+        public void ShouldEndWith_ExpectedIsNull_ThrowsArgumentNullException()
+        {
+            ArgumentNullException result = Assert.Throws<ArgumentNullException>(() => "".ShouldEndWith(null));
+
+            Assert.AreEqual("expectedEnd", result.ParamName);
         }
     }
 }

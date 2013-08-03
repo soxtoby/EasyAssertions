@@ -1,10 +1,10 @@
-﻿using System;
+﻿using NSubstitute;
+using NUnit.Framework;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
-using NSubstitute;
-using NUnit.Framework;
 
 namespace EasyAssertions.UnitTests
 {
@@ -143,6 +143,18 @@ namespace EasyAssertions.UnitTests
                 + "should be " + ExpectedExpression + Environment.NewLine
                 + "          \"ab\"" + Environment.NewLine
                 + "but was   \"a\"" + Environment.NewLine
+                 + "            ^" + Environment.NewLine
+                + "Difference at index 1.", result);
+        }
+
+        [Test]
+        public void StringsNotEqual_ActualLongerThanExpected()
+        {
+            string result = DefaultFailureMessageFormatter.Instance.NotEqual("a", "ab");
+            Assert.AreEqual(ActualExpression + Environment.NewLine
+                + "should be " + ExpectedExpression + Environment.NewLine
+                + "          \"a\"" + Environment.NewLine
+                + "but was   \"ab\"" + Environment.NewLine
                  + "            ^" + Environment.NewLine
                 + "Difference at index 1.", result);
         }

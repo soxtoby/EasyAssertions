@@ -53,7 +53,7 @@ namespace EasyAssertions
 
         /// <summary>
         /// Reduces a string down to a smaller snippet around the <see cref="FailureMessage.FailureIndex"/>,
-        /// to avoid blowing out the size of the failure message. The result is escaped for SmartFormat.
+        /// to avoid blowing out the size of the failure message.
         /// </summary>
         protected string GetSnippet(string wholeString)
         {
@@ -79,7 +79,7 @@ namespace EasyAssertions
                 snippetLength -= suffix.Length;
             }
 
-            return EscapeForTemplate('"' + prefix + StringEscape(wholeString.Substring(fromIndex, snippetLength)) + suffix + '"');
+            return '"' + prefix + StringEscape(wholeString.Substring(fromIndex, snippetLength)) + suffix + '"';
         }
 
         private int SnippetStart(string wholeString)

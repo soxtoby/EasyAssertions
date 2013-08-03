@@ -26,14 +26,25 @@ namespace EasyAssertions
         /// </summary>
         public static Actual<float> ShouldBe(this object actual, float expected, float tolerance, string message = null)
         {
-            actual.RegisterAssert(() =>
-                {
-                    if (!(actual is float))
-                        throw EasyAssertion.Failure(FailureMessageFormatter.Current.NotEqual(typeof(float), actual == null ? null : actual.GetType(), message));
-                    if (!Compare.AreWithinTolerance((float)actual, expected, tolerance))
-                        throw EasyAssertion.Failure(FailureMessageFormatter.Current.NotEqual(expected, actual, message));
-                });
+            actual.RegisterAssert(() => AssertFloatsWithinTolerance(actual, expected, tolerance, message));
             return new Actual<float>((float)actual);
+        }
+
+        /// <summary>
+        /// Asserts that two <see cref="float"/> values are within a specified tolerance of eachother.
+        /// </summary>
+        public static Actual<float> ShouldBe(this object actual, float expected, double tolerance, string message = null)
+        {
+            actual.RegisterAssert(() => AssertFloatsWithinTolerance(actual, expected, (float)tolerance, message));
+            return new Actual<float>((float)actual);
+        }
+
+        private static void AssertFloatsWithinTolerance(object actual, float expected, float tolerance, string message)
+        {
+            ObjectAssertions.AssertType<float>(actual, message);
+
+            if (!Compare.AreWithinTolerance((float)actual, expected, tolerance))
+                throw EasyAssertion.Failure(FailureMessageFormatter.Current.NotEqual(expected, actual, message));
         }
 
         /// <summary>
@@ -55,8 +66,8 @@ namespace EasyAssertions
         {
             actual.RegisterAssert(() =>
                 {
-                    if (!(actual is double))
-                        throw EasyAssertion.Failure(FailureMessageFormatter.Current.NotEqual(typeof(double), actual == null ? null : actual.GetType(), message));
+                    ObjectAssertions.AssertType<double>(actual, message);
+
                     if (!Compare.AreWithinTolerance((double)actual, expected, delta))
                         throw EasyAssertion.Failure(FailureMessageFormatter.Current.NotEqual(expected, actual, message));
                 });

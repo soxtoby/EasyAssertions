@@ -29,6 +29,15 @@ namespace EasyAssertions.UnitTests
         }
 
         [Test]
+        public void ShouldBe_FloatsWithinDoubleDelta_ReturnsActualValue()
+        {
+            const float actual = 1f;
+            Actual<float> result = actual.ShouldBe(1f, 1d);
+
+            Assert.AreEqual(actual, result.And);
+        }
+
+        [Test]
         public void ShouldBe_ActualNotAFloat_FailsWithTypesNotEqualMessage()
         {
             object actual = new object();
@@ -46,7 +55,19 @@ namespace EasyAssertions.UnitTests
             const float actual = 1f;
             MockFormatter.NotEqual(expected, actual, "foo").Returns("bar");
 
-            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldBe(expected, 0, "foo"));
+            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldBe(expected, 1f, "foo"));
+
+            Assert.AreEqual("bar", result.Message);
+        }
+
+        [Test]
+        public void ShouldBe_FloatsOutsideDoubleDelta_FailsWithObjectsNotEqualMessage()
+        {
+            const float expected = 10f;
+            const float actual = 1f;
+            MockFormatter.NotEqual(expected, actual, "foo").Returns("bar");
+
+            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldBe(expected, 1d, "foo"));
 
             Assert.AreEqual("bar", result.Message);
         }

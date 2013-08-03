@@ -35,7 +35,7 @@ namespace EasyAssertions
         /// </summary>
         public static Actual<TActual> RegisterAssert<TActual>(this TActual actual, Action assert)
         {
-            SourceExpressionProvider.Instance.RegisterAssertionMethod(1);
+            SourceExpressionProvider.ForCurrentThread.RegisterAssertionMethod(1);
             assert();
             return new Actual<TActual>(actual);
         }
@@ -46,7 +46,7 @@ namespace EasyAssertions
         /// </summary>
         public static Actual<TActual> RegisterAssert<TActual>(this TActual actual, Action<TActual> assert)
         {
-            SourceExpressionProvider.Instance.RegisterAssertionMethod(1);
+            SourceExpressionProvider.ForCurrentThread.RegisterAssertionMethod(1);
             RegisterInnerAssert(assert.Method, () => assert(actual));
             return new Actual<TActual>(actual);
         }
@@ -60,7 +60,7 @@ namespace EasyAssertions
         /// </returns>
         public static Actual<TActual> RegisterAssert<TActual>(this TActual actual, Func<TActual, Actual<TActual>> assert)
         {
-            SourceExpressionProvider.Instance.RegisterAssertionMethod(1);
+            SourceExpressionProvider.ForCurrentThread.RegisterAssertionMethod(1);
             Actual<TActual> ret = null;
             RegisterInnerAssert(assert.Method, () => ret = assert(actual));
             return ret;
@@ -73,9 +73,9 @@ namespace EasyAssertions
         /// </summary>
         public static void RegisterIndexedAssert(int index, MethodInfo itemAssertionMethod, Action assert)
         {
-            SourceExpressionProvider.Instance.EnterIndexedAssertion(itemAssertionMethod, index);
+            SourceExpressionProvider.ForCurrentThread.EnterIndexedAssertion(itemAssertionMethod, index);
             assert();
-            SourceExpressionProvider.Instance.ExitNestedAssertion();
+            SourceExpressionProvider.ForCurrentThread.ExitNestedAssertion();
         }
 
         /// <summary>
@@ -86,9 +86,9 @@ namespace EasyAssertions
         /// </summary>
         public static void RegisterInnerAssert(MethodInfo innerAssertionMethod, Action assert)
         {
-            SourceExpressionProvider.Instance.EnterNestedAssertion(innerAssertionMethod);
+            SourceExpressionProvider.ForCurrentThread.EnterNestedAssertion(innerAssertionMethod);
             assert();
-            SourceExpressionProvider.Instance.ExitNestedAssertion();
+            SourceExpressionProvider.ForCurrentThread.ExitNestedAssertion();
         }
 
         /// <summary>

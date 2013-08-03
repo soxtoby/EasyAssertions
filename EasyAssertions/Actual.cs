@@ -19,7 +19,7 @@
         {
             get
             {
-                SourceExpressionProvider.Instance.RegisterContinuation(0);
+                SourceExpressionProvider.ForCurrentThread.RegisterContinuation(0);
                 return Value;
             }
         }

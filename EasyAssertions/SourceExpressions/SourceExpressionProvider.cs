@@ -11,9 +11,13 @@ namespace EasyAssertions
 
         private AssertionComponentGroup CurrentGroup { get { return assertionGroupChain.LastOrDefault(); } }
 
-        public static readonly SourceExpressionProvider Instance = new SourceExpressionProvider();
+        [ThreadStatic]
+        private static SourceExpressionProvider threadInstance;
 
-        static SourceExpressionProvider() { }
+        public static SourceExpressionProvider ForCurrentThread
+        {
+            get { return threadInstance ?? (threadInstance = new SourceExpressionProvider()); }
+        }
 
         private SourceExpressionProvider() { }
 

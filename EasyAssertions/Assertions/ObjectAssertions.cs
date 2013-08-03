@@ -112,7 +112,7 @@ namespace EasyAssertions
             return new Actual<TExpected>((TExpected)actual);
         }
 
-        internal static void AssertType<TExpected>(object actual, string message)
+        internal static void AssertType<TExpected>(object actual, string message = null)
         {
             if (!(actual is TExpected))
                 throw EasyAssertion.Failure(FailureMessageFormatter.Current.NotEqual(typeof(TExpected),

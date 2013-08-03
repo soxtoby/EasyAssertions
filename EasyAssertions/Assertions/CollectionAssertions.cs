@@ -124,6 +124,7 @@ namespace EasyAssertions
         {
             return actual.RegisterAssert(() =>
                 {
+                    ObjectAssertions.AssertType<IEnumerable<TActual>>(actual, message);
                     if (!actual.Contains(expected))
                         throw EasyAssertion.Failure(FailureMessageFormatter.Current.DoesNotContain(expected, actual, message: message));
                 });
@@ -136,6 +137,7 @@ namespace EasyAssertions
         {
             return actual.RegisterAssert(() =>
                 {
+                    ObjectAssertions.AssertType<IEnumerable<TActual>>(actual, message);
                     if (!Compare.ContainsAllItems(actual, expected))
                         throw EasyAssertion.Failure(FailureMessageFormatter.Current.DoesNotContainItems(expected, actual, message));
                 });
@@ -148,6 +150,7 @@ namespace EasyAssertions
         {
             return actual.RegisterAssert(() =>
                 {
+                    ObjectAssertions.AssertType<TActual>(actual, message);
                     if (actual.Contains(expectedToNotContain))
                         throw EasyAssertion.Failure(FailureMessageFormatter.Current.Contains(expectedToNotContain, actual, message: message));
                 });
@@ -160,6 +163,7 @@ namespace EasyAssertions
         {
             return actual.RegisterAssert(() =>
                 {
+                    ObjectAssertions.AssertType<IEnumerable<TActual>>(actual, message);
                     if (Compare.ContainsAny(actual, expectedToNotContain))
                         throw EasyAssertion.Failure(FailureMessageFormatter.Current.Contains(expectedToNotContain, actual, message));
                 });
@@ -172,6 +176,7 @@ namespace EasyAssertions
         {
             return actual.RegisterAssert(() =>
                 {
+                    ObjectAssertions.AssertType<IEnumerable<TActual>>(actual, message);
                     if (!Compare.ContainsOnlyExpectedItems(actual, expected))
                         throw EasyAssertion.Failure(FailureMessageFormatter.Current.DoesNotOnlyContain(expected, actual, message));
                 });
@@ -196,6 +201,8 @@ namespace EasyAssertions
         private static void AssertMatchesReferences<TActual, TExpected>(IEnumerable<TActual> actual, IEnumerable<TExpected> expected, string message = null)
             where TExpected : TActual
         {
+            ObjectAssertions.AssertType<IEnumerable<TActual>>(actual, message);
+
             List<TActual> actualList = actual.ToList();
             List<TExpected> expectedList = expected.ToList();
 
@@ -213,6 +220,7 @@ namespace EasyAssertions
         {
             return actual.RegisterAssert(() =>
                 {
+                    ObjectAssertions.AssertType<KeyedCollection<TKey, TItem>>(actual, message);
                     if (!actual.Contains(expectedKey))
                         throw EasyAssertion.Failure(FailureMessageFormatter.Current.DoesNotContain(expectedKey, actual, "key", message));
                 });
@@ -225,6 +233,7 @@ namespace EasyAssertions
         {
             return actual.RegisterAssert(() =>
                 {
+                    ObjectAssertions.AssertType<KeyedCollection<TKey, TItem>>(actual, message);
                     if (actual.Contains(notExpectedKey))
                         throw EasyAssertion.Failure(FailureMessageFormatter.Current.Contains(notExpectedKey, actual, "key", message));
                 });
@@ -237,6 +246,8 @@ namespace EasyAssertions
         {
             return actual.RegisterAssert(() =>
                 {
+                    ObjectAssertions.AssertType<IEnumerable<TItem>>(actual);
+
                     List<TItem> actualList = actual.ToList();
                     if (actualList.Count != assertions.Length)
                         throw EasyAssertion.Failure(FailureMessageFormatter.Current.LengthMismatch(assertions.Length, actual));
@@ -251,8 +262,12 @@ namespace EasyAssertions
         /// </summary>
         public static Actual<IEnumerable<TItem>> AllItemsSatisfy<TItem>(this IEnumerable<TItem> actual, Action<TItem> assertion)
         {
+            if (assertion == null) throw new ArgumentNullException("assertion");
+
             return actual.RegisterAssert(() =>
                 {
+                    ObjectAssertions.AssertType<IEnumerable<TItem>>(actual);
+
                     int i = 0;
                     foreach (TItem item in actual)
                         EasyAssertion.RegisterIndexedAssert(i++, assertion.Method, () => assertion(item));

@@ -213,6 +213,27 @@ namespace EasyAssertions
                 }.ToString();
         }
 
+        public string OnlyContains(IEnumerable expected, IEnumerable actual, string message = null)
+        {
+            List<object> actualItems = new List<object>(actual.Cast<object>());
+            HashSet<object> expectedItems = new HashSet<object>(expected.Cast<object>());
+
+
+            return new CollectionFailureMessage
+                {
+                    ActualItems = actualItems,
+                    ExpectedItems = expectedItems,
+                    UserMessage = message,
+                    MessageTemplate = "{ExpectedExpression:{0:"
+                                        + "should contain more than just {ExpectedExpression}{BR}"
+                                        + "but was {ActualSample}"
+                                    + "}|{0:"
+                                        + "should contain more than just {ExpectedSample}{BR}"
+                                        + "but was {ActualSample}"
+                                    + "}}"
+                }.ToString();
+        }
+
         public string DoesNotOnlyContain(IEnumerable expected, IEnumerable actual, string message = null)
         {
             if (expected.Cast<object>().None())
@@ -221,6 +242,11 @@ namespace EasyAssertions
             if (!Compare.ContainsAllItems(actual, expected))
                 return DoesNotContainItems(expected, actual, message);
 
+            return ContainsExtraItem(expected, actual, message);
+        }
+
+        public string ContainsExtraItem(IEnumerable expected, IEnumerable actual, string message = null)
+        {
             HashSet<object> expectedItems = new HashSet<object>(expected.Cast<object>());
             List<object> extraItems = actual.Cast<object>().Where(a => !expectedItems.Contains(a)).ToList();
 

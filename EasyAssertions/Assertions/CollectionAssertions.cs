@@ -144,6 +144,22 @@ namespace EasyAssertions
         }
 
         /// <summary>
+        /// Asserts that all elements in a sequence are contained within another sequence, in any order, using the default equality comparer.
+        /// </summary>
+        public static Actual<IEnumerable<TActual>> ItemsShouldBeIn<TActual, TExpected>(this IEnumerable<TActual> actual, IEnumerable<TExpected> expectedSuperset, string message = null) where TExpected : TActual
+        {
+            if (expectedSuperset == null) throw new ArgumentNullException("expectedSuperset");
+
+            return actual.RegisterAssert(() =>
+                {
+                    ObjectAssertions.AssertType<IEnumerable<TActual>>(actual, message);
+
+                    if (!Compare.ContainsAllItems(expectedSuperset, actual))
+                        throw EasyAssertion.Failure(FailureMessageFormatter.Current.ContainsExtraItem(expectedSuperset, actual, message));
+                });
+        }
+
+        /// <summary>
         /// Asserts that a sequence does not contain a specified element, using the default equality comparer.
         /// </summary>
         public static Actual<TActual> ShouldNotContain<TActual, TItem>(this TActual actual, TItem expectedToNotContain, string message = null) where TActual : IEnumerable<TItem>
@@ -179,6 +195,22 @@ namespace EasyAssertions
                     ObjectAssertions.AssertType<IEnumerable<TActual>>(actual, message);
                     if (!Compare.ContainsOnlyExpectedItems(actual, expected))
                         throw EasyAssertion.Failure(FailureMessageFormatter.Current.DoesNotOnlyContain(expected, actual, message));
+                });
+        }
+
+        /// <summary>
+        /// Asserts that a sequence contains at least one item that does appear in another specified sequence, using the default equality comparer.
+        /// </summary>
+        public static Actual<IEnumerable<TActual>> ShouldNotOnlyContain<TActual, TExpected>(this IEnumerable<TActual> actual, IEnumerable<TExpected> expected, string message = null) where TExpected : TActual
+        {
+            if (expected == null) throw new ArgumentNullException("expected");
+
+            return actual.RegisterAssert(() =>
+                {
+                    ObjectAssertions.AssertType<IEnumerable<TActual>>(actual, message);
+
+                    if (Compare.ContainsAllItems(expected, actual))
+                        throw EasyAssertion.Failure(FailureMessageFormatter.Current.OnlyContains(expected, actual, message));
                 });
         }
 

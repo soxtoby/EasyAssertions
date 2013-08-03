@@ -23,7 +23,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ShouldBeEmpty_NonEmpty_FailsWithEnumerableNotEmptyMessage()
         {
-            int[] actual = new[] { 1 };
+            int[] actual = { 1 };
             MockFormatter.NotEmpty(actual, "foo").Returns("bar");
 
             EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldBeEmpty("foo"));
@@ -45,7 +45,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ShouldNotBeEmpty_NotEmpty_ReturnsActualValue()
         {
-            int[] actual = new[] { 1 };
+            int[] actual = { 1 };
 
             Actual<int[]> result = actual.ShouldNotBeEmpty();
 
@@ -77,7 +77,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ShouldBeSingular_IsSingular_ReturnsActualValue()
         {
-            int[] actual = new[] { 1 };
+            int[] actual = { 1 };
 
             Actual<int[]> result = actual.ShouldBeSingular();
 
@@ -87,7 +87,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ShouldBeSingular_IsNotSingular_FailsWithLengthMismatchMessage()
         {
-            int[] actual = new int[] { };
+            int[] actual = { };
             MockFormatter.LengthMismatch(1, actual, "foo").Returns("bar");
 
             EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldBeSingular("foo"));
@@ -109,7 +109,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ShouldBeLength_IsExpectedLength_ReturnsActualValue()
         {
-            int[] actual = new[] { 1, 2, 3 };
+            int[] actual = { 1, 2, 3 };
 
             Actual<int[]> result = actual.ShouldBeLength(3);
 
@@ -119,7 +119,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ShouldBeLength_IsDifferentLength_FailsWithLengthMismatchMessage()
         {
-            int[] actual = new[] { 1, 2, 3 };
+            int[] actual = { 1, 2, 3 };
             MockFormatter.LengthMismatch(2, actual, "foo").Returns("bar");
 
             EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldBeLength(2, "foo"));
@@ -141,8 +141,8 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ShouldMatch_MatchingEnumerable_ReturnsActualValue()
         {
-            int[] actual = new[] { 1, 2 };
-            int[] expected = new[] { 1, 2 };
+            int[] actual = { 1, 2 };
+            int[] expected = { 1, 2 };
             Actual<IEnumerable<int>> result = actual.ShouldMatch(expected.AsEnumerable());
 
             Assert.AreSame(actual, result.And);
@@ -151,8 +151,8 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ShouldMatch_NonMatchingEnumerables_FailsWithEnumerablesDoNotMatchMessage()
         {
-            int[] expected = new[] { 3, 4 };
-            int[] actual = new[] { 1, 2 };
+            int[] expected = { 3, 4 };
+            int[] actual = { 1, 2 };
             MockFormatter.DoNotMatch(expected, actual, Compare.ObjectsMatch, "foo").Returns("bar");
 
             EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldMatch(expected, "foo"));
@@ -174,7 +174,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ShouldMatch_ExpectedIsNull_FailsWithArgumentNullException()
         {
-            string[] actual = new string[] { };
+            string[] actual = { };
 
             ArgumentNullException result = Assert.Throws<ArgumentNullException>(() => actual.ShouldMatch((IEnumerable<string>)null, "foo"));
 
@@ -184,7 +184,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ShouldMatchParams_MatchingParams_ReturnsActualValue()
         {
-            int[] actual = new[] { 1, 2, 3 };
+            int[] actual = { 1, 2, 3 };
 
             Actual<IEnumerable<int>> result = actual.ShouldMatch(1, 2, 3);
 
@@ -194,7 +194,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ShouldMatchParams_EnumerableDoesNotMatchParams_FailsWIthEnumerablesDoNotMatchMessage()
         {
-            int[] actual = new[] { 1, 2 };
+            int[] actual = { 1, 2 };
             MockFormatter.DoNotMatch(ArgMatches(new[] { 3, 4 }), actual, Compare.ObjectsMatch).Returns("foo");
 
             EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldMatch(3, 4));
@@ -225,8 +225,8 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ShouldMatchCustomEquality_NonMatchingEnumerables_FailsWithEnumerablesDoNotMatch()
         {
-            int[] actual = new[] { 1, 2, 4 };
-            int[] expected = new[] { 2, 4, 6 };
+            int[] actual = { 1, 2, 4 };
+            int[] expected = { 2, 4, 6 };
             Func<int, int, bool> predicate = (a, e) => a == e / 2;
             MockFormatter.DoNotMatch(expected, actual, predicate, "foo").Returns("bar");
             EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldMatch(expected, predicate, "foo"));
@@ -248,7 +248,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ShouldMatch_FloatsWithinDelta_ReturnsActualValue()
         {
-            float[] actual = new[] { 10f, 20f };
+            float[] actual = { 10f, 20f };
 
             Actual<IEnumerable<float>> result = actual.ShouldMatch(new[] { 11f, 21f }, 1f);
 
@@ -258,8 +258,8 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ShouldMatch_FloatsOutsideDelta_FailsWithEnumerablesDoNotMatchMessage()
         {
-            float[] actual = new[] { 10f, 20f };
-            float[] expected = new[] { 11f, 21f };
+            float[] actual = { 10f, 20f };
+            float[] expected = { 11f, 21f };
             Func<float, float, bool> predicate = null;
             MockFormatter.DoNotMatch(expected, actual, Arg.Do<Func<float, float, bool>>(p => predicate = p), "foo").Returns("bar");
 
@@ -284,7 +284,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ShouldMatch_DoublesWithinDelta_ReturnsActualValue()
         {
-            double[] actual = new[] { 10d, 20d };
+            double[] actual = { 10d, 20d };
 
             Actual<IEnumerable<double>> result = actual.ShouldMatch(new[] { 11d, 21d }, 1d);
 
@@ -294,8 +294,8 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ShouldMatch_DoublesOutsideDelta_FailsWithEnumerablesDoNotMatchMessage()
         {
-            double[] actual = new[] { 10d, 20d };
-            double[] expected = new[] { 11d, 21d };
+            double[] actual = { 10d, 20d };
+            double[] expected = { 11d, 21d };
             Func<double, double, bool> predicate = null;
             MockFormatter.DoNotMatch(expected, actual, Arg.Do<Func<double, double, bool>>(p => predicate = p), "foo").Returns("bar");
 
@@ -320,7 +320,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ShouldContain_CollectionContainsExpected_ReturnsActualValue()
         {
-            int[] actual = new[] { 1, 2 };
+            int[] actual = { 1, 2 };
 
             Actual<IEnumerable<int>> result = actual.ShouldContain(2);
 
@@ -330,7 +330,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ShouldContain_CollectionDoesNotContainExpected_FailsWithEnumerableDoesNotContainMessage()
         {
-            int[] actual = new[] { 1, 2 };
+            int[] actual = { 1, 2 };
             const int expected = 3;
             MockFormatter.DoesNotContain(expected, actual, message: "foo").Returns("bar");
 
@@ -363,7 +363,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ShouldNotContain_CollectionContainsItem_FailsWithEnumerableContainsItemMessage()
         {
-            int[] actual = new[] { 1 };
+            int[] actual = { 1 };
             MockFormatter.Contains(1, actual, message: "foo").Returns("bar");
 
             EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldNotContain(1, "foo"));
@@ -385,7 +385,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ShouldContainItems_CollectionContainsAllItems_ReturnsActualValue()
         {
-            int[] actual = new[] { 1, 2, 3 };
+            int[] actual = { 1, 2, 3 };
 
             Actual<IEnumerable<int>> result = actual.ShouldContainItems(new[] { 2, 3, 1 });
 
@@ -395,8 +395,8 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ShouldContainItems_CollectionDoesNotContainAllItems_FailsWithEnumerableDoesNotContainItemsMessage()
         {
-            int[] actual = new[] { 1, 2, 3 };
-            int[] expected = new[] { 1, 4 };
+            int[] actual = { 1, 2, 3 };
+            int[] expected = { 1, 4 };
             MockFormatter.DoesNotContainItems(expected, actual, "foo").Returns("bar");
 
             EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldContainItems(expected, "foo"));
@@ -416,9 +416,50 @@ namespace EasyAssertions.UnitTests
         }
 
         [Test]
+        public void ItemsShouldBeIn_ExpectedContainsAllItems_ReturnsActualValue()
+        {
+            int[] actual = { 1, 2 };
+
+            Actual<IEnumerable<int>> result = actual.ItemsShouldBeIn(new[] { 3, 2, 1 });
+
+            Assert.AreSame(actual, result.And);
+        }
+
+        [Test]
+        public void ItemsShouldBeIn_ContainsExtraItem_FailsWithCollectionContainsExtraItemMessage()
+        {
+            int[] actual = { 1, 2 };
+            int[] expected = { 1 };
+            MockFormatter.ContainsExtraItem(expected, actual, "foo").Returns("bar");
+
+            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ItemsShouldBeIn(expected, "foo"));
+
+            Assert.AreEqual("bar", result.Message);
+        }
+
+        [Test]
+        public void ItemsShouldBeIn_ActualIsNull_FailsWithTypesNotEqualMessage()
+        {
+            IEnumerable<int> actual = null;
+            MockFormatter.NotEqual(typeof(IEnumerable<int>), null, "foo").Returns("bar");
+
+            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ItemsShouldBeIn(new[] { 1 }, "foo"));
+
+            Assert.AreEqual("bar", result.Message);
+        }
+
+        [Test]
+        public void ItemsShouldBeIn_ExpectedIsNull_ThrowsArgumentNullException()
+        {
+            ArgumentNullException result = Assert.Throws<ArgumentNullException>(() => new int[0].ItemsShouldBeIn((IEnumerable<int>)null));
+
+            Assert.AreEqual("expectedSuperset", result.ParamName);
+        }
+
+        [Test]
         public void ShouldNotContainItems_CollectionDoesNotContainAnyOfTheItems_ReturnsActualValue()
         {
-            int[] actual = new[] { 1, 2 };
+            int[] actual = { 1, 2 };
 
             Actual<IEnumerable<int>> result = actual.ShouldNotContainItems(new[] { 3, 4 });
 
@@ -428,8 +469,8 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ShouldNotContainItems_CollectionContainsOneOfTheItems_FailsWithSequenceContainsItemMessage()
         {
-            int[] actual = new[] { 1, 2 };
-            int[] expectedToNotContain = new[] { 3, 2 };
+            int[] actual = { 1, 2 };
+            int[] expectedToNotContain = { 3, 2 };
             MockFormatter.Contains(expectedToNotContain, actual, "foo").Returns("bar");
 
             EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldNotContainItems(expectedToNotContain, "foo"));
@@ -451,7 +492,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ShouldOnlyOnlyContain_CollectionsHaveSameItems_ReturnsActualValue()
         {
-            int[] actual = new[] { 1, 2 };
+            int[] actual = { 1, 2 };
 
             Actual<IEnumerable<int>> result = actual.ShouldOnlyContain(new[] { 2, 1 });
 
@@ -461,8 +502,8 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ShouldOnlyContain_MissingItem_FailsWithCollectionDoesNotOnlyContainMessage()
         {
-            int[] actual = new[] { 1, 2 };
-            int[] expected = new[] { 1, 3 };
+            int[] actual = { 1, 2 };
+            int[] expected = { 1, 3 };
             MockFormatter.DoesNotOnlyContain(expected, actual, "foo").Returns("bar");
 
             EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldOnlyContain(expected, "foo"));
@@ -473,8 +514,8 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ShouldOnlyContain_ExtraItem_FailsWithCollectionDoesNotOnlyContainMessage()
         {
-            int[] actual = new[] { 1, 2 };
-            int[] expected = new[] { 1 };
+            int[] actual = { 1, 2 };
+            int[] expected = { 1 };
             MockFormatter.DoesNotOnlyContain(expected, actual, "foo").Returns("bar");
 
             EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldOnlyContain(expected, "foo"));
@@ -494,11 +535,52 @@ namespace EasyAssertions.UnitTests
         }
 
         [Test]
+        public void ShouldNotOnlyContain_ActualHasExpectedPlusMore_ReturnsActualValue()
+        {
+            int[] actual = { 1, 2 };
+
+            Actual<IEnumerable<int>> result = actual.ShouldNotOnlyContain(new[] { 2 });
+
+            Assert.AreSame(actual, result.And);
+        }
+
+        [Test]
+        public void ShouldNotOnlyContain_ActualOnlyHasItemsInExpected_FailsWithCollectionOnlyContainsMessage()
+        {
+            int[] actual = { 1, 2 };
+            int[] expected = { 2, 1, 3 };
+            MockFormatter.OnlyContains(expected, actual, "foo").Returns("bar");
+
+            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldNotOnlyContain(expected, "foo"));
+
+            Assert.AreEqual("bar", result.Message);
+        }
+
+        [Test]
+        public void ShouldNotOnlyContain_ActualIsNull_FailsWithTypesNotEqualMessage()
+        {
+            IEnumerable<int> actual = null;
+            MockFormatter.NotEqual(typeof(IEnumerable<int>), null, "foo").Returns("bar");
+
+            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldNotOnlyContain(new[] { 1 }, "foo"));
+
+            Assert.AreEqual("bar", result.Message);
+        }
+
+        [Test]
+        public void ShouldNotOnlyContain_ExpectedIsNull_ThrowsArgumentNullException()
+        {
+            ArgumentNullException result = Assert.Throws<ArgumentNullException>(() => new[] { 1 }.ShouldNotOnlyContain((int[])null));
+
+            Assert.AreEqual("expected", result.ParamName);
+        }
+
+        [Test]
         public void ShouldMatchReferences_SameItems_ReturnsActualValue()
         {
             object a = new object();
             object b = new object();
-            object[] actual = new[] { a, b };
+            object[] actual = { a, b };
 
             Actual<IEnumerable<object>> result = actual.ShouldMatchReferences(new[] { a, b }.AsEnumerable());
 
@@ -508,8 +590,8 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ShouldMatchReferences_DifferentLength_FailsWithEnumerableLenthMismatchMessage()
         {
-            object[] actual = new object[] { };
-            object[] expected = new[] { new object() };
+            object[] actual = { };
+            object[] expected = { new object() };
             MockFormatter.LengthMismatch(1, actual, "foo").Returns("bar");
 
             EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldMatchReferences(expected, "foo"));
@@ -521,8 +603,8 @@ namespace EasyAssertions.UnitTests
         public void ShouldMatchReferences_DifferentItems_FailsWithEnumerablesNotSameMessage()
         {
             object a = new object();
-            object[] actual = new[] { a, new object() };
-            object[] expected = new[] { a, new object() };
+            object[] actual = { a, new object() };
+            object[] expected = { a, new object() };
             MockFormatter.ItemsNotSame(expected, actual, "foo").Returns("bar");
 
             EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldMatchReferences(expected, "foo"));
@@ -546,7 +628,7 @@ namespace EasyAssertions.UnitTests
         {
             object a = new object();
             object b = new object();
-            object[] actual = new[] { a, b };
+            object[] actual = { a, b };
 
             Actual<IEnumerable<object>> result = actual.ShouldMatchReferences(a, b);
 
@@ -556,7 +638,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ShouldMatchReferencesParams_DifferentLength_FailsWithEnumerableLenthMismatchMessage()
         {
-            object[] actual = new object[] { };
+            object[] actual = { };
             MockFormatter.LengthMismatch(1, actual).Returns("bar");
 
             EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldMatchReferences(new object()));
@@ -568,8 +650,8 @@ namespace EasyAssertions.UnitTests
         public void ShouldMatchReferencesParams_DifferentItems_FailsWithEnumerablesNotSameMessage()
         {
             object a = new object();
-            object[] actual = new[] { a, new object() };
-            object[] expected = new[] { a, new object() };
+            object[] actual = { a, new object() };
+            object[] expected = { a, new object() };
             MockFormatter.ItemsNotSame(expected, actual).Returns("bar");
 
             EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldMatchReferences(expected));
@@ -655,7 +737,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ItemsSatisfy_ItemsSatisfyAssertions_ReturnsActualValue()
         {
-            int[] actual = new[] { 1 };
+            int[] actual = { 1 };
 
             Actual<IEnumerable<int>> result = actual.ItemsSatisfy(i => { });
 
@@ -679,7 +761,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ItemsSatisfy_WrongNumberOfItems_FailsWithEnumerableLengthMismatchMessage()
         {
-            int[] actual = new[] { 1 };
+            int[] actual = { 1 };
             MockFormatter.LengthMismatch(2, actual).Returns("foo");
 
             EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ItemsSatisfy(i => { }, i => { }));
@@ -690,7 +772,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ItemsSatisfy_ItemDoesNotSatisyItsAssertion_FailsWithThrownException()
         {
-            int[] actual = new[] { 1, 2 };
+            int[] actual = { 1, 2 };
             Exception failure = new Exception("foo");
 
             Exception result = Assert.Throws<Exception>(() => actual.ItemsSatisfy(
@@ -714,7 +796,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void AllItemsSatisfy_AllItemsSatisfyAssertion_ReturnsActualValue()
         {
-            int[] actual = new[] { 1 };
+            int[] actual = { 1 };
 
             Actual<IEnumerable<int>> result = actual.AllItemsSatisfy(i => { });
 
@@ -724,7 +806,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void AllItemsSatify_ItemsDoNotSatisfyAssertion_FailsWithThrownException()
         {
-            int[] actual = new[] { 1, 2 };
+            int[] actual = { 1, 2 };
             Exception failure = new Exception("foo");
 
             Exception result = Assert.Throws<Exception>(() => actual.AllItemsSatisfy(i =>

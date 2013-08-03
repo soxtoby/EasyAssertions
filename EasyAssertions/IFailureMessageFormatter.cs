@@ -66,10 +66,20 @@ namespace EasyAssertions
         string Contains(IEnumerable expectedToNotContain, IEnumerable actual, string message = null);
 
         /// <summary>
+        /// Sequence should have contained an item another sequence doesn't have, but didn't.
+        /// </summary>
+        string OnlyContains(IEnumerable expected, IEnumerable actual, string message = null);
+
+        /// <summary>
         /// Sequence should only contain the items in another sequence,
         /// but was missing at least one item, or had extra items.
         /// </summary>
         string DoesNotOnlyContain(IEnumerable expected, IEnumerable actual, string message = null);
+
+        /// <summary>
+        /// Sequence should be a subset of another sequence, but wasn't.
+        /// </summary>
+        string ContainsExtraItem(IEnumerable expectedSuperset, IEnumerable actual, string message = null);
 
         /// <summary>
         /// Sequence should contain the same object references, in the same order, as another sequence, but didn't.

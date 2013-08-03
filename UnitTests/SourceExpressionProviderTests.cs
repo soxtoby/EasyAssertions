@@ -1,7 +1,7 @@
-﻿using System;
+﻿using NUnit.Framework;
+using System;
 using System.Linq;
 using System.Linq.Expressions;
-using NUnit.Framework;
 
 namespace EasyAssertions.UnitTests
 {
@@ -111,7 +111,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ExpressionInsideIndexedAssertion_IncludesIndex()
         {
-            TestClass[] actualExpression = new[] { null, new TestClass(12) };
+            TestClass[] actualExpression = { null, new TestClass(12) };
             int expectedExpression = 2;
 
             Assert.Throws<EasyAssertionException>(() =>
@@ -125,7 +125,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ExpressionAfterIndexedAssertions_CombinesChainedExpressions()
         {
-            TestClass[] actualExpression = new[] { new TestClass(12) };
+            TestClass[] actualExpression = { new TestClass(12) };
             TestClass expectedExpression = new TestClass(2);
 
             Assert.Throws<EasyAssertionException>(() =>

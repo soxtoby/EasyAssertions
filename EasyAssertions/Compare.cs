@@ -90,10 +90,10 @@ namespace EasyAssertions
         /// <summary>
         /// Determines whether a sequence contains all of the items in another sequence.
         /// </summary>
-        public static bool ContainsAllItems(IEnumerable actual, IEnumerable expected)
+        public static bool ContainsAllItems(IEnumerable superset, IEnumerable subset)
         {
-            HashSet<object> actualSet = new HashSet<object>(actual.Cast<object>());
-            return expected.Cast<object>().All(actualSet.Contains);
+            HashSet<object> actualSet = new HashSet<object>(superset.Cast<object>());
+            return subset.Cast<object>().All(actualSet.Contains);
         }
 
         /// <summary>

@@ -246,7 +246,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void NotEmpty_SingleElement()
         {
-            FakeObject[] enumerable = new[] { new FakeObject("foo") };
+            FakeObject[] enumerable = { new FakeObject("foo") };
 
             string result = DefaultFailureMessageFormatter.Instance.NotEmpty(enumerable);
 
@@ -258,7 +258,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void NotEmpty_TwoElements()
         {
-            FakeObject[] enumerable = new[] { new FakeObject("foo"), new FakeObject("bar") };
+            FakeObject[] enumerable = { new FakeObject("foo"), new FakeObject("bar") };
 
             string result = DefaultFailureMessageFormatter.Instance.NotEmpty(enumerable);
 
@@ -297,7 +297,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void NotEmpty_IncludesMessage()
         {
-            FakeObject[] enumerable = new[] { new FakeObject(string.Empty) };
+            FakeObject[] enumerable = { new FakeObject(string.Empty) };
 
             string result = DefaultFailureMessageFormatter.Instance.NotEmpty(enumerable, "foo");
 
@@ -460,6 +460,24 @@ namespace EasyAssertions.UnitTests
         }
 
         [Test]
+        public void CollectionOnlyContains()
+        {
+            string result = DefaultFailureMessageFormatter.Instance.OnlyContains(new[] { new FakeObject("foo") }, Enumerable.Empty<object>());
+
+            Assert.AreEqual(ActualExpression + Environment.NewLine
+                + "should contain more than just " + ExpectedExpression + Environment.NewLine
+                + "but was empty.", result);
+        }
+
+        [Test]
+        public void CollectionOnlyContains_IncludesMessage()
+        {
+            string result = DefaultFailureMessageFormatter.Instance.OnlyContains(new object[0], new object[0], "foo");
+
+            StringAssert.EndsWith(Environment.NewLine + "foo", result);
+        }
+
+        [Test]
         public void CollectionContainsItems()
         {
             string result = DefaultFailureMessageFormatter.Instance.Contains(new[] { 1 }, new[] { 2, 1 });
@@ -510,31 +528,9 @@ namespace EasyAssertions.UnitTests
         }
 
         [Test]
-        public void DoesNotOnlyContain_ExtraItem()
-        {
-            string result = DefaultFailureMessageFormatter.Instance.DoesNotOnlyContain(new[] { 1 }, new[] { 1, 2 });
-
-            Assert.AreEqual(ActualExpression + Environment.NewLine
-                + "should only contain " + ExpectedExpression + Environment.NewLine
-                + "but also contains [<2>]", result);
-        }
-
-        [Test]
-        public void DoesNotOnlyContain_ExtraItems_ExpectedIsNewCollection_ExpectedExpressionNotIncluded()
-        {
-            expressionProvider.GetExpectedExpression().Returns("new[] { 1 }");
-
-            string result = DefaultFailureMessageFormatter.Instance.DoesNotOnlyContain(new[] { 1 }, new[] { 1, 2 });
-
-            Assert.AreEqual(ActualExpression + Environment.NewLine
-                + "should only contain [<1>]" + Environment.NewLine
-                + "but also contains [<2>]", result);
-        }
-
-        [Test]
         public void DoesNotOnlyContain_ExpectedIsEmpty_NotEmptyMessage()
         {
-            FakeObject[] enumerable = new[] { new FakeObject("foo") };
+            FakeObject[] enumerable = { new FakeObject("foo") };
 
             string result = DefaultFailureMessageFormatter.Instance.DoesNotOnlyContain(Enumerable.Empty<object>(), enumerable);
 
@@ -544,7 +540,39 @@ namespace EasyAssertions.UnitTests
         }
 
         [Test]
-        public void DoesNotOnlyContain_ExtraItems_IncludesMessage()
+        public void DoesNotOnlyContain_ExtraItem_ContainsExtraItemMessage()
+        {
+            string result = DefaultFailureMessageFormatter.Instance.DoesNotOnlyContain(new[] { 1 }, new[] { 1, 2 });
+
+            Assert.AreEqual(ActualExpression + Environment.NewLine
+                + "should only contain " + ExpectedExpression + Environment.NewLine
+                + "but also contains [<2>]", result);
+        }
+
+        [Test]
+        public void ContainsExtraItem()
+        {
+            string result = DefaultFailureMessageFormatter.Instance.ContainsExtraItem(new[] { 1 }, new[] { 1, 2 });
+
+            Assert.AreEqual(ActualExpression + Environment.NewLine
+                + "should only contain " + ExpectedExpression + Environment.NewLine
+                + "but also contains [<2>]", result);
+        }
+
+        [Test]
+        public void ContainsExtraItem_ExpectedIsNewCollection_ExpectedExpressionNotIncluded()
+        {
+            expressionProvider.GetExpectedExpression().Returns("new[] { 1 }");
+
+            string result = DefaultFailureMessageFormatter.Instance.ContainsExtraItem(new[] { 1 }, new[] { 1, 2 });
+
+            Assert.AreEqual(ActualExpression + Environment.NewLine
+                + "should only contain [<1>]" + Environment.NewLine
+                + "but also contains [<2>]", result);
+        }
+
+        [Test]
+        public void ContainsExtraItem_IncludesMessage()
         {
             string result = DefaultFailureMessageFormatter.Instance.DoesNotOnlyContain(new[] { 1 }, new[] { 1, 2 }, "foo");
 

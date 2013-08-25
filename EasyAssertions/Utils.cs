@@ -66,5 +66,27 @@ namespace EasyAssertions
                 return false;
             }
         }
+
+        public static IEnumerable<TOut> Zip<TLeft, TRight, TOut>(this IEnumerable<TLeft> left, IEnumerable<TRight> right, Func<TLeft, TRight, TOut> select)
+        {
+            if (left == null) throw new ArgumentNullException("left");
+            if (right == null) throw new ArgumentNullException("right");
+            if (select == null) throw new ArgumentNullException("select");
+
+            return ZipImpl(left, right, select);
+        }
+
+        private static IEnumerable<TOut> ZipImpl<TLeft, TRight, TOut>(IEnumerable<TLeft> left, IEnumerable<TRight> right, Func<TLeft, TRight, TOut> select)
+        {
+            using (IEnumerator<TLeft> leftEnumerator = left.GetEnumerator())
+            using (IEnumerator<TRight> rightEnumerator = right.GetEnumerator())
+            {
+                while (leftEnumerator.MoveNext() && rightEnumerator.MoveNext())
+                    yield return select(leftEnumerator.Current, rightEnumerator.Current);
+
+                if (leftEnumerator.MoveNext() || rightEnumerator.MoveNext())
+                    throw new InvalidOperationException("Sequences are not the same length");
+            }
+        }
     }
 }

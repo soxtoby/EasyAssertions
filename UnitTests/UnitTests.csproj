@@ -70,6 +70,7 @@
     <Compile Include="Assertions\NumberAssertionTests.cs" />
     <Compile Include="Assertions\ObjectAssertionTests.cs" />
     <Compile Include="Assertions\StringAssertionTests.cs" />
+    <Compile Include="Assertions\TreeAssertionTests.cs" />
     <Compile Include="BraceMatcherTests.cs" />
     <Compile Include="CollectionFailureMessageTests.cs" />
     <Compile Include="CompareTests.cs" />
@@ -78,6 +79,7 @@
     <Compile Include="EasyAssertionExceptionTests.cs" />
     <Compile Include="ExpectedFormatterTests.cs" />
     <Compile Include="FailureMessageTests.cs" />
+    <Compile Include="FakeObject.cs" />
     <Compile Include="FunctionFailureMessageTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SourceExpressionProviderTests.cs" />

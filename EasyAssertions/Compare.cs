@@ -10,9 +10,9 @@ namespace EasyAssertions
         /// <summary>
         /// Determines whether two objects are equal, using the default equality comparer.
         /// </summary>
-        public static bool ObjectsAreEqual<T>(T actual, T expected)
+        public static bool ObjectsAreEqual<TActual, TExpected>(TActual actual, TExpected expected) where TExpected : TActual
         {
-            return EqualityComparer<T>.Default.Equals(actual, expected);
+            return EqualityComparer<TActual>.Default.Equals(actual, expected);
         }
 
         /// <summary>
@@ -124,6 +124,17 @@ namespace EasyAssertions
             IDisposable disposable = obj as IDisposable;
             if (disposable != null)
                 disposable.Dispose();
+        }
+
+        public static bool TreesMatch<TActual, TExpected>(IEnumerable<TActual> actualNodes, IEnumerable<TestNode<TExpected>> expectedNodes, Func<TActual, IEnumerable<TActual>> getChildren, Func<TActual, TExpected, bool> areEqual)
+        {
+            return CollectionsMatch(actualNodes, expectedNodes, (a, e) =>
+                {
+                    TActual actualNode = (TActual)a;
+                    TestNode<TExpected> expectedNode = (TestNode<TExpected>)e;
+                    return areEqual(actualNode, expectedNode.Value)
+                        && TreesMatch(getChildren(actualNode), expectedNode, getChildren, areEqual);
+                });
         }
     }
 }

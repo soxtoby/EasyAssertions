@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using NUnit.Framework;
+using System.Collections.Generic;
 using System.Linq;
-using NUnit.Framework;
 
 namespace EasyAssertions.UnitTests
 {
@@ -111,6 +111,140 @@ namespace EasyAssertions.UnitTests
         public void IsEmpty_NotEmpty()
         {
             Assert.IsFalse(Compare.IsEmpty(new[] { 1 }));
+        }
+
+        [Test]
+        public void TreesMatch_SingleMatchingLevel_ReturnsTrue()
+        {
+            Assert.IsTrue(Compare.TreesMatch(
+                new[] { 1, 2, 3 },
+                new TestNode<int> { 1, 2, 3 },
+                n => Enumerable.Empty<int>(),
+                Compare.ObjectsAreEqual));
+        }
+
+        [Test]
+        public void TreesMatch_SingleNonMatchingLevel_ReturnsFalse()
+        {
+            Assert.IsFalse(Compare.TreesMatch(
+                new[] { 1, 2, 3 },
+                new TestNode<int> { 1, 3, 2 },
+                n => Enumerable.Empty<int>(),
+                Compare.ObjectsAreEqual));
+        }
+
+        [Test]
+        public void TreesMatch_MatchingRootNodesWithNonMatchingChildren_ReturnsFalse()
+        {
+            Assert.IsFalse(Compare.TreesMatch(
+                new[]{
+                        new ActualNode(1)
+                            {
+                                Children =
+                                    {
+                                        new ActualNode(2),
+                                        new ActualNode(3)
+                                    }
+                            }
+                    },
+                new TestNode<int>
+                    {
+                        new TestNode<int>(1)
+                            {
+                                3,
+                                2
+                            }
+                    },
+                n => n.Children,
+                (a, e) => a.Value == e));
+        }
+
+        [Test]
+        public void TreesMatch_MatchingRootNodesWithDifferentLengthChildren_ReturnsFalse()
+        {
+            Assert.IsFalse(Compare.TreesMatch(
+                new[]
+                    {
+                        new ActualNode(1),
+                        new ActualNode(2)
+                            {
+                                Children =
+                                    {
+                                        new ActualNode(3)
+                                    }
+                            }
+                    },
+                new TestNode<int>
+                    {
+                        new TestNode<int>(1),
+                        new TestNode<int>(2)
+                            {
+                                3,
+                                4
+                            }
+                    },
+                n => n.Children,
+                (a, e) => a.Value == e));
+        }
+
+        [Test]
+        public void TreesMatch_MatchingRootNodesWithMatchingChildren_ReturnsTrue()
+        {
+            Assert.IsTrue(Compare.TreesMatch(
+                new[]
+                    {
+                        new ActualNode(1)
+                            {
+                                Children =
+                                    {
+                                        new ActualNode(11),
+                                        new ActualNode(12)
+                                    }
+                            },
+                        new ActualNode(2)
+                            {
+                                Children =
+                                    {
+                                        new ActualNode(21),
+                                        new ActualNode(22)
+                                            {
+                                                Children =
+                                                    {
+                                                        new ActualNode(221)
+                                                    }
+                                            }
+                                    }
+                            }
+                    },
+                new TestNode<int>
+                    {
+                        new TestNode<int>(1)
+                            {
+                                11,
+                                12
+                            },
+                        new TestNode<int>(2)
+                            {
+                                21,
+                                new TestNode<int>(22)
+                                    {
+                                        221
+                                    }
+                            }
+                    },
+                n => n.Children,
+                (a, e) => a.Value == e));
+        }
+
+        private class ActualNode
+        {
+            public readonly int Value;
+            public readonly List<ActualNode> Children = new List<ActualNode>();
+
+            public ActualNode(int value)
+            {
+                Value = value;
+            }
         }
     }
 }

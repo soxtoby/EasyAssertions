@@ -335,6 +335,68 @@ namespace EasyAssertions
                 }.ToString();
         }
 
+        public string TreesDoNotMatch<TActual, TExpected>(IEnumerable<TestNode<TExpected>> expected, IEnumerable<TActual> actual, Func<TActual, IEnumerable<TActual>> getChildren, Func<object, object, bool> predicate, string message = null)
+        {
+            return TreesDoNotMatch(expected, actual, getChildren, predicate, message, Enumerable.Empty<TActual>());
+        }
+
+        private static string TreesDoNotMatch<TActual, TExpected>(IEnumerable<TestNode<TExpected>> expected, IEnumerable<TActual> actual, Func<TActual, IEnumerable<TActual>> getChildren, Func<object, object, bool> predicate, string message, IEnumerable<TActual> path)
+        {
+            if (Compare.CollectionsMatch(actual, expected.Values(), predicate))
+                return ChildrenDoNotMatch(expected, actual, getChildren, predicate, message, path);
+
+            List<object> actualItems = actual.Cast<object>().ToList();
+            List<object> expectedItems = expected.Values().Cast<object>().ToList();
+
+            return actualItems.Count != expectedItems.Count
+                ? TreeNodeChildrenLengthMismatch(expectedItems, actualItems, message, path)
+                : TreeNodeValueDoesNotMatch(expectedItems, actualItems, predicate, message, path);
+        }
+
+        private static string TreeNodeChildrenLengthMismatch<TActual>(List<object> expectedItems, List<object> actualItems, string message, IEnumerable<TActual> path)
+        {
+            return new TreeFailureMessage
+                {
+                    ActualItems = actualItems,
+                    ExpectedItems = expectedItems,
+                    FailurePathValues = path.Cast<object>().ToList(),
+                    UserMessage = message,
+                    MessageTemplate = "{ExpectedExpression:doesn't match {}.{0.BR}|}"
+                                      + "{FailurePath} node should have {ExpectedItems.Count:1 child|{} children}{BR}"
+                                      + "but {ActualItems.Count:"
+                                      + "was empty."
+                                      + "|had 1 child: {0.ActualItems[0]}"
+                                      + "|had {} children: {0.ActualSample}"
+                                      + "}"
+                }.ToString();
+        }
+
+        private static string TreeNodeValueDoesNotMatch<TActual>(IList<object> expectedItems, IList<object> actualItems, Func<object, object, bool> predicate, string message, IEnumerable<TActual> path)
+        {
+            object expectedValue;
+            object actualValue;
+            int differenceIndex = FindDifference(expectedItems, actualItems, predicate, out expectedValue, out actualValue);
+
+            return new TreeFailureMessage
+                {
+                    ActualValue = actualValue,
+                    ExpectedValue = expectedValue,
+                    FailureIndex = differenceIndex,
+                    FailurePathValues = path.Cast<object>().ToList(),
+                    UserMessage = message,
+                    MessageTemplate = "doesn't match {ExpectedExpression:{0:{ExpectedExpression}}|expected tree}.{BR}"
+                                      + "Differs at {FailurePath}, child index {FailureIndex}.{BR}"
+                                      + "should be {ExpectedValue}{BR}"
+                                      + "but was   {ActualValue}"
+                }.ToString();
+        }
+
+        private static string ChildrenDoNotMatch<TActual, TExpected>(IEnumerable<TestNode<TExpected>> expected, IEnumerable<TActual> actual, Func<TActual, IEnumerable<TActual>> getChildren, Func<object, object, bool> predicate, string message, IEnumerable<TActual> path)
+        {
+            return expected.Zip(actual, (e, a) => TreesDoNotMatch(e, getChildren(a), getChildren, predicate, message, path.Concat(new[] { a })))
+                .FirstOrDefault(m => m != null);
+        }
+
         private static int FindDifference(IEnumerable expected, IEnumerable actual, Func<object, object, bool> areEqual, out object expectedValue, out object actualValue)
         {
             List<object> expectedList = expected.Cast<object>().ToList();

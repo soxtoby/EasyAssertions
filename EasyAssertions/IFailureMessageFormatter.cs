@@ -87,6 +87,11 @@ namespace EasyAssertions
         string ItemsNotSame(IEnumerable expected, IEnumerable actual, string message = null);
 
         /// <summary>
+        /// Trees should match, but didn't.
+        /// </summary>
+        string TreesDoNotMatch<TActual, TExpected>(IEnumerable<TestNode<TExpected>> expected, IEnumerable<TActual> actual, Func<TActual, IEnumerable<TActual>> getChildren, Func<object, object, bool> predicate, string message = null);
+
+        /// <summary>
         /// Function should throw an exception, but didn't.
         /// </summary>
         string NoException(Type expectedExceptionType, LambdaExpression function, string message = null);

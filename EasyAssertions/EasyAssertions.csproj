@@ -56,6 +56,7 @@
   <ItemGroup>
     <Compile Include="Actual.cs" />
     <Compile Include="Assertions\CollectionAssertions.cs" />
+    <Compile Include="Assertions\TreeAssertions.cs" />
     <Compile Include="Compare.cs" />
     <Compile Include="Assertions\EasyAssertion.cs" />
     <Compile Include="FailureMessages\CollectionFailureMessage.cs" />
@@ -70,7 +71,9 @@
     <Compile Include="FailureMessages\FunctionFailureMessage.cs" />
     <Compile Include="FailureMessages\StringFailureMessage.cs" />
     <Compile Include="Assertions\NumberAssertions.cs" />
+    <Compile Include="FailureMessages\TreeFailureMessage.cs" />
     <Compile Include="IFailureMessageFormatter.cs" />
+    <Compile Include="TestNode.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Assertions\FunctionAssertions.cs" />
     <Compile Include="SourceExpressions\AssertionMethod.cs" />

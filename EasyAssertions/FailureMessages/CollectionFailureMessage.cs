@@ -1,7 +1,7 @@
+using SmartFormat;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
-using SmartFormat;
 
 namespace EasyAssertions
 {
@@ -95,7 +95,7 @@ namespace EasyAssertions
                 case 1:
                     return "[" + items.Single() + "]";
                 default:
-                    return "[{ActualSampleItems:{0.BR}    {}|,}{BR}]".FormatSmart(this);
+                    return "[{SampleItems:{0.BR}    {}|,}{BR}]".FormatSmart(new { SampleItems = SampleItems(items), BR });
             }
         }
 
@@ -105,12 +105,7 @@ namespace EasyAssertions
         /// </summary>
         public virtual ICollection<object> ExpectedSampleItems
         {
-            get
-            {
-                return ExpectedItems.Count > SampleSize
-                    ? ExpectedItems.Take(SampleSize).Concat(new[] { "..." }).ToList()
-                    : ExpectedItems;
-            }
+            get { return SampleItems(ExpectedItems); }
         }
 
         /// <summary>
@@ -119,12 +114,14 @@ namespace EasyAssertions
         /// </summary>
         public virtual ICollection<object> ActualSampleItems
         {
-            get
-            {
-                return ActualItems.Count > SampleSize
-                    ? ActualItems.Take(SampleSize).Concat(new[] { "..." }).ToList()
-                    : ActualItems;
-            }
+            get { return SampleItems(ActualItems); }
+        }
+
+        private static ICollection<object> SampleItems(ICollection<object> items)
+        {
+            return items.Count > SampleSize
+                ? items.Take(SampleSize).Concat(new[] { "..." }).ToList()
+                : items;
         }
 
         /// <summary>

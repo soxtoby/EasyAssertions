@@ -656,6 +656,80 @@ namespace EasyAssertions.UnitTests
         }
 
         [Test]
+        public void TreesDoNotMatch_NonMatchingNodes()
+        {
+            string result = DefaultFailureMessageFormatter.Instance.TreesDoNotMatch(new[] { 1, 2.Node(21, 22) }, new[] { 1, 2.Node(21, 23) }, n => n, TestNodesMatch);
+
+            Assert.AreEqual(ActualExpression + Environment.NewLine
+                + "doesn't match " + ExpectedExpression + "." + Environment.NewLine
+                + "Differs at root -> 2, child index 1." + Environment.NewLine
+                + "should be <22>" + Environment.NewLine
+                + "but was   <23>", result);
+        }
+
+        [Test]
+        public void TreesDoNotMatch_EmptyActual()
+        {
+            string result = DefaultFailureMessageFormatter.Instance.TreesDoNotMatch(new[] { 1.Node(11) }, new[] { 1.Node() }, n => n, TestNodesMatch);
+
+            Assert.AreEqual(ActualExpression + Environment.NewLine
+                + "doesn't match " + ExpectedExpression + "." + Environment.NewLine
+                + "root -> 1 node should have 1 child" + Environment.NewLine
+                + "but was empty.", result);
+        }
+
+        [Test]
+        public void TreesDoNotMatch_SingleNodeActual()
+        {
+            string result = DefaultFailureMessageFormatter.Instance.TreesDoNotMatch(new TestNode<int>[] { 1, 2 }, new[] { 3 }, i => Enumerable.Empty<int>(), Compare.ObjectsAreEqual);
+
+            Assert.AreEqual(ActualExpression + Environment.NewLine
+                + "doesn't match " + ExpectedExpression + "." + Environment.NewLine
+                + "root node should have 2 children" + Environment.NewLine
+                + "but had 1 child: <3>", result);
+        }
+
+        [Test]
+        public void TreesDoNotMatch_MultipleNodeActual()
+        {
+            string result = DefaultFailureMessageFormatter.Instance.TreesDoNotMatch(new TestNode<int>[] { 1 }, new[] { 2, 3 }, i => Enumerable.Empty<int>(), Compare.ObjectsAreEqual);
+
+            Assert.AreEqual(ActualExpression + Environment.NewLine
+                + "doesn't match " + ExpectedExpression + "." + Environment.NewLine
+                + "root node should have 1 child" + Environment.NewLine
+                + "but had 2 children: [" + Environment.NewLine
+                + "    <2>," + Environment.NewLine
+                + "    <3>" + Environment.NewLine
+                + "]", result);
+        }
+
+        [Test]
+        public void TreesDoNotMatch_ChildLengthMismatch_IncludesMessage()
+        {
+            string result = DefaultFailureMessageFormatter.Instance.TreesDoNotMatch(new TestNode<int>[] { 1 }, Enumerable.Empty<int>(), NoChildren, Compare.ObjectsAreEqual, "foo");
+
+            StringAssert.EndsWith(Environment.NewLine + "foo", result);
+        }
+
+        [Test]
+        public void TreesDoNotMatch_NonMatchingNode_IncludesMessage()
+        {
+            string result = DefaultFailureMessageFormatter.Instance.TreesDoNotMatch(new TestNode<int>[] { 1 }, new[] { 2 }, NoChildren, Compare.ObjectsAreEqual, "foo");
+
+            StringAssert.EndsWith(Environment.NewLine + "foo", result);
+        }
+
+        private static IEnumerable<int> NoChildren(int i)
+        {
+            return Enumerable.Empty<int>();
+        }
+
+        private static bool TestNodesMatch(object a, object e)
+        {
+            return (int)e == ((TestNode<int>)a).Value;
+        }
+
+        [Test]
         public void LengthMismatch_EmptyEnumerable()
         {
             string result = DefaultFailureMessageFormatter.Instance.LengthMismatch(2, Enumerable.Empty<object>());
@@ -903,21 +977,6 @@ namespace EasyAssertions.UnitTests
             string result = DefaultFailureMessageFormatter.Instance.NotLessThan(1, 2, "foo");
 
             StringAssert.EndsWith(Environment.NewLine + "foo", result);
-        }
-
-        private class FakeObject
-        {
-            private readonly string toString;
-
-            public FakeObject(string toString)
-            {
-                this.toString = toString;
-            }
-
-            public override string ToString()
-            {
-                return toString;
-            }
         }
     }
 }

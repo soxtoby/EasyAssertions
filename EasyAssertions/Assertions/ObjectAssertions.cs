@@ -18,7 +18,7 @@ namespace EasyAssertions
                         string actualString = actual as string;
                         string expectedString = expected as string;
                         if (actualString != null && expectedString != null)
-                            throw EasyAssertion.Failure(FailureMessageFormatter.Current.NotEqual(expectedString, actualString, message));
+                            throw EasyAssertion.Failure(FailureMessageFormatter.Current.NotEqual(expectedString, actualString, message: message));
 
                         throw EasyAssertion.Failure(FailureMessageFormatter.Current.NotEqual(expected, actual, message));
                     }

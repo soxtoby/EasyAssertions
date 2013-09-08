@@ -24,10 +24,10 @@ namespace EasyAssertions
                 }.ToString();
         }
 
-        public string NotEqual(string expected, string actual, string message = null)
+        public string NotEqual(string expected, string actual, Case caseSensitivity = Case.Sensitive, string message = null)
         {
             int differenceIndex = Enumerable.Range(0, Math.Max(expected.Length, actual.Length))
-                .FirstOrDefault(i => i == actual.Length || i == expected.Length || actual[i] != expected[i]);
+                .FirstOrDefault(i => i == actual.Length || i == expected.Length || !CharactersMatch(expected, actual, i, caseSensitivity));
 
             return new StringFailureMessage
                 {
@@ -40,6 +40,16 @@ namespace EasyAssertions
                                     + "          {Arrow}{BR}"
                                     + "Difference at index {FailureIndex}."
                 }.ToString();
+        }
+
+        private static bool CharactersMatch(string expected, string actual, int index, Case caseSensitivity)
+        {
+            StringComparison stringComparison = caseSensitivity == Case.Sensitive
+                ? StringComparison.Ordinal
+                : StringComparison.OrdinalIgnoreCase;
+
+            return expected.Substring(index, 1)
+                .Equals(actual.Substring(index, 1), stringComparison);
         }
 
         public string AreEqual(object notExpected, object actual, string message = null)

@@ -160,9 +160,21 @@ namespace EasyAssertions.UnitTests
         }
 
         [Test]
+        public void StringsNotEqual_CaseInsensitive_DifferenceIgnoresCase()
+        {
+            string result = DefaultFailureMessageFormatter.Instance.NotEqual("abc", "Acb", Case.Insensitive);
+            Assert.AreEqual(ActualExpression + Environment.NewLine
+                + "should be " + ExpectedExpression + Environment.NewLine
+                + "          \"abc\"" + Environment.NewLine
+                + "but was   \"Acb\"" + Environment.NewLine
+                 + "            ^" + Environment.NewLine
+                + "Difference at index 1.", result);
+        }
+
+        [Test]
         public void StringsNotEqual_IncludesMessage()
         {
-            string result = DefaultFailureMessageFormatter.Instance.NotEqual("acd", "abc", "foo");
+            string result = DefaultFailureMessageFormatter.Instance.NotEqual("acd", "abc", message: "foo");
 
             StringAssert.EndsWith(Environment.NewLine + "foo", result);
         }

@@ -18,7 +18,7 @@ namespace EasyAssertions
         /// <summary>
         /// Strings should be equal, but weren't.
         /// </summary>
-        string NotEqual(string expected, string actual, string message = null);
+        string NotEqual(string expected, string actual, Case caseSensitivity = Case.Sensitive, string message = null);
 
         /// <summary>
         /// Objects should not be equal, but were.

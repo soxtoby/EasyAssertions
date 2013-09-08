@@ -149,5 +149,57 @@ namespace EasyAssertions.UnitTests
         {
             AssertArgumentNullException("expectedEnd", () => "".ShouldEndWith(null));
         }
+
+        [Test]
+        public void ShouldBe_CaseSensitive_StringsAreEqual_ReturnsActualValue()
+        {
+            Actual<string> result = "foo".ShouldBe("foo", Case.Sensitive);
+
+            Assert.AreEqual("foo", result.And);
+        }
+
+        [Test]
+        public void ShouldBe_CaseSensitive_StringCaseDoesNotMatch_FailsWithStringsNotEqualMessage()
+        {
+            MockFormatter.NotEqual("foo", "fOo", Case.Sensitive, "bar").Returns("baz");
+
+            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => "fOo".ShouldBe("foo", Case.Sensitive, "bar"));
+
+            Assert.AreEqual("baz", result.Message);
+        }
+
+        [Test]
+        public void ShouldBe_CaseInsensitive_StringsAreEqual_ReturnsActualValue()
+        {
+            Actual<string> result = "FOO".ShouldBe("foo", Case.Insensitive);
+
+            Assert.AreEqual("FOO", result.And);
+        }
+
+        [Test]
+        public void ShouldBe_CaseInsensitive_StringsNotEqual_FailsWithStringsNotEqualMessage()
+        {
+            MockFormatter.NotEqual("bar", "foo", Case.Insensitive, "baz").Returns("qux");
+
+            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => "foo".ShouldBe("bar", Case.Insensitive, "baz"));
+
+            Assert.AreEqual("qux", result.Message);
+        }
+
+        [Test]
+        public void ShouldBe_CustomCaseSensitivity_ActualIsNull_FailsWithTypesNotEqualMessage()
+        {
+            MockFormatter.NotEqual(typeof(string), null, "bar").Returns("baz");
+
+            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => ((string)null).ShouldBe("foo", Case.Insensitive, "bar"));
+
+            Assert.AreEqual("baz", result.Message);
+        }
+
+        [Test]
+        public void ShouldBe_CustomCaseSensitivity_ExpectedIsNull_ThrowsArgumentNullException()
+        {
+            AssertArgumentNullException("expected", () => "foo".ShouldBe(null, Case.Insensitive));
+        }
     }
 }

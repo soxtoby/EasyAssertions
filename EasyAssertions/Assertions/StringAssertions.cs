@@ -70,5 +70,25 @@ namespace EasyAssertions
                         throw EasyAssertion.Failure(FailureMessageFormatter.Current.DoesNotEndWith(expectedEnd, actual, message));
                 });
         }
+
+        /// <summary>
+        /// Asserts that two strings are equal, optionally ignoring case.
+        /// </summary>
+        public static Actual<string> ShouldBe(this string actual, string expected, Case caseSensitivity, string message = null)
+        {
+            if (expected == null) throw new ArgumentNullException("expected");
+
+            return actual.RegisterAssert(() =>
+                {
+                    ObjectAssertions.AssertType<string>(actual, message);
+
+                    StringComparison stringComparison = caseSensitivity == Case.Sensitive
+                        ? StringComparison.Ordinal
+                        : StringComparison.OrdinalIgnoreCase;
+
+                    if (!actual.Equals(expected, stringComparison))
+                        throw EasyAssertion.Failure(FailureMessageFormatter.Current.NotEqual(expected, actual, caseSensitivity, message));
+                });
+        }
     }
 }

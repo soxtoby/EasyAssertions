@@ -31,7 +31,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ShouldBe_DifferentStrings_FailsWithStringsNotEqualMessage()
         {
-            MockFormatter.NotEqual("foo", "bar", "baz").Returns("qux");
+            MockFormatter.NotEqual("foo", "bar", message: "baz").Returns("qux");
 
             EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => "bar".ShouldBe("foo", "baz"));
 

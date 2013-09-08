@@ -11,8 +11,13 @@ namespace EasyAssertions
         /// </summary>
         public static Actual<IEnumerable<TActual>> ShouldMatch<TActual, TExpected>(this IEnumerable<TActual> actualRootNodes, IEnumerable<TestNode<TExpected>> expectedRootNodes, Func<TActual, IEnumerable<TActual>> getChildren, string message = null) where TExpected : TActual
         {
+            if (expectedRootNodes == null) throw new ArgumentNullException("expectedRootNodes");
+            if (getChildren == null) throw new ArgumentNullException("getChildren");
+
             return actualRootNodes.RegisterAssert(() =>
                 {
+                    ObjectAssertions.AssertType<IEnumerable<TActual>>(actualRootNodes, message);
+
                     if (!Compare.TreesMatch(actualRootNodes, expectedRootNodes, getChildren, Compare.ObjectsAreEqual))
                         throw EasyAssertion.Failure(FailureMessageFormatter.Current.TreesDoNotMatch(expectedRootNodes, actualRootNodes, getChildren, Compare.ObjectsAreEqual, message));
                 });
@@ -24,8 +29,14 @@ namespace EasyAssertions
         /// </summary>
         public static Actual<IEnumerable<TActual>> ShouldMatch<TActual, TExpected>(this IEnumerable<TActual> actualRootNodes, IEnumerable<TestNode<TExpected>> expectedRootNodes, Func<TActual, IEnumerable<TActual>> getChildren, Func<TActual, TExpected, bool> predicate, string message = null) where TExpected : TActual
         {
+            if (expectedRootNodes == null) throw new ArgumentNullException("expectedRootNodes");
+            if (getChildren == null) throw new ArgumentNullException("getChildren");
+            if (predicate == null) throw new ArgumentNullException("predicate");
+
             return actualRootNodes.RegisterAssert(() =>
                 {
+                    ObjectAssertions.AssertType<IEnumerable<TActual>>(actualRootNodes, message);
+
                     if (!Compare.TreesMatch(actualRootNodes, expectedRootNodes, getChildren, predicate))
                         throw EasyAssertion.Failure(FailureMessageFormatter.Current.TreesDoNotMatch(expectedRootNodes, actualRootNodes, getChildren, (a, e) => predicate((TActual)a, (TExpected)e), message));
                 });

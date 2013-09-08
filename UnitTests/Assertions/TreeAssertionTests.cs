@@ -33,6 +33,29 @@ namespace EasyAssertions.UnitTests
         }
 
         [Test]
+        public void ShouldMatchTree_ActualIsNull_FailsWithTypedNotEqualMessage()
+        {
+            IEnumerable<int> actual = null;
+            MockFormatter.NotEqual(typeof(IEnumerable<int>), null, "foo").Returns("bar");
+
+            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldMatch(1.Node(), NoChildren, "foo"));
+
+            Assert.AreEqual("bar", result.Message);
+        }
+
+        [Test]
+        public void ShouldMatchTree_ExpectedIsNull_ThrowsArgumentNullException()
+        {
+            AssertArgumentNullException("expectedRootNodes", () => new int[0].ShouldMatch((IEnumerable<TestNode<int>>)null, NoChildren));
+        }
+
+        [Test]
+        public void ShouldMatchTree_GetChildrenIsNull_ThrowsArgumentNullException()
+        {
+            AssertArgumentNullException("getChildren", () => new int[0].ShouldMatch(1.Node(), (Func<int, IEnumerable<int>>)null));
+        }
+
+        [Test]
         public void ShouldMatchTree_CustomEquality_TreeMatches_ReturnsActual()
         {
             object actualItem = new object();
@@ -57,6 +80,35 @@ namespace EasyAssertions.UnitTests
             Assert.AreEqual("bar", result.Message);
             formatterEquality(2, 3);
             equality.Received()(2, 3);
+        }
+
+        [Test]
+        public void ShouldMatchTree_CustomEquality_ActualIsNull_FailsWithTypedNotEqualMessage()
+        {
+            IEnumerable<int> actual = null;
+            MockFormatter.NotEqual(typeof(IEnumerable<int>), null, "foo").Returns("bar");
+
+            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldMatch(1.Node(), NoChildren, (a, e) => false, "foo"));
+
+            Assert.AreEqual("bar", result.Message);
+        }
+
+        [Test]
+        public void ShouldMatchTree_CustomEquality_ExpectedIsNull_ThrowsArgumentNullException()
+        {
+            AssertArgumentNullException("expectedRootNodes", () => new int[0].ShouldMatch((IEnumerable<TestNode<int>>)null, NoChildren, (a, e) => false));
+        }
+
+        [Test]
+        public void ShouldMatchTree_CustomEquality_GetChildrenIsNull_ThrowsArgumentNullException()
+        {
+            AssertArgumentNullException("getChildren", () => new int[0].ShouldMatch(1.Node(), null, (a, e) => false));
+        }
+
+        [Test]
+        public void ShouldMatchTree_CustomEquality_PredicateIsNull_ThrowsArgumentNullException()
+        {
+            AssertArgumentNullException("predicate", () => new int[0].ShouldMatch(1.Node(), NoChildren, (Func<int, int, bool>)null));
         }
 
         private static IEnumerable<T> NoChildren<T>(T node)

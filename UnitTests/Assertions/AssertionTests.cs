@@ -1,5 +1,6 @@
 using NSubstitute;
 using NUnit.Framework;
+using System;
 
 namespace EasyAssertions.UnitTests
 {
@@ -18,6 +19,13 @@ namespace EasyAssertions.UnitTests
         public void TearDown()
         {
             FailureMessageFormatter.Default();
+        }
+
+        protected void AssertArgumentNullException(string paramName, TestDelegate assertionCall)
+        {
+            ArgumentNullException result = Assert.Throws<ArgumentNullException>(assertionCall);
+
+            Assert.AreEqual(paramName, result.ParamName);
         }
     }
 }

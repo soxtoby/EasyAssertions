@@ -451,9 +451,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ItemsShouldBeIn_ExpectedIsNull_ThrowsArgumentNullException()
         {
-            ArgumentNullException result = Assert.Throws<ArgumentNullException>(() => new int[0].ItemsShouldBeIn((IEnumerable<int>)null));
-
-            Assert.AreEqual("expectedSuperset", result.ParamName);
+            AssertArgumentNullException("expectedSuperset", () => new int[0].ItemsShouldBeIn((IEnumerable<int>)null));
         }
 
         [Test]
@@ -570,9 +568,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ShouldNotOnlyContain_ExpectedIsNull_ThrowsArgumentNullException()
         {
-            ArgumentNullException result = Assert.Throws<ArgumentNullException>(() => new[] { 1 }.ShouldNotOnlyContain((int[])null));
-
-            Assert.AreEqual("expected", result.ParamName);
+            AssertArgumentNullException("expected", () => new[] { 1 }.ShouldNotOnlyContain((int[])null));
         }
 
         [Test]

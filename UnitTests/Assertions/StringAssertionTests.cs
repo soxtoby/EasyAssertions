@@ -1,6 +1,5 @@
 using NSubstitute;
 using NUnit.Framework;
-using System;
 
 namespace EasyAssertions.UnitTests
 {
@@ -37,9 +36,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ShouldContain_ExpectedIsNull_ThrowsArgumentNullException()
         {
-            ArgumentNullException result = Assert.Throws<ArgumentNullException>(() => "".ShouldContain(null));
-
-            Assert.AreEqual("expectedToContain", result.ParamName);
+            AssertArgumentNullException("expectedToContain", () => "".ShouldContain(null));
         }
 
         [Test]
@@ -73,9 +70,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ShouldNotContain_ExpectedIsNull_ThrowsArgumentNullException()
         {
-            ArgumentNullException result = Assert.Throws<ArgumentNullException>(() => "".ShouldNotContain(null));
-
-            Assert.AreEqual("expectedToNotContain", result.ParamName);
+            AssertArgumentNullException("expectedToNotContain", () => "".ShouldNotContain(null));
         }
 
         [Test]
@@ -113,9 +108,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ShouldStartWith_ExpectedIsNull_ThrowsArgumentNullException()
         {
-            ArgumentNullException result = Assert.Throws<ArgumentNullException>(() => "".ShouldStartWith(null));
-
-            Assert.AreEqual("expectedStart", result.ParamName);
+            AssertArgumentNullException("expectedStart", () => "".ShouldStartWith(null));
         }
 
         [Test]
@@ -154,9 +147,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ShouldEndWith_ExpectedIsNull_ThrowsArgumentNullException()
         {
-            ArgumentNullException result = Assert.Throws<ArgumentNullException>(() => "".ShouldEndWith(null));
-
-            Assert.AreEqual("expectedEnd", result.ParamName);
+            AssertArgumentNullException("expectedEnd", () => "".ShouldEndWith(null));
         }
     }
 }

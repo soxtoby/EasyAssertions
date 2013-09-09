@@ -317,6 +317,24 @@ namespace EasyAssertions.UnitTests
         }
 
         [Test]
+        public void StringNotEmpty()
+        {
+            string result = DefaultFailureMessageFormatter.Instance.NotEmpty("foo");
+
+            Assert.AreEqual(ActualExpression + Environment.NewLine
+                + "should be empty" + Environment.NewLine
+                + "but was \"foo\"", result);
+        }
+
+        [Test]
+        public void StringNotEmpty_IncludesMessage()
+        {
+            string result = DefaultFailureMessageFormatter.Instance.NotEmpty("foo", "bar");
+
+            StringAssert.EndsWith(Environment.NewLine + "bar", result);
+        }
+
+        [Test]
         public void IsEmpty()
         {
             string result = DefaultFailureMessageFormatter.Instance.IsEmpty();

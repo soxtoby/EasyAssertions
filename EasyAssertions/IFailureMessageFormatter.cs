@@ -107,6 +107,11 @@ namespace EasyAssertions
         string NotEmpty(IEnumerable actual, string message = null);
 
         /// <summary>
+        /// String should be empty, but wasn't.
+        /// </summary>
+        string NotEmpty(string actual, string message = null);
+
+        /// <summary>
         /// Sequence should not be empty, but was.
         /// </summary>
         string IsEmpty(string message = null);

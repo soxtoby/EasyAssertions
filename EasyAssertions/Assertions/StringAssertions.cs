@@ -8,6 +8,20 @@ namespace EasyAssertions
     public static class StringAssertions
     {
         /// <summary>
+        /// Asserts that a string is empty.
+        /// </summary>
+        public static Actual<string> ShouldBeEmpty(this string actual, string message = null)
+        {
+            return actual.RegisterAssert(() =>
+                {
+                    ObjectAssertions.AssertType<string>(actual, message);
+
+                    if (actual != string.Empty)
+                        throw EasyAssertion.Failure(FailureMessageFormatter.Current.NotEmpty(actual, message));
+                });
+        }
+
+        /// <summary>
         /// Asserts that a string contains a specified substring.
         /// </summary>
         public static Actual<string> ShouldContain(this string actual, string expectedToContain, string message = null)

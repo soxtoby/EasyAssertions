@@ -111,6 +111,17 @@ namespace EasyAssertions
                 }.ToString();
         }
 
+        public string NotEmpty(string actual, string message = null)
+        {
+            return new StringFailureMessage
+                {
+                    ActualValue = actual,
+                    UserMessage = message,
+                    MessageTemplate = "should be empty{BR}"
+                                    + "but was {ActualValue}"
+                }.ToString();
+        }
+
         public string IsEmpty(string message = null)
         {
             return new FailureMessage

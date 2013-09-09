@@ -7,6 +7,34 @@ namespace EasyAssertions.UnitTests
     public class StringAssertionTests : AssertionTests
     {
         [Test]
+        public void ShouldBeEmpty_StringIsEmpty_ReturnsEmptyString()
+        {
+            Actual<string> result = string.Empty.ShouldBeEmpty();
+
+            Assert.AreEqual(string.Empty, result.And);
+        }
+
+        [Test]
+        public void ShouldBeEmpty_IsNotEmpty_FailsWithStringNotEmptyMessage()
+        {
+            MockFormatter.NotEmpty("foo", "bar").Returns("baz");
+
+            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => "foo".ShouldBeEmpty("bar"));
+
+            Assert.AreEqual("baz", result.Message);
+        }
+
+        [Test]
+        public void ShouldBeEmpty_ActualIsNull_FailsWithTypesNotEqualMessage()
+        {
+            MockFormatter.NotEqual(typeof(string), null, "foo").Returns("bar");
+
+            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => ((string)null).ShouldBeEmpty("foo"));
+
+            Assert.AreEqual("bar", result.Message);
+        }
+
+        [Test]
         public void ShouldContain_StringContainsSubstring_ReturnsActualValue()
         {
             Actual<string> result = "foo".ShouldContain("oo");

@@ -62,6 +62,7 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ActualExceptionTests.cs" />
     <Compile Include="AssertionMethodTests.cs" />
     <Compile Include="Assertions\CollectionAssertionTests.cs" />
     <Compile Include="Assertions\AssertionTests.cs" />

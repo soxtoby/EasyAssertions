@@ -55,6 +55,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Actual.cs" />
+    <Compile Include="ActualException.cs" />
     <Compile Include="Assertions\Case.cs" />
     <Compile Include="Assertions\CollectionAssertions.cs" />
     <Compile Include="Assertions\TreeAssertions.cs" />

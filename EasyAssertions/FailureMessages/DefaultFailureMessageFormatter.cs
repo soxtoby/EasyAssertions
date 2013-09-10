@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Text.RegularExpressions;
 
 namespace EasyAssertions
 {
@@ -535,6 +536,30 @@ namespace EasyAssertions
                     MessageTemplate = "should be less than {Expected}{BR}"
                                     + "but was             {ActualValue}"
                 }.ToString();
+        }
+
+        public string DoesNotMatch(Regex regex, string actual, string message = null)
+        {
+            return new RegexFailureMessage
+                {
+                    ExpectedValue = regex,
+                    ActualValue = actual,
+                    UserMessage = message,
+                    MessageTemplate = "should match {Expected}{BR}"
+                                    + "but was {ActualValue}"
+                }.ToString();
+        }
+
+        public string Matches(Regex regex, string actual, string message = null)
+        {
+            return new RegexFailureMessage
+            {
+                ExpectedValue = regex,
+                ActualValue = actual,
+                UserMessage = message,
+                MessageTemplate = "shouldn't match {Expected}{BR}"
+                                + "but was {ActualValue}"
+            }.ToString();
         }
     }
 }

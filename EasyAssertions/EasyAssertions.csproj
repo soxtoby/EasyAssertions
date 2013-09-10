@@ -71,6 +71,7 @@
     <Compile Include="FailureMessages\FailureMessage.cs" />
     <Compile Include="FailureMessages\FailureMessageExpected.cs" />
     <Compile Include="FailureMessages\FunctionFailureMessage.cs" />
+    <Compile Include="FailureMessages\RegexFailureMessage.cs" />
     <Compile Include="FailureMessages\StringFailureMessage.cs" />
     <Compile Include="Assertions\NumberAssertions.cs" />
     <Compile Include="FailureMessages\TreeFailureMessage.cs" />

@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Text.RegularExpressions;
 
 namespace EasyAssertions.UnitTests
 {
@@ -1005,6 +1006,44 @@ namespace EasyAssertions.UnitTests
         public void NotLessThan_IncludesMessage()
         {
             string result = DefaultFailureMessageFormatter.Instance.NotLessThan(1, 2, "foo");
+
+            StringAssert.EndsWith(Environment.NewLine + "foo", result);
+        }
+
+        [Test]
+        public void DoesNotMatch()
+        {
+            string result = DefaultFailureMessageFormatter.Instance.DoesNotMatch(new Regex("foo"), "bar");
+
+            Assert.AreEqual(ActualExpression + Environment.NewLine
+                + "should match " + ExpectedExpression + Environment.NewLine
+                + "             /foo/" + Environment.NewLine
+                + "but was \"bar\"", result);
+        }
+
+        [Test]
+        public void DoesNotMatch_IncludesMessage()
+        {
+            string result = DefaultFailureMessageFormatter.Instance.DoesNotMatch(new Regex(""), "", "foo");
+
+            StringAssert.EndsWith(Environment.NewLine + "foo", result);
+        }
+
+        [Test]
+        public void Matches()
+        {
+            string result = DefaultFailureMessageFormatter.Instance.Matches(new Regex("foo"), "bar");
+
+            Assert.AreEqual(ActualExpression + Environment.NewLine
+                + "shouldn't match " + ExpectedExpression + Environment.NewLine
+                + "                /foo/" + Environment.NewLine
+                + "but was \"bar\"", result);
+        }
+
+        [Test]
+        public void Matches_IncludesMessage()
+        {
+            string result = DefaultFailureMessageFormatter.Instance.Matches(new Regex(""), "", "foo");
 
             StringAssert.EndsWith(Environment.NewLine + "foo", result);
         }

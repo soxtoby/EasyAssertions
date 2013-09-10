@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text.RegularExpressions;
 
 namespace EasyAssertions
 {
@@ -103,6 +104,82 @@ namespace EasyAssertions
                     if (!actual.Equals(expected, stringComparison))
                         throw EasyAssertion.Failure(FailureMessageFormatter.Current.NotEqual(expected, actual, caseSensitivity, message));
                 });
+        }
+
+        /// <summary>
+        /// Asserts that a string matches the specified regex pattern, using <see cref="RegexOptions.None"/>.
+        /// </summary>
+        public static Actual<string> ShouldMatch(this string actual, string regexPattern, string message = null)
+        {
+            if (regexPattern == null) throw new ArgumentNullException("regexPattern");
+
+            return actual.RegisterAssert(() => AssertMatch(actual, new Regex(regexPattern), message));
+        }
+
+        /// <summary>
+        /// Asserts that a string matches the specified regex pattern, using the provided <see cref="RegexOptions"/>
+        /// </summary>
+        public static Actual<string> ShouldMatch(this string actual, string regexPattern, RegexOptions options, string message = null)
+        {
+            if (regexPattern == null) throw new ArgumentNullException("regexPattern");
+
+            return actual.RegisterAssert(() => AssertMatch(actual, new Regex(regexPattern, options), message));
+        }
+
+        /// <summary>
+        /// Asserts that a string matches the specified <see cref="Regex"/>.
+        /// </summary>
+        public static Actual<string> ShouldMatch(this string actual, Regex regex, string message = null)
+        {
+            if (regex == null) throw new ArgumentNullException("regex");
+
+            return actual.RegisterAssert(() => AssertMatch(actual, regex, message));
+        }
+
+        private static void AssertMatch(string actual, Regex regex, string message)
+        {
+            ObjectAssertions.AssertType<string>(actual, message);
+
+            if (!regex.IsMatch(actual))
+                throw EasyAssertion.Failure(FailureMessageFormatter.Current.DoesNotMatch(regex, actual, message));
+        }
+
+        /// <summary>
+        /// Asserts that a string does not match the specified regex pattern, using <see cref="RegexOptions.None"/>.
+        /// </summary>
+        public static Actual<string> ShouldNotMatch(this string actual, string regexPattern, string message = null)
+        {
+            if (regexPattern == null) throw new ArgumentNullException("regexPattern");
+
+            return actual.RegisterAssert(() => AssertDoesNotMatch(actual, new Regex(regexPattern), message));
+        }
+
+        /// <summary>
+        /// Asserts that a string does not match the specified regex pattern, using the provides <see cref="RegexOptions"/>.
+        /// </summary>
+        public static Actual<string> ShouldNotMatch(this string actual, string regexPattern, RegexOptions options, string message = null)
+        {
+            if (regexPattern == null) throw new ArgumentNullException("regexPattern");
+
+            return actual.RegisterAssert(() => AssertDoesNotMatch(actual, new Regex(regexPattern, options), message));
+        }
+
+        /// <summary>
+        /// Asserts that a string does not match the specified <see cref="Regex"/>.
+        /// </summary>
+        public static Actual<string> ShouldNotMatch(this string actual, Regex regex, string message = null)
+        {
+            if (regex == null) throw new ArgumentNullException("regex");
+
+            return actual.RegisterAssert(() => AssertDoesNotMatch(actual, regex, message));
+        }
+
+        private static void AssertDoesNotMatch(string actual, Regex regex, string message)
+        {
+            ObjectAssertions.AssertType<string>(actual, message);
+
+            if (regex.IsMatch(actual))
+                throw EasyAssertion.Failure(FailureMessageFormatter.Current.Matches(regex, actual, message));
         }
     }
 }

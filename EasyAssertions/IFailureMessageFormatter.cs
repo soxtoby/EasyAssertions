@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq.Expressions;
+using System.Text.RegularExpressions;
 
 namespace EasyAssertions
 {
@@ -150,5 +151,15 @@ namespace EasyAssertions
         /// Value should be less than another value, but wasn't.
         /// </summary>
         string NotLessThan(object expected, object actual, string message = null);
+
+        /// <summary>
+        /// String should have matched regex pattern, but didn't.
+        /// </summary>
+        string DoesNotMatch(Regex regex, string actual, string message = null);
+
+        /// <summary>
+        /// String should not have matched regex pattern, but did.
+        /// </summary>
+        string Matches(Regex regex, string actual, string message = null);
     }
 }

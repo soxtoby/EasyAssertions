@@ -83,6 +83,7 @@
     <Compile Include="FakeObject.cs" />
     <Compile Include="FunctionFailureMessageTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RegexFailureMessageTests.cs" />
     <Compile Include="SourceExpressionProviderTests.cs" />
   </ItemGroup>
   <ItemGroup>

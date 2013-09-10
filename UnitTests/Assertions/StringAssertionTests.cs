@@ -1,5 +1,6 @@
 using NSubstitute;
 using NUnit.Framework;
+using System.Text.RegularExpressions;
 
 namespace EasyAssertions.UnitTests
 {
@@ -228,6 +229,172 @@ namespace EasyAssertions.UnitTests
         public void ShouldBe_CustomCaseSensitivity_ExpectedIsNull_ThrowsArgumentNullException()
         {
             AssertArgumentNullException("expected", () => "foo".ShouldBe(null, Case.Insensitive));
+        }
+
+        [Test]
+        public void ShouldMatchPattern_MatchesRegex_ReturnsActualValue()
+        {
+            Actual<string> result = "foo".ShouldMatch(".*");
+
+            Assert.AreEqual("foo", result.And);
+        }
+
+        [Test]
+        public void ShouldMatchPattern_DoesNotMatchRegex_FailsWithDoesNotMatchMessage()
+        {
+            MockFormatter.DoesNotMatch(Arg.Is<Regex>(r => r.ToString() == "bar"), "foo", "baz").Returns("qux");
+
+            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => "foo".ShouldMatch("bar", "baz"));
+
+            Assert.AreEqual("qux", result.Message);
+        }
+
+        [Test]
+        public void ShouldMatchPattern_ActualIsNull_FailsWithTypesNotEqualMessage()
+        {
+            MockFormatter.NotEqual(typeof(string), null, "foo").Returns("bar");
+
+            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => ((string)null).ShouldMatch("", "foo"));
+
+            Assert.AreEqual("bar", result.Message);
+        }
+
+        [Test]
+        public void ShouldMatchPattern_RegexPatternIsNull_ThrowsArgumentNullException()
+        {
+            AssertArgumentNullException("regexPattern", () => "".ShouldMatch((string)null));
+        }
+
+        [Test]
+        public void ShouldMatchPattern_WithRegexOptions_MatchesRegex_ReturnsActualValue()
+        {
+            Actual<string> result = "foo".ShouldMatch("FOO", RegexOptions.IgnoreCase);
+
+            Assert.AreEqual("foo", result.And);
+        }
+
+        [Test]
+        public void ShouldMatchPattern_WithRegexOptions_DoesNotMatchRegex_FailsWithDoesNotMatchMessage()
+        {
+            MockFormatter.DoesNotMatch(Arg.Is<Regex>(r => r.ToString() == "bar" && r.Options == RegexOptions.IgnoreCase), "foo", "baz").Returns("qux");
+
+            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => "foo".ShouldMatch("bar", RegexOptions.IgnoreCase, "baz"));
+
+            Assert.AreEqual("qux", result.Message);
+        }
+
+        [Test]
+        public void ShouldMatchPattern_WithRegexOptions_RegexPatternIsNull_ThrowsArgumentNullException()
+        {
+            AssertArgumentNullException("regexPattern", () => "".ShouldMatch(null, RegexOptions.IgnoreCase));
+        }
+
+        [Test]
+        public void ShouldMatchRegex_MatchesRegex_ReturnsActualValue()
+        {
+            Actual<string> result = "foo".ShouldMatch(new Regex(".*"));
+
+            Assert.AreEqual("foo", result.And);
+        }
+
+        [Test]
+        public void ShouldMatchRegex_DoesNotMatchRegex_FailsWithDoesNotMatchMessage()
+        {
+            Regex regex = new Regex("bar");
+            MockFormatter.DoesNotMatch(regex, "foo", "baz").Returns("qux");
+
+            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => "foo".ShouldMatch(regex, "baz"));
+
+            Assert.AreEqual("qux", result.Message);
+        }
+
+        [Test]
+        public void ShouldMatchRegex_RegexIsNull_ThrowsArgumentNullException()
+        {
+            AssertArgumentNullException("regex", () => "".ShouldMatch((Regex)null));
+        }
+
+        [Test]
+        public void ShouldNotMatchPattern_DoesNotMatchRegex_ReturnsActualValue()
+        {
+            Actual<string> result = "foo".ShouldNotMatch("bar");
+
+            Assert.AreEqual("foo", result.And);
+        }
+
+        [Test]
+        public void ShouldNotMatchPattern_MatchesRegex_FailsWithMatchesMessage()
+        {
+            MockFormatter.Matches(Arg.Is<Regex>(r => r.ToString() == ".*"), "foo", "bar").Returns("baz");
+
+            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => "foo".ShouldNotMatch(".*", "bar"));
+
+            Assert.AreEqual("baz", result.Message);
+        }
+
+        [Test]
+        public void ShouldNotMatchPattern_ActualIsNull_FailsWithTypesNotEqualMessage()
+        {
+            MockFormatter.NotEqual(typeof(string), null, "foo").Returns("bar");
+
+            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => ((string)null).ShouldNotMatch("", "foo"));
+
+            Assert.AreEqual("bar", result.Message);
+        }
+
+        [Test]
+        public void ShouldNotMatchPattern_RegexPatternIsNull_ThrowsArgumentNullException()
+        {
+            AssertArgumentNullException("regexPattern", () => "".ShouldNotMatch((string)null));
+        }
+
+        [Test]
+        public void ShouldNotMatchPattern_WithRegexOptions_DoesNotMatchRegex_ReturnsActualValue()
+        {
+            Actual<string> result = "foo".ShouldNotMatch("bar", RegexOptions.IgnoreCase);
+
+            Assert.AreEqual("foo", result.And);
+        }
+
+        [Test]
+        public void ShouldNotMatchPattern_WithRegexOptions_MatchesRegex_FailsWithMatchesMessage()
+        {
+            MockFormatter.Matches(Arg.Is<Regex>(r => r.ToString() == ".*" && r.Options == RegexOptions.IgnoreCase), "foo", "bar").Returns("baz");
+
+            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => "foo".ShouldNotMatch(".*", RegexOptions.IgnoreCase, "bar"));
+
+            Assert.AreEqual("baz", result.Message);
+        }
+
+        [Test]
+        public void ShouldNotMatchPattern_WithRegexOptions_RegexPatternIsNull_ThrowsArgumentNullException()
+        {
+            AssertArgumentNullException("regexPattern", () => "".ShouldNotMatch(null, RegexOptions.IgnoreCase));
+        }
+
+        [Test]
+        public void ShouldNotMatchRegex_DoesNotMatchRegex_ReturnsActualValue()
+        {
+            Actual<string> result = "foo".ShouldNotMatch(new Regex("bar"));
+
+            Assert.AreEqual("foo", result.And);
+        }
+
+        [Test]
+        public void ShouldNotMatchRegex_MatchesRegex_FailsWithMatchesMessage()
+        {
+            Regex regex = new Regex("foo");
+            MockFormatter.Matches(regex, "foo", "bar").Returns("baz");
+
+            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => "foo".ShouldNotMatch(regex, "bar"));
+
+            Assert.AreEqual("baz", result.Message);
+        }
+
+        [Test]
+        public void ShouldNotMatchRegex_RegexIsNull_ThrowsArgumentNullException()
+        {
+            AssertArgumentNullException("regex", () => "".ShouldNotMatch((Regex)null));
         }
     }
 }

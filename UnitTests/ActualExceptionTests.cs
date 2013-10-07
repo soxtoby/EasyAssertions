@@ -8,6 +8,12 @@ namespace EasyAssertions.UnitTests
     public class ActualExceptionTests : AssertionTests
     {
         [Test]
+        public void CannotConstructWithNull()
+        {
+            AssertArgumentNullException("actual", () => new ActualException<Exception>(null));
+        }
+
+        [Test]
         public void And_ReturnsException()
         {
             Exception exception = new Exception();

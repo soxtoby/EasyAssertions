@@ -57,9 +57,8 @@ namespace EasyAssertions
     {
         public static TestNode<T> Node<T>(this T value, params TestNode<T>[] children)
         {
-            TestNode<T> node = new TestNode<T>(value);
-            foreach (TestNode<T> child in children)
-                node.Add(child);
+            TestNode<T> node = value;
+            node.AddRange(children);
             return node;
         }
 

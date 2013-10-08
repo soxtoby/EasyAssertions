@@ -126,6 +126,9 @@ namespace EasyAssertions
                 disposable.Dispose();
         }
 
+        /// <summary>
+        /// Determines whether two trees have the same structure and values.
+        /// </summary>
         public static bool TreesMatch<TActual, TExpected>(IEnumerable<TActual> actualNodes, IEnumerable<TestNode<TExpected>> expectedNodes, Func<TActual, IEnumerable<TActual>> getChildren, Func<TActual, TExpected, bool> areEqual)
         {
             return CollectionsMatch(actualNodes, expectedNodes, (a, e) =>

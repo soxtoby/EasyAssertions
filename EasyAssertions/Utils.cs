@@ -36,6 +36,20 @@ namespace EasyAssertions
                 : value;
         }
 
+        public static string OnNewLine(this string value)
+        {
+            return string.IsNullOrEmpty(value) 
+                ? string.Empty
+                : Environment.NewLine + value;
+        }
+
+        public static string WithSpace(this string value)
+        {
+            return string.IsNullOrEmpty(value)
+                ? string.Empty
+                : value + " ";
+        }
+
         public static int IndexOfOrDefault<T>(this IEnumerable<T> sequence, Func<T, bool> predicate, int startIndex, int defaultValue)
         {
             int i = startIndex;

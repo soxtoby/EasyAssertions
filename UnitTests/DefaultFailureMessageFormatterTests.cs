@@ -689,22 +689,24 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void CollectionDoesNotStartWith_ActualIsShorterThanExpectedStart()
         {
-            string result = DefaultFailureMessageFormatter.Instance.DoesNotStartWith(new[] { 1, 2 }, new[] { 1 }, Equals);
+            string result = DefaultFailureMessageFormatter.Instance.DoesNotStartWith(new[] { 1, 2 }, new[] { 1 }, Equals, "foo");
 
             Assert.AreEqual(ActualExpression + Environment.NewLine
                 + "should have at least 2 elements" + Environment.NewLine
-                + "but had 1 element: <1>", result);
+                + "but had 1 element: <1>" + Environment.NewLine
+                + "foo", result);
         }
 
         [Test]
         public void CollectionDoesNotStartWith_ActualIsLongerThanExpectedStart()
         {
-            string result = DefaultFailureMessageFormatter.Instance.DoesNotStartWith(new[] { 1, 2 }, new[] { 1, 3, 2 }, Equals);
+            string result = DefaultFailureMessageFormatter.Instance.DoesNotStartWith(new[] { 1, 2 }, new[] { 1, 3, 2 }, Equals, "foo");
 
             Assert.AreEqual(ActualExpression + Environment.NewLine
                 + "differs at index 1." + Environment.NewLine
                 + "should be <2>" + Environment.NewLine
-                + "but was   <3>", result);
+                + "but was   <3>" + Environment.NewLine
+                + "foo", result);
         }
 
         [Test]

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text.RegularExpressions;
+using static EasyAssertions.FailureMessageHelper;
 
 namespace EasyAssertions
 {
@@ -15,14 +16,10 @@ namespace EasyAssertions
 
         public string NotEqual(object expected, object actual, string message = null)
         {
-            return new FailureMessage
-                {
-                    ExpectedValue = expected,
-                    ActualValue = actual,
-                    UserMessage = message,
-                    MessageTemplate = "should be {Expected}{BR}"
-                                    + "but was   {ActualValue}"
-                }.ToString();
+            return $@"{ActualExpression}
+should be {Expected(expected, @"
+          ")}
+but was   {Value(actual)}" + message.OnNewLine();
         }
 
         public string NotEqual(string expected, string actual, Case caseSensitivity = Case.Sensitive, string message = null)
@@ -30,17 +27,12 @@ namespace EasyAssertions
             int differenceIndex = Enumerable.Range(0, Math.Max(expected.Length, actual.Length))
                 .FirstOrDefault(i => i == actual.Length || i == expected.Length || !CharactersMatch(expected, actual, i, caseSensitivity));
 
-            return new StringFailureMessage
-                {
-                    ActualValue = actual,
-                    ExpectedValue = expected,
-                    FailureIndex = differenceIndex,
-                    UserMessage = message,
-                    MessageTemplate = "should be {Expected}{BR}"
-                                    + "but was   {ActualValue}{BR}"
-                                    + "          {Arrow}{BR}"
-                                    + "Difference at index {FailureIndex}."
-                }.ToString();
+            return $@"{ActualExpression}
+should be {Expected(expected, differenceIndex, @"
+          ")}
+but was   {Value(actual, differenceIndex)}
+          {Arrow(actual, differenceIndex)}
+Difference at index {differenceIndex}." + message.OnNewLine();
         }
 
         private static bool CharactersMatch(string expected, string actual, int index, Case caseSensitivity)
@@ -55,116 +47,80 @@ namespace EasyAssertions
 
         public string AreEqual(object notExpected, object actual, string message = null)
         {
-            return new FailureMessage
-                {
-                    ExpectedValue = notExpected,
-                    ActualValue = actual,
-                    UserMessage = message,
-                    MessageTemplate = "should not be {Expected}{BR}"
-                                    + "but was       {ActualValue}"
-                }.ToString();
+            return $@"{ActualExpression}
+should not be {Expected(notExpected, @"
+              ")}
+but was       {Value(actual)}" + message.OnNewLine();
         }
 
         public string IsNull(string message = null)
         {
-            return new FailureMessage
-                {
-                    UserMessage = message,
-                    MessageTemplate = "should not be null, but was."
-                }.ToString();
+            return $@"{ActualExpression}
+should not be null, but was." + message.OnNewLine();
         }
 
         public string NotSame(object expected, object actual, string message = null)
         {
-            return new FailureMessage
-                {
-                    ActualValue = actual,
-                    ExpectedValue = expected,
-                    UserMessage = message,
-                    MessageTemplate = "should be instance {Expected}{BR}"
-                                    + "but was            {ActualValue}"
-                }.ToString();
+            return $@"{ActualExpression}
+should be instance {Expected(expected, @"
+                   ")}
+but was            {Value(actual)}" + message.OnNewLine();
         }
 
         public string AreSame(object actual, string message = null)
         {
-            return new FailureMessage
-                {
-                    ExpectedValue = actual,
-                    UserMessage = message,
-                    MessageTemplate = "shouldn't be instance {Expected}"
-                }.ToString();
+            return $@"{ActualExpression}
+shouldn't be instance {Expected(actual, @"
+                      ")}" + message.OnNewLine();
         }
 
         public string NotEmpty(IEnumerable actual, string message = null)
         {
             List<object> actualList = actual.Cast<object>().ToList();
 
-            return new CollectionFailureMessage
-                {
-                    ActualItems = actualList,
-                    UserMessage = message,
-                    MessageTemplate = "should be empty{BR}"
-                                    + "but {ActualItems.Count:"
-                                        + "had 1 element: {0.ActualItems[0]}"
-                                        + "|had {} elements: {0.ActualSample}"
-                                    + "}"
-                }.ToString();
+            return $@"{ActualExpression}
+should be empty
+but {Count(actualList,
+                       $"had 1 element: {Single(actualList)}",
+                       $"had {actualList.Count} elements: {Sample(actualList)}")}" + message.OnNewLine();
         }
 
         public string NotEmpty(string actual, string message = null)
         {
-            return new StringFailureMessage
-                {
-                    ActualValue = actual,
-                    UserMessage = message,
-                    MessageTemplate = "should be empty{BR}"
-                                    + "but was {ActualValue}"
-                }.ToString();
+            return $@"{ActualExpression}
+should be empty
+but was {Value(actual)}" + message.OnNewLine();
         }
 
         public string IsEmpty(string message = null)
         {
-            return new FailureMessage
-                {
-                    UserMessage = message,
-                    MessageTemplate = "should not be empty, but was."
-                }.ToString();
+            return $@"{ActualExpression}
+should not be empty, but was." + message.OnNewLine();
         }
 
         public string LengthMismatch(int expectedLength, IEnumerable actual, string message = null)
         {
-            return new CollectionFailureMessage
-                {
-                    FailureIndex = expectedLength,
-                    ActualItems = actual.Cast<object>().ToList(),
-                    UserMessage = message,
-                    MessageTemplate = "should have {FailureIndex} {FailureIndex:element|elements}{BR}"
-                                    + "but {ActualItems.Count:"
-                                        + "was empty."
-                                        + "|had 1 element: {0.ActualItems[0]}"
-                                        + "|had {} elements: {0.ActualSample}"
-                                    + "}"
-                }.ToString();
+            List<object> actualItems = actual.Cast<object>().ToList();
+            return $@"{ActualExpression}
+should have {expectedLength} {Count(expectedLength, "element", "elements")}
+but {Count(actualItems,
+                       "was empty.",
+                       $"had 1 element: {Single(actualItems)}",
+                       $"had {actualItems.Count} elements: {Sample(actualItems)}")}"
+                   + message.OnNewLine();
         }
 
         public string DoesNotContain(object expected, IEnumerable actual, string itemType = null, string message = null)
         {
             List<object> actualList = actual.Cast<object>().ToList();
 
-            return new CollectionFailureMessage
-                {
-                    ActualItems = actualList,
-                    ExpectedValue = expected,
-                    ItemType = itemType,
-                    UserMessage = message,
-                    MessageTemplate = "should contain {ItemType:{} |}{Expected}{BR}"
-                                    + "but was {ActualItems.Count:"
-                                            + "empty."
-                                           + "|      [{0.ActualItems[0]}]"
-                                           + "|{0.ActualSample}"
-                                    + "}"
-                }.ToString();
+            return $@"{ActualExpression}
+should contain {itemType.WithSpace()}{Expected(expected, @"
+               " + SpaceFor(itemType.WithSpace()))}
+but was {Count(actualList,
+                       "empty.",
+                       $"      [{Single(actualList)}]", Sample(actualList))}"
+                   + message.OnNewLine();
         }
 
         public string DoesNotContainItems(IEnumerable expected, IEnumerable actual, string message = null)
@@ -175,64 +131,50 @@ namespace EasyAssertions
             object missingItem;
             FindMissingItem(expectedItems, actualItems, out missingItemIndex, out missingItem);
 
-            return new CollectionFailureMessage
-                {
-                    ActualItems = actualItems,
-                    ExpectedItems = expectedItems,
-                    ExpectedValue = missingItem,
-                    FailureIndex = missingItemIndex,
-                    UserMessage = message,
-                    MessageTemplate = "{ExpectedExpression:{0:"
-                                        + "should contain {ExpectedExpression}{BR}"
-                                        + "but was missing item {FailureIndex} {ExpectedValue}{BR}"
-                                        + "and was {ActualSample}"
-                                    + "}|{0:"
-                                        + "should contain expected item {FailureIndex} {ExpectedValue}{BR}"
-                                        + "but was {ActualSample}"
-                                    + "}}"
-                }.ToString();
+            string expectedSource = SourceExpectedDifferentToValue(expected);
+
+            return expectedSource == null
+                ? $@"{ActualExpression}
+should contain expected item {missingItemIndex} {Value(missingItem)}
+but was {Sample(actualItems)}" + message.OnNewLine()
+                : $@"{ActualExpression}
+should contain {expectedSource}
+but was missing item {missingItemIndex} {Value(missingItem)}
+and was {Sample(actualItems)}" + message.OnNewLine();
         }
 
         public string Contains(object expectedToNotContain, IEnumerable actual, string itemType = null, string message = null)
         {
             List<object> actualList = actual.Cast<object>().ToList();
 
-            return new CollectionFailureMessage
-                {
-                    ActualItems = actualList,
-                    ExpectedValue = expectedToNotContain,
-                    ItemType = itemType,
-                    UserMessage = message,
-                    MessageTemplate = "shouldn't contain {ItemType:{} |}{Expected}{BR}"
-                                    + "but was {ActualSample}"
-                }.ToString();
+            return $@"{ActualExpression}
+shouldn't contain {itemType.WithSpace()}{Expected(expectedToNotContain, @"
+                  " + SpaceFor(itemType.WithSpace()))}
+but was {Sample(actualList)}" + message.OnNewLine();
         }
 
         public string Contains(IEnumerable expectedToNotContain, IEnumerable actual, string message = null)
         {
-            HashSet<object> actualSet = new HashSet<object>(actual.Cast<object>());
+            List<object> actualItems = actual.Cast<object>().ToList();
+            HashSet<object> actualSet = new HashSet<object>(actualItems);
             List<object> unexpectedList = expectedToNotContain.Cast<object>().ToList();
             int unexpectedItemIndex = unexpectedList.FindIndex(actualSet.Contains);
             object unexpectedItem = unexpectedItemIndex == -1 ? null
                 : unexpectedList[unexpectedItemIndex];
             int itemIndexInActual = actual.Cast<object>().ToList().IndexOf(unexpectedItem);
 
-            return new CollectionFailureMessage
-                {
-                    ActualItems = actualSet,
-                    ExpectedValue = unexpectedItem,
-                    FailureIndex = itemIndexInActual,
-                    UserMessage = message,
-                    MessageTemplate = "shouldn't contain {ExpectedExpression:{0:"
-                                        + "{ExpectedExpression}{BR}"
-                                        + "but contained {ExpectedValue}{BR}"
-                                        + "and was {ActualSample}"
-                                    + "}|{0:"
-                                        + "{ExpectedValue}{BR}"
-                                        + "but was {ActualSample}"
-                                    + "}}{BR}"
-                                    + "Match at index {FailureIndex}."
-                }.ToString();
+            string expectedSource = SourceExpectedDifferentToValue(expectedToNotContain);
+
+            return expectedSource != null
+                ? $@"{ActualExpression}
+shouldn't contain {expectedSource}
+but contained {Value(unexpectedItem)}
+and was {Sample(actualItems)}
+Match at index {itemIndexInActual}." + message.OnNewLine()
+                : $@"{ActualExpression}
+shouldn't contain {Value(unexpectedItem)}
+but was {Sample(actualItems)}
+Match at index {itemIndexInActual}." + message.OnNewLine();
         }
 
         public string OnlyContains(IEnumerable expected, IEnumerable actual, string message = null)
@@ -240,20 +182,15 @@ namespace EasyAssertions
             List<object> actualItems = new List<object>(actual.Cast<object>());
             HashSet<object> expectedItems = new HashSet<object>(expected.Cast<object>());
 
+            string expectedSource = SourceExpectedDifferentToValue(expected);
 
-            return new CollectionFailureMessage
-                {
-                    ActualItems = actualItems,
-                    ExpectedItems = expectedItems,
-                    UserMessage = message,
-                    MessageTemplate = "{ExpectedExpression:{0:"
-                                        + "should contain more than just {ExpectedExpression}{BR}"
-                                        + "but was {ActualSample}"
-                                    + "}|{0:"
-                                        + "should contain more than just {ExpectedSample}{BR}"
-                                        + "but was {ActualSample}"
-                                    + "}}"
-                }.ToString();
+            return expectedSource != null
+                ? $@"{ActualExpression}
+should contain more than just {expectedSource}
+but was {Sample(actualItems)}" + message.OnNewLine()
+                : $@"{ActualExpression}
+should contain more than just {Sample(expectedItems)}
+but was {Sample(actualItems)}" + message.OnNewLine();
         }
 
         public string DoesNotOnlyContain(IEnumerable expected, IEnumerable actual, string message = null)
@@ -272,19 +209,15 @@ namespace EasyAssertions
             HashSet<object> expectedItems = new HashSet<object>(expected.Cast<object>());
             List<object> extraItems = actual.Cast<object>().Where(a => !expectedItems.Contains(a)).ToList();
 
-            return new CollectionFailureMessage
-                {
-                    ActualItems = extraItems,
-                    ExpectedItems = expectedItems,
-                    UserMessage = message,
-                    MessageTemplate = "{ExpectedExpression:{0:"
-                                        + "should only contain {ExpectedExpression}{BR}"
-                                        + "but also contains {ActualSample}"
-                                    + "}|{0:"
-                                        + "should only contain {ExpectedSample}{BR}"
-                                        + "but also contains {ActualSample}"
-                                    + "}}"
-                }.ToString();
+            string expectedSource = SourceExpectedDifferentToValue(expectedItems);
+
+            return expectedSource != null
+                ? $@"{ActualExpression}
+should only contain {expectedSource}
+but also contains {Sample(extraItems)}" + message.OnNewLine()
+                : $@"{ActualExpression}
+should only contain {Sample(expectedItems)}
+but also contains {Sample(extraItems)}" + message.OnNewLine();
         }
 
         private static void FindMissingItem(IEnumerable expected, ICollection<object> actualItems, out int missingItemIndex, out object missingItem)
@@ -307,54 +240,35 @@ namespace EasyAssertions
             List<object> expectedList = expected.Cast<object>().ToList();
             List<object> actualList = actual.Cast<object>().ToList();
 
+            string expectedSource = SourceExpectedDifferentToValue(expected);
+
             if (expectedList.Count != actualList.Count)
-                return new CollectionFailureMessage
-                    {
-                        ActualItems = actualList,
-                        ExpectedItems = expectedList,
-                        UserMessage = message,
-                        MessageTemplate = "{ExpectedExpression:doesn't match {}.{0.BR}|}"
-                                        + "should have {ExpectedItems.Count:1 element|{} elements}{BR}"
-                                        + "but {ActualItems.Count:"
-                                            + "was empty."
-                                            + "|had 1 element: {0.ActualItems[0]}"
-                                            + "|had {} elements: {0.ActualSample}"
-                                        + "}"
-                    }.ToString();
+                return $@"{ActualExpression}{(expectedSource == null ? null : $"doesn't match {expectedSource}.").OnNewLine()}
+should have {Count(expectedList, "1 element", $"{expectedList.Count} elements")}
+but {Count(actualList,
+                           "was empty.",
+                           $"had 1 element: {Single(actualList)}",
+                           $"had {actualList.Count} elements: {Sample(actualList)}")}"
+                       + message.OnNewLine();
 
-            object expectedValue, actualValue;
-            int differenceIndex = FindDifference(expectedList, actualList, (a, e) => predicate((TActual)a, (TExpected)e), out expectedValue, out actualValue);
+            object expectedItem, actualItem;
+            int differenceIndex = FindDifference(expectedList, actualList, (a, e) => predicate((TActual)a, (TExpected)e), out expectedItem, out actualItem);
 
-            return new CollectionFailureMessage
-                {
-                    ActualValue = actualValue,
-                    ExpectedValue = expectedValue,
-                    FailureIndex = differenceIndex,
-                    UserMessage = message,
-                    MessageTemplate = "{ExpectedExpression:"
-                                        + "doesn't match {}. Differs"
-                                        + "|differs}"
-                                    + " at index {FailureIndex}.{BR}"
-                                    + "should match {ExpectedValue}{BR}"
-                                    + "but was      {ActualValue}"
-                }.ToString();
+            return $@"{ActualExpression}
+{(expectedSource != null ? $"doesn't match {expectedSource}. Differs" : "differs")} at index {differenceIndex}.
+should match {Value(expectedItem)}
+but was      {Value(actualItem)}" + message.OnNewLine();
         }
 
         public string ItemsNotSame(IEnumerable expected, IEnumerable actual, string message = null)
         {
-            object expectedValue, actualValue;
-            int differenceIndex = FindDifference(expected, actual, ReferenceEquals, out expectedValue, out actualValue);
+            object expectedItem, actualItem;
+            int differenceIndex = FindDifference(expected, actual, ReferenceEquals, out expectedItem, out actualItem);
 
-            return new FailureMessage
-                {
-                    ActualValue = actualValue,
-                    ExpectedValue = expectedValue,
-                    FailureIndex = differenceIndex,
-                    UserMessage = message,
-                    MessageTemplate = "differs at index {FailureIndex}.{BR}"
-                                    + "should be instance {ExpectedValue}{BR}"
-                                    + "but was            {ActualValue}"
-                }.ToString();
+            return $@"{ActualExpression}
+differs at index {differenceIndex}.
+should be instance {Value(expectedItem)}
+but was            {Value(actualItem)}" + message.OnNewLine();
         }
 
         public string DoesNotStartWith(IEnumerable expected, IEnumerable actual, Func<object, object, bool> predicate, string message = null)
@@ -364,33 +278,21 @@ namespace EasyAssertions
 
             if (actualItems.Count < expectedItems.Count)
             {
-                return new CollectionFailureMessage
-                    {
-                        FailureIndex = expectedItems.Count,
-                        ActualItems = actualItems,
-                        UserMessage = message,
-                        MessageTemplate = "should have at least {FailureIndex} {FailureIndex:element|elements}{BR}"
-                                        + "but {ActualItems.Count:"
-                                        + "was empty."
-                                        + "|had 1 element: {0.ActualItems[0]}"
-                                        + "|had {} elements: {0.ActualSample}"
-                                        + "}"
-                    }.ToString();
+                return $@"{ActualExpression}
+should have at least {expectedItems.Count} {Count(expectedItems, "element", "elements")}
+but {Count(actualItems,
+                    "was empty.",
+                    $"had 1 element: {Single(actualItems)}",
+                    $"had {actualItems.Count} elements: {Sample(actualItems)}")}" + message.OnNewLine();
             }
 
             object expectedValue, actualValue;
             int differenceIndex = FindDifference(expectedItems, actualItems, predicate, out expectedValue, out actualValue);
 
-            return new FailureMessage
-                {
-                    ActualValue = actualValue,
-                    ExpectedValue = expectedValue,
-                    FailureIndex = differenceIndex,
-                    UserMessage = message,
-                    MessageTemplate = "differs at index {FailureIndex}.{BR}"
-                                    + "should be {ExpectedValue}{BR}"
-                                    + "but was   {ActualValue}"
-                }.ToString();
+            return $@"{ActualExpression}
+differs at index {differenceIndex}.
+should be {Value(expectedValue)}
+but was   {Value(actualValue)}" + message.OnNewLine();
         }
 
         public string TreesDoNotMatch<TActual, TExpected>(IEnumerable<TestNode<TExpected>> expected, IEnumerable<TActual> actual, Func<TActual, IEnumerable<TActual>> getChildren, Func<object, object, bool> predicate, string message = null)
@@ -398,7 +300,7 @@ namespace EasyAssertions
             return TreesDoNotMatch(expected, actual, getChildren, predicate, message, Enumerable.Empty<TActual>());
         }
 
-        private static string TreesDoNotMatch<TActual, TExpected>(IEnumerable<TestNode<TExpected>> expected, IEnumerable<TActual> actual, Func<TActual, IEnumerable<TActual>> getChildren, Func<object, object, bool> predicate, string message, IEnumerable<TActual> path)
+        private string TreesDoNotMatch<TActual, TExpected>(IEnumerable<TestNode<TExpected>> expected, IEnumerable<TActual> actual, Func<TActual, IEnumerable<TActual>> getChildren, Func<object, object, bool> predicate, string message, IEnumerable<TActual> path)
         {
             if (Compare.CollectionsMatch(actual, expected.Values(), predicate))
                 return ChildrenDoNotMatch(expected, actual, getChildren, predicate, message, path);
@@ -411,45 +313,35 @@ namespace EasyAssertions
                 : TreeNodeValueDoesNotMatch(expectedItems, actualItems, predicate, message, path);
         }
 
-        private static string TreeNodeChildrenLengthMismatch<TActual>(List<object> expectedItems, List<object> actualItems, string message, IEnumerable<TActual> path)
+        private string TreeNodeChildrenLengthMismatch<TActual>(List<object> expectedItems, List<object> actualItems, string message, IEnumerable<TActual> path)
         {
-            return new TreeFailureMessage
-                {
-                    ActualItems = actualItems,
-                    ExpectedItems = expectedItems,
-                    FailurePathValues = path.Cast<object>().ToList(),
-                    UserMessage = message,
-                    MessageTemplate = "{ExpectedExpression:doesn't match {}.{0.BR}|}"
-                                      + "{FailurePath} node should have {ExpectedItems.Count:1 child|{} children}{BR}"
-                                      + "but {ActualItems.Count:"
-                                      + "was empty."
-                                      + "|had 1 child: {0.ActualItems[0]}"
-                                      + "|had {} children: {0.ActualSample}"
-                                      + "}"
-                }.ToString();
+            List<object> pathItems = path.Cast<object>().ToList();
+            string expectedSource = SourceExpectedDifferentToValue(expectedItems);
+
+            return $@"{ActualExpression}{(expectedItems == null ? null : $"doesn't match {expectedSource}.").OnNewLine()}
+{Path(pathItems)} node should have {Count(expectedItems, "1 child", $"{expectedItems.Count} children")}
+but {Count(actualItems,
+                       "was empty.",
+                       $"had 1 child: {Single(actualItems)}",
+                       $"had {actualItems.Count} children: {Sample(actualItems)}")}" + message.OnNewLine();
         }
 
-        private static string TreeNodeValueDoesNotMatch<TActual>(IList<object> expectedItems, IList<object> actualItems, Func<object, object, bool> predicate, string message, IEnumerable<TActual> path)
+        private string TreeNodeValueDoesNotMatch<TActual>(IList<object> expectedItems, IList<object> actualItems, Func<object, object, bool> predicate, string message, IEnumerable<TActual> path)
         {
-            object expectedValue;
-            object actualValue;
-            int differenceIndex = FindDifference(expectedItems, actualItems, predicate, out expectedValue, out actualValue);
+            object expectedItem;
+            object actualItem;
+            int differenceIndex = FindDifference(expectedItems, actualItems, predicate, out expectedItem, out actualItem);
+            List<object> pathItems = path.Cast<object>().ToList();
+            string expectedSource = SourceExpectedDifferentToValue(expectedItem);
 
-            return new TreeFailureMessage
-                {
-                    ActualValue = actualValue,
-                    ExpectedValue = expectedValue,
-                    FailureIndex = differenceIndex,
-                    FailurePathValues = path.Cast<object>().ToList(),
-                    UserMessage = message,
-                    MessageTemplate = "doesn't match {ExpectedExpression:{0:{ExpectedExpression}}|expected tree}.{BR}"
-                                      + "Differs at {FailurePath}, child index {FailureIndex}.{BR}"
-                                      + "should be {ExpectedValue}{BR}"
-                                      + "but was   {ActualValue}"
-                }.ToString();
+            return $@"{ActualExpression}
+doesn't match {expectedSource ?? "expected tree"}.
+Differs at {Path(pathItems)}, child index {differenceIndex}.
+should be {Value(expectedItem)}
+but was   {Value(actualItem)}" + message.OnNewLine();
         }
 
-        private static string ChildrenDoNotMatch<TActual, TExpected>(IEnumerable<TestNode<TExpected>> expected, IEnumerable<TActual> actual, Func<TActual, IEnumerable<TActual>> getChildren, Func<object, object, bool> predicate, string message, IEnumerable<TActual> path)
+        private string ChildrenDoNotMatch<TActual, TExpected>(IEnumerable<TestNode<TExpected>> expected, IEnumerable<TActual> actual, Func<TActual, IEnumerable<TActual>> getChildren, Func<object, object, bool> predicate, string message, IEnumerable<TActual> path)
         {
             return expected.Zip(actual, (e, a) => TreesDoNotMatch(e, getChildren(a), getChildren, predicate, message, path.Concat(new[] { a })))
                 .FirstOrDefault(m => m != null);
@@ -475,127 +367,84 @@ namespace EasyAssertions
 
         public string NoException(Type expectedExceptionType, LambdaExpression function, string message = null)
         {
-            return new FunctionFailureMessage(function)
-                {
-                    ExpectedExceptionType = expectedExceptionType,
-                    UserMessage = message,
-                    MessageTemplate = "should throw {ExpectedExceptionName}{BR}"
-                                    + "but didn't throw at all."
-                }.ToString();
+            return $@"{Value(function)}
+should throw {Value(expectedExceptionType)}
+but didn't throw at all." + message.OnNewLine();
         }
 
         public string WrongException(Type expectedExceptionType, Type actualExceptionType, LambdaExpression function, string message = null)
         {
-            return new FunctionFailureMessage(function)
-                {
-                    ExpectedExceptionType = expectedExceptionType,
-                    ActualExceptionType = actualExceptionType,
-                    UserMessage = message,
-                    MessageTemplate = "should throw {ExpectedExceptionName}{BR}"
-                                    + "but threw    {ActualExceptionName}"
-                }.ToString();
+            return $@"{Value(function)}
+should throw {Value(expectedExceptionType)}
+but threw    {Value(actualExceptionType)}" + message.OnNewLine();
         }
 
         public string DoesNotContain(string expectedSubstring, string actual, string message = null)
         {
-            return new StringFailureMessage
-                {
-                    ActualValue = actual,
-                    ExpectedValue = expectedSubstring,
-                    UserMessage = message,
-                    MessageTemplate = "should contain {Expected}{BR}"
-                                    + "but was        {ActualValue}"
-                }.ToString();
+            return $@"{ActualExpression}
+should contain {Expected(expectedSubstring, @"
+               ")}
+but was        {Value(actual)}" + message.OnNewLine();
         }
 
         public string Contains(string expectedToNotContain, string actual, string message = null)
         {
             int matchIndex = actual.IndexOf(expectedToNotContain, StringComparison.Ordinal);
 
-            return new StringFailureMessage
-                {
-                    ActualValue = actual,
-                    ExpectedValue = expectedToNotContain,
-                    FailureIndex = matchIndex,
-                    UserMessage = message,
-                    MessageTemplate = "shouldn't contain {Expected}{BR}"
-                                    + "but was           {ActualValue}{BR}"
-                                    + "                  {Arrow}{BR}"
-                                    + "Match at index {FailureIndex}."
-                }.ToString();
+            return $@"{ActualExpression}
+shouldn't contain {Expected(expectedToNotContain, @"
+                  ")}
+but was           {Value(actual, matchIndex)}
+                  {Arrow(actual, matchIndex)}
+Match at index {matchIndex}." + message.OnNewLine();
         }
 
         public string DoesNotStartWith(string expectedStart, string actual, string message = null)
         {
-            return new StringFailureMessage
-                {
-                    ActualValue = actual,
-                    ExpectedValue = expectedStart,
-                    UserMessage = message,
-                    MessageTemplate = "should start with {Expected}{BR}"
-                                    + "but starts with   {ActualValue}"
-                }.ToString();
+            return $@"{ActualExpression}
+should start with {Expected(expectedStart, @"
+                  ")}
+but starts with   {Value(actual)}" + message.OnNewLine();
         }
 
         public string DoesNotEndWith(string expectedEnd, string actual, string message = null)
         {
-            return new StringFailureMessage
-                {
-                    ActualValue = actual,
-                    ExpectedValue = expectedEnd,
-                    UserMessage = message,
-                    FailureIndex = actual.Length - 1,
-                    MessageTemplate = "should end with {Expected}{BR}"
-                                    + "but ends with   {ActualValue}"
-                }.ToString();
+            return $@"{ActualExpression}
+should end with {Expected(expectedEnd, expectedEnd.Length - 1, @"
+                ")}
+but ends with   {Value(actual, actual.Length - 1)}" + message.OnNewLine();
         }
 
         public string NotGreaterThan(object expected, object actual, string message = null)
         {
-            return new FailureMessage
-                {
-                    ActualValue = actual,
-                    ExpectedValue = expected,
-                    UserMessage = message,
-                    MessageTemplate = "should be greater than {Expected}{BR}"
-                                    + "but was                {ActualValue}"
-                }.ToString();
+            return $@"{ActualExpression}
+should be greater than {Expected(expected, @"
+                       ")}
+but was                {Value(actual)}" + message.OnNewLine();
         }
 
         public string NotLessThan(object expected, object actual, string message = null)
         {
-            return new FailureMessage
-                {
-                    ExpectedValue = expected,
-                    ActualValue = actual,
-                    UserMessage = message,
-                    MessageTemplate = "should be less than {Expected}{BR}"
-                                    + "but was             {ActualValue}"
-                }.ToString();
+            return $@"{ActualExpression}
+should be less than {Expected(expected, @"
+                    ")}
+but was             {Value(actual)}" + message.OnNewLine();
         }
 
         public string DoesNotMatch(Regex regex, string actual, string message = null)
         {
-            return new RegexFailureMessage
-                {
-                    ExpectedValue = regex,
-                    ActualValue = actual,
-                    UserMessage = message,
-                    MessageTemplate = "should match {Expected}{BR}"
-                                    + "but was {ActualValue}"
-                }.ToString();
+            return $@"{ActualExpression}
+should match {Expected(regex, @"
+             ")}
+but was {Value(actual)}" + message.OnNewLine();
         }
 
         public string Matches(Regex regex, string actual, string message = null)
         {
-            return new RegexFailureMessage
-            {
-                ExpectedValue = regex,
-                ActualValue = actual,
-                UserMessage = message,
-                MessageTemplate = "shouldn't match {Expected}{BR}"
-                                + "but was {ActualValue}"
-            }.ToString();
+            return $@"{ActualExpression}
+shouldn't match {Expected(regex, @"
+                ")}
+but was {Value(actual)}" + message.OnNewLine();
         }
     }
 }

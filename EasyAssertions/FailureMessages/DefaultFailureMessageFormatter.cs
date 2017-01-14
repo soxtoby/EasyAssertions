@@ -357,6 +357,42 @@ namespace EasyAssertions
                 }.ToString();
         }
 
+        public string DoesNotStartWith(IEnumerable expected, IEnumerable actual, Func<object, object, bool> predicate, string message = null)
+        {
+            List<object> expectedItems = expected.Cast<object>().ToList();
+            List<object> actualItems = actual.Cast<object>().ToList();
+
+            if (actualItems.Count < expectedItems.Count)
+            {
+                return new CollectionFailureMessage
+                    {
+                        FailureIndex = expectedItems.Count,
+                        ActualItems = actualItems,
+                        UserMessage = message,
+                        MessageTemplate = "should have at least {FailureIndex} {FailureIndex:element|elements}{BR}"
+                                        + "but {ActualItems.Count:"
+                                        + "was empty."
+                                        + "|had 1 element: {0.ActualItems[0]}"
+                                        + "|had {} elements: {0.ActualSample}"
+                                        + "}"
+                    }.ToString();
+            }
+
+            object expectedValue, actualValue;
+            int differenceIndex = FindDifference(expectedItems, actualItems, predicate, out expectedValue, out actualValue);
+
+            return new FailureMessage
+                {
+                    ActualValue = actualValue,
+                    ExpectedValue = expectedValue,
+                    FailureIndex = differenceIndex,
+                    UserMessage = message,
+                    MessageTemplate = "differs at index {FailureIndex}.{BR}"
+                                    + "should be {ExpectedValue}{BR}"
+                                    + "but was   {ActualValue}"
+                }.ToString();
+        }
+
         public string TreesDoNotMatch<TActual, TExpected>(IEnumerable<TestNode<TExpected>> expected, IEnumerable<TActual> actual, Func<TActual, IEnumerable<TActual>> getChildren, Func<object, object, bool> predicate, string message = null)
         {
             return TreesDoNotMatch(expected, actual, getChildren, predicate, message, Enumerable.Empty<TActual>());

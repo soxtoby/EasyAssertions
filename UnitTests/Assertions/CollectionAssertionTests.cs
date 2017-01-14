@@ -35,11 +35,7 @@ namespace EasyAssertions.UnitTests
         public void ShouldBeEmpty_Null_FailsWithTypesNotEqualMessage()
         {
             IEnumerable<string> actual = null;
-            MockFormatter.NotEqual(typeof(IEnumerable<string>), null, "foo").Returns("bar");
-
-            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldBeEmpty("foo"));
-
-            Assert.AreEqual("bar", result.Message);
+            AssertFailsWithTypesNotEqualMessage(typeof(IEnumerable<string>), null, msg => actual.ShouldBeEmpty(msg));
         }
 
         [Test]
@@ -67,11 +63,7 @@ namespace EasyAssertions.UnitTests
         public void ShouldNotBeEmpty_Null_FailsWithTypesNotEqualMessage()
         {
             IEnumerable<string> actual = null;
-            MockFormatter.NotEqual(typeof(IEnumerable<string>), null, "foo").Returns("bar");
-
-            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldNotBeEmpty("foo"));
-
-            Assert.AreEqual("bar", result.Message);
+            AssertFailsWithTypesNotEqualMessage(typeof(IEnumerable<string>), null, msg => actual.ShouldNotBeEmpty(msg));
         }
 
         [Test]
@@ -99,11 +91,7 @@ namespace EasyAssertions.UnitTests
         public void ShouldBeSingular_Null_FailsWithTypesNotEqualMessage()
         {
             IEnumerable<string> actual = null;
-            MockFormatter.NotEqual(typeof(IEnumerable<string>), null, "foo").Returns("bar");
-
-            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldBeSingular("foo"));
-
-            Assert.AreEqual("bar", result.Message);
+            AssertFailsWithTypesNotEqualMessage(typeof(IEnumerable<string>), null, msg => actual.ShouldBeSingular(msg));
         }
 
         [Test]
@@ -131,11 +119,7 @@ namespace EasyAssertions.UnitTests
         public void ShouldBeLength_Null_FailsWithTypesNotEqualMessage()
         {
             IEnumerable<string> actual = null;
-            MockFormatter.NotEqual(typeof(IEnumerable<string>), null, "foo").Returns("bar");
-
-            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldBeLength(1, "foo"));
-
-            Assert.AreEqual("bar", result.Message);
+            AssertFailsWithTypesNotEqualMessage(typeof(IEnumerable<string>), null, msg => actual.ShouldBeLength(1, msg));
         }
 
         [Test]
@@ -164,11 +148,7 @@ namespace EasyAssertions.UnitTests
         public void ShouldMatch_ActualIsNull_FailsWithTypesNotEqualMessage()
         {
             IEnumerable<string> actual = null;
-            MockFormatter.NotEqual(typeof(IEnumerable<string>), null, "foo").Returns("bar");
-
-            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldMatch(new string[] { }, "foo"));
-
-            Assert.AreEqual("bar", result.Message);
+            AssertFailsWithTypesNotEqualMessage(typeof(IEnumerable<string>), null, msg => actual.ShouldMatch(new string[] { }, msg));
         }
 
         [Test]
@@ -274,11 +254,7 @@ namespace EasyAssertions.UnitTests
         public void ShouldMatch_FloatsActualIsNull_FailsWithTypesNotEqualMessage()
         {
             IEnumerable<float> actual = null;
-            MockFormatter.NotEqual(typeof(IEnumerable<float>), null, "foo").Returns("bar");
-
-            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldMatch(new[] { 1f }, 1f, "foo"));
-
-            Assert.AreEqual("bar", result.Message);
+            AssertFailsWithTypesNotEqualMessage(typeof(IEnumerable<float>), null, msg => actual.ShouldMatch(new[] { 1f }, 1f, msg));
         }
 
         [Test]
@@ -310,9 +286,40 @@ namespace EasyAssertions.UnitTests
         public void ShouldMatch_DoublesActualIsNull_FailsWithTypesNotEqualMessage()
         {
             IEnumerable<double> actual = null;
-            MockFormatter.NotEqual(typeof(IEnumerable<double>), null, "foo").Returns("bar");
+            AssertFailsWithTypesNotEqualMessage(typeof(IEnumerable<double>), null, msg => actual.ShouldMatch(new[] { 1d }, 1d, msg));
+        }
 
-            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldMatch(new[] { 1d }, 1d, "foo"));
+        [Test]
+        public void ShouldStartWith_StartsWithExpected_ReturnsActualValue()
+        {
+            int[] actual = { 1, 2, 3 };
+
+            Actual<IEnumerable<int>> result = actual.ShouldStartWith(new[] { 1, 2 });
+
+            Assert.AreSame(actual, result.And);
+        }
+
+        [Test]
+        public void ShouldStartWith_ActualIsNull_FailsWithTypesNotEqualMessage()
+        {
+            IEnumerable<int> actual = null;
+            AssertFailsWithTypesNotEqualMessage(typeof(IEnumerable<int>), null, msg => actual.ShouldStartWith(Enumerable.Empty<object>(), msg));
+        }
+
+        [Test]
+        public void ShouldStartWith_ExpectedIsNull_FailsWithArgumentNullException()
+        {
+            AssertArgumentNullException("expectedStart", () => new[] { 1 }.ShouldStartWith((IEnumerable<int>)null));
+        }
+
+        [Test]
+        public void ShouldStartWith_DoesNotStartWithExpected_FailsWithDoesNotStartWithMessage()
+        {
+            int[] actual = { 1 };
+            int[] expectedStart = { 2 };
+            MockFormatter.DoesNotStartWith(expectedStart, actual, Equals, "foo").Returns("bar");
+
+            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldStartWith(expectedStart, "foo"));
 
             Assert.AreEqual("bar", result.Message);
         }
@@ -343,11 +350,7 @@ namespace EasyAssertions.UnitTests
         public void ShouldContain_ActualIsNull_FailsWithTypesNotEqualMessage()
         {
             IEnumerable<int> actual = null;
-            MockFormatter.NotEqual(typeof(IEnumerable<int>), null, "foo").Returns("bar");
-
-            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldContain(1, "foo"));
-
-            Assert.AreEqual("bar", result.Message);
+            AssertFailsWithTypesNotEqualMessage(typeof(IEnumerable<int>), null, msg => actual.ShouldContain(1, msg));
         }
 
         [Test]
@@ -375,11 +378,7 @@ namespace EasyAssertions.UnitTests
         public void ShouldNotContain_ActualIsNull_FailsWithTypesNotEqualMessage()
         {
             IEnumerable<int> actual = null;
-            MockFormatter.NotEqual(typeof(IEnumerable<int>), null, "foo").Returns("bar");
-
-            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldNotContain(1, "foo"));
-
-            Assert.AreEqual("bar", result.Message);
+            AssertFailsWithTypesNotEqualMessage(typeof(IEnumerable<int>), null, msg => actual.ShouldNotContain(1, msg));
         }
 
         [Test]
@@ -408,11 +407,7 @@ namespace EasyAssertions.UnitTests
         public void ShouldContainItems_ActualIsNull_FailsWithTypesNotEqualMessage()
         {
             IEnumerable<int> actual = null;
-            MockFormatter.NotEqual(typeof(IEnumerable<int>), null, "foo").Returns("bar");
-
-            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldContainItems(new[] { 1 }, "foo"));
-
-            Assert.AreEqual("bar", result.Message);
+            AssertFailsWithTypesNotEqualMessage(typeof(IEnumerable<int>), null, msg => actual.ShouldContainItems(new[] { 1 }, msg));
         }
 
         [Test]
@@ -441,11 +436,7 @@ namespace EasyAssertions.UnitTests
         public void ItemsShouldBeIn_ActualIsNull_FailsWithTypesNotEqualMessage()
         {
             IEnumerable<int> actual = null;
-            MockFormatter.NotEqual(typeof(IEnumerable<int>), null, "foo").Returns("bar");
-
-            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ItemsShouldBeIn(new[] { 1 }, "foo"));
-
-            Assert.AreEqual("bar", result.Message);
+            AssertFailsWithTypesNotEqualMessage(typeof(IEnumerable<int>), null, msg => actual.ItemsShouldBeIn(new[] { 1 }, msg));
         }
 
         [Test]
@@ -480,11 +471,7 @@ namespace EasyAssertions.UnitTests
         public void ShouldNotContainItems_ActualIsNull_FailsWithTypesNotEqualMessage()
         {
             IEnumerable<int> actual = null;
-            MockFormatter.NotEqual(typeof(IEnumerable<int>), null, "foo").Returns("bar");
-
-            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldNotContainItems(new[] { 1 }, "foo"));
-
-            Assert.AreEqual("bar", result.Message);
+            AssertFailsWithTypesNotEqualMessage(typeof(IEnumerable<int>), null, msg => actual.ShouldNotContainItems(new[] { 1 }, msg));
         }
 
         [Test]
@@ -525,11 +512,7 @@ namespace EasyAssertions.UnitTests
         public void ShouldOnlyContain_ActualIsNull_FailsWithTypesNotEqualMessage()
         {
             IEnumerable<int> actual = null;
-            MockFormatter.NotEqual(typeof(IEnumerable<int>), null, "foo").Returns("bar");
-
-            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldOnlyContain(new[] { 1 }, "foo"));
-
-            Assert.AreEqual("bar", result.Message);
+            AssertFailsWithTypesNotEqualMessage(typeof(IEnumerable<int>), null, msg => actual.ShouldOnlyContain(new[] { 1 }, msg));
         }
 
         [Test]
@@ -558,11 +541,7 @@ namespace EasyAssertions.UnitTests
         public void ShouldNotOnlyContain_ActualIsNull_FailsWithTypesNotEqualMessage()
         {
             IEnumerable<int> actual = null;
-            MockFormatter.NotEqual(typeof(IEnumerable<int>), null, "foo").Returns("bar");
-
-            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldNotOnlyContain(new[] { 1 }, "foo"));
-
-            Assert.AreEqual("bar", result.Message);
+            AssertFailsWithTypesNotEqualMessage(typeof(IEnumerable<int>), null, msg => actual.ShouldNotOnlyContain(new[] { 1 }, msg));
         }
 
         [Test]
@@ -612,11 +591,7 @@ namespace EasyAssertions.UnitTests
         public void ShouldMatchReferences_ActualIsNull_FailsWithTypesNotEqualMessage()
         {
             IEnumerable<object> actual = null;
-            MockFormatter.NotEqual(typeof(IEnumerable<object>), null, "foo").Returns("bar");
-
-            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldMatchReferences(new[] { new object() }, "foo"));
-
-            Assert.AreEqual("bar", result.Message);
+            AssertFailsWithTypesNotEqualMessage(typeof(IEnumerable<object>), null, msg => actual.ShouldMatchReferences(new[] { new object() }, msg));
         }
 
         [Test]
@@ -691,11 +666,7 @@ namespace EasyAssertions.UnitTests
         public void KeyedCollectionShouldContainKey_ActualIsNull_FailsWithTypesNotEqualMessage()
         {
             TestKeyedCollection actual = null;
-            MockFormatter.NotEqual(typeof(KeyedCollection<char, string>), null, "foo").Returns("bar");
-
-            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldContainKey('a', "foo"));
-
-            Assert.AreEqual("bar", result.Message);
+            AssertFailsWithTypesNotEqualMessage(typeof(KeyedCollection<char, string>), null, msg => actual.ShouldContainKey('a', msg));
         }
 
         [Test]
@@ -723,11 +694,7 @@ namespace EasyAssertions.UnitTests
         public void KeyedCollectionShouldNotContainKey_ActualIsNull_FailsWithTypesNotEqualMessage()
         {
             TestKeyedCollection actual = null;
-            MockFormatter.NotEqual(typeof(KeyedCollection<char, string>), null, "foo").Returns("bar");
-
-            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldNotContainKey('a', "foo"));
-
-            Assert.AreEqual("bar", result.Message);
+            AssertFailsWithTypesNotEqualMessage(typeof(KeyedCollection<char, string>), null, msg => actual.ShouldNotContainKey('a', msg));
         }
 
         [Test]
@@ -806,9 +773,9 @@ namespace EasyAssertions.UnitTests
             Exception failure = new Exception("foo");
 
             Exception result = Assert.Throws<Exception>(() => actual.AllItemsSatisfy(i =>
-                {
-                    if (i > 1) throw failure;
-                }));
+            {
+                if (i > 1) throw failure;
+            }));
 
             Assert.AreSame(failure, result);
         }

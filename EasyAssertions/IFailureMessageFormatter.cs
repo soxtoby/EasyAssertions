@@ -88,6 +88,11 @@ namespace EasyAssertions
         string ItemsNotSame(IEnumerable expected, IEnumerable actual, string message = null);
 
         /// <summary>
+        /// Sequence should start with a particular sub-sequence, but didn't.
+        /// </summary>
+        string DoesNotStartWith(IEnumerable expected, IEnumerable actual, Func<object, object, bool> predicate, string message = null);
+
+        /// <summary>
         /// Trees should match, but didn't.
         /// </summary>
         string TreesDoNotMatch<TActual, TExpected>(IEnumerable<TestNode<TExpected>> expected, IEnumerable<TActual> actual, Func<TActual, IEnumerable<TActual>> getChildren, Func<object, object, bool> predicate, string message = null);

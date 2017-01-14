@@ -27,5 +27,14 @@ namespace EasyAssertions.UnitTests
 
             Assert.AreEqual(paramName, result.ParamName);
         }
+
+        protected void AssertFailsWithTypesNotEqualMessage(Type expectedType, Type actualType, Action<string> assertionCall)
+        {
+            MockFormatter.NotEqual(expectedType, actualType, "foo").Returns("bar");
+
+            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => assertionCall("foo"));
+
+            Assert.AreEqual("bar", result.Message);
+        }
     }
 }

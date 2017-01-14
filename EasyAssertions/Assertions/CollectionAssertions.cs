@@ -118,6 +118,25 @@ namespace EasyAssertions
         }
 
         /// <summary>
+        /// Asserts that a sequence starts with another sub-sequence, using the default equality comparer.
+        /// </summary>
+        public static Actual<IEnumerable<TActual>> ShouldStartWith<TActual, TExpected>(this IEnumerable<TActual> actual, IEnumerable<TExpected> expectedStart, string message = null)
+        {
+            if (expectedStart == null) throw new ArgumentNullException("expectedStart");
+
+            return actual.RegisterAssert(() =>
+                {
+                    ObjectAssertions.AssertType<IEnumerable<TActual>>(actual, message);
+
+                    List<object> actualList = actual.Cast<object>().ToList();
+                    List<object> expectedList = expectedStart.Cast<object>().ToList();
+
+                    if (!Compare.CollectionStartsWith(actualList, expectedList, Equals))
+                        throw EasyAssertion.Failure(FailureMessageFormatter.Current.DoesNotStartWith(expectedStart, actual, Equals, message));
+                });
+        }
+
+        /// <summary>
         /// Asserts that a sequence contains a specified element, using the default equality comparer.
         /// </summary>
         public static Actual<IEnumerable<TActual>> ShouldContain<TActual, TExpected>(this IEnumerable<TActual> actual, TExpected expected, string message = null) where TExpected : TActual

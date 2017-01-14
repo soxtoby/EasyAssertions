@@ -41,19 +41,22 @@ namespace EasyAssertions
             IEnumerator actualEnumerator = actual.GetEnumerator();
             IEnumerator expectedEnumerator = expected.GetEnumerator();
 
-            while (actualEnumerator.MoveNext())
+            try
             {
-                if (!expectedEnumerator.MoveNext())
-                    return false;
-                if (!areEqual(actualEnumerator.Current, expectedEnumerator.Current))
-                    return false;
+                while (actualEnumerator.MoveNext())
+                {
+                    if (!expectedEnumerator.MoveNext())
+                        return false;
+                    if (!areEqual(actualEnumerator.Current, expectedEnumerator.Current))
+                        return false;
+                }
+                return !expectedEnumerator.MoveNext();
             }
-            bool equal = !expectedEnumerator.MoveNext();
-
-            Dispose(actualEnumerator);
-            Dispose(expectedEnumerator);
-
-            return equal;
+            finally
+            {
+                Dispose(actualEnumerator);
+                Dispose(expectedEnumerator);
+            }
         }
 
         /// <summary>
@@ -119,13 +122,6 @@ namespace EasyAssertions
                 && actualItems.All(expectedItems.Contains);
         }
 
-        private static void Dispose(object obj)
-        {
-            IDisposable disposable = obj as IDisposable;
-            if (disposable != null)
-                disposable.Dispose();
-        }
-
         /// <summary>
         /// Determines whether two trees have the same structure and values.
         /// </summary>
@@ -138,6 +134,34 @@ namespace EasyAssertions
                     return areEqual(actualNode, expectedNode.Value)
                         && TreesMatch(getChildren(actualNode), expectedNode, getChildren, areEqual);
                 });
+        }
+
+        public static bool CollectionStartsWith(List<object> actual, List<object> expected, Func<object, object, bool> areEqual)
+        {
+            IEnumerator actualEnumerator = actual.GetEnumerator();
+            IEnumerator expectedEnumerator = expected.GetEnumerator();
+
+            try
+            {
+                while (expectedEnumerator.MoveNext())
+                {
+                    if (!actualEnumerator.MoveNext())
+                        return false;
+                    if (!areEqual(actualEnumerator.Current, expectedEnumerator.Current))
+                        return false;
+                }
+                return true;
+            }
+            finally
+            {
+                Dispose(actualEnumerator);
+                Dispose(expectedEnumerator);
+            }
+        }
+
+        private static void Dispose(object obj)
+        {
+            (obj as IDisposable)?.Dispose();
         }
     }
 }

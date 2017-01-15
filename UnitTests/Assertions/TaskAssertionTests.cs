@@ -30,6 +30,19 @@ namespace EasyAssertions.UnitTests
         }
 
         [Test]
+        public void ShouldCompleteWithinMilliseconds_CorrectlyRegistersAssertion()
+        {
+            taskSource.SetResult(0);
+            uint timeout = 1;
+            Task actualTask = taskSource.Task;
+
+            actualTask.ShouldCompleteWithin(timeout);
+
+            Assert.AreEqual(nameof(actualTask), TestExpression.GetActual());
+            Assert.AreEqual(nameof(timeout), TestExpression.GetExpected());
+        }
+
+        [Test]
         public void ShouldCompleteWithinTimeSpan_CompletesWithinTimeout_DoesNotThrow()
         {
             taskSource.SetResult(0);
@@ -41,6 +54,19 @@ namespace EasyAssertions.UnitTests
         public void ShouldCompleteWithinTimeSpan_DoesNotComplete_FailsWithTimeoutMessage()
         {
             AssertTimesOut(TimeSpan.FromMilliseconds(1), msg => ((Task)taskSource.Task).ShouldCompleteWithin(TimeSpan.FromMilliseconds(1), msg));
+        }
+
+        [Test]
+        public void ShouldCompleteWithinTimeSpan_CorrectlyRegistersAssertion()
+        {
+            taskSource.SetResult(0);
+            TimeSpan timeout = TimeSpan.FromMilliseconds(1);
+            Task actualTask = taskSource.Task;
+
+            actualTask.ShouldCompleteWithin(timeout);
+
+            Assert.AreEqual(nameof(actualTask), TestExpression.GetActual());
+            Assert.AreEqual(nameof(timeout), TestExpression.GetExpected());
         }
 
         [Test]
@@ -56,6 +82,18 @@ namespace EasyAssertions.UnitTests
         }
 
         [Test]
+        public void ShouldCompleteWithinMillisecondsWithValue_CorrectlyRegistersAssertion()
+        {
+            taskSource.SetResult(0);
+            uint timeout = 1;
+
+            taskSource.Task.ShouldCompleteWithin(timeout);
+
+            Assert.AreEqual($"{nameof(taskSource)}.{nameof(taskSource.Task)}", TestExpression.GetActual());
+            Assert.AreEqual(nameof(timeout), TestExpression.GetExpected());
+        }
+
+        [Test]
         public void ShouldCompleteWithinTimeSpanWithValue_CompletesWithinTimeout_ReturnsResult()
         {
             AssertReturnsResult(1, () => taskSource.Task.ShouldCompleteWithin(TimeSpan.FromMilliseconds(1)));
@@ -65,6 +103,18 @@ namespace EasyAssertions.UnitTests
         public void ShouldCompleteWithinTimeSpanWithValue_DoesNotComplete_FailsWithTimeoutMessage()
         {
             AssertTimesOut(TimeSpan.FromMilliseconds(1), msg => taskSource.Task.ShouldCompleteWithin(TimeSpan.FromMilliseconds(1), msg));
+        }
+
+        [Test]
+        public void ShouldCompleteWithinTimeSpanWithValue_CorrectlyRegistersAssertion()
+        {
+            taskSource.SetResult(0);
+            uint timeout = 1;
+
+            taskSource.Task.ShouldCompleteWithin(timeout);
+
+            Assert.AreEqual($"{nameof(taskSource)}.{nameof(taskSource.Task)}", TestExpression.GetActual());
+            Assert.AreEqual(nameof(timeout), TestExpression.GetExpected());
         }
 
         [Test]
@@ -92,6 +142,18 @@ namespace EasyAssertions.UnitTests
         }
 
         [Test]
+        public void ShouldFailWithinMillisecondsWithType_CorrectlyRegistersAssertion()
+        {
+            taskSource.SetException(new Exception());
+            uint timeout = 1;
+
+            taskSource.Task.ShouldFail<Exception>(timeout);
+
+            Assert.AreEqual($"{nameof(taskSource)}.{nameof(taskSource.Task)}", TestExpression.GetActual());
+            Assert.AreEqual(nameof(timeout), TestExpression.GetExpected());
+        }
+
+        [Test]
         public void ShouldFailWithinTimeSpanWithType_FailsWithCorrectType_ReturnsException()
         {
             AssertReturnsException(new InvalidOperationException(), () => taskSource.Task.ShouldFail<InvalidOperationException>(TimeSpan.FromMilliseconds(1)));
@@ -116,13 +178,25 @@ namespace EasyAssertions.UnitTests
         }
 
         [Test]
+        public void ShouldFailWithinTimeSpanWithType_CorrectlyRegistersAssertion()
+        {
+            taskSource.SetException(new Exception());
+            TimeSpan timeout = TimeSpan.FromMilliseconds(1);
+
+            taskSource.Task.ShouldFail<Exception>(timeout);
+
+            Assert.AreEqual($"{nameof(taskSource)}.{nameof(taskSource.Task)}", TestExpression.GetActual());
+            Assert.AreEqual(nameof(timeout), TestExpression.GetExpected());
+        }
+
+        [Test]
         public void ShouldFailWithinMilliseconds_Fails_ReturnsException()
         {
             AssertReturnsException(new Exception(), () => taskSource.Task.ShouldFail(1));
         }
 
         [Test]
-        public void ShouldFailWithinMillliseconds_TimesOut_FailsWithTimeoutMessage()
+        public void ShouldFailWithinMilliseconds_TimesOut_FailsWithTimeoutMessage()
         {
             AssertTimesOut(TimeSpan.FromMilliseconds(1), msg => taskSource.Task.ShouldFail(1, msg));
         }
@@ -131,6 +205,18 @@ namespace EasyAssertions.UnitTests
         public void ShouldFailWithinMilliseconds_DoesNotFail_FailsWithNoExceptionMessage()
         {
             AssertFailsWithNoExceptionMessage(msg => taskSource.Task.ShouldFail(1, msg));
+        }
+
+        [Test]
+        public void ShouldFailWithinMilliseconds_CorrectlyRegistersAssertion()
+        {
+            taskSource.SetException(new Exception());
+            uint timeout = 1;
+
+            taskSource.Task.ShouldFail(timeout);
+
+            Assert.AreEqual($"{nameof(taskSource)}.{nameof(taskSource.Task)}", TestExpression.GetActual());
+            Assert.AreEqual(nameof(timeout), TestExpression.GetExpected());
         }
 
         [Test]
@@ -149,6 +235,18 @@ namespace EasyAssertions.UnitTests
         public void ShouldFailWithinTimeSpan_DoesNotFail_FailsWithNoExceptionMessage()
         {
             AssertFailsWithNoExceptionMessage(msg => taskSource.Task.ShouldFail(TimeSpan.FromMilliseconds(1), msg));
+        }
+
+        [Test]
+        public void ShouldFailWithinTimeSpan_CorrectlyRegistersAssertion()
+        {
+            taskSource.SetException(new Exception());
+            TimeSpan timeout = TimeSpan.FromMilliseconds(1);
+
+            taskSource.Task.ShouldFail(timeout);
+
+            Assert.AreEqual($"{nameof(taskSource)}.{nameof(taskSource.Task)}", TestExpression.GetActual());
+            Assert.AreEqual(nameof(timeout), TestExpression.GetExpected());
         }
 
         private void AssertReturnsResult(int expectedResult, Func<Actual<int>> callAssertion)

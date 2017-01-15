@@ -36,6 +36,16 @@ namespace EasyAssertions.UnitTests
         }
 
         [Test]
+        public void ShouldBeEmpty_CorrectlyRegistersAssertion()
+        {
+            string actual = string.Empty;
+
+            actual.ShouldBeEmpty();
+
+            Assert.AreEqual(nameof(actual), TestExpression.GetActual());
+        }
+
+        [Test]
         public void ShouldContain_StringContainsSubstring_ReturnsActualValue()
         {
             Actual<string> result = "foo".ShouldContain("oo");
@@ -66,6 +76,18 @@ namespace EasyAssertions.UnitTests
         public void ShouldContain_ExpectedIsNull_ThrowsArgumentNullException()
         {
             AssertArgumentNullException("expectedToContain", () => "".ShouldContain(null));
+        }
+
+        [Test]
+        public void ShouldContain_CorrectlyRegistersAssertion()
+        {
+            const string actual = "foo";
+            const string expected = actual;
+
+            actual.ShouldContain(expected);
+
+            Assert.AreEqual(nameof(actual), TestExpression.GetActual());
+            Assert.AreEqual(nameof(expected), TestExpression.GetExpected());
         }
 
         [Test]
@@ -100,6 +122,18 @@ namespace EasyAssertions.UnitTests
         public void ShouldNotContain_ExpectedIsNull_ThrowsArgumentNullException()
         {
             AssertArgumentNullException("expectedToNotContain", () => "".ShouldNotContain(null));
+        }
+
+        [Test]
+        public void ShouldNotContain_CorrectlyRegistersAssertion()
+        {
+            const string actual = "foo";
+            const string expectedToNotContain = "bar";
+
+            actual.ShouldNotContain(expectedToNotContain);
+
+            Assert.AreEqual(nameof(actual), TestExpression.GetActual());
+            Assert.AreEqual(nameof(expectedToNotContain), TestExpression.GetExpected());
         }
 
         [Test]
@@ -141,6 +175,18 @@ namespace EasyAssertions.UnitTests
         }
 
         [Test]
+        public void ShouldStartWith_CorrectlyRegistersAssertion()
+        {
+            const string actual = "foo";
+            const string expected = actual;
+
+            actual.ShouldStartWith(expected);
+
+            Assert.AreEqual(nameof(actual), TestExpression.GetActual());
+            Assert.AreEqual(nameof(expected), TestExpression.GetExpected());
+        }
+
+        [Test]
         public void ShouldEndWith_StringEndsWithExpected_ReturnsActualValue()
         {
             const string actual = "foobar";
@@ -177,6 +223,18 @@ namespace EasyAssertions.UnitTests
         public void ShouldEndWith_ExpectedIsNull_ThrowsArgumentNullException()
         {
             AssertArgumentNullException("expectedEnd", () => "".ShouldEndWith(null));
+        }
+
+        [Test]
+        public void ShouldEndWith_CorrectlyRegistersAssertion()
+        {
+            const string actual = "foo";
+            const string expected = actual;
+
+            actual.ShouldEndWith(expected);
+
+            Assert.AreEqual(nameof(actual), TestExpression.GetActual());
+            Assert.AreEqual(nameof(expected), TestExpression.GetExpected());
         }
 
         [Test]
@@ -232,6 +290,18 @@ namespace EasyAssertions.UnitTests
         }
 
         [Test]
+        public void ShouldBe_CustomCaseSensitivity_CorrectlyRegistersAssertion()
+        {
+            const string actual = "foo";
+            const string expected = actual;
+
+            actual.ShouldBe(expected, Case.Insensitive);
+
+            Assert.AreEqual(nameof(actual), TestExpression.GetActual());
+            Assert.AreEqual(nameof(expected), TestExpression.GetExpected());
+        }
+
+        [Test]
         public void ShouldMatchPattern_MatchesRegex_ReturnsActualValue()
         {
             Actual<string> result = "foo".ShouldMatch(".*");
@@ -266,6 +336,18 @@ namespace EasyAssertions.UnitTests
         }
 
         [Test]
+        public void ShouldMatchPattern_CorrectlyRegistersAssertion()
+        {
+            const string actual = "foo";
+            const string expected = ".";
+
+            actual.ShouldMatch(expected);
+
+            Assert.AreEqual(nameof(actual), TestExpression.GetActual());
+            Assert.AreEqual(nameof(expected), TestExpression.GetExpected());
+        }
+
+        [Test]
         public void ShouldMatchPattern_WithRegexOptions_MatchesRegex_ReturnsActualValue()
         {
             Actual<string> result = "foo".ShouldMatch("FOO", RegexOptions.IgnoreCase);
@@ -287,6 +369,18 @@ namespace EasyAssertions.UnitTests
         public void ShouldMatchPattern_WithRegexOptions_RegexPatternIsNull_ThrowsArgumentNullException()
         {
             AssertArgumentNullException("regexPattern", () => "".ShouldMatch(null, RegexOptions.IgnoreCase));
+        }
+
+        [Test]
+        public void ShouldMatchPattern_WithRegexOptions_CorrectlyRegistersAssertion()
+        {
+            const string actual = "foo";
+            const string expected = ".";
+
+            actual.ShouldMatch(expected, RegexOptions.None);
+
+            Assert.AreEqual(nameof(actual), TestExpression.GetActual());
+            Assert.AreEqual(nameof(expected), TestExpression.GetExpected());
         }
 
         [Test]
@@ -312,6 +406,18 @@ namespace EasyAssertions.UnitTests
         public void ShouldMatchRegex_RegexIsNull_ThrowsArgumentNullException()
         {
             AssertArgumentNullException("regex", () => "".ShouldMatch((Regex)null));
+        }
+
+        [Test]
+        public void ShouldMatchRegex_CorrectlyRegistersAssertion()
+        {
+            const string actual = "foo";
+            Regex expected = new Regex(".");
+
+            actual.ShouldMatch(expected);
+
+            Assert.AreEqual(nameof(actual), TestExpression.GetActual());
+            Assert.AreEqual(nameof(expected), TestExpression.GetExpected());
         }
 
         [Test]
@@ -349,6 +455,18 @@ namespace EasyAssertions.UnitTests
         }
 
         [Test]
+        public void ShouldNotMatchPattern_CorrectlyRegistersAssertion()
+        {
+            const string actual = "foo";
+            const string notExpected = "bar";
+
+            actual.ShouldNotMatch(notExpected);
+
+            Assert.AreEqual(nameof(actual), TestExpression.GetActual());
+            Assert.AreEqual(nameof(notExpected), TestExpression.GetExpected());
+        }
+
+        [Test]
         public void ShouldNotMatchPattern_WithRegexOptions_DoesNotMatchRegex_ReturnsActualValue()
         {
             Actual<string> result = "foo".ShouldNotMatch("bar", RegexOptions.IgnoreCase);
@@ -370,6 +488,18 @@ namespace EasyAssertions.UnitTests
         public void ShouldNotMatchPattern_WithRegexOptions_RegexPatternIsNull_ThrowsArgumentNullException()
         {
             AssertArgumentNullException("regexPattern", () => "".ShouldNotMatch(null, RegexOptions.IgnoreCase));
+        }
+
+        [Test]
+        public void ShouldNotMatchPattern_WithRegexOptions_CorrectlyRegistersAssertion()
+        {
+            const string actual = "foo";
+            const string notExpected = "bar";
+
+            actual.ShouldNotMatch(notExpected, RegexOptions.None);
+
+            Assert.AreEqual(nameof(actual), TestExpression.GetActual());
+            Assert.AreEqual(nameof(notExpected), TestExpression.GetExpected());
         }
 
         [Test]
@@ -395,6 +525,18 @@ namespace EasyAssertions.UnitTests
         public void ShouldNotMatchRegex_RegexIsNull_ThrowsArgumentNullException()
         {
             AssertArgumentNullException("regex", () => "".ShouldNotMatch((Regex)null));
+        }
+
+        [Test]
+        public void ShouldNotMatchRegex_CorrectlyRegistersAssertion()
+        {
+            const string actual = "foo";
+            Regex notExpected = new Regex("bar");
+
+            actual.ShouldNotMatch(notExpected);
+
+            Assert.AreEqual(nameof(actual), TestExpression.GetActual());
+            Assert.AreEqual(nameof(notExpected), TestExpression.GetExpected());
         }
     }
 }

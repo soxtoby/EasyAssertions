@@ -39,6 +39,18 @@ namespace EasyAssertions.UnitTests
         }
 
         [Test]
+        public void ShouldBe_CorrectlyRegistersAssertion()
+        {
+            Equatable actual = new Equatable(1);
+            Equatable expected = actual;
+
+            actual.ShouldBe(expected);
+
+            Assert.AreEqual(nameof(actual), TestExpression.GetActual());
+            Assert.AreEqual(nameof(expected), TestExpression.GetExpected());
+        }
+
+        [Test]
         public void NullableShouldBe_ValueEqualsExpected_ReturnsActualValue()
         {
             int? actual = 1;
@@ -73,6 +85,18 @@ namespace EasyAssertions.UnitTests
         }
 
         [Test]
+        public void NullableShouldBe_CorrectlyRegistersAssertion()
+        {
+            int? actual = 1;
+            int expected = actual.Value;
+
+            actual.ShouldBe(expected);
+
+            Assert.AreEqual(nameof(actual), TestExpression.GetActual());
+            Assert.AreEqual(nameof(expected), TestExpression.GetExpected());
+        }
+
+        [Test]
         public void ShouldNotBe_DifferentValue_ReturnsActualValue()
         {
             Equatable actual = new Equatable(1);
@@ -95,6 +119,18 @@ namespace EasyAssertions.UnitTests
         }
 
         [Test]
+        public void ShouldNotBe_CorrectlyRegistersAssertion()
+        {
+            Equatable actual = new Equatable(1);
+            Equatable notExpected = new Equatable(2);
+
+            actual.ShouldNotBe(notExpected);
+
+            Assert.AreEqual(nameof(actual), TestExpression.GetActual());
+            Assert.AreEqual(nameof(notExpected), TestExpression.GetExpected());
+        }
+
+        [Test]
         public void ShouldBeNull_IsNull_Passes()
         {
             ((object)null).ShouldBeNull();
@@ -109,6 +145,16 @@ namespace EasyAssertions.UnitTests
             EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldBeNull("foo"));
 
             Assert.AreEqual("bar", result.Message);
+        }
+
+        [Test]
+        public void ShouldBeNull_CorrectlyRegistersAssertion()
+        {
+            object actual = null;
+
+            actual.ShouldBeNull();
+
+            Assert.AreEqual(nameof(actual), TestExpression.GetActual());
         }
 
         [Test]
@@ -129,6 +175,16 @@ namespace EasyAssertions.UnitTests
             EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => ((object)null).ShouldNotBeNull("foo"));
 
             Assert.AreEqual("bar", result.Message);
+        }
+
+        [Test]
+        public void ShouldNotBeNull_CorrectlyRegistersAssertion()
+        {
+            object actual = new object();
+
+            actual.ShouldNotBeNull();
+
+            Assert.AreEqual(nameof(actual), TestExpression.GetActual());
         }
 
         [Test]
@@ -153,6 +209,18 @@ namespace EasyAssertions.UnitTests
         }
 
         [Test]
+        public void ShouldReferTo_CorrectlyRegistersAssertion()
+        {
+            object actual = new object();
+            object expected = actual;
+
+            actual.ShouldReferTo(expected);
+
+            Assert.AreEqual(nameof(actual), TestExpression.GetActual());
+            Assert.AreEqual(nameof(expected), TestExpression.GetExpected());
+        }
+
+        [Test]
         public void ShouldNotReferTo_DifferentObject_ReturnsActualValue()
         {
             object actual = new object();
@@ -174,6 +242,18 @@ namespace EasyAssertions.UnitTests
         }
 
         [Test]
+        public void ShouldNotReferTo_CorrectlyRegistersAssertion()
+        {
+            object actual = new object();
+            object notExpected = new object();
+
+            actual.ShouldNotReferTo(notExpected);
+
+            Assert.AreEqual(nameof(actual), TestExpression.GetActual());
+            Assert.AreEqual(nameof(notExpected), TestExpression.GetExpected());
+        }
+
+        [Test]
         public void ShouldBeA_SubType_ReturnsTypedActual()
         {
             object actual = new SubEquatable(1);
@@ -191,6 +271,16 @@ namespace EasyAssertions.UnitTests
             EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldBeA<SubEquatable>("foo"));
 
             Assert.AreEqual("bar", result.Message);
+        }
+
+        [Test]
+        public void ShouldBeA_CorrectlyRegistersAssertion()
+        {
+            object actual = new SubEquatable(1);
+
+            actual.ShouldBeA<Equatable>();
+
+            Assert.AreEqual(nameof(actual), TestExpression.GetActual());
         }
 
         protected class Equatable

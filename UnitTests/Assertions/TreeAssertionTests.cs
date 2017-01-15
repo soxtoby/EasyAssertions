@@ -56,6 +56,18 @@ namespace EasyAssertions.UnitTests
         }
 
         [Test]
+        public void ShouldMatchTree_CorrectlyRegistersAssertion()
+        {
+            int[] actual = { 1 };
+            TestNode<int>[] expected = { 1.Node() };
+
+            actual.ShouldMatch(expected, NoChildren);
+
+            Assert.AreEqual(nameof(actual), TestExpression.GetActual());
+            Assert.AreEqual(nameof(expected), TestExpression.GetExpected());
+        }
+
+        [Test]
         public void ShouldMatchTree_CustomEquality_TreeMatches_ReturnsActual()
         {
             object actualItem = new object();
@@ -109,6 +121,18 @@ namespace EasyAssertions.UnitTests
         public void ShouldMatchTree_CustomEquality_PredicateIsNull_ThrowsArgumentNullException()
         {
             AssertArgumentNullException("predicate", () => new int[0].ShouldMatch(1.Node(), NoChildren, (Func<int, int, bool>)null));
+        }
+
+        [Test]
+        public void ShouldMatchTree_CustomEquality_CorrectlyRegistersAssertion()
+        {
+            int[] actual = { 1 };
+            TestNode<int>[] expected = { 1.Node() };
+
+            actual.ShouldMatch(expected, NoChildren, (a, b) => a == b);
+
+            Assert.AreEqual(nameof(actual), TestExpression.GetActual());
+            Assert.AreEqual(nameof(expected), TestExpression.GetExpected());
         }
 
         private static IEnumerable<T> NoChildren<T>(T node)

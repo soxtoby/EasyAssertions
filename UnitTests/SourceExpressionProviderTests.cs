@@ -174,7 +174,7 @@ namespace EasyAssertions.UnitTests
             Assert.AreEqual("actualExpression", SourceExpressionProvider.ForCurrentThread.GetActualExpression());
         }
 
-        [Test]
+        [Test, Ignore("After upgrade to .NET 4.0, compiled expression now has a source file")]
         public void StackFrameHasNoSource_IsIgnored()
         {
             Expression<Action> assert = () => ObjectAssertions.ShouldBe("foo", "bar", null);    // Compiled expression has no source file

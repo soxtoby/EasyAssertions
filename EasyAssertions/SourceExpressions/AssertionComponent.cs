@@ -1,3 +1,5 @@
+using System;
+
 namespace EasyAssertions
 {
     internal abstract class AssertionComponent
@@ -17,7 +19,7 @@ namespace EasyAssertions
 
         protected int GetMethodCallIndex(string expressionSource, int fromIndex)
         {
-            return expressionSource.IndexOf("." + MethodName, fromIndex);
+            return expressionSource.IndexOf("." + MethodName, fromIndex, StringComparison.Ordinal);
         }
     }
 }

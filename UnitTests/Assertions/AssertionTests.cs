@@ -21,7 +21,7 @@ namespace EasyAssertions.UnitTests
             FailureMessageFormatter.Default();
         }
 
-        protected void AssertArgumentNullException(string paramName, TestDelegate assertionCall)
+        protected static void AssertArgumentNullException(string paramName, TestDelegate assertionCall)
         {
             ArgumentNullException result = Assert.Throws<ArgumentNullException>(assertionCall);
 

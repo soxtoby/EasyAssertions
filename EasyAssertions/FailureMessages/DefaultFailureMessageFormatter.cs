@@ -313,7 +313,7 @@ but was   {Value(actualValue)}" + message.OnNewLine();
                 : TreeNodeValueDoesNotMatch(expectedItems, actualItems, predicate, message, path);
         }
 
-        private string TreeNodeChildrenLengthMismatch<TActual>(List<object> expectedItems, List<object> actualItems, string message, IEnumerable<TActual> path)
+        private static string TreeNodeChildrenLengthMismatch<TActual>(ICollection<object> expectedItems, ICollection<object> actualItems, string message, IEnumerable<TActual> path)
         {
             List<object> pathItems = path.Cast<object>().ToList();
             string expectedSource = SourceExpectedDifferentToValue(expectedItems);
@@ -326,7 +326,7 @@ but {Count(actualItems,
                        $"had {actualItems.Count} children: {Sample(actualItems)}")}" + message.OnNewLine();
         }
 
-        private string TreeNodeValueDoesNotMatch<TActual>(IList<object> expectedItems, IList<object> actualItems, Func<object, object, bool> predicate, string message, IEnumerable<TActual> path)
+        private static string TreeNodeValueDoesNotMatch<TActual>(IList<object> expectedItems, IList<object> actualItems, Func<object, object, bool> predicate, string message, IEnumerable<TActual> path)
         {
             object expectedItem;
             object actualItem;

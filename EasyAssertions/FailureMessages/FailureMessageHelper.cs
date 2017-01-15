@@ -41,7 +41,7 @@ namespace EasyAssertions
         /// </summary>
         public static string SourceExpectedDifferentToValue(object expectedValue)
         {
-            string expectedExpression = TestExpression.GetExpected() ?? String.Empty;
+            string expectedExpression = TestExpression.GetExpected() ?? string.Empty;
 
             return MatchesExpectedValueOutput(expectedExpression, expectedValue)
                    || IsStringLiteral(expectedExpression)
@@ -56,7 +56,7 @@ namespace EasyAssertions
 
         private static bool MatchesExpectedValueOutput(string expectedExpression, object expectedValue)
         {
-            string expectedValueOutput = String.Empty + expectedValue;
+            string expectedValueOutput = string.Empty + expectedValue;
             return expectedExpression == expectedValueOutput;
         }
 
@@ -128,7 +128,7 @@ namespace EasyAssertions
                 case 1:
                     return "[" + Value(items.Single()) + "]";
                 default:
-                    return $@"[{Enumerable.Select<string, string>(SampleItems(items), i => Environment.NewLine + "    " + i)
+                    return $@"[{SampleItems(items).Select(i => Environment.NewLine + "    " + i)
                         .Join(",")}
 ]";
             }
@@ -157,15 +157,15 @@ namespace EasyAssertions
         }
 
         /// <summary>
-        /// Reduces a string down to a smaller snippet around the <see cref="FailureMessage.FailureIndex"/>,
+        /// Reduces a string down to a smaller snippet around the <see cref="failureIndex"/>,
         /// to avoid blowing out the size of the failure message.
         /// </summary>
         public static string Snippet(string wholeString, int failureIndex)
         {
             int fromIndex = SnippetStart(wholeString, failureIndex);
             int snippetLength = MaxStringWidth;
-            string prefix = String.Empty;
-            string suffix = String.Empty;
+            string prefix = string.Empty;
+            string suffix = string.Empty;
 
             if (fromIndex > 0)
             {
@@ -191,13 +191,10 @@ namespace EasyAssertions
         {
             return Math.Max(0, Math.Min(failureIndex - IdealArrowIndex, wholeString.Length - MaxStringWidth));
         }
-
-        /// <summary>
-        /// Escapes new-lines in a string value for output in the failure message.
-        /// </summary>
-        public static string StringEscape(string value)
+        
+        private static string StringEscape(string value)
         {
-            return Enumerable.Aggregate<KeyValuePair<char, string>, string>(Escapes, value, (s, escape) => s.Replace(escape.Key.ToString(CultureInfo.InvariantCulture), escape.Value));
+            return Escapes.Aggregate(value, (s, escape) => s.Replace(escape.Key.ToString(CultureInfo.InvariantCulture), escape.Value));
         }
 
         private static readonly Dictionary<char, string> Escapes = new Dictionary<char, string>
@@ -230,7 +227,7 @@ namespace EasyAssertions
         public static string Value(LambdaExpression function)
         {
             string body = function.Body.ToString();
-            body = MemberPattern.Replace(body, String.Empty);
+            body = MemberPattern.Replace(body, string.Empty);
             body = BoxingPattern.Replace(body, "$1");
             return body;
         }
@@ -255,9 +252,26 @@ namespace EasyAssertions
         /// </summary>
         public static string Value(object value)
         {
-            return value is string ? Value((string)value)
-                : value is Regex ? Value((Regex)value)
-                    : "<" + (value ?? "null") + ">";
+            string str = value as string;
+            Regex regex = value as Regex;
+
+            return str != null ? Value(str)
+                : regex != null ? Value(regex)
+                : "<" + (value ?? "null") + ">";
+        }
+
+        public static string OnNewLine(this string value)
+        {
+            return string.IsNullOrEmpty(value) 
+                ? string.Empty
+                : Environment.NewLine + value;
+        }
+
+        public static string WithSpace(this string value)
+        {
+            return string.IsNullOrEmpty(value)
+                ? string.Empty
+                : value + " ";
         }
     }
 }

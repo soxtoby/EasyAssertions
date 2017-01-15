@@ -208,6 +208,11 @@ namespace EasyAssertions.UnitTests
                 return otherEquatable != null
                     && otherEquatable.Value == Value;
             }
+
+            public override int GetHashCode()
+            {
+                return Value;
+            }
         }
 
         protected class SubEquatable : Equatable

@@ -210,9 +210,14 @@ namespace EasyAssertions.UnitTests
                     && other.Value == Value;
             }
 
+            public override int GetHashCode()
+            {
+                return Value;
+            }
+
             public override string ToString()
             {
-                return string.Format("({0})", Value);
+                return $"({Value})";
             }
         }
     }

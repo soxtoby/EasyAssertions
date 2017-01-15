@@ -11,8 +11,8 @@ namespace EasyAssertions
         /// </summary>
         public static Actual<IEnumerable<TActual>> ShouldMatch<TActual, TExpected>(this IEnumerable<TActual> actualRootNodes, IEnumerable<TestNode<TExpected>> expectedRootNodes, Func<TActual, IEnumerable<TActual>> getChildren, string message = null) where TExpected : TActual
         {
-            if (expectedRootNodes == null) throw new ArgumentNullException("expectedRootNodes");
-            if (getChildren == null) throw new ArgumentNullException("getChildren");
+            if (expectedRootNodes == null) throw new ArgumentNullException(nameof(expectedRootNodes));
+            if (getChildren == null) throw new ArgumentNullException(nameof(getChildren));
 
             return actualRootNodes.RegisterAssert(() =>
                 {
@@ -29,9 +29,9 @@ namespace EasyAssertions
         /// </summary>
         public static Actual<IEnumerable<TActual>> ShouldMatch<TActual, TExpected>(this IEnumerable<TActual> actualRootNodes, IEnumerable<TestNode<TExpected>> expectedRootNodes, Func<TActual, IEnumerable<TActual>> getChildren, Func<TActual, TExpected, bool> predicate, string message = null) where TExpected : TActual
         {
-            if (expectedRootNodes == null) throw new ArgumentNullException("expectedRootNodes");
-            if (getChildren == null) throw new ArgumentNullException("getChildren");
-            if (predicate == null) throw new ArgumentNullException("predicate");
+            if (expectedRootNodes == null) throw new ArgumentNullException(nameof(expectedRootNodes));
+            if (getChildren == null) throw new ArgumentNullException(nameof(getChildren));
+            if (predicate == null) throw new ArgumentNullException(nameof(predicate));
 
             return actualRootNodes.RegisterAssert(() =>
                 {

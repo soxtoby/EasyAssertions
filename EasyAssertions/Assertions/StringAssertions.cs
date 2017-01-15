@@ -27,7 +27,7 @@ namespace EasyAssertions
         /// </summary>
         public static Actual<string> ShouldContain(this string actual, string expectedToContain, string message = null)
         {
-            if (expectedToContain == null) throw new ArgumentNullException("expectedToContain");
+            if (expectedToContain == null) throw new ArgumentNullException(nameof(expectedToContain));
 
             return actual.RegisterAssert(() =>
                 {
@@ -43,7 +43,7 @@ namespace EasyAssertions
         /// </summary>
         public static Actual<string> ShouldNotContain(this string actual, string expectedToNotContain, string message = null)
         {
-            if (expectedToNotContain == null) throw new ArgumentNullException("expectedToNotContain");
+            if (expectedToNotContain == null) throw new ArgumentNullException(nameof(expectedToNotContain));
 
             return actual.RegisterAssert(() =>
                 {
@@ -59,7 +59,7 @@ namespace EasyAssertions
         /// </summary>
         public static Actual<string> ShouldStartWith(this string actual, string expectedStart, string message = null)
         {
-            if (expectedStart == null) throw new ArgumentNullException("expectedStart");
+            if (expectedStart == null) throw new ArgumentNullException(nameof(expectedStart));
 
             return actual.RegisterAssert(() =>
                 {
@@ -75,7 +75,7 @@ namespace EasyAssertions
         /// </summary>
         public static Actual<string> ShouldEndWith(this string actual, string expectedEnd, string message = null)
         {
-            if (expectedEnd == null) throw new ArgumentNullException("expectedEnd");
+            if (expectedEnd == null) throw new ArgumentNullException(nameof(expectedEnd));
 
             return actual.RegisterAssert(() =>
                 {
@@ -91,7 +91,7 @@ namespace EasyAssertions
         /// </summary>
         public static Actual<string> ShouldBe(this string actual, string expected, Case caseSensitivity, string message = null)
         {
-            if (expected == null) throw new ArgumentNullException("expected");
+            if (expected == null) throw new ArgumentNullException(nameof(expected));
 
             return actual.RegisterAssert(() =>
                 {
@@ -111,7 +111,7 @@ namespace EasyAssertions
         /// </summary>
         public static Actual<string> ShouldMatch(this string actual, string regexPattern, string message = null)
         {
-            if (regexPattern == null) throw new ArgumentNullException("regexPattern");
+            if (regexPattern == null) throw new ArgumentNullException(nameof(regexPattern));
 
             return actual.RegisterAssert(() => AssertMatch(actual, new Regex(regexPattern), message));
         }
@@ -121,7 +121,7 @@ namespace EasyAssertions
         /// </summary>
         public static Actual<string> ShouldMatch(this string actual, string regexPattern, RegexOptions options, string message = null)
         {
-            if (regexPattern == null) throw new ArgumentNullException("regexPattern");
+            if (regexPattern == null) throw new ArgumentNullException(nameof(regexPattern));
 
             return actual.RegisterAssert(() => AssertMatch(actual, new Regex(regexPattern, options), message));
         }
@@ -131,7 +131,7 @@ namespace EasyAssertions
         /// </summary>
         public static Actual<string> ShouldMatch(this string actual, Regex regex, string message = null)
         {
-            if (regex == null) throw new ArgumentNullException("regex");
+            if (regex == null) throw new ArgumentNullException(nameof(regex));
 
             return actual.RegisterAssert(() => AssertMatch(actual, regex, message));
         }
@@ -149,7 +149,7 @@ namespace EasyAssertions
         /// </summary>
         public static Actual<string> ShouldNotMatch(this string actual, string regexPattern, string message = null)
         {
-            if (regexPattern == null) throw new ArgumentNullException("regexPattern");
+            if (regexPattern == null) throw new ArgumentNullException(nameof(regexPattern));
 
             return actual.RegisterAssert(() => AssertDoesNotMatch(actual, new Regex(regexPattern), message));
         }
@@ -159,7 +159,7 @@ namespace EasyAssertions
         /// </summary>
         public static Actual<string> ShouldNotMatch(this string actual, string regexPattern, RegexOptions options, string message = null)
         {
-            if (regexPattern == null) throw new ArgumentNullException("regexPattern");
+            if (regexPattern == null) throw new ArgumentNullException(nameof(regexPattern));
 
             return actual.RegisterAssert(() => AssertDoesNotMatch(actual, new Regex(regexPattern, options), message));
         }
@@ -169,7 +169,7 @@ namespace EasyAssertions
         /// </summary>
         public static Actual<string> ShouldNotMatch(this string actual, Regex regex, string message = null)
         {
-            if (regex == null) throw new ArgumentNullException("regex");
+            if (regex == null) throw new ArgumentNullException(nameof(regex));
 
             return actual.RegisterAssert(() => AssertDoesNotMatch(actual, regex, message));
         }

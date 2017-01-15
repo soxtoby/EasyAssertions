@@ -5,16 +5,15 @@ namespace EasyAssertions
     internal class NestedAssertionGroup : AssertionComponentGroup
     {
         private const string WordBoundary = @"\b";
-        private readonly SourceAddress address;
         private readonly string expressionAlias;
 
         public NestedAssertionGroup(SourceAddress callAddress, string expressionAlias)
         {
-            address = callAddress;
+            Address = callAddress;
             this.expressionAlias = expressionAlias;
         }
 
-        public override SourceAddress Address { get { return address; } }
+        public override SourceAddress Address { get; }
 
         public override string GetActualExpression(string parentExpression)
         {

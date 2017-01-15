@@ -116,7 +116,7 @@ namespace EasyAssertions
         {
             if (!(actual is TExpected))
                 throw EasyAssertion.Failure(FailureMessageFormatter.Current.NotEqual(typeof(TExpected),
-                    actual == null ? null : actual.GetType(), message));
+                    actual?.GetType(), message));
         }
     }
 }

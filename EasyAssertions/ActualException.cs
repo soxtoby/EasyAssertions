@@ -10,7 +10,7 @@ namespace EasyAssertions
         public ActualException(T actual)
             : base(actual)
         {
-            if (actual == null) throw new ArgumentNullException("actual");
+            if (actual == null) throw new ArgumentNullException(nameof(actual));
         }
 
         /// <summary>
@@ -21,7 +21,7 @@ namespace EasyAssertions
             And.RegisterAssert(() =>
                 {
                     if (And is TUnexpected)
-                        throw EasyAssertion.Failure(FailureMessageFormatter.Current.AreEqual(typeof(TUnexpected), And == null ? null : And.GetType(), message));
+                        throw EasyAssertion.Failure(FailureMessageFormatter.Current.AreEqual(typeof(TUnexpected), And?.GetType(), message));
                 });
             return this;
         }

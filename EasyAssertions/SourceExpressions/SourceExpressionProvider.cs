@@ -9,15 +9,12 @@ namespace EasyAssertions
     {
         private readonly List<AssertionComponentGroup> assertionGroupChain = new List<AssertionComponentGroup>();
 
-        private AssertionComponentGroup CurrentGroup { get { return assertionGroupChain.LastOrDefault(); } }
+        private AssertionComponentGroup CurrentGroup => assertionGroupChain.LastOrDefault();
 
         [ThreadStatic]
         private static SourceExpressionProvider threadInstance;
 
-        public static SourceExpressionProvider ForCurrentThread
-        {
-            get { return threadInstance ?? (threadInstance = new SourceExpressionProvider()); }
-        }
+        public static SourceExpressionProvider ForCurrentThread => threadInstance ?? (threadInstance = new SourceExpressionProvider());
 
         private SourceExpressionProvider() { }
 

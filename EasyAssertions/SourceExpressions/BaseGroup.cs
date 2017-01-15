@@ -4,9 +4,6 @@ namespace EasyAssertions
 {
     internal class BaseGroup : AssertionComponentGroup
     {
-        public override SourceAddress Address
-        {
-            get { return MethodCalls.First().SourceAddress; }
-        }
+        public override SourceAddress Address => MethodCalls.First().SourceAddress;
     }
 }

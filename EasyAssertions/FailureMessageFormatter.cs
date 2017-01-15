@@ -11,10 +11,7 @@
         /// The current failure message formatter.
         /// Can be overriden with <see cref="Override"/>.
         /// </summary>
-        public static IFailureMessageFormatter Current
-        {
-            get { return current ?? DefaultFailureMessageFormatter.Instance; }
-        }
+        public static IFailureMessageFormatter Current => current ?? DefaultFailureMessageFormatter.Instance;
 
         /// <summary>
         /// Overrides the message formatter used to provide the standard set of assertion failure messages.

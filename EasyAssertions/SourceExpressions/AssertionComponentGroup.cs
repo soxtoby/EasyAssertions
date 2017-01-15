@@ -8,10 +8,7 @@ namespace EasyAssertions
     {
         private readonly List<AssertionComponent> calls = new List<AssertionComponent>();
 
-        protected IEnumerable<AssertionComponent> MethodCalls
-        {
-            get { return calls; }
-        }
+        protected IEnumerable<AssertionComponent> MethodCalls => calls;
 
         public abstract SourceAddress Address { get; }
 

@@ -67,7 +67,7 @@ namespace EasyAssertions
         /// </summary>
         public static Actual<IEnumerable<TActual>> ShouldMatch<TActual, TExpected>(this IEnumerable<TActual> actual, IEnumerable<TExpected> expected, string message = null) where TExpected : TActual
         {
-            if (expected == null) throw new ArgumentNullException("expected");
+            if (expected == null) throw new ArgumentNullException(nameof(expected));
 
             return actual.RegisterAssert(() => AssertMatch(actual, expected, Compare.ObjectsMatch, message));
         }
@@ -87,7 +87,7 @@ namespace EasyAssertions
         /// </summary>
         public static Actual<IEnumerable<float>> ShouldMatch(this IEnumerable<float> actual, IEnumerable<float> expected, float delta, string message = null)
         {
-            return actual.RegisterAssert(() => AssertMatch(actual, expected, (a, e) => Compare.AreWithinTolerance((float)a, (float)e, delta), message));
+            return actual.RegisterAssert(() => AssertMatch(actual, expected, (a, e) => Compare.AreWithinTolerance(a, e, delta), message));
         }
 
         /// <summary>
@@ -122,7 +122,7 @@ namespace EasyAssertions
         /// </summary>
         public static Actual<IEnumerable<TActual>> ShouldStartWith<TActual, TExpected>(this IEnumerable<TActual> actual, IEnumerable<TExpected> expectedStart, string message = null)
         {
-            if (expectedStart == null) throw new ArgumentNullException("expectedStart");
+            if (expectedStart == null) throw new ArgumentNullException(nameof(expectedStart));
 
             return actual.RegisterAssert(() =>
                 {
@@ -167,7 +167,7 @@ namespace EasyAssertions
         /// </summary>
         public static Actual<IEnumerable<TActual>> ItemsShouldBeIn<TActual, TExpected>(this IEnumerable<TActual> actual, IEnumerable<TExpected> expectedSuperset, string message = null) where TExpected : TActual
         {
-            if (expectedSuperset == null) throw new ArgumentNullException("expectedSuperset");
+            if (expectedSuperset == null) throw new ArgumentNullException(nameof(expectedSuperset));
 
             return actual.RegisterAssert(() =>
                 {
@@ -222,7 +222,7 @@ namespace EasyAssertions
         /// </summary>
         public static Actual<IEnumerable<TActual>> ShouldNotOnlyContain<TActual, TExpected>(this IEnumerable<TActual> actual, IEnumerable<TExpected> expected, string message = null) where TExpected : TActual
         {
-            if (expected == null) throw new ArgumentNullException("expected");
+            if (expected == null) throw new ArgumentNullException(nameof(expected));
 
             return actual.RegisterAssert(() =>
                 {
@@ -313,7 +313,7 @@ namespace EasyAssertions
         /// </summary>
         public static Actual<IEnumerable<TItem>> AllItemsSatisfy<TItem>(this IEnumerable<TItem> actual, Action<TItem> assertion)
         {
-            if (assertion == null) throw new ArgumentNullException("assertion");
+            if (assertion == null) throw new ArgumentNullException(nameof(assertion));
 
             return actual.RegisterAssert(() =>
                 {

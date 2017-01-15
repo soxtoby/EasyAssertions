@@ -90,5 +90,10 @@ namespace EasyAssertions
         {
             assertionGroupChain.Remove(CurrentGroup);
         }
+
+        public void Reset()
+        {
+            assertionGroupChain.Clear();
+        }
     }
 }

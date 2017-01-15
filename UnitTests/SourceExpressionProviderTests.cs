@@ -177,7 +177,7 @@ namespace EasyAssertions.UnitTests
         [Test, Ignore("After upgrade to .NET 4.0, compiled expression now has a source file")]
         public void StackFrameHasNoSource_IsIgnored()
         {
-            Expression<Action> assert = () => ObjectAssertions.ShouldBe("foo", "bar", null);    // Compiled expression has no source file
+            Expression<Action> assert = () => "foo".ShouldBe("bar", null);    // Compiled expression has no source file
 
             Assert.Throws<EasyAssertionException>(() => assert.Compile()());
 

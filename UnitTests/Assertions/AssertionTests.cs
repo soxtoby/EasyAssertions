@@ -13,12 +13,14 @@ namespace EasyAssertions.UnitTests
         {
             MockFormatter = Substitute.For<IFailureMessageFormatter>();
             FailureMessageFormatter.Override(MockFormatter);
+            SourceExpressionProvider.ForCurrentThread.Reset();
         }
 
         [TearDown]
         public void BaseTearDown()
         {
             FailureMessageFormatter.Default();
+            SourceExpressionProvider.ForCurrentThread.Reset();
         }
 
         protected static void AssertArgumentNullException(string paramName, TestDelegate assertionCall)

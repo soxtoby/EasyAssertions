@@ -711,6 +711,29 @@ namespace EasyAssertions.UnitTests
         }
 
         [Test]
+        public void CollectionDoesNotEndWith_ActualIsShorterThanExpectedEnd()
+        {
+            string result = sut.DoesNotEndWith(new[] { 1, 2 }, new[] { 1 }, Equals, "foo");
+
+            Assert.AreEqual($@"{ActualExpression}
+should have at least 2 elements
+but had 1 element: <1>
+foo", result);
+        }
+
+        [Test]
+        public void CollectionDoesNotEndWith_ActualIsLongerThanExpectedEnd()
+        {
+            string result = sut.DoesNotEndWith(new[] { 1, 2 }, new[] { 1, 3, 2 }, Equals, "foo");
+
+            Assert.AreEqual($@"{ActualExpression}
+differs at index 1.
+should be <1>
+but was   <3>
+foo", result);
+        }
+
+        [Test]
         public void TreesDoNotMatch_NonMatchingNodes()
         {
             string result = sut.TreesDoNotMatch(new[] { 1, 2.Node(21, 22) }, new[] { 1, 2.Node(21, 23) }, n => n, TestNodesMatch);

@@ -32,6 +32,24 @@ namespace EasyAssertions
         }
 
         /// <summary>
+        /// Determines whether one sequence starts with the items in another sequence, in the same order.
+        /// </summary>
+        public static bool CollectionStartsWith(ICollection<object> actual, ICollection<object> expectedToStartWith, Func<object, object, bool> areEqual)
+        {
+            return actual.Count >= expectedToStartWith.Count
+                && CollectionsMatch(actual.Take(expectedToStartWith.Count), expectedToStartWith, areEqual);
+        }
+
+        /// <summary>
+        /// Determines whether one sequence ends with the items in another sequence, in the same order.
+        /// </summary>
+        public static bool CollectionEndsWith(ICollection<object> actual, ICollection<object> expectedToEndWith, Func<object, object, bool> areEqual)
+        {
+            return actual.Count >= expectedToEndWith.Count
+                && CollectionsMatch(actual.Skip(actual.Count - expectedToEndWith.Count), expectedToEndWith, areEqual);
+        }
+
+        /// <summary>
         /// Determines whether two sequences contain the same items in the same order.
         /// <see cref="IEnumerable"/> items are compared recursively.
         /// Non-<c>IEnumerable</c> items are compared using the default equality comparer.
@@ -134,29 +152,6 @@ namespace EasyAssertions
                     return areEqual(actualNode, expectedNode.Value)
                         && TreesMatch(getChildren(actualNode), expectedNode, getChildren, areEqual);
                 });
-        }
-
-        public static bool CollectionStartsWith(List<object> actual, List<object> expected, Func<object, object, bool> areEqual)
-        {
-            IEnumerator actualEnumerator = actual.GetEnumerator();
-            IEnumerator expectedEnumerator = expected.GetEnumerator();
-
-            try
-            {
-                while (expectedEnumerator.MoveNext())
-                {
-                    if (!actualEnumerator.MoveNext())
-                        return false;
-                    if (!areEqual(actualEnumerator.Current, expectedEnumerator.Current))
-                        return false;
-                }
-                return true;
-            }
-            finally
-            {
-                Dispose(actualEnumerator);
-                Dispose(expectedEnumerator);
-            }
         }
 
         private static void Dispose(object obj)

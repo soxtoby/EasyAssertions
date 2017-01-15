@@ -84,6 +84,54 @@ namespace EasyAssertions.UnitTests
         }
 
         [Test]
+        public void CollectionStartsWith_MatchingCollections_StartsWith()
+        {
+            Assert.IsTrue(Compare.CollectionStartsWith(new object[] { 1, 2, 3 }, new object[] { 1, 2, 3 }, Equals));
+        }
+
+        [Test]
+        public void CollectionStartsWith_Subset_StartsWith()
+        {
+            Assert.IsTrue(Compare.CollectionStartsWith(new object[] { 1, 2, 3 }, new object[] { 1, 2 }, Equals));
+        }
+
+        [Test]
+        public void CollectionStartsWith_LongerCollection_DoesNotStartWith()
+        {
+            Assert.IsFalse(Compare.CollectionStartsWith(new object[] { 1 }, new object[] { 1, 2 }, Equals));
+        }
+
+        [Test]
+        public void CollectionStartsWith_DifferentItems_DoesNotStartWith()
+        {
+            Assert.IsFalse(Compare.CollectionStartsWith(new object[] { 1, 2 }, new object[] { 1, 3 }, Equals));
+        }
+
+        [Test]
+        public void CollectionEndsWith_MatchingCollections_StartsWith()
+        {
+            Assert.IsTrue(Compare.CollectionEndsWith(new object[] { 1, 2, 3 }, new object[] { 1, 2, 3 }, Equals));
+        }
+
+        [Test]
+        public void CollectionEndsWith_Subset_StartsWith()
+        {
+            Assert.IsTrue(Compare.CollectionEndsWith(new object[] { 1, 2, 3 }, new object[] { 2, 3 }, Equals));
+        }
+
+        [Test]
+        public void CollectionEndsWith_LongerCollection_DoesNotEndWith()
+        {
+            Assert.IsFalse(Compare.CollectionEndsWith(new object[] { 1 }, new object[] { 1, 2 }, Equals));
+        }
+
+        [Test]
+        public void CollectionEndsWith_DifferentItems_DoesNotEndWith()
+        {
+            Assert.IsFalse(Compare.CollectionEndsWith(new object[] { 1, 2 }, new object[] { 3, 2 }, Equals));
+        }
+
+        [Test]
         public void ContainsAny_EmptySequence_DoesNotContainItems()
         {
             Assert.IsFalse(Compare.ContainsAny(Enumerable.Empty<int>(), new[] { 1 }));

@@ -277,18 +277,42 @@ but was            {Value(actualItem)}" + message.OnNewLine();
             List<object> actualItems = actual.Cast<object>().ToList();
 
             if (actualItems.Count < expectedItems.Count)
-            {
-                return $@"{ActualExpression}
-should have at least {expectedItems.Count} {Count(expectedItems, "element", "elements")}
-but {Count(actualItems,
-                    "was empty.",
-                    $"had 1 element: {Single(actualItems)}",
-                    $"had {actualItems.Count} elements: {Sample(actualItems)}")}" + message.OnNewLine();
-            }
+                return NotLongEnough(expectedItems, actualItems, message);
 
             object expectedValue, actualValue;
             int differenceIndex = FindDifference(expectedItems, actualItems, predicate, out expectedValue, out actualValue);
 
+            return DiffersAtIndex(differenceIndex, expectedValue, actualValue, message);
+        }
+
+        public string DoesNotEndWith(IEnumerable expected, IEnumerable actual, Func<object, object, bool> predicate, string message = null)
+        {
+            List<object> expectedItems = expected.Cast<object>().ToList();
+            List<object> actualItems = actual.Cast<object>().ToList();
+
+            if (actualItems.Count < expectedItems.Count)
+                return NotLongEnough(expectedItems, actualItems, message);
+
+            object expectedValue, actualValue;
+            int differenceInLength = actualItems.Count - expectedItems.Count;
+            int differenceIndex = FindDifference(expectedItems, actualItems.Skip(differenceInLength), predicate, out expectedValue, out actualValue)
+                + differenceInLength;
+
+            return DiffersAtIndex(differenceIndex, expectedValue, actualValue, message);
+        }
+
+        private static string NotLongEnough(List<object> expectedItems, List<object> actualItems, string message)
+        {
+            return $@"{ActualExpression}
+should have at least {expectedItems.Count} {Count(expectedItems, "element", "elements")}
+but {Count(actualItems,
+                       "was empty.",
+                       $"had 1 element: {Single(actualItems)}",
+                       $"had {actualItems.Count} elements: {Sample(actualItems)}")}" + message.OnNewLine();
+        }
+
+        private static string DiffersAtIndex(int differenceIndex, object expectedValue, object actualValue, string message)
+        {
             return $@"{ActualExpression}
 differs at index {differenceIndex}.
 should be {Value(expectedValue)}

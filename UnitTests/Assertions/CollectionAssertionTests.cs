@@ -395,6 +395,53 @@ namespace EasyAssertions.UnitTests
         }
 
         [Test]
+        public void ShouldEndWith_StartsWithExpected_ReturnsActualValue()
+        {
+            int[] actual = { 1, 2, 3 };
+
+            Actual<IEnumerable<int>> result = actual.ShouldEndWith(new[] { 2, 3 });
+
+            Assert.AreSame(actual, result.And);
+        }
+
+        [Test]
+        public void ShouldEndWith_ActualIsNull_FailsWithTypesNotEqualMessage()
+        {
+            IEnumerable<int> actual = null;
+            AssertFailsWithTypesNotEqualMessage(typeof(IEnumerable<int>), null, msg => actual.ShouldEndWith(Enumerable.Empty<object>(), msg));
+        }
+
+        [Test]
+        public void ShouldEndWith_ExpectedIsNull_FailsWithArgumentNullException()
+        {
+            AssertArgumentNullException("expectedEnd", () => new[] { 1 }.ShouldEndWith((IEnumerable<int>)null));
+        }
+
+        [Test]
+        public void ShouldEndWith_DoesNotEndWithExpected_FailsWithDoesNotEndWithMessage()
+        {
+            int[] actual = { 1 };
+            int[] expectedStart = { 2 };
+            MockFormatter.DoesNotEndWith(expectedStart, actual, Equals, "foo").Returns("bar");
+
+            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldEndWith(expectedStart, "foo"));
+
+            Assert.AreEqual("bar", result.Message);
+        }
+
+        [Test]
+        public void ShouldEndWith_CorrectlyRegistersAssertion()
+        {
+            int[] actual = { 1 };
+            int[] expected = actual;
+
+            actual.ShouldEndWith(expected);
+
+            Assert.AreEqual(nameof(actual), TestExpression.GetActual());
+            Assert.AreEqual(nameof(expected), TestExpression.GetExpected());
+        }
+
+        [Test]
         public void ShouldContain_CollectionContainsExpected_ReturnsActualValue()
         {
             int[] actual = { 1, 2 };

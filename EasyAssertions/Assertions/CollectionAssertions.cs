@@ -126,6 +126,22 @@ namespace EasyAssertions
                 });
         }
 
+        public static Actual<IEnumerable<TActual>> ShouldEndWith<TActual, TExpected>(this IEnumerable<TActual> actual, IEnumerable<TExpected> expectedEnd, string message = null)
+        {
+            if (expectedEnd == null) throw new ArgumentNullException(nameof(expectedEnd));
+
+            return actual.RegisterAssert(() =>
+                {
+                    ObjectAssertions.AssertType<IEnumerable<TActual>>(actual, message);
+
+                    List<object> actualList = actual.Cast<object>().ToList();
+                    List<object> expectedList = expectedEnd.Cast<object>().ToList();
+
+                    if (!Compare.CollectionEndsWith(actualList, expectedList, Equals))
+                        throw EasyAssertion.Failure(FailureMessageFormatter.Current.DoesNotEndWith(expectedEnd, actual, Equals, message));
+                });
+        }
+
         /// <summary>
         /// Asserts that a sequence contains a specified element, using the default equality comparer.
         /// </summary>

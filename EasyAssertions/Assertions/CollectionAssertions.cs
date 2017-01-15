@@ -73,16 +73,6 @@ namespace EasyAssertions
         }
 
         /// <summary>
-        /// Asserts that a sequence contains the specified items in the specified order.
-        /// <see cref="IEnumerable"/> items are compared recursively.
-        /// Non-<c>IEnumerable</c> items are compared using the default equality comparer.
-        /// </summary>
-        public static Actual<IEnumerable<TActual>> ShouldMatch<TActual, TExpected>(this IEnumerable<TActual> actual, params TExpected[] expectedItems) where TExpected : TActual
-        {
-            return actual.RegisterAssert(() => AssertMatch(actual, expectedItems, Compare.ObjectsMatch));
-        }
-
-        /// <summary>
         /// Asserts that two sequences contain the same <see cref="float"/> values (within a specified tolerance), in the same order.
         /// </summary>
         public static Actual<IEnumerable<float>> ShouldMatch(this IEnumerable<float> actual, IEnumerable<float> expected, float delta, string message = null)
@@ -238,30 +228,18 @@ namespace EasyAssertions
         /// </summary>
         public static Actual<IEnumerable<TActual>> ShouldMatchReferences<TActual, TExpected>(this IEnumerable<TActual> actual, IEnumerable<TExpected> expected, string message = null) where TExpected : TActual
         {
-            return actual.RegisterAssert(() => AssertMatchesReferences(actual, expected, message));
-        }
+            return actual.RegisterAssert(() => {
+                ObjectAssertions.AssertType<IEnumerable<TActual>>(actual, message);
 
-        /// <summary>
-        /// Asserts that a sequence contains the specified object instances in the same order.
-        /// </summary>
-        public static Actual<IEnumerable<TActual>> ShouldMatchReferences<TActual, TExpected>(this IEnumerable<TActual> actual, params TExpected[] expected) where TExpected : TActual
-        {
-            return actual.RegisterAssert(() => AssertMatchesReferences(actual, expected));
-        }
+                List<TActual> actualList = actual.ToList();
+                List<TExpected> expectedList = expected.ToList();
 
-        private static void AssertMatchesReferences<TActual, TExpected>(IEnumerable<TActual> actual, IEnumerable<TExpected> expected, string message = null)
-            where TExpected : TActual
-        {
-            ObjectAssertions.AssertType<IEnumerable<TActual>>(actual, message);
+                if (actualList.Count != expectedList.Count)
+                    throw EasyAssertion.Failure(FailureMessageFormatter.Current.LengthMismatch(expectedList.Count, actual, message));
 
-            List<TActual> actualList = actual.ToList();
-            List<TExpected> expectedList = expected.ToList();
-
-            if (actualList.Count != expectedList.Count)
-                throw EasyAssertion.Failure(FailureMessageFormatter.Current.LengthMismatch(expectedList.Count, actual, message));
-
-            if (!Compare.CollectionsMatch(actual, expected, ReferenceEquals))
-                throw EasyAssertion.Failure(FailureMessageFormatter.Current.ItemsNotSame(expected, actual, message));
+                if (!Compare.CollectionsMatch(actual, expected, ReferenceEquals))
+                    throw EasyAssertion.Failure(FailureMessageFormatter.Current.ItemsNotSame(expected, actual, message));
+            });
         }
 
         /// <summary>

@@ -216,38 +216,6 @@ namespace EasyAssertions.UnitTests
         }
 
         [Test]
-        public void ShouldMatchParams_MatchingParams_ReturnsActualValue()
-        {
-            int[] actual = { 1, 2, 3 };
-
-            Actual<IEnumerable<int>> result = actual.ShouldMatch(1, 2, 3);
-
-            Assert.AreSame(actual, result.And);
-        }
-
-        [Test]
-        public void ShouldMatchParams_EnumerableDoesNotMatchParams_FailsWIthEnumerablesDoNotMatchMessage()
-        {
-            int[] actual = { 1, 2 };
-            MockFormatter.DoNotMatch(ArgMatches(new[] { 3, 4 }), actual, Compare.ObjectsMatch).Returns("foo");
-
-            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldMatch(3, 4));
-
-            Assert.AreEqual("foo", result.Message);
-        }
-
-        [Test]
-        public void ShouldMatchParams_ActualIsNull_FailsWithTypesNotEqualMessage()
-        {
-            IEnumerable<string> actual = null;
-            MockFormatter.NotEqual(typeof(IEnumerable<string>), null).Returns("foo");
-
-            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldMatch("bar"));
-
-            Assert.AreEqual("foo", result.Message);
-        }
-
-        [Test]
         public void ShouldMatchCustomEquality_MatchingEnumerable_ReturnsActualValue()
         {
             IEnumerable<int> actual = new[] { 1, 2 };
@@ -790,53 +758,6 @@ namespace EasyAssertions.UnitTests
 
             Assert.AreEqual(nameof(actual), TestExpression.GetActual());
             Assert.AreEqual(nameof(expected), TestExpression.GetExpected());
-        }
-
-        [Test]
-        public void ShouldMatchReferencesParams_SameItems_ReturnsActualValue()
-        {
-            object a = new object();
-            object b = new object();
-            object[] actual = { a, b };
-
-            Actual<IEnumerable<object>> result = actual.ShouldMatchReferences(a, b);
-
-            Assert.AreSame(actual, result.And);
-        }
-
-        [Test]
-        public void ShouldMatchReferencesParams_DifferentLength_FailsWithEnumerableLenthMismatchMessage()
-        {
-            object[] actual = { };
-            MockFormatter.LengthMismatch(1, actual).Returns("bar");
-
-            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldMatchReferences(new object()));
-
-            Assert.AreEqual("bar", result.Message);
-        }
-
-        [Test]
-        public void ShouldMatchReferencesParams_DifferentItems_FailsWithEnumerablesNotSameMessage()
-        {
-            object a = new object();
-            object[] actual = { a, new object() };
-            object[] expected = { a, new object() };
-            MockFormatter.ItemsNotSame(expected, actual).Returns("bar");
-
-            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldMatchReferences(expected));
-
-            Assert.AreSame("bar", result.Message);
-        }
-
-        [Test]
-        public void ShouldMatchReferencesParams_ActualIsNull_FailsWithTypesNotEqualMessage()
-        {
-            IEnumerable<object> actual = null;
-            MockFormatter.NotEqual(typeof(IEnumerable<object>), null).Returns("foo");
-
-            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldMatchReferences(new object()));
-
-            Assert.AreEqual("foo", result.Message);
         }
 
         [Test]

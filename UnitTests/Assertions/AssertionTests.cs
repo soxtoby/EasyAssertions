@@ -9,14 +9,14 @@ namespace EasyAssertions.UnitTests
         protected IFailureMessageFormatter MockFormatter;
 
         [SetUp]
-        public void SetUp()
+        public void BaseSetUp()
         {
             MockFormatter = Substitute.For<IFailureMessageFormatter>();
             FailureMessageFormatter.Override(MockFormatter);
         }
 
         [TearDown]
-        public void TearDown()
+        public void BaseTearDown()
         {
             FailureMessageFormatter.Default();
         }

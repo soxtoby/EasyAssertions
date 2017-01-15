@@ -13,6 +13,7 @@ namespace EasyAssertions.UnitTests
     public class DefaultFailureMessageFormatterTests
     {
         private TestExpressionProvider expressionProvider;
+        private readonly DefaultFailureMessageFormatter sut = DefaultFailureMessageFormatter.Instance;
         private const string ActualExpression = "test expression";
         private const string ExpectedExpression = "expected expression";
 
@@ -34,7 +35,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void NotEqual_Objects_ToStringed()
         {
-            string result = DefaultFailureMessageFormatter.Instance.NotEqual(new FakeObject("foo"), new FakeObject("bar"));
+            string result = sut.NotEqual(new FakeObject("foo"), new FakeObject("bar"));
             Assert.AreEqual(ActualExpression + Environment.NewLine
                 + "should be " + ExpectedExpression + Environment.NewLine
                 + "          <foo>" + Environment.NewLine
@@ -46,7 +47,7 @@ namespace EasyAssertions.UnitTests
         {
             expressionProvider.GetExpectedExpression().Returns("1");
 
-            string result = DefaultFailureMessageFormatter.Instance.NotEqual(1, 2);
+            string result = sut.NotEqual(1, 2);
 
             Assert.AreEqual(ActualExpression + Environment.NewLine
                 + "should be <1>" + Environment.NewLine
@@ -56,14 +57,14 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void NotEqual_Objects_IncludesMessage()
         {
-            string result = DefaultFailureMessageFormatter.Instance.NotEqual(new FakeObject("foo"), new FakeObject("bar"), "baz");
+            string result = sut.NotEqual(new FakeObject("foo"), new FakeObject("bar"), "baz");
             StringAssert.EndsWith(Environment.NewLine + "baz", result);
         }
 
         [Test]
         public void NotEqual_SingleLineStrings()
         {
-            string result = DefaultFailureMessageFormatter.Instance.NotEqual("acd", "abc");
+            string result = sut.NotEqual("acd", "abc");
             Assert.AreEqual(ActualExpression + Environment.NewLine
                 + "should be " + ExpectedExpression + Environment.NewLine
                 + "          \"acd\"" + Environment.NewLine
@@ -75,7 +76,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void StringsNotEqual_DifferenceOnLineTwo()
         {
-            string result = DefaultFailureMessageFormatter.Instance.NotEqual("abc\ndfe", "abc\ndef");
+            string result = sut.NotEqual("abc\ndfe", "abc\ndef");
             Assert.AreEqual(ActualExpression + Environment.NewLine
                 + "should be " + ExpectedExpression + Environment.NewLine
                 + "          \"abc\\ndfe\"" + Environment.NewLine
@@ -87,7 +88,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void StringsNotEqual_DifferenceFarAwayFromBeginning()
         {
-            string result = DefaultFailureMessageFormatter.Instance.NotEqual("0123456789abcdefghijklmnopqrstuvwxyz0123456789abcdefghijklmnopqrstuvwxyz",
+            string result = sut.NotEqual("0123456789abcdefghijklmnopqrstuvwxyz0123456789abcdefghijklmnopqrstuvwxyz",
                                                                              "0123456789abcdefghijklmnopqrstuvwxyz0123456789abcdefghijklmnpoqrstuvwxyz");
             Assert.AreEqual(ActualExpression + Environment.NewLine
                 + "should be " + ExpectedExpression + Environment.NewLine
@@ -100,7 +101,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void StringsNotEqual_DifferenceFarAwayFromEnd()
         {
-            string result = DefaultFailureMessageFormatter.Instance.NotEqual("0123456789abcdefghijklmnopqrstuvwxyz0123456789abcdefghijklmnopqrstuvwxyz",
+            string result = sut.NotEqual("0123456789abcdefghijklmnopqrstuvwxyz0123456789abcdefghijklmnopqrstuvwxyz",
                                                                              "0123456789abdcefghijklmnopqrstuvwxyz0123456789abcdefghijklmnopqrstuvwxyz");
             Assert.AreEqual(ActualExpression + Environment.NewLine
                 + "should be " + ExpectedExpression + Environment.NewLine
@@ -113,7 +114,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void StringsNotEqual_DifferenceFarAwayFromBothEnds()
         {
-            string result = DefaultFailureMessageFormatter.Instance.NotEqual("0123456789abcdefghijklmnopqrstuvwxyz0123456789abcdefghijklmnopqrstuvwxyz0123456789",
+            string result = sut.NotEqual("0123456789abcdefghijklmnopqrstuvwxyz0123456789abcdefghijklmnopqrstuvwxyz0123456789",
                                                                              "0123456789abcdefghijkmlnopqrstuvwxyz0123456789abcdefghijklmnopqrstuvwxyz0123456789");
             Assert.AreEqual(ActualExpression + Environment.NewLine
                 + "should be " + ExpectedExpression + Environment.NewLine
@@ -128,7 +129,7 @@ namespace EasyAssertions.UnitTests
         {
             expressionProvider.GetExpectedExpression().Returns("@\"acd\"");
 
-            string result = DefaultFailureMessageFormatter.Instance.NotEqual("acd", "abc");
+            string result = sut.NotEqual("acd", "abc");
             Assert.AreEqual(ActualExpression + Environment.NewLine
                 + "should be \"acd\"" + Environment.NewLine
                 + "but was   \"abc\"" + Environment.NewLine
@@ -139,7 +140,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void StringsNotEqual_ActualShorterThanExpected()
         {
-            string result = DefaultFailureMessageFormatter.Instance.NotEqual("ab", "a");
+            string result = sut.NotEqual("ab", "a");
             Assert.AreEqual(ActualExpression + Environment.NewLine
                 + "should be " + ExpectedExpression + Environment.NewLine
                 + "          \"ab\"" + Environment.NewLine
@@ -151,7 +152,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void StringsNotEqual_ActualLongerThanExpected()
         {
-            string result = DefaultFailureMessageFormatter.Instance.NotEqual("a", "ab");
+            string result = sut.NotEqual("a", "ab");
             Assert.AreEqual(ActualExpression + Environment.NewLine
                 + "should be " + ExpectedExpression + Environment.NewLine
                 + "          \"a\"" + Environment.NewLine
@@ -163,7 +164,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void StringsNotEqual_CaseInsensitive_DifferenceIgnoresCase()
         {
-            string result = DefaultFailureMessageFormatter.Instance.NotEqual("abc", "Acb", Case.Insensitive);
+            string result = sut.NotEqual("abc", "Acb", Case.Insensitive);
             Assert.AreEqual(ActualExpression + Environment.NewLine
                 + "should be " + ExpectedExpression + Environment.NewLine
                 + "          \"abc\"" + Environment.NewLine
@@ -175,7 +176,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void StringsNotEqual_IncludesMessage()
         {
-            string result = DefaultFailureMessageFormatter.Instance.NotEqual("acd", "abc", message: "foo");
+            string result = sut.NotEqual("acd", "abc", message: "foo");
 
             StringAssert.EndsWith(Environment.NewLine + "foo", result);
         }
@@ -183,7 +184,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void AreEqual_ObjectsToStringed()
         {
-            string result = DefaultFailureMessageFormatter.Instance.AreEqual(new FakeObject("foo"), new FakeObject("bar"));
+            string result = sut.AreEqual(new FakeObject("foo"), new FakeObject("bar"));
 
             Assert.AreEqual(ActualExpression + Environment.NewLine
                 + "should not be " + ExpectedExpression + Environment.NewLine
@@ -194,7 +195,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void AreEqual_IncludesMessage()
         {
-            string result = DefaultFailureMessageFormatter.Instance.AreEqual(null, null, "foo");
+            string result = sut.AreEqual(null, null, "foo");
 
             StringAssert.EndsWith(Environment.NewLine + "foo", result);
         }
@@ -202,7 +203,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void IsNull()
         {
-            string result = DefaultFailureMessageFormatter.Instance.IsNull();
+            string result = sut.IsNull();
 
             Assert.AreEqual(ActualExpression + Environment.NewLine
                 + "should not be null, but was.", result);
@@ -211,7 +212,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void IsNull_IncludesMessage()
         {
-            string result = DefaultFailureMessageFormatter.Instance.IsNull("foo");
+            string result = sut.IsNull("foo");
 
             StringAssert.EndsWith(Environment.NewLine + "foo", result);
         }
@@ -222,7 +223,7 @@ namespace EasyAssertions.UnitTests
             FakeObject expected = new FakeObject("foo");
             FakeObject actual = new FakeObject("bar");
 
-            string result = DefaultFailureMessageFormatter.Instance.NotSame(expected, actual);
+            string result = sut.NotSame(expected, actual);
 
             Assert.AreEqual(ActualExpression + Environment.NewLine
                  + "should be instance " + ExpectedExpression + Environment.NewLine
@@ -233,7 +234,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void NotSame_IncludesMessage()
         {
-            string result = DefaultFailureMessageFormatter.Instance.NotSame(new object(), new object(), "foo");
+            string result = sut.NotSame(new object(), new object(), "foo");
 
             StringAssert.EndsWith(Environment.NewLine + "foo", result);
         }
@@ -241,7 +242,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void AreSame_ObjectToStringed()
         {
-            string result = DefaultFailureMessageFormatter.Instance.AreSame(new FakeObject("foo"));
+            string result = sut.AreSame(new FakeObject("foo"));
 
             Assert.AreEqual(ActualExpression + Environment.NewLine
                 + "shouldn't be instance " + ExpectedExpression + Environment.NewLine
@@ -251,7 +252,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void AreSame_IncludesMessage()
         {
-            string result = DefaultFailureMessageFormatter.Instance.AreSame(null, "foo");
+            string result = sut.AreSame(null, "foo");
 
             StringAssert.EndsWith(Environment.NewLine + "foo", result);
         }
@@ -261,7 +262,7 @@ namespace EasyAssertions.UnitTests
         {
             FakeObject[] enumerable = { new FakeObject("foo") };
 
-            string result = DefaultFailureMessageFormatter.Instance.NotEmpty(enumerable);
+            string result = sut.NotEmpty(enumerable);
 
             Assert.AreEqual(ActualExpression + Environment.NewLine
                 + "should be empty" + Environment.NewLine
@@ -273,7 +274,7 @@ namespace EasyAssertions.UnitTests
         {
             FakeObject[] enumerable = { new FakeObject("foo"), new FakeObject("bar") };
 
-            string result = DefaultFailureMessageFormatter.Instance.NotEmpty(enumerable);
+            string result = sut.NotEmpty(enumerable);
 
             Assert.AreEqual(ActualExpression + Environment.NewLine
                 + "should be empty" + Environment.NewLine
@@ -288,7 +289,7 @@ namespace EasyAssertions.UnitTests
         {
             IEnumerable<FakeObject> enumerable = Enumerable.Range(1, 11).Select(i => new FakeObject(i.ToString()));
 
-            string result = DefaultFailureMessageFormatter.Instance.NotEmpty(enumerable);
+            string result = sut.NotEmpty(enumerable);
 
             Assert.AreEqual(ActualExpression + Environment.NewLine
                 + "should be empty" + Environment.NewLine
@@ -312,7 +313,7 @@ namespace EasyAssertions.UnitTests
         {
             FakeObject[] enumerable = { new FakeObject(string.Empty) };
 
-            string result = DefaultFailureMessageFormatter.Instance.NotEmpty(enumerable, "foo");
+            string result = sut.NotEmpty(enumerable, "foo");
 
             StringAssert.EndsWith(Environment.NewLine + "foo", result);
         }
@@ -320,7 +321,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void StringNotEmpty()
         {
-            string result = DefaultFailureMessageFormatter.Instance.NotEmpty("foo");
+            string result = sut.NotEmpty("foo");
 
             Assert.AreEqual(ActualExpression + Environment.NewLine
                 + "should be empty" + Environment.NewLine
@@ -330,7 +331,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void StringNotEmpty_IncludesMessage()
         {
-            string result = DefaultFailureMessageFormatter.Instance.NotEmpty("foo", "bar");
+            string result = sut.NotEmpty("foo", "bar");
 
             StringAssert.EndsWith(Environment.NewLine + "bar", result);
         }
@@ -338,7 +339,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void IsEmpty()
         {
-            string result = DefaultFailureMessageFormatter.Instance.IsEmpty();
+            string result = sut.IsEmpty();
 
             Assert.AreEqual(ActualExpression + Environment.NewLine + "should not be empty, but was.", result);
         }
@@ -346,7 +347,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void IsEmpty_IncludesMessage()
         {
-            string result = DefaultFailureMessageFormatter.Instance.IsEmpty("foo");
+            string result = sut.IsEmpty("foo");
 
             StringAssert.EndsWith(Environment.NewLine + "foo", result);
         }
@@ -354,7 +355,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void CollectionDoesNotContain_EmptyCollection()
         {
-            string result = DefaultFailureMessageFormatter.Instance.DoesNotContain(1, Enumerable.Empty<int>());
+            string result = sut.DoesNotContain(1, Enumerable.Empty<int>());
 
             Assert.AreEqual(ActualExpression + Environment.NewLine
                 + "should contain " + ExpectedExpression + Environment.NewLine
@@ -365,7 +366,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void CollectionDoesNotContain_SingleItem()
         {
-            string result = DefaultFailureMessageFormatter.Instance.DoesNotContain(1, new[] { 2 });
+            string result = sut.DoesNotContain(1, new[] { 2 });
 
             Assert.AreEqual(ActualExpression + Environment.NewLine
                 + "should contain " + ExpectedExpression + Environment.NewLine
@@ -376,7 +377,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void CollectionDoesNotContain_MultipleItems()
         {
-            string result = DefaultFailureMessageFormatter.Instance.DoesNotContain(1, new[] { 2, 3 });
+            string result = sut.DoesNotContain(1, new[] { 2, 3 });
 
             Assert.AreEqual(ActualExpression + Environment.NewLine
                 + "should contain " + ExpectedExpression + Environment.NewLine
@@ -390,7 +391,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void CollectionDoesNotContain_LongActual_OnlyFirst10Displayed()
         {
-            string result = DefaultFailureMessageFormatter.Instance.DoesNotContain(0, new[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 });
+            string result = sut.DoesNotContain(0, new[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 });
 
             Assert.AreEqual(ActualExpression + Environment.NewLine
                 + "should contain " + ExpectedExpression + Environment.NewLine
@@ -413,7 +414,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void CollectionDoesNotContain_IncludesItemType()
         {
-            string result = DefaultFailureMessageFormatter.Instance.DoesNotContain(1, Enumerable.Empty<int>(), "foo");
+            string result = sut.DoesNotContain(1, Enumerable.Empty<int>(), "foo");
 
             Assert.AreEqual(ActualExpression + Environment.NewLine
                 + "should contain foo " + ExpectedExpression + Environment.NewLine
@@ -424,7 +425,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void CollectionDoesNotContain_IncludesMessage()
         {
-            string result = DefaultFailureMessageFormatter.Instance.DoesNotContain(0, Enumerable.Empty<int>(), message: "foo");
+            string result = sut.DoesNotContain(0, Enumerable.Empty<int>(), message: "foo");
 
             StringAssert.EndsWith(Environment.NewLine + "foo", result);
         }
@@ -432,7 +433,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void CollectionDoesNotContainItems()
         {
-            string result = DefaultFailureMessageFormatter.Instance.DoesNotContainItems(new[] { 1, 2 }, new[] { 1 });
+            string result = sut.DoesNotContainItems(new[] { 1, 2 }, new[] { 1 });
 
             Assert.AreEqual(ActualExpression + Environment.NewLine
                 + "should contain " + ExpectedExpression + Environment.NewLine
@@ -445,7 +446,7 @@ namespace EasyAssertions.UnitTests
         {
             expressionProvider.GetExpectedExpression().Returns("new[] { 1 }");
 
-            string result = DefaultFailureMessageFormatter.Instance.DoesNotContainItems(new[] { 1 }, Enumerable.Empty<int>());
+            string result = sut.DoesNotContainItems(new[] { 1 }, Enumerable.Empty<int>());
 
             Assert.AreEqual(ActualExpression + Environment.NewLine
                 + "should contain expected item 0 <1>" + Environment.NewLine
@@ -455,7 +456,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void CollectionDoesNotContainItems_IncludesMessage()
         {
-            string result = DefaultFailureMessageFormatter.Instance.DoesNotContainItems(new[] { 1 }, Enumerable.Empty<int>(), "foo");
+            string result = sut.DoesNotContainItems(new[] { 1 }, Enumerable.Empty<int>(), "foo");
 
             StringAssert.EndsWith(Environment.NewLine + "foo", result);
         }
@@ -463,7 +464,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void CollectionContains()
         {
-            string result = DefaultFailureMessageFormatter.Instance.Contains(new FakeObject("foo"), Enumerable.Empty<object>());
+            string result = sut.Contains(new FakeObject("foo"), Enumerable.Empty<object>());
 
             Assert.AreEqual(ActualExpression + Environment.NewLine
                 + "shouldn't contain " + ExpectedExpression + Environment.NewLine
@@ -474,7 +475,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void CollectionContains_IncludesItemType()
         {
-            string result = DefaultFailureMessageFormatter.Instance.Contains(new FakeObject("foo"), Enumerable.Empty<object>(), "bar");
+            string result = sut.Contains(new FakeObject("foo"), Enumerable.Empty<object>(), "bar");
 
             Assert.AreEqual(ActualExpression + Environment.NewLine
                 + "shouldn't contain bar " + ExpectedExpression + Environment.NewLine
@@ -485,7 +486,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void CollectionContains_IncludesMessage()
         {
-            string result = DefaultFailureMessageFormatter.Instance.Contains((object)null, Enumerable.Empty<object>(), message: "foo");
+            string result = sut.Contains((object)null, Enumerable.Empty<object>(), message: "foo");
 
             StringAssert.EndsWith(Environment.NewLine + "foo", result);
         }
@@ -493,7 +494,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void CollectionOnlyContains()
         {
-            string result = DefaultFailureMessageFormatter.Instance.OnlyContains(new[] { new FakeObject("foo") }, Enumerable.Empty<object>());
+            string result = sut.OnlyContains(new[] { new FakeObject("foo") }, Enumerable.Empty<object>());
 
             Assert.AreEqual(ActualExpression + Environment.NewLine
                 + "should contain more than just " + ExpectedExpression + Environment.NewLine
@@ -503,7 +504,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void CollectionOnlyContains_IncludesMessage()
         {
-            string result = DefaultFailureMessageFormatter.Instance.OnlyContains(new object[0], new object[0], "foo");
+            string result = sut.OnlyContains(new object[0], new object[0], "foo");
 
             StringAssert.EndsWith(Environment.NewLine + "foo", result);
         }
@@ -511,7 +512,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void CollectionContainsItems()
         {
-            string result = DefaultFailureMessageFormatter.Instance.Contains(new[] { 1 }, new[] { 2, 1 });
+            string result = sut.Contains(new[] { 1 }, new[] { 2, 1 });
 
             Assert.AreEqual(ActualExpression + Environment.NewLine
                 + "shouldn't contain " + ExpectedExpression + Environment.NewLine
@@ -528,7 +529,7 @@ namespace EasyAssertions.UnitTests
         {
             expressionProvider.GetExpectedExpression().Returns("new[] { 1 }");
 
-            string result = DefaultFailureMessageFormatter.Instance.Contains(new[] { 1 }, new[] { 2, 1 });
+            string result = sut.Contains(new[] { 1 }, new[] { 2, 1 });
 
             Assert.AreEqual(ActualExpression + Environment.NewLine
                 + "shouldn't contain <1>" + Environment.NewLine
@@ -542,7 +543,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void CollectionContainsItems_IncludesMessage()
         {
-            string result = DefaultFailureMessageFormatter.Instance.Contains(new[] { 1 }, new[] { 1 }, "foo");
+            string result = sut.Contains(new[] { 1 }, new[] { 1 }, "foo");
 
             StringAssert.EndsWith(Environment.NewLine + "foo", result);
         }
@@ -550,7 +551,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void DoesNotOnlyContain_MissingItem()
         {
-            string result = DefaultFailureMessageFormatter.Instance.DoesNotOnlyContain(new[] { 1 }, new[] { 2 });
+            string result = sut.DoesNotOnlyContain(new[] { 1 }, new[] { 2 });
 
             Assert.AreEqual(ActualExpression + Environment.NewLine
                 + "should contain " + ExpectedExpression + Environment.NewLine
@@ -563,7 +564,7 @@ namespace EasyAssertions.UnitTests
         {
             FakeObject[] enumerable = { new FakeObject("foo") };
 
-            string result = DefaultFailureMessageFormatter.Instance.DoesNotOnlyContain(Enumerable.Empty<object>(), enumerable);
+            string result = sut.DoesNotOnlyContain(Enumerable.Empty<object>(), enumerable);
 
             Assert.AreEqual(ActualExpression + Environment.NewLine
                 + "should be empty" + Environment.NewLine
@@ -573,7 +574,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void DoesNotOnlyContain_ExtraItem_ContainsExtraItemMessage()
         {
-            string result = DefaultFailureMessageFormatter.Instance.DoesNotOnlyContain(new[] { 1 }, new[] { 1, 2 });
+            string result = sut.DoesNotOnlyContain(new[] { 1 }, new[] { 1, 2 });
 
             Assert.AreEqual(ActualExpression + Environment.NewLine
                 + "should only contain " + ExpectedExpression + Environment.NewLine
@@ -583,7 +584,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ContainsExtraItem()
         {
-            string result = DefaultFailureMessageFormatter.Instance.ContainsExtraItem(new[] { 1 }, new[] { 1, 2 });
+            string result = sut.ContainsExtraItem(new[] { 1 }, new[] { 1, 2 });
 
             Assert.AreEqual(ActualExpression + Environment.NewLine
                 + "should only contain " + ExpectedExpression + Environment.NewLine
@@ -595,7 +596,7 @@ namespace EasyAssertions.UnitTests
         {
             expressionProvider.GetExpectedExpression().Returns("new[] { 1 }");
 
-            string result = DefaultFailureMessageFormatter.Instance.ContainsExtraItem(new[] { 1 }, new[] { 1, 2 });
+            string result = sut.ContainsExtraItem(new[] { 1 }, new[] { 1, 2 });
 
             Assert.AreEqual(ActualExpression + Environment.NewLine
                 + "should only contain [<1>]" + Environment.NewLine
@@ -605,7 +606,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ContainsExtraItem_IncludesMessage()
         {
-            string result = DefaultFailureMessageFormatter.Instance.DoesNotOnlyContain(new[] { 1 }, new[] { 1, 2 }, "foo");
+            string result = sut.DoesNotOnlyContain(new[] { 1 }, new[] { 1, 2 }, "foo");
 
             StringAssert.EndsWith(Environment.NewLine + "foo", result);
         }
@@ -613,7 +614,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void DoNotMatch_NonMatchingCollections()
         {
-            string result = DefaultFailureMessageFormatter.Instance.DoNotMatch(new[] { 1, 2, 3 }, new[] { 1, 3, 2 }, Compare.ObjectsAreEqual);
+            string result = sut.DoNotMatch(new[] { 1, 2, 3 }, new[] { 1, 3, 2 }, Compare.ObjectsAreEqual);
 
             Assert.AreEqual(ActualExpression + Environment.NewLine
                 + "doesn't match " + ExpectedExpression + ". Differs at index 1." + Environment.NewLine
@@ -626,7 +627,7 @@ namespace EasyAssertions.UnitTests
         {
             expressionProvider.GetExpectedExpression().Returns("new List<int>() { 1, 2, 3 }");
 
-            string result = DefaultFailureMessageFormatter.Instance.DoNotMatch(new[] { 1, 2, 3 }, new[] { 1, 3, 2 }, Compare.ObjectsAreEqual);
+            string result = sut.DoNotMatch(new[] { 1, 2, 3 }, new[] { 1, 3, 2 }, Compare.ObjectsAreEqual);
 
             Assert.AreEqual(ActualExpression + Environment.NewLine
                 + "differs at index 1." + Environment.NewLine
@@ -637,7 +638,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void DoNotMatch_LengthMismatch()
         {
-            string result = DefaultFailureMessageFormatter.Instance.DoNotMatch(new[] { 1, 2 }, Enumerable.Empty<int>(), Compare.ObjectsAreEqual);
+            string result = sut.DoNotMatch(new[] { 1, 2 }, Enumerable.Empty<int>(), Compare.ObjectsAreEqual);
 
             Assert.AreEqual(ActualExpression + Environment.NewLine
                 + "doesn't match " + ExpectedExpression + '.' + Environment.NewLine
@@ -648,7 +649,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void DoNotMatch_Predicate()
         {
-            string result = DefaultFailureMessageFormatter.Instance.DoNotMatch(new[] { 1, 2, 3 }, new[] { "1", "3", "2" }, (s, i) => s == i.ToString(CultureInfo.InvariantCulture));
+            string result = sut.DoNotMatch(new[] { 1, 2, 3 }, new[] { "1", "3", "2" }, (s, i) => s == i.ToString(CultureInfo.InvariantCulture));
 
             Assert.AreEqual(ActualExpression + Environment.NewLine
                 + "doesn't match " + ExpectedExpression + ". "
@@ -660,7 +661,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void DoNotMatch_IncludesMessage()
         {
-            string result = DefaultFailureMessageFormatter.Instance.DoNotMatch(new[] { 1 }, new[] { 2 }, Compare.ObjectsAreEqual, "foo");
+            string result = sut.DoNotMatch(new[] { 1 }, new[] { 2 }, Compare.ObjectsAreEqual, "foo");
 
             StringAssert.EndsWith(Environment.NewLine + "foo", result);
         }
@@ -670,7 +671,7 @@ namespace EasyAssertions.UnitTests
         {
             FakeObject same = new FakeObject("foo");
 
-            string result = DefaultFailureMessageFormatter.Instance.ItemsNotSame(new[] { same, new FakeObject("bar") }, new[] { same, new FakeObject("baz") });
+            string result = sut.ItemsNotSame(new[] { same, new FakeObject("bar") }, new[] { same, new FakeObject("baz") });
 
             Assert.AreEqual(ActualExpression + Environment.NewLine
                 + "differs at index 1." + Environment.NewLine
@@ -681,7 +682,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ItemsNotSame_IncludesMessage()
         {
-            string result = DefaultFailureMessageFormatter.Instance.ItemsNotSame(new[] { new object() }, new[] { new object() }, "foo");
+            string result = sut.ItemsNotSame(new[] { new object() }, new[] { new object() }, "foo");
 
             StringAssert.EndsWith(Environment.NewLine + "foo", result);
         }
@@ -689,7 +690,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void CollectionDoesNotStartWith_ActualIsShorterThanExpectedStart()
         {
-            string result = DefaultFailureMessageFormatter.Instance.DoesNotStartWith(new[] { 1, 2 }, new[] { 1 }, Equals, "foo");
+            string result = sut.DoesNotStartWith(new[] { 1, 2 }, new[] { 1 }, Equals, "foo");
 
             Assert.AreEqual(ActualExpression + Environment.NewLine
                 + "should have at least 2 elements" + Environment.NewLine
@@ -700,7 +701,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void CollectionDoesNotStartWith_ActualIsLongerThanExpectedStart()
         {
-            string result = DefaultFailureMessageFormatter.Instance.DoesNotStartWith(new[] { 1, 2 }, new[] { 1, 3, 2 }, Equals, "foo");
+            string result = sut.DoesNotStartWith(new[] { 1, 2 }, new[] { 1, 3, 2 }, Equals, "foo");
 
             Assert.AreEqual(ActualExpression + Environment.NewLine
                 + "differs at index 1." + Environment.NewLine
@@ -712,7 +713,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void TreesDoNotMatch_NonMatchingNodes()
         {
-            string result = DefaultFailureMessageFormatter.Instance.TreesDoNotMatch(new[] { 1, 2.Node(21, 22) }, new[] { 1, 2.Node(21, 23) }, n => n, TestNodesMatch);
+            string result = sut.TreesDoNotMatch(new[] { 1, 2.Node(21, 22) }, new[] { 1, 2.Node(21, 23) }, n => n, TestNodesMatch);
 
             Assert.AreEqual(ActualExpression + Environment.NewLine
                 + "doesn't match " + ExpectedExpression + "." + Environment.NewLine
@@ -724,7 +725,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void TreesDoNotMatch_EmptyActual()
         {
-            string result = DefaultFailureMessageFormatter.Instance.TreesDoNotMatch(new[] { 1.Node(11) }, new[] { 1.Node() }, n => n, TestNodesMatch);
+            string result = sut.TreesDoNotMatch(new[] { 1.Node(11) }, new[] { 1.Node() }, n => n, TestNodesMatch);
 
             Assert.AreEqual(ActualExpression + Environment.NewLine
                 + "doesn't match " + ExpectedExpression + "." + Environment.NewLine
@@ -735,7 +736,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void TreesDoNotMatch_SingleNodeActual()
         {
-            string result = DefaultFailureMessageFormatter.Instance.TreesDoNotMatch(new TestNode<int>[] { 1, 2 }, new[] { 3 }, i => Enumerable.Empty<int>(), Compare.ObjectsAreEqual);
+            string result = sut.TreesDoNotMatch(new TestNode<int>[] { 1, 2 }, new[] { 3 }, i => Enumerable.Empty<int>(), Compare.ObjectsAreEqual);
 
             Assert.AreEqual(ActualExpression + Environment.NewLine
                 + "doesn't match " + ExpectedExpression + "." + Environment.NewLine
@@ -746,7 +747,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void TreesDoNotMatch_MultipleNodeActual()
         {
-            string result = DefaultFailureMessageFormatter.Instance.TreesDoNotMatch(new TestNode<int>[] { 1 }, new[] { 2, 3 }, i => Enumerable.Empty<int>(), Compare.ObjectsAreEqual);
+            string result = sut.TreesDoNotMatch(new TestNode<int>[] { 1 }, new[] { 2, 3 }, i => Enumerable.Empty<int>(), Compare.ObjectsAreEqual);
 
             Assert.AreEqual(ActualExpression + Environment.NewLine
                 + "doesn't match " + ExpectedExpression + "." + Environment.NewLine
@@ -760,7 +761,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void TreesDoNotMatch_ChildLengthMismatch_IncludesMessage()
         {
-            string result = DefaultFailureMessageFormatter.Instance.TreesDoNotMatch(new TestNode<int>[] { 1 }, Enumerable.Empty<int>(), NoChildren, Compare.ObjectsAreEqual, "foo");
+            string result = sut.TreesDoNotMatch(new TestNode<int>[] { 1 }, Enumerable.Empty<int>(), NoChildren, Compare.ObjectsAreEqual, "foo");
 
             StringAssert.EndsWith(Environment.NewLine + "foo", result);
         }
@@ -768,7 +769,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void TreesDoNotMatch_NonMatchingNode_IncludesMessage()
         {
-            string result = DefaultFailureMessageFormatter.Instance.TreesDoNotMatch(new TestNode<int>[] { 1 }, new[] { 2 }, NoChildren, Compare.ObjectsAreEqual, "foo");
+            string result = sut.TreesDoNotMatch(new TestNode<int>[] { 1 }, new[] { 2 }, NoChildren, Compare.ObjectsAreEqual, "foo");
 
             StringAssert.EndsWith(Environment.NewLine + "foo", result);
         }
@@ -786,7 +787,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void LengthMismatch_EmptyEnumerable()
         {
-            string result = DefaultFailureMessageFormatter.Instance.LengthMismatch(2, Enumerable.Empty<object>());
+            string result = sut.LengthMismatch(2, Enumerable.Empty<object>());
 
             Assert.AreEqual(ActualExpression + Environment.NewLine
                 + "should have 2 elements" + Environment.NewLine
@@ -796,7 +797,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void LengthMismatch_SingleElementExpected()
         {
-            string result = DefaultFailureMessageFormatter.Instance.LengthMismatch(1, Enumerable.Empty<object>());
+            string result = sut.LengthMismatch(1, Enumerable.Empty<object>());
 
             Assert.AreEqual(ActualExpression + Environment.NewLine
                 + "should have 1 element" + Environment.NewLine
@@ -806,7 +807,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void LengthMismatch_SingleElement()
         {
-            string result = DefaultFailureMessageFormatter.Instance.LengthMismatch(2, new[] { new FakeObject("foo") });
+            string result = sut.LengthMismatch(2, new[] { new FakeObject("foo") });
 
             Assert.AreEqual(ActualExpression + Environment.NewLine
                 + "should have 2 elements" + Environment.NewLine
@@ -816,7 +817,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void LengthMismatch_IncludesMessage()
         {
-            string result = DefaultFailureMessageFormatter.Instance.LengthMismatch(1, Enumerable.Empty<object>(), "foo");
+            string result = sut.LengthMismatch(1, Enumerable.Empty<object>(), "foo");
 
             StringAssert.EndsWith(Environment.NewLine + "foo", result);
         }
@@ -824,7 +825,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void StringDoesNotContain()
         {
-            string result = DefaultFailureMessageFormatter.Instance.DoesNotContain("bar", "foo");
+            string result = sut.DoesNotContain("bar", "foo");
 
             Assert.AreEqual(ActualExpression + Environment.NewLine
                 + "should contain " + ExpectedExpression + Environment.NewLine
@@ -835,7 +836,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void StringDoesNotContain_ActualIsLong_EndOfActualClipped()
         {
-            string result = DefaultFailureMessageFormatter.Instance.DoesNotContain("foo",
+            string result = sut.DoesNotContain("foo",
                 "0123456789abcdefghijklmnopqrstuvwxyz0123456789abcdefghijklmnopqrstuvwxyz");
 
             Assert.AreEqual(ActualExpression + Environment.NewLine
@@ -847,7 +848,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void StringDoesNotContain_IncludesMessage()
         {
-            string result = DefaultFailureMessageFormatter.Instance.DoesNotContain(string.Empty, string.Empty, "foo");
+            string result = sut.DoesNotContain(string.Empty, string.Empty, "foo");
 
             StringAssert.EndsWith(Environment.NewLine + "foo", result);
         }
@@ -855,7 +856,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void StringContains()
         {
-            string result = DefaultFailureMessageFormatter.Instance.Contains("bar", "foobarbaz");
+            string result = sut.Contains("bar", "foobarbaz");
 
             Assert.AreEqual(ActualExpression + Environment.NewLine
                 + "shouldn't contain " + ExpectedExpression + Environment.NewLine
@@ -868,7 +869,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void StringContains_IncludesMessage()
         {
-            string result = DefaultFailureMessageFormatter.Instance.Contains("bar", "foobarbaz", "qux");
+            string result = sut.Contains("bar", "foobarbaz", "qux");
 
             StringAssert.EndsWith(Environment.NewLine + "qux", result);
         }
@@ -876,7 +877,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void DoesNotStartWith()
         {
-            string result = DefaultFailureMessageFormatter.Instance.DoesNotStartWith("foo", "bar");
+            string result = sut.DoesNotStartWith("foo", "bar");
 
             Assert.AreEqual(ActualExpression + Environment.NewLine
                 + "should start with " + ExpectedExpression + Environment.NewLine
@@ -887,7 +888,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void DoesNotStartWith_ActualIsLong_EndOfActualClipped()
         {
-            string result = DefaultFailureMessageFormatter.Instance.DoesNotStartWith("foo",
+            string result = sut.DoesNotStartWith("foo",
                 "0123456789abcdefghijklmnopqrstuvwxyz0123456789abcdefghijklmnopqrstuvwxyz");
 
             Assert.AreEqual(ActualExpression + Environment.NewLine
@@ -899,7 +900,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void DoesNotStartWith_IncludesMessage()
         {
-            string result = DefaultFailureMessageFormatter.Instance.DoesNotStartWith(string.Empty, string.Empty, "foo");
+            string result = sut.DoesNotStartWith(string.Empty, string.Empty, "foo");
 
             StringAssert.EndsWith(Environment.NewLine + "foo", result);
         }
@@ -907,7 +908,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void DoesNotEndWith()
         {
-            string result = DefaultFailureMessageFormatter.Instance.DoesNotEndWith("foo", "bar");
+            string result = sut.DoesNotEndWith("foo", "bar");
 
             Assert.AreEqual(ActualExpression + Environment.NewLine
                 + "should end with " + ExpectedExpression + Environment.NewLine
@@ -918,7 +919,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void DoesNotEndWith_ActualIsLong_StartOfActualClipped()
         {
-            string result = DefaultFailureMessageFormatter.Instance.DoesNotEndWith("foo",
+            string result = sut.DoesNotEndWith("foo",
                 "0123456789abcdefghijklmnopqrstuvwxyz0123456789abcdefghijklmnopqrstuvwxyz");
 
             Assert.AreEqual(ActualExpression + Environment.NewLine
@@ -930,7 +931,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void DoesNotEndWith_IncludesMessage()
         {
-            string result = DefaultFailureMessageFormatter.Instance.DoesNotEndWith(string.Empty, string.Empty, "foo");
+            string result = sut.DoesNotEndWith(string.Empty, string.Empty, "foo");
 
             StringAssert.EndsWith(Environment.NewLine + "foo", result);
         }
@@ -939,7 +940,7 @@ namespace EasyAssertions.UnitTests
         public void NoException_SimpleFunction()
         {
             Expression<Action> function = () => "".Trim();
-            string result = DefaultFailureMessageFormatter.Instance.NoException(typeof(InvalidOperationException), function);
+            string result = sut.NoException(typeof(InvalidOperationException), function);
             Assert.AreEqual("\"\".Trim()" + Environment.NewLine
                 + "should throw <InvalidOperationException>" + Environment.NewLine
                 + "but didn't throw at all.", result);
@@ -950,17 +951,27 @@ namespace EasyAssertions.UnitTests
         {
             string str = "";
             Expression<Action> function = () => str.Trim();
-            string result = DefaultFailureMessageFormatter.Instance.NoException(typeof(InvalidOperationException), function);
+            string result = sut.NoException(typeof(InvalidOperationException), function);
             Assert.AreEqual("str.Trim()" + Environment.NewLine
                + "should throw <InvalidOperationException>" + Environment.NewLine
                + "but didn't throw at all.", result);
         }
 
         [Test]
+        public void NoException_NoFunctionExpression()
+        {
+            string result = sut.NoException(typeof(InvalidOperationException));
+
+            Assert.AreEqual($@"{ActualExpression}
+should throw <InvalidOperationException>
+but didn't throw at all.", result);
+        }
+
+        [Test]
         public void NoException_IncludesMessage()
         {
             Expression<Action> function = () => "".Trim();
-            string result = DefaultFailureMessageFormatter.Instance.NoException(typeof(InvalidOperationException), function, "foo");
+            string result = sut.NoException(typeof(InvalidOperationException), function, "foo");
 
             StringAssert.EndsWith(Environment.NewLine + "foo", result);
         }
@@ -969,7 +980,7 @@ namespace EasyAssertions.UnitTests
         public void WrongException_SimpleFunction()
         {
             Expression<Action> function = () => "".Trim();
-            string result = DefaultFailureMessageFormatter.Instance.WrongException(typeof(InvalidOperationException), typeof(Exception), function);
+            string result = sut.WrongException(typeof(InvalidOperationException), typeof(Exception), function);
             Assert.AreEqual("\"\".Trim()" + Environment.NewLine
                 + "should throw <InvalidOperationException>" + Environment.NewLine
                 + "but threw    <Exception>", result);
@@ -980,17 +991,27 @@ namespace EasyAssertions.UnitTests
         {
             string str = "";
             Expression<Action> function = () => str.Trim();
-            string result = DefaultFailureMessageFormatter.Instance.WrongException(typeof(InvalidOperationException), typeof(Exception), function);
+            string result = sut.WrongException(typeof(InvalidOperationException), typeof(Exception), function);
             Assert.AreEqual("str.Trim()" + Environment.NewLine
                 + "should throw <InvalidOperationException>" + Environment.NewLine
                 + "but threw    <Exception>", result);
         }
 
         [Test]
+        public void WrongException_NoFunctionExpression()
+        {
+            string result = sut.WrongException(typeof(InvalidOperationException), typeof(Exception));
+
+            Assert.AreEqual($@"{ActualExpression}
+should throw <InvalidOperationException>
+but threw    <Exception>", result);
+        }
+
+        [Test]
         public void WrongException_IncludesMessage()
         {
             Expression<Action> function = () => "".Trim();
-            string result = DefaultFailureMessageFormatter.Instance.WrongException(typeof(InvalidOperationException), typeof(Exception), function, "foo");
+            string result = sut.WrongException(typeof(InvalidOperationException), typeof(Exception), function, "foo");
 
             StringAssert.EndsWith(Environment.NewLine + "foo", result);
         }
@@ -998,7 +1019,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void NotGreaterThan()
         {
-            string result = DefaultFailureMessageFormatter.Instance.NotGreaterThan(2, 1);
+            string result = sut.NotGreaterThan(2, 1);
 
             Assert.AreEqual(ActualExpression + Environment.NewLine
                 + "should be greater than " + ExpectedExpression + Environment.NewLine
@@ -1009,7 +1030,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void NotGreaterThan_IncludesMessage()
         {
-            string result = DefaultFailureMessageFormatter.Instance.NotGreaterThan(2, 1, "foo");
+            string result = sut.NotGreaterThan(2, 1, "foo");
 
             StringAssert.EndsWith(Environment.NewLine + "foo", result);
         }
@@ -1017,7 +1038,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void NotLessThan()
         {
-            string result = DefaultFailureMessageFormatter.Instance.NotLessThan(1, 2);
+            string result = sut.NotLessThan(1, 2);
 
             Assert.AreEqual(ActualExpression + Environment.NewLine
                 + "should be less than " + ExpectedExpression + Environment.NewLine
@@ -1028,7 +1049,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void NotLessThan_IncludesMessage()
         {
-            string result = DefaultFailureMessageFormatter.Instance.NotLessThan(1, 2, "foo");
+            string result = sut.NotLessThan(1, 2, "foo");
 
             StringAssert.EndsWith(Environment.NewLine + "foo", result);
         }
@@ -1036,7 +1057,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void DoesNotMatch()
         {
-            string result = DefaultFailureMessageFormatter.Instance.DoesNotMatch(new Regex("foo"), "bar");
+            string result = sut.DoesNotMatch(new Regex("foo"), "bar");
 
             Assert.AreEqual(ActualExpression + Environment.NewLine
                 + "should match " + ExpectedExpression + Environment.NewLine
@@ -1047,7 +1068,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void DoesNotMatch_IncludesMessage()
         {
-            string result = DefaultFailureMessageFormatter.Instance.DoesNotMatch(new Regex(""), "", "foo");
+            string result = sut.DoesNotMatch(new Regex(""), "", "foo");
 
             StringAssert.EndsWith(Environment.NewLine + "foo", result);
         }
@@ -1055,7 +1076,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void Matches()
         {
-            string result = DefaultFailureMessageFormatter.Instance.Matches(new Regex("foo"), "bar");
+            string result = sut.Matches(new Regex("foo"), "bar");
 
             Assert.AreEqual(ActualExpression + Environment.NewLine
                 + "shouldn't match " + ExpectedExpression + Environment.NewLine
@@ -1066,9 +1087,19 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void Matches_IncludesMessage()
         {
-            string result = DefaultFailureMessageFormatter.Instance.Matches(new Regex(""), "", "foo");
+            string result = sut.Matches(new Regex(""), "", "foo");
 
             StringAssert.EndsWith(Environment.NewLine + "foo", result);
+        }
+
+        [Test]
+        public void TimedOut()
+        {
+            string result = sut.TaskTimedOut(TimeSpan.FromMilliseconds(1), "foo");
+
+            Assert.AreEqual($@"{ActualExpression}
+timed out after 1ms.
+foo", result);
         }
     }
 }

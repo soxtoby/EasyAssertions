@@ -365,16 +365,16 @@ but was   {Value(actualItem)}" + message.OnNewLine();
             return differenceIndex;
         }
 
-        public string NoException(Type expectedExceptionType, LambdaExpression function, string message = null)
+        public string NoException(Type expectedExceptionType, LambdaExpression function = null, string message = null)
         {
-            return $@"{Value(function)}
+            return $@"{(function != null ? Value(function) : ActualExpression)}
 should throw {Value(expectedExceptionType)}
 but didn't throw at all." + message.OnNewLine();
         }
 
-        public string WrongException(Type expectedExceptionType, Type actualExceptionType, LambdaExpression function, string message = null)
+        public string WrongException(Type expectedExceptionType, Type actualExceptionType, LambdaExpression function = null, string message = null)
         {
-            return $@"{Value(function)}
+            return $@"{(function != null ? Value(function) : ActualExpression)}
 should throw {Value(expectedExceptionType)}
 but threw    {Value(actualExceptionType)}" + message.OnNewLine();
         }
@@ -445,6 +445,12 @@ but was {Value(actual)}" + message.OnNewLine();
 shouldn't match {Expected(regex, @"
                 ")}
 but was {Value(actual)}" + message.OnNewLine();
+        }
+
+        public string TaskTimedOut(TimeSpan timeout, string message = null)
+        {
+            return $@"{ActualExpression}
+timed out after {Value(timeout)}." + message.OnNewLine();
         }
     }
 }

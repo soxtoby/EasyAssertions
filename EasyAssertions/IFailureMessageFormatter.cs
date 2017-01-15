@@ -100,12 +100,12 @@ namespace EasyAssertions
         /// <summary>
         /// Function should throw an exception, but didn't.
         /// </summary>
-        string NoException(Type expectedExceptionType, LambdaExpression function, string message = null);
+        string NoException(Type expectedExceptionType, LambdaExpression function = null, string message = null);
 
         /// <summary>
         /// Function should throw a particular exception type, but threw a different one.
         /// </summary>
-        string WrongException(Type expectedExceptionType, Type actualExceptionType, LambdaExpression function, string message = null);
+        string WrongException(Type expectedExceptionType, Type actualExceptionType, LambdaExpression function = null, string message = null);
 
         /// <summary>
         /// Sequence should be empty, but wasn't.
@@ -166,5 +166,10 @@ namespace EasyAssertions
         /// String should not have matched regex pattern, but did.
         /// </summary>
         string Matches(Regex regex, string actual, string message = null);
+
+        /// <summary>
+        /// Task timed out while waiting for it to complete.
+        /// </summary>
+        string TaskTimedOut(TimeSpan timeout, string message = null);
     }
 }

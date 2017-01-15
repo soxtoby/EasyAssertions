@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>EasyAssertions</RootNamespace>
     <AssemblyName>EasyAssertions</AssemblyName>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SccProjectName>
     </SccProjectName>
@@ -55,6 +55,7 @@
     <Compile Include="ActualException.cs" />
     <Compile Include="Assertions\Case.cs" />
     <Compile Include="Assertions\CollectionAssertions.cs" />
+    <Compile Include="Assertions\TaskAssertions.cs" />
     <Compile Include="Assertions\TreeAssertions.cs" />
     <Compile Include="Compare.cs" />
     <Compile Include="Assertions\EasyAssertion.cs" />

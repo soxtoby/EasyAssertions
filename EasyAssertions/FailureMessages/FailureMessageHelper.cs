@@ -212,6 +212,7 @@ namespace EasyAssertions
         {
             return new string(' ', text.Length);
         }
+
         /// <summary>
         /// Outputs a path of nodes.
         /// </summary>
@@ -245,6 +246,13 @@ namespace EasyAssertions
                 value += " {" + regex.Options + "}";
 
             return value;
+        }
+
+        public static string Value(TimeSpan timespan)
+        {
+            return timespan.TotalMilliseconds < 1 ? $"{timespan.Ticks} ticks"
+                : timespan.TotalSeconds < 1 ? timespan.Milliseconds + "ms"
+                : timespan.ToString();
         }
 
         /// <summary>

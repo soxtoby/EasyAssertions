@@ -687,6 +687,17 @@ namespace EasyAssertions.UnitTests
         }
 
         [Test]
+        public void ShouldOnlyContain_HasDuplicate_FailsWithContainsDuplicateMessage()
+        {
+            int[] actual = { 1, 1 };
+            MockFormatter.ContainsDuplicate(actual, "foo").Returns("bar");
+
+            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldOnlyContain(new[] { 1 }, "foo"));
+
+            Assert.AreEqual("bar", result.Message);
+        }
+
+        [Test]
         public void ShouldOnlyContain_ActualIsNull_FailsWithTypesNotEqualMessage()
         {
             IEnumerable<int> actual = null;

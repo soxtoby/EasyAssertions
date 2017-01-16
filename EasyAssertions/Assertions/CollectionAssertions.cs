@@ -211,7 +211,7 @@ namespace EasyAssertions
         }
 
         /// <summary>
-        /// Asserts thats a sequence only contains the specified elements, and nothing else, in any order, using the default equality comparer.
+        /// Asserts thats a sequence only contains the specified elements, and nothing else, in any order, with no duplicates, using the default equality comparer.
         /// </summary>
         public static Actual<IEnumerable<TActual>> ShouldOnlyContain<TActual, TExpected>(this IEnumerable<TActual> actual, IEnumerable<TExpected> expected, string message = null) where TExpected : TActual
         {
@@ -220,6 +220,7 @@ namespace EasyAssertions
                     ObjectAssertions.AssertType<IEnumerable<TActual>>(actual, message);
                     if (!Compare.ContainsOnlyExpectedItems(actual, expected))
                         throw EasyAssertion.Failure(FailureMessageFormatter.Current.DoesNotOnlyContain(expected, actual, message));
+                    AssertDistinct(actual, message);
                 });
         }
 

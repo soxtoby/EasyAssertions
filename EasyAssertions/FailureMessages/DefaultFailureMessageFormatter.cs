@@ -220,6 +220,22 @@ should only contain {Sample(expectedItems)}
 but also contains {Sample(extraItems)}" + message.OnNewLine();
         }
 
+        public string ContainsDuplicate(IEnumerable actual, string message)
+        {
+            List<object> actualItems = actual.Cast<object>().ToList();
+            object duplicateItem = actualItems.GroupBy(i => i).First(g => g.Count() > 1).Key;
+            List<int> duplicateIndices = new List<int>();
+            for (int i = 0; i < actualItems.Count; i++)
+                if (Compare.ObjectsAreEqual(actualItems[i], duplicateItem))
+                    duplicateIndices.Add(i);
+
+            return $@"{ActualExpression}
+should not contain duplicates
+but {Value(duplicateItem)}
+was found at indices {duplicateIndices.Take(duplicateIndices.Count - 1).Join(", ")} and {duplicateIndices.Last()}."
+                + message.OnNewLine();
+        }
+
         private static void FindMissingItem(IEnumerable expected, ICollection<object> actualItems, out int missingItemIndex, out object missingItem)
         {
             missingItemIndex = 0;

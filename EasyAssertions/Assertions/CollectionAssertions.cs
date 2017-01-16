@@ -121,8 +121,8 @@ namespace EasyAssertions
                     List<object> actualList = actual.Cast<object>().ToList();
                     List<object> expectedList = expectedStart.Cast<object>().ToList();
 
-                    if (!Compare.CollectionStartsWith(actualList, expectedList, Equals))
-                        throw EasyAssertion.Failure(FailureMessageFormatter.Current.DoesNotStartWith(expectedStart, actual, Equals, message));
+                    if (!Compare.CollectionStartsWith(actualList, expectedList, Compare.ObjectsAreEqual))
+                        throw EasyAssertion.Failure(FailureMessageFormatter.Current.DoesNotStartWith(expectedStart, actual, Compare.ObjectsAreEqual, message));
                 });
         }
 
@@ -137,8 +137,8 @@ namespace EasyAssertions
                     List<object> actualList = actual.Cast<object>().ToList();
                     List<object> expectedList = expectedEnd.Cast<object>().ToList();
 
-                    if (!Compare.CollectionEndsWith(actualList, expectedList, Equals))
-                        throw EasyAssertion.Failure(FailureMessageFormatter.Current.DoesNotEndWith(expectedEnd, actual, Equals, message));
+                    if (!Compare.CollectionEndsWith(actualList, expectedList, Compare.ObjectsAreEqual))
+                        throw EasyAssertion.Failure(FailureMessageFormatter.Current.DoesNotEndWith(expectedEnd, actual, Compare.ObjectsAreEqual, message));
                 });
         }
 
@@ -237,6 +237,22 @@ namespace EasyAssertions
                     if (Compare.ContainsAllItems(expected, actual))
                         throw EasyAssertion.Failure(FailureMessageFormatter.Current.OnlyContains(expected, actual, message));
                 });
+        }
+
+        /// <summary>
+        /// Asserts that a sequence contains no duplicated elements, using the default equality comparer.
+        /// </summary>
+        public static Actual<IEnumerable<TActual>> ShouldBeDistinct<TActual>(this IEnumerable<TActual> actual, string message = null)
+        {
+            return actual.RegisterAssert(() => AssertDistinct(actual, message));
+        }
+
+        private static void AssertDistinct<TActual>(IEnumerable<TActual> actual, string message)
+        {
+            ObjectAssertions.AssertType<IEnumerable<TActual>>(actual, message);
+
+            if (actual.GroupBy(i => i).Any(group => @group.Count() > 1))
+                throw EasyAssertion.Failure(FailureMessageFormatter.Current.ContainsDuplicate(actual, message));
         }
 
         /// <summary>

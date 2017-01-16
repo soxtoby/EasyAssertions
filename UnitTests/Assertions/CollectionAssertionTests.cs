@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Runtime.Remoting;
 
 namespace EasyAssertions.UnitTests
 {
@@ -375,7 +376,7 @@ namespace EasyAssertions.UnitTests
         {
             int[] actual = { 1 };
             int[] expectedStart = { 2 };
-            MockFormatter.DoesNotStartWith(expectedStart, actual, Equals, "foo").Returns("bar");
+            MockFormatter.DoesNotStartWith(expectedStart, actual, Compare.ObjectsAreEqual, "foo").Returns("bar");
 
             EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldStartWith(expectedStart, "foo"));
 
@@ -422,7 +423,7 @@ namespace EasyAssertions.UnitTests
         {
             int[] actual = { 1 };
             int[] expectedStart = { 2 };
-            MockFormatter.DoesNotEndWith(expectedStart, actual, Equals, "foo").Returns("bar");
+            MockFormatter.DoesNotEndWith(expectedStart, actual, Compare.ObjectsAreEqual, "foo").Returns("bar");
 
             EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldEndWith(expectedStart, "foo"));
 
@@ -749,6 +750,45 @@ namespace EasyAssertions.UnitTests
 
             Assert.AreEqual(nameof(actual), TestExpression.GetActual());
             Assert.AreEqual(nameof(expected), TestExpression.GetExpected());
+        }
+
+        [Test]
+        public void ShouldBeDistinct_NoDuplicates_ReturnsActual()
+        {
+            int[] actual = { 1, 2, 3};
+
+            Actual<IEnumerable<int>> result = actual.ShouldBeDistinct();
+
+            Assert.AreSame(actual, result.And);
+        }
+
+        [Test]
+        public void ShouldBeDistinct_ActualIsNull_FailsWithTypesNotEqualMessage()
+        {
+            IEnumerable<int> actual = null;
+
+            AssertFailsWithTypesNotEqualMessage(typeof(IEnumerable<int>), null, msg => actual.ShouldBeDistinct(msg));
+        }
+
+        [Test]
+        public void ShouldBeDistinct_ContainsDuplicate_FailsWithContainsDuplicateMessage()
+        {
+            int[] actual = { 1, 2, 1 };
+            MockFormatter.ContainsDuplicate(actual, "foo").Returns("bar");
+
+            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldBeDistinct("foo"));
+
+            Assert.AreEqual("bar", result.Message);
+        }
+
+        [Test]
+        public void ShouldBeDistinct_CorrectlyRegistersAssertion()
+        {
+            int[] actual = { 1 };
+
+            actual.ShouldBeDistinct();
+
+            Assert.AreEqual(nameof(actual), TestExpression.GetActual());
         }
 
         [Test]

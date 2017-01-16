@@ -612,6 +612,18 @@ namespace EasyAssertions.UnitTests
         }
 
         [Test]
+        public void ContainsDuplicate()
+        {
+            string result = sut.ContainsDuplicate(new[] { 1, 2, 1, 1 }, "foo");
+
+            Assert.AreEqual($@"{ActualExpression}
+should not contain duplicates
+but <1>
+was found at indices 0, 2 and 3.
+foo", result);
+        }
+
+        [Test]
         public void DoNotMatch_NonMatchingCollections()
         {
             string result = sut.DoNotMatch(new[] { 1, 2, 3 }, new[] { 1, 3, 2 }, Compare.ObjectsAreEqual);

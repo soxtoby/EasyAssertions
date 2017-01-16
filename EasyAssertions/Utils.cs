@@ -8,18 +8,18 @@ namespace EasyAssertions
 {
     static class Utils
     {
-        public static string Join(this IEnumerable<string> strings, string delimiter)
+        public static string Join<T>(this IEnumerable<T> items, string delimiter)
         {
             StringBuilder sb = new StringBuilder();
             bool delimit = false;
-            foreach (string str in strings)
+            foreach (T item in items)
             {
                 if (delimit)
                     sb.Append(delimiter);
                 else
                     delimit = true;
 
-                sb.Append(str);
+                sb.Append(item);
             }
             return sb.ToString();
         }

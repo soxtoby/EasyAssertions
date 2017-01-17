@@ -35,8 +35,4 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyVersion("1.0.0.*")]
 [assembly: AssemblyFileVersion("1.0.0")]
 
-[assembly: InternalsVisibleTo("EasyAssertions.UnitTests, PublicKey=00240000048000009400000006020000002400005253413100040000010001009732fe341bc1ad"
-                                                                + "7a67eaaca1b9b54ae7d12db0412bc105070e6b4bbd04a3daf59e6be85604cb63535301a7dba305"
-                                                                + "68eedbc85df3e316d3f1aab3d74a95d369246073b00d65b65942c3d9ebcb771950a75cf25bb814"
-                                                                + "9ef9d4eea17aba43b824fbd56fc536e2818fd0f34c30a13732bc5477d5f5e24019e1accf9e47af"
-                                                                + "a5b192cd")]
+[assembly: InternalsVisibleTo("EasyAssertions.UnitTests")]

@@ -44,6 +44,9 @@ namespace EasyAssertions
         
         private static void AssertCompletes(Task actual, TimeSpan timeout, string message)
         {
+            if (timeout < TimeSpan.Zero)
+                throw NegativeTimeoutException(timeout);
+
             if (!actual.Wait(timeout))
                 throw EasyAssertion.Failure(FailureMessageFormatter.Current.TaskTimedOut(timeout, message));
         }
@@ -86,6 +89,9 @@ namespace EasyAssertions
 
         private static void AssertFails<TException>(Task actual, TimeSpan timeout, string message) where TException : Exception
         {
+            if (timeout < TimeSpan.Zero)
+                throw NegativeTimeoutException(timeout);
+
             try
             {
                 if (!actual.Wait(timeout))
@@ -100,6 +106,11 @@ namespace EasyAssertions
             }
 
             throw EasyAssertion.Failure(FailureMessageFormatter.Current.NoException(typeof(TException), message: message));
+        }
+
+        private static ArgumentOutOfRangeException NegativeTimeoutException(TimeSpan timeout)
+        {
+            return new ArgumentOutOfRangeException(nameof(timeout), timeout, $"{nameof(timeout)} must be {nameof(TimeSpan)}.{nameof(TimeSpan.Zero)} or greater.");
         }
     }
 }

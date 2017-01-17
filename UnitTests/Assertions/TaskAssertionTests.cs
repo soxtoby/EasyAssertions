@@ -51,6 +51,14 @@ namespace EasyAssertions.UnitTests
         }
 
         [Test]
+        public void ShouldCompleteWithinTimeSpan_NegativeTimeSpan_ThrowsArgumentOutOfRangeException()
+        {
+            ArgumentOutOfRangeException result = Assert.Throws<ArgumentOutOfRangeException>(() => ((Task)taskSource.Task).ShouldCompleteWithin(TimeSpan.FromTicks(-1)));
+
+            Assert.AreEqual("timeout", result.ParamName);
+        }
+
+        [Test]
         public void ShouldCompleteWithinTimeSpan_DoesNotComplete_FailsWithTimeoutMessage()
         {
             AssertTimesOut(TimeSpan.FromMilliseconds(1), msg => ((Task)taskSource.Task).ShouldCompleteWithin(TimeSpan.FromMilliseconds(1), msg));
@@ -73,6 +81,14 @@ namespace EasyAssertions.UnitTests
         public void ShouldCompleteWithinMillisecondsWithValue_CompletesWithinTimeout_ReturnsResult()
         {
             AssertReturnsResult(1, () => taskSource.Task.ShouldCompleteWithin(1));
+        }
+
+        [Test]
+        public void ShouldCompleteWithinMillisecondsWithValue_NegativeTimeSpan_ThrowsArgumentOutOfRangeException()
+        {
+            ArgumentOutOfRangeException result = Assert.Throws<ArgumentOutOfRangeException>(() => taskSource.Task.ShouldCompleteWithin(TimeSpan.FromTicks(-1)));
+
+            Assert.AreEqual("timeout", result.ParamName);
         }
 
         [Test]
@@ -160,6 +176,14 @@ namespace EasyAssertions.UnitTests
         }
 
         [Test]
+        public void ShouldFailWithinTimeSpanWithType_NegativeTimeSpan_ThrowsArgumentOutOfRangeException()
+        {
+            ArgumentOutOfRangeException result = Assert.Throws<ArgumentOutOfRangeException>(() => taskSource.Task.ShouldFail<Exception>(TimeSpan.FromTicks(-1)));
+
+            Assert.AreEqual("timeout", result.ParamName);
+        }
+
+        [Test]
         public void ShouldFailWithinTimeSpanWithType_FailsWithWrongType_FailsWithWrongExceptionMessage()
         {
             AssertFailsWithWrongExceptionMessage(typeof(InvalidOperationException), new Exception(), msg => taskSource.Task.ShouldFail<InvalidOperationException>(TimeSpan.FromMilliseconds(1), msg));
@@ -223,6 +247,14 @@ namespace EasyAssertions.UnitTests
         public void ShouldFailWithinTimeSpan_Fails_ReturnsException()
         {
             AssertReturnsException(new Exception(), () => taskSource.Task.ShouldFail(TimeSpan.FromMilliseconds(1)));
+        }
+
+        [Test]
+        public void ShouldFailWithinTimeSpan_NegativeTimeSpan_ThrowsArgumentOutOfRangeException()
+        {
+            ArgumentOutOfRangeException result = Assert.Throws<ArgumentOutOfRangeException>(() => taskSource.Task.ShouldFail(TimeSpan.FromTicks(-1)));
+
+            Assert.AreEqual("timeout", result.ParamName);
         }
 
         [Test]

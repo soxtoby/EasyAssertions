@@ -64,10 +64,12 @@ namespace EasyAssertions
             return new Actual<TActual>(actualTask.Result);
         }
         
-        private static void AssertCompletes(Task actualTask, TimeSpan timeout, string message)
+        private static void AssertCompletes<TTask>(TTask actualTask, TimeSpan timeout, string message) where TTask : Task
         {
             if (timeout < TimeSpan.Zero)
                 throw NegativeTimeoutException(timeout);
+            
+            ObjectAssertions.AssertType<TTask>(actualTask, message);
 
             if (!WaitForTask(actualTask, timeout))
                 throw EasyAssertion.Failure(FailureMessageFormatter.Current.TaskTimedOut(timeout, message));
@@ -133,6 +135,8 @@ namespace EasyAssertions
         {
             if (timeout < TimeSpan.Zero)
                 throw NegativeTimeoutException(timeout);
+
+            ObjectAssertions.AssertType<Task>(actualTask, message);
 
             try
             {

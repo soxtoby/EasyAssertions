@@ -8,10 +8,22 @@ namespace EasyAssertions
     /// </summary>
     public static class TaskAssertions
     {
+        internal static Func<Task, TimeSpan, bool> WaitForTask = (task, timeout) => task.Wait(timeout);
+        private static readonly TimeSpan DefaultTimeout = TimeSpan.FromSeconds(1);
+
+        /// <summary>
+        /// Assert that a task completes successfully.
+        /// Times out after one second.
+        /// </summary>
+        public static void ShouldComplete(this Task actualTask, string message = null)
+        {
+            actualTask.RegisterAssert(() => AssertCompletes(actualTask, DefaultTimeout, message));
+        }
+
         /// <summary>
         /// Assert that a task completes successfully within a specified number of milliseconds.
         /// </summary>
-        public static void ShouldCompleteWithin(this Task actualTask, uint millisecondsTimeout, string message = null)
+        public static void ShouldComplete(this Task actualTask, uint millisecondsTimeout, string message = null)
         {
             actualTask.RegisterAssert(() => AssertCompletes(actualTask, TimeSpan.FromMilliseconds(millisecondsTimeout), message));
         }
@@ -19,15 +31,25 @@ namespace EasyAssertions
         /// <summary>
         /// Assert that a task completes successfully within a specified time span.
         /// </summary>
-        public static void ShouldCompleteWithin(this Task actualTask, TimeSpan timeout, string message = null)
+        public static void ShouldComplete(this Task actualTask, TimeSpan timeout, string message = null)
         {
             actualTask.RegisterAssert(() => AssertCompletes(actualTask, timeout, message));
         }
 
         /// <summary>
+        /// Assert that a task completes successfully.
+        /// Times out after one second.
+        /// </summary>
+        public static Actual<TActual> ShouldComplete<TActual>(this Task<TActual> actualTask, string message = null)
+        {
+            actualTask.RegisterAssert(() => AssertCompletes(actualTask, DefaultTimeout, message));
+            return new Actual<TActual>(actualTask.Result);
+        }
+
+        /// <summary>
         /// Assert that a task completes successfully within a specified number of milliseconds.
         /// </summary>
-        public static Actual<TActual> ShouldCompleteWithin<TActual>(this Task<TActual> actualTask, uint millisecondsTimeout, string message = null)
+        public static Actual<TActual> ShouldComplete<TActual>(this Task<TActual> actualTask, uint millisecondsTimeout, string message = null)
         {
             actualTask.RegisterAssert(() => AssertCompletes(actualTask, TimeSpan.FromMilliseconds(millisecondsTimeout), message));
             return new Actual<TActual>(actualTask.Result);
@@ -36,65 +58,85 @@ namespace EasyAssertions
         /// <summary>
         /// Assert that a task completes successfully within a specified time span.
         /// </summary>
-        public static Actual<TActual> ShouldCompleteWithin<TActual>(this Task<TActual> actualTask, TimeSpan timeout, string message = null)
+        public static Actual<TActual> ShouldComplete<TActual>(this Task<TActual> actualTask, TimeSpan timeout, string message = null)
         {
             actualTask.RegisterAssert(() => AssertCompletes(actualTask, timeout, message));
             return new Actual<TActual>(actualTask.Result);
         }
         
-        private static void AssertCompletes(Task actual, TimeSpan timeout, string message)
+        private static void AssertCompletes(Task actualTask, TimeSpan timeout, string message)
         {
             if (timeout < TimeSpan.Zero)
                 throw NegativeTimeoutException(timeout);
 
-            if (!actual.Wait(timeout))
+            if (!WaitForTask(actualTask, timeout))
                 throw EasyAssertion.Failure(FailureMessageFormatter.Current.TaskTimedOut(timeout, message));
+        }
+
+        /// <summary>
+        /// Assert that a task fails with a particular type of exception.
+        /// Times out after 1 second.
+        /// </summary>
+        public static ActualException<TException> ShouldFail<TException>(this Task actualTask, string message = null) where TException : Exception
+        {
+            actualTask.RegisterAssert(() => AssertFails<TException>(actualTask, DefaultTimeout, message));
+            return new ActualException<TException>((TException)actualTask.Exception.InnerException);
         }
 
         /// <summary>
         /// Assert that a task fails within a specified number of milliseconds, with a particular type of exception.
         /// </summary>
-        public static ActualException<TException> ShouldFail<TException>(this Task actual, uint millisecondsTimeout, string message = null) where TException : Exception
+        public static ActualException<TException> ShouldFail<TException>(this Task actualTask, uint millisecondsTimeout, string message = null) where TException : Exception
         {
-            actual.RegisterAssert(() => AssertFails<TException>(actual, TimeSpan.FromMilliseconds(millisecondsTimeout), message));
-            return new ActualException<TException>((TException)actual.Exception.InnerException);
+            actualTask.RegisterAssert(() => AssertFails<TException>(actualTask, TimeSpan.FromMilliseconds(millisecondsTimeout), message));
+            return new ActualException<TException>((TException)actualTask.Exception.InnerException);
         }
 
         /// <summary>
         /// Assert that a task fails within a specified time span, with a particular type of exception.
         /// </summary>
-        public static ActualException<TException> ShouldFail<TException>(this Task actual, TimeSpan timeout, string message = null) where TException : Exception
+        public static ActualException<TException> ShouldFail<TException>(this Task actualTask, TimeSpan timeout, string message = null) where TException : Exception
         {
-            actual.RegisterAssert(() => AssertFails<TException>(actual, timeout, message));
-            return new ActualException<TException>((TException)actual.Exception.InnerException);
+            actualTask.RegisterAssert(() => AssertFails<TException>(actualTask, timeout, message));
+            return new ActualException<TException>((TException)actualTask.Exception.InnerException);
+        }
+
+        /// <summary>
+        /// Assert that a task fails.
+        /// Times out after 1 second.
+        /// </summary>
+        public static ActualException<Exception> ShouldFail(this Task actualTask, string message = null)
+        {
+            actualTask.RegisterAssert(() => AssertFails<Exception>(actualTask, DefaultTimeout, message));
+            return new ActualException<Exception>(actualTask.Exception.InnerException);
         }
 
         /// <summary>
         /// Assert that a task fails within a specified number of milliseconds.
         /// </summary>
-        public static ActualException<Exception> ShouldFail(this Task actual, uint millisecondsTimeout, string message = null)
+        public static ActualException<Exception> ShouldFail(this Task actualTask, uint millisecondsTimeout, string message = null)
         {
-            actual.RegisterAssert(() => AssertFails<Exception>(actual, TimeSpan.FromMilliseconds(millisecondsTimeout), message));
-            return new ActualException<Exception>(actual.Exception.InnerException);
+            actualTask.RegisterAssert(() => AssertFails<Exception>(actualTask, TimeSpan.FromMilliseconds(millisecondsTimeout), message));
+            return new ActualException<Exception>(actualTask.Exception.InnerException);
         }
 
         /// <summary>
         /// Assert that a task fails within a specified time span.
         /// </summary>
-        public static ActualException<Exception> ShouldFail(this Task actual, TimeSpan timeout, string message = null)
+        public static ActualException<Exception> ShouldFail(this Task actualTask, TimeSpan timeout, string message = null)
         {
-            actual.RegisterAssert(() => AssertFails<Exception>(actual, timeout, message));
-            return new ActualException<Exception>(actual.Exception.InnerException);
+            actualTask.RegisterAssert(() => AssertFails<Exception>(actualTask, timeout, message));
+            return new ActualException<Exception>(actualTask.Exception.InnerException);
         }
 
-        private static void AssertFails<TException>(Task actual, TimeSpan timeout, string message) where TException : Exception
+        private static void AssertFails<TException>(Task actualTask, TimeSpan timeout, string message) where TException : Exception
         {
             if (timeout < TimeSpan.Zero)
                 throw NegativeTimeoutException(timeout);
 
             try
             {
-                if (!actual.Wait(timeout))
+                if (!WaitForTask(actualTask, timeout))
                     throw EasyAssertion.Failure(FailureMessageFormatter.Current.TaskTimedOut(timeout, message));
             }
             catch (AggregateException e)

@@ -9,7 +9,7 @@
 
         /// <summary>
         /// The current failure message formatter.
-        /// Can be overriden with <see cref="Override"/>.
+        /// Can be overridden with <see cref="Override"/>.
         /// </summary>
         public static IFailureMessageFormatter Current => current ?? DefaultFailureMessageFormatter.Instance;
 

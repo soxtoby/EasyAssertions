@@ -11,6 +11,25 @@ namespace EasyAssertions
     /// </summary>
     public static class CollectionAssertions
     {
+        private const string UnorderedCollectionComparisonError = "Don't compare unordered collections with ordered sequences. Use an assertion that doesn't test ordering instead.";
+
+        [Obsolete(UnorderedCollectionComparisonError, true)]
+        public static void ShouldMatch<TActualKey, TActualValue, TExpectedKey, TExpectedValue>(this IDictionary<TActualKey, TActualValue> actual, IEnumerable<KeyValuePair<TExpectedKey, TExpectedValue>> expected, string message = null) { }
+        [Obsolete(UnorderedCollectionComparisonError, true)]
+        public static void ShouldMatch<TActualKey, TActualValue, TExpectedKey, TExpectedValue>(this IEnumerable<KeyValuePair<TActualKey, TActualValue>> actual, IDictionary<TExpectedKey, TExpectedValue> expected, string message = null) { }
+        [Obsolete(UnorderedCollectionComparisonError, true)]
+        public static void ShouldMatch<TActual, TExpected>(this ISet<TActual> actual, IEnumerable<TExpected> expected, string message = null) { }
+        [Obsolete(UnorderedCollectionComparisonError, true)]
+        public static void ShouldMatch<TActual, TExpected>(this IEnumerable<TActual> actual, ISet<TExpected> expected, string message = null) { }
+        [Obsolete(UnorderedCollectionComparisonError, true)]
+        public static void ShouldMatchReferences<TActualKey, TActualValue, TExpectedKey, TExpectedValue>(this IDictionary<TActualKey, TActualValue> actual, IEnumerable<KeyValuePair<TExpectedKey, TExpectedValue>> expected, string message = null) { }
+        [Obsolete(UnorderedCollectionComparisonError, true)]
+        public static void ShouldMatchReferences<TActualKey, TActualValue, TExpectedKey, TExpectedValue>(this IEnumerable<KeyValuePair<TActualKey, TActualValue>> actual, IDictionary<TExpectedKey, TExpectedValue> expected, string message = null) { }
+        [Obsolete(UnorderedCollectionComparisonError, true)]
+        public static void ShouldMatchReferences<TActual, TExpected>(this ISet<TActual> actual, IEnumerable<TExpected> expected, string message = null) { }
+        [Obsolete(UnorderedCollectionComparisonError, true)]
+        public static void ShouldMatchReferences<TActual, TExpected>(this IEnumerable<TActual> actual, ISet<TExpected> expected, string message = null) { }
+
         /// <summary>
         /// Asserts that a sequence has no elements in it.
         /// </summary>

@@ -13,6 +13,27 @@ namespace EasyAssertions.UnitTests
     [TestFixture]
     public class CollectionAssertionTests : AssertionTests
     {
+        /* // None of the lines in the following method should compile 
+        public void ShouldNotCompile()
+        {
+            new Dictionary<string, string>().ShouldMatch(new Dictionary<string, string>().AsEnumerable());
+            new Dictionary<string, string>().ShouldMatch(new Dictionary<string, string>().AsEnumerable(), "message");
+            new Dictionary<string, string>().AsEnumerable().ShouldMatch(new Dictionary<string, string>());
+            new Dictionary<string, string>().AsEnumerable().ShouldMatch(new Dictionary<string, string>(), "message");
+            new HashSet<string>().ShouldMatch(new[] { "foo" });
+            new HashSet<string>().ShouldMatch(new[] { "foo" }, "message");
+            new[] { "foo" }.ShouldMatch(new HashSet<string>());
+            new[] { "foo" }.ShouldMatch(new HashSet<string>(), "message");
+            new Dictionary<string, string>().ShouldMatchReferences(new Dictionary<string, string>().AsEnumerable());
+            new Dictionary<string, string>().ShouldMatchReferences(new Dictionary<string, string>().AsEnumerable(), "message");
+            new Dictionary<string, string>().AsEnumerable().ShouldMatchReferences(new Dictionary<string, string>());
+            new Dictionary<string, string>().AsEnumerable().ShouldMatchReferences(new Dictionary<string, string>(), "message");
+            new HashSet<string>().ShouldMatchReferences(new[] { "foo" });
+            new HashSet<string>().ShouldMatchReferences(new[] { "foo" }, "message");
+            new[] { "foo" }.ShouldMatchReferences(new HashSet<string>());
+            new[] { "foo" }.ShouldMatchReferences(new HashSet<string>(), "message");
+        }/**/
+
         class ShouldbeEmpty : CollectionAssertionTests
         {
             [Test]

@@ -55,7 +55,7 @@
   <ItemGroup>
     <Compile Include="ActualExceptionTests.cs" />
     <Compile Include="AssertionMethodTests.cs" />
-    <Compile Include="Assertions\CollectionAssertionTests.cs" />
+    <Compile Include="BufferTests.cs" />
     <Compile Include="Assertions\AssertionTests.cs" />
     <Compile Include="Assertions\EasyAssertionTests.cs" />
     <Compile Include="Assertions\FunctionAssertionTests.cs" />
@@ -65,13 +65,16 @@
     <Compile Include="Assertions\TaskAssertionTests.cs" />
     <Compile Include="Assertions\TreeAssertionTests.cs" />
     <Compile Include="BraceMatcherTests.cs" />
+    <Compile Include="Assertions\CollectionAssertionTests.cs" />
     <Compile Include="CompareTests.cs" />
     <Compile Include="ContinuationTests.cs" />
     <Compile Include="DefaultFailureMessageFormatterTests.cs" />
     <Compile Include="EasyAssertionExceptionTests.cs" />
+    <Compile Include="EnumerableArg.cs" />
     <Compile Include="FakeObject.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SourceExpressionProviderTests.cs" />
+    <Compile Include="TestEnumerable.cs" />
     <Compile Include="TestNodeTests.cs" />
   </ItemGroup>
   <ItemGroup>

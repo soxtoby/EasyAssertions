@@ -85,7 +85,7 @@ namespace EasyAssertions
         /// <summary>
         /// Sequence should have had a distinct set of items, but it had duplicates.
         /// </summary>
-        string ContainsDuplicate(IEnumerable actual, string message);
+        string ContainsDuplicate(IEnumerable actual, string message = null);
 
         /// <summary>
         /// Sequence should contain the same object references, in the same order, as another sequence, but didn't.

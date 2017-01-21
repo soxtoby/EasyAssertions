@@ -110,7 +110,7 @@ namespace EasyAssertions
                     : multipleMessage;
         }
 
-        public static string Single(IEnumerable<object> collection)
+        public static string Single(ICollection<object> collection)
         {
             return Value(collection.FirstOrDefault());
         }
@@ -216,7 +216,7 @@ namespace EasyAssertions
         /// <summary>
         /// Outputs a path of nodes.
         /// </summary>
-        public static string Path(IEnumerable<object> path)
+        public static string Path(ICollection<object> path)
         {
             return new[] { "root" }
                 .Concat(

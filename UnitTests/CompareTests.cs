@@ -84,6 +84,18 @@ namespace EasyAssertions.UnitTests
         }
 
         [Test]
+        public void CollectionsMatch_OnlyEnumeratesOnce()
+        {
+            TestEnumerable<int> actual = MakeEnumerable(1);
+            TestEnumerable<int> expected = MakeEnumerable(1);
+
+            Compare.CollectionsMatch(actual, expected, Compare.ObjectsMatch);
+
+            Assert.AreEqual(1, actual.EnumerationCount);
+            Assert.AreEqual(1, expected.EnumerationCount);
+        }
+
+        [Test]
         public void CollectionStartsWith_MatchingCollections_StartsWith()
         {
             Assert.IsTrue(Compare.CollectionStartsWith(new object[] { 1, 2, 3 }, new object[] { 1, 2, 3 }, Equals));
@@ -105,6 +117,18 @@ namespace EasyAssertions.UnitTests
         public void CollectionStartsWith_DifferentItems_DoesNotStartWith()
         {
             Assert.IsFalse(Compare.CollectionStartsWith(new object[] { 1, 2 }, new object[] { 1, 3 }, Equals));
+        }
+
+        [Test]
+        public void CollectionStartsWith_OnlyEnumeratesOnce()
+        {
+            TestEnumerable<int> actual = MakeEnumerable(1);
+            TestEnumerable<int> expected = MakeEnumerable(1);
+
+            Compare.CollectionStartsWith(actual, expected, Compare.ObjectsMatch);
+
+            Assert.AreEqual(1, actual.EnumerationCount);
+            Assert.AreEqual(1, expected.EnumerationCount);
         }
 
         [Test]
@@ -132,6 +156,18 @@ namespace EasyAssertions.UnitTests
         }
 
         [Test]
+        public void CollectionEndsWith_OnlyEnumeratesOnce()
+        {
+            TestEnumerable<int> actual = MakeEnumerable(1);
+            TestEnumerable<int> expected = MakeEnumerable(1);
+
+            Compare.CollectionEndsWith(actual, expected, Compare.ObjectsMatch);
+
+            Assert.AreEqual(1, actual.EnumerationCount);
+            Assert.AreEqual(1, expected.EnumerationCount);
+        }
+
+        [Test]
         public void ContainsAny_EmptySequence_DoesNotContainItems()
         {
             Assert.IsFalse(Compare.ContainsAny(Enumerable.Empty<int>(), new[] { 1 }));
@@ -147,6 +183,18 @@ namespace EasyAssertions.UnitTests
         public void ContainsAny_ContainsItem()
         {
             Assert.IsTrue(Compare.ContainsAny(new[] { 1, 2 }, new[] { 3, 2 }));
+        }
+
+        [Test]
+        public void ContainsAny_OnlyEnumeratesOnce()
+        {
+            TestEnumerable<int> actual = MakeEnumerable(1);
+            TestEnumerable<int> expected = MakeEnumerable(1);
+
+            Compare.ContainsAny(actual, expected);
+
+            Assert.AreEqual(1, actual.EnumerationCount);
+            Assert.AreEqual(1, expected.EnumerationCount);
         }
 
         [Test]
@@ -283,6 +331,8 @@ namespace EasyAssertions.UnitTests
                 n => n.Children,
                 (a, e) => a.Value == e));
         }
+
+        private static TestEnumerable<T> MakeEnumerable<T>(params T[] items) => new TestEnumerable<T>(items);
 
         private class ActualNode
         {

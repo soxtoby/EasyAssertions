@@ -309,6 +309,16 @@ namespace EasyAssertions.UnitTests
         }
 
         [Test]
+        public void NotEmpty_OnlyEnumeratesOnce()
+        {
+            TestEnumerable<int> actual = MakeEnumerable(1);
+
+            sut.NotEmpty(actual);
+
+            Assert.AreEqual(1, actual.EnumerationCount);
+        }
+
+        [Test]
         public void NotEmpty_IncludesMessage()
         {
             FakeObject[] enumerable = { new FakeObject(string.Empty) };
@@ -423,6 +433,16 @@ namespace EasyAssertions.UnitTests
         }
 
         [Test]
+        public void CollectionDoesNotContain_OnlyEnumeratesOnce()
+        {
+            TestEnumerable<int> actual = MakeEnumerable(1);
+
+            sut.DoesNotContain(2, actual);
+
+            Assert.AreEqual(1, actual.EnumerationCount);
+        }
+
+        [Test]
         public void CollectionDoesNotContain_IncludesMessage()
         {
             string result = sut.DoesNotContain(0, Enumerable.Empty<int>(), message: "foo");
@@ -462,6 +482,18 @@ namespace EasyAssertions.UnitTests
         }
 
         [Test]
+        public void CollectionDoesNotContainItems_OnlyEnumeratesOnce()
+        {
+            TestEnumerable<int> expected = MakeEnumerable(1);
+            TestEnumerable<int> actual = MakeEnumerable(2);
+
+            sut.DoesNotContainItems(expected, actual);
+
+            Assert.AreEqual(1, actual.EnumerationCount);
+            Assert.AreEqual(1, expected.EnumerationCount);
+        }
+
+        [Test]
         public void CollectionContains()
         {
             string result = sut.Contains(new FakeObject("foo"), Enumerable.Empty<object>());
@@ -484,6 +516,16 @@ namespace EasyAssertions.UnitTests
         }
 
         [Test]
+        public void CollectionContains_OnlyEnumeratesOnce()
+        {
+            TestEnumerable<int> actual = MakeEnumerable(2);
+
+            sut.Contains(1, actual);
+
+            Assert.AreEqual(1, actual.EnumerationCount);
+        }
+
+        [Test]
         public void CollectionContains_IncludesMessage()
         {
             string result = sut.Contains((object)null, Enumerable.Empty<object>(), message: "foo");
@@ -499,6 +541,18 @@ namespace EasyAssertions.UnitTests
             Assert.AreEqual(ActualExpression + Environment.NewLine
                 + "should contain more than just " + ExpectedExpression + Environment.NewLine
                 + "but was empty.", result);
+        }
+
+        [Test]
+        public void CollectionOnlyContains_OnlyEnumeratesOnce()
+        {
+            TestEnumerable<int> expected = MakeEnumerable(1);
+            TestEnumerable<int> actual = MakeEnumerable(2);
+
+            sut.OnlyContains(expected, actual);
+
+            Assert.AreEqual(1, actual.EnumerationCount);
+            Assert.AreEqual(1, expected.EnumerationCount);
         }
 
         [Test]
@@ -538,6 +592,18 @@ namespace EasyAssertions.UnitTests
                 + "    <1>" + Environment.NewLine
                 + "]" + Environment.NewLine
                 + "Match at index 1.", result);
+        }
+
+        [Test]
+        public void CollectionContainsItems_OnlyEnumeratesOnce()
+        {
+            TestEnumerable<int> expectedToNotContain = MakeEnumerable(1);
+            TestEnumerable<int> actual = MakeEnumerable(2);
+
+            sut.Contains(expectedToNotContain, actual);
+
+            Assert.AreEqual(1, actual.EnumerationCount);
+            Assert.AreEqual(1, expectedToNotContain.EnumerationCount);
         }
 
         [Test]
@@ -604,6 +670,18 @@ namespace EasyAssertions.UnitTests
         }
 
         [Test]
+        public void ContainsExtraItem_OnlyEnumeratesOnce()
+        {
+            TestEnumerable<int> expected = MakeEnumerable(1);
+            TestEnumerable<int> actual = MakeEnumerable(2);
+
+            sut.ContainsExtraItem(expected, actual);
+
+            Assert.AreEqual(1, actual.EnumerationCount);
+            Assert.AreEqual(1, expected.EnumerationCount);
+        }
+
+        [Test]
         public void ContainsExtraItem_IncludesMessage()
         {
             string result = sut.DoesNotOnlyContain(new[] { 1 }, new[] { 1, 2 }, "foo");
@@ -621,6 +699,16 @@ should not contain duplicates
 but <1>
 was found at indices 0, 2 and 3.
 foo", result);
+        }
+
+        [Test]
+        public void ContainsDuplicate_OnlyEnumeratesOnce()
+        {
+            TestEnumerable<int> actual = MakeEnumerable(1, 1);
+
+            sut.ContainsDuplicate(actual);
+
+            Assert.AreEqual(1, actual.EnumerationCount);
         }
 
         [Test]
@@ -671,6 +759,18 @@ foo", result);
         }
 
         [Test]
+        public void DoNotMatch_OnlyEnumeratesOnce()
+        {
+            TestEnumerable<int> expected = MakeEnumerable(1);
+            TestEnumerable<int> actual = MakeEnumerable(2);
+
+            sut.DoNotMatch(expected, actual, Compare.ObjectsAreEqual);
+
+            Assert.AreEqual(1, actual.EnumerationCount);
+            Assert.AreEqual(1, expected.EnumerationCount);
+        }
+
+        [Test]
         public void DoNotMatch_IncludesMessage()
         {
             string result = sut.DoNotMatch(new[] { 1 }, new[] { 2 }, Compare.ObjectsAreEqual, "foo");
@@ -689,6 +789,18 @@ foo", result);
                 + "differs at index 1." + Environment.NewLine
                 + "should be instance <bar>" + Environment.NewLine
                 + "but was            <baz>", result);
+        }
+
+        [Test]
+        public void ItemsNotSame_OnlyEnumeratesOnce()
+        {
+            TestEnumerable<int> expected = MakeEnumerable(1);
+            TestEnumerable<int> actual = MakeEnumerable(2);
+
+            sut.ItemsNotSame(expected, actual);
+
+            Assert.AreEqual(1, actual.EnumerationCount);
+            Assert.AreEqual(1, expected.EnumerationCount);
         }
 
         [Test]
@@ -723,6 +835,18 @@ foo", result);
         }
 
         [Test]
+        public void CollectionDoesNotStartWith_OnlyEnumeratesOnce()
+        {
+            TestEnumerable<int> actual = MakeEnumerable(1);
+            TestEnumerable<int> expected = MakeEnumerable(2);
+
+            sut.DoesNotStartWith(expected, actual, Compare.ObjectsAreEqual);
+
+            Assert.AreEqual(1, actual.EnumerationCount);
+            Assert.AreEqual(1, expected.EnumerationCount);
+        }
+
+        [Test]
         public void CollectionDoesNotEndWith_ActualIsShorterThanExpectedEnd()
         {
             string result = sut.DoesNotEndWith(new[] { 1, 2 }, new[] { 1 }, Equals, "foo");
@@ -743,6 +867,18 @@ differs at index 1.
 should be <1>
 but was   <3>
 foo", result);
+        }
+
+        [Test]
+        public void CollectionDoesNotEndWith_OnlyEnumeratesOnce()
+        {
+            TestEnumerable<int> actual = MakeEnumerable(1);
+            TestEnumerable<int> expected = MakeEnumerable(2);
+
+            sut.DoesNotEndWith(expected, actual, Compare.ObjectsAreEqual);
+
+            Assert.AreEqual(1, actual.EnumerationCount);
+            Assert.AreEqual(1, expected.EnumerationCount);
         }
 
         [Test]
@@ -847,6 +983,16 @@ foo", result);
             Assert.AreEqual(ActualExpression + Environment.NewLine
                 + "should have 2 elements" + Environment.NewLine
                 + "but had 1 element: <foo>", result);
+        }
+
+        [Test]
+        public void LengthMismatch_OnlyEnumeratesOnce()
+        {
+            TestEnumerable<int> actual = MakeEnumerable(1);
+
+            sut.LengthMismatch(2, actual);
+
+            Assert.AreEqual(1, actual.EnumerationCount);
         }
 
         [Test]
@@ -1136,5 +1282,7 @@ but threw    <Exception>", result);
 timed out after 1ms.
 foo", result);
         }
+
+        private static TestEnumerable<T> MakeEnumerable<T>(params T[] items) => new TestEnumerable<T>(items);
     }
 }

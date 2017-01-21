@@ -19,8 +19,12 @@ namespace EasyAssertions
             return actual.RegisterAssert(() =>
                 {
                     ObjectAssertions.AssertType<TActual>(actual, message);
-                    if (!Compare.IsEmpty(actual))
-                        throw EasyAssertion.Failure(FailureMessageFormatter.Current.NotEmpty(actual, message));
+
+                    using (IBuffer<object> bufferedActual = actual.Buffer())
+                    {
+                        if (!Compare.IsEmpty(bufferedActual))
+                            throw EasyAssertion.Failure(FailureMessageFormatter.Current.NotEmpty(bufferedActual, message));
+                    }
                 });
         }
 
@@ -56,8 +60,12 @@ namespace EasyAssertions
         private static void AssertLength<TActual>(TActual actual, int expectedLength, string message) where TActual : IEnumerable
         {
             ObjectAssertions.AssertType<TActual>(actual, message);
-            if (actual.Cast<object>().Count() != expectedLength)
-                throw EasyAssertion.Failure(FailureMessageFormatter.Current.LengthMismatch(expectedLength, actual, message));
+
+            using (IBuffer<object> bufferedActual = actual.Buffer())
+            {
+                if (bufferedActual.Count() != expectedLength)
+                    throw EasyAssertion.Failure(FailureMessageFormatter.Current.LengthMismatch(expectedLength, bufferedActual, message));
+            }
         }
 
         /// <summary>
@@ -100,11 +108,12 @@ namespace EasyAssertions
         {
             ObjectAssertions.AssertType<IEnumerable<TActual>>(actual, message);
 
-            List<TActual> actualList = actual.ToList();
-            List<TExpected> expectedList = expected.ToList();
-
-            if (!Compare.CollectionsMatch(actualList, expectedList, (a, e) => predicate((TActual)a, (TExpected)e)))
-                throw EasyAssertion.Failure(FailureMessageFormatter.Current.DoNotMatch(expected, actual, predicate, message));
+            using (IBuffer<TActual> bufferedActual = actual.Buffer())
+            using (IBuffer<TExpected> bufferedExpected = expected.Buffer())
+            {
+                if (!Compare.CollectionsMatch(bufferedActual, bufferedExpected, (a, e) => predicate((TActual)a, (TExpected)e)))
+                    throw EasyAssertion.Failure(FailureMessageFormatter.Current.DoNotMatch(bufferedExpected, bufferedActual, predicate, message));
+            }
         }
 
         /// <summary>
@@ -118,11 +127,12 @@ namespace EasyAssertions
                 {
                     ObjectAssertions.AssertType<IEnumerable<TActual>>(actual, message);
 
-                    List<object> actualList = actual.Cast<object>().ToList();
-                    List<object> expectedList = expectedStart.Cast<object>().ToList();
-
-                    if (!Compare.CollectionStartsWith(actualList, expectedList, Compare.ObjectsAreEqual))
-                        throw EasyAssertion.Failure(FailureMessageFormatter.Current.DoesNotStartWith(expectedStart, actual, Compare.ObjectsAreEqual, message));
+                    using (IBuffer<TActual> bufferedActual = actual.Buffer())
+                    using (IBuffer<TExpected> bufferedExpected = expectedStart.Buffer())
+                    {
+                        if (!Compare.CollectionStartsWith(bufferedActual, bufferedExpected, Compare.ObjectsAreEqual))
+                            throw EasyAssertion.Failure(FailureMessageFormatter.Current.DoesNotStartWith(bufferedExpected, bufferedActual, Compare.ObjectsAreEqual, message));
+                    }
                 });
         }
 
@@ -134,11 +144,12 @@ namespace EasyAssertions
                 {
                     ObjectAssertions.AssertType<IEnumerable<TActual>>(actual, message);
 
-                    List<object> actualList = actual.Cast<object>().ToList();
-                    List<object> expectedList = expectedEnd.Cast<object>().ToList();
-
-                    if (!Compare.CollectionEndsWith(actualList, expectedList, Compare.ObjectsAreEqual))
-                        throw EasyAssertion.Failure(FailureMessageFormatter.Current.DoesNotEndWith(expectedEnd, actual, Compare.ObjectsAreEqual, message));
+                    using (IBuffer<TActual> bufferedActual = actual.Buffer())
+                    using (IBuffer<TExpected> bufferedExpected = expectedEnd.Buffer())
+                    {
+                        if (!Compare.CollectionEndsWith(bufferedActual, bufferedExpected, Compare.ObjectsAreEqual))
+                            throw EasyAssertion.Failure(FailureMessageFormatter.Current.DoesNotEndWith(bufferedExpected, bufferedActual, Compare.ObjectsAreEqual, message));
+                    }
                 });
         }
 
@@ -150,8 +161,12 @@ namespace EasyAssertions
             return actual.RegisterAssert(() =>
                 {
                     ObjectAssertions.AssertType<IEnumerable<TActual>>(actual, message);
-                    if (!actual.Contains(expected))
-                        throw EasyAssertion.Failure(FailureMessageFormatter.Current.DoesNotContain(expected, actual, message: message));
+
+                    using (IBuffer<TActual> bufferedActual = actual.Buffer())
+                    {
+                        if (!bufferedActual.Contains(expected))
+                            throw EasyAssertion.Failure(FailureMessageFormatter.Current.DoesNotContain(expected, bufferedActual, message: message));
+                    }
                 });
         }
 
@@ -163,8 +178,13 @@ namespace EasyAssertions
             return actual.RegisterAssert(() =>
                 {
                     ObjectAssertions.AssertType<IEnumerable<TActual>>(actual, message);
-                    if (!Compare.ContainsAllItems(actual, expected))
-                        throw EasyAssertion.Failure(FailureMessageFormatter.Current.DoesNotContainItems(expected, actual, message));
+
+                    using (IBuffer<TActual> bufferedActual = actual.Buffer())
+                    using (IBuffer<TExpected> bufferedExpected = expected.Buffer())
+                    {
+                        if (!Compare.ContainsAllItems(bufferedActual, bufferedExpected))
+                            throw EasyAssertion.Failure(FailureMessageFormatter.Current.DoesNotContainItems(bufferedExpected, bufferedActual, message));
+                    }
                 });
         }
 
@@ -179,8 +199,12 @@ namespace EasyAssertions
                 {
                     ObjectAssertions.AssertType<IEnumerable<TActual>>(actual, message);
 
-                    if (!Compare.ContainsAllItems(expectedSuperset, actual))
-                        throw EasyAssertion.Failure(FailureMessageFormatter.Current.ContainsExtraItem(expectedSuperset, actual, message));
+                    using (IBuffer<TActual> bufferedActual = actual.Buffer())
+                    using (IBuffer<TExpected> bufferedExpected = expectedSuperset.Buffer())
+                    {
+                        if (!Compare.ContainsAllItems(bufferedExpected, bufferedActual))
+                            throw EasyAssertion.Failure(FailureMessageFormatter.Current.ContainsExtraItem(bufferedExpected, bufferedActual, message));
+                    }
                 });
         }
 
@@ -192,8 +216,12 @@ namespace EasyAssertions
             return actual.RegisterAssert(() =>
                 {
                     ObjectAssertions.AssertType<TActual>(actual, message);
-                    if (actual.Contains(expectedToNotContain))
-                        throw EasyAssertion.Failure(FailureMessageFormatter.Current.Contains(expectedToNotContain, actual, message: message));
+
+                    using (IBuffer<TItem> bufferedActual = actual.Buffer())
+                    {
+                        if (bufferedActual.Contains(expectedToNotContain))
+                            throw EasyAssertion.Failure(FailureMessageFormatter.Current.Contains(expectedToNotContain, bufferedActual, message: message));
+                    }
                 });
         }
 
@@ -205,8 +233,13 @@ namespace EasyAssertions
             return actual.RegisterAssert(() =>
                 {
                     ObjectAssertions.AssertType<IEnumerable<TActual>>(actual, message);
-                    if (Compare.ContainsAny(actual, expectedToNotContain))
-                        throw EasyAssertion.Failure(FailureMessageFormatter.Current.Contains(expectedToNotContain, actual, message));
+
+                    using (IBuffer<TActual> bufferedActual = actual.Buffer())
+                    using (IBuffer<TExpected> bufferedExpected = expectedToNotContain.Buffer())
+                    {
+                        if (Compare.ContainsAny(bufferedActual, bufferedExpected))
+                            throw EasyAssertion.Failure(FailureMessageFormatter.Current.Contains(bufferedExpected, bufferedActual, message));
+                    }
                 });
         }
 
@@ -218,9 +251,14 @@ namespace EasyAssertions
             return actual.RegisterAssert(() =>
                 {
                     ObjectAssertions.AssertType<IEnumerable<TActual>>(actual, message);
-                    if (!Compare.ContainsOnlyExpectedItems(actual, expected))
-                        throw EasyAssertion.Failure(FailureMessageFormatter.Current.DoesNotOnlyContain(expected, actual, message));
-                    AssertDistinct(actual, message);
+
+                    using (IBuffer<TActual> bufferedActual = actual.Buffer())
+                    using (IBuffer<TExpected> bufferedExpected = expected.Buffer())
+                    {
+                        if (!Compare.ContainsOnlyExpectedItems(bufferedActual, bufferedExpected))
+                            throw EasyAssertion.Failure(FailureMessageFormatter.Current.DoesNotOnlyContain(bufferedExpected, bufferedActual, message));
+                        AssertDistinct(bufferedActual, message);
+                    }
                 });
         }
 
@@ -235,8 +273,12 @@ namespace EasyAssertions
                 {
                     ObjectAssertions.AssertType<IEnumerable<TActual>>(actual, message);
 
-                    if (Compare.ContainsAllItems(expected, actual))
-                        throw EasyAssertion.Failure(FailureMessageFormatter.Current.OnlyContains(expected, actual, message));
+                    using (IBuffer<TActual> bufferedActual = actual.Buffer())
+                    using (IBuffer<TExpected> bufferedExpected = expected.Buffer())
+                    {
+                        if (Compare.ContainsAllItems(bufferedExpected, bufferedActual))
+                            throw EasyAssertion.Failure(FailureMessageFormatter.Current.OnlyContains(bufferedExpected, bufferedActual, message));
+                    }
                 });
         }
 
@@ -252,8 +294,11 @@ namespace EasyAssertions
         {
             ObjectAssertions.AssertType<IEnumerable<TActual>>(actual, message);
 
-            if (actual.GroupBy(i => i).Any(group => @group.Count() > 1))
-                throw EasyAssertion.Failure(FailureMessageFormatter.Current.ContainsDuplicate(actual, message));
+            using (IBuffer<TActual> bufferedActual = actual.Buffer())
+            {
+                if (bufferedActual.GroupBy(i => i).Any(group => @group.Count() > 1))
+                    throw EasyAssertion.Failure(FailureMessageFormatter.Current.ContainsDuplicate(bufferedActual, message));
+            }
         }
 
         /// <summary>
@@ -261,17 +306,19 @@ namespace EasyAssertions
         /// </summary>
         public static Actual<IEnumerable<TActual>> ShouldMatchReferences<TActual, TExpected>(this IEnumerable<TActual> actual, IEnumerable<TExpected> expected, string message = null) where TExpected : TActual
         {
-            return actual.RegisterAssert(() => {
+            return actual.RegisterAssert(() =>
+            {
                 ObjectAssertions.AssertType<IEnumerable<TActual>>(actual, message);
 
-                List<TActual> actualList = actual.ToList();
-                List<TExpected> expectedList = expected.ToList();
+                using (IBuffer<TActual> bufferedActual = actual.Buffer())
+                using (IBuffer<TExpected> bufferedExpected = expected.Buffer())
+                {
+                    if (bufferedActual.Count() != bufferedExpected.Count())
+                        throw EasyAssertion.Failure(FailureMessageFormatter.Current.LengthMismatch(bufferedExpected.Count(), bufferedActual, message));
 
-                if (actualList.Count != expectedList.Count)
-                    throw EasyAssertion.Failure(FailureMessageFormatter.Current.LengthMismatch(expectedList.Count, actual, message));
-
-                if (!Compare.CollectionsMatch(actual, expected, ReferenceEquals))
-                    throw EasyAssertion.Failure(FailureMessageFormatter.Current.ItemsNotSame(expected, actual, message));
+                    if (!Compare.CollectionsMatch(bufferedActual, bufferedExpected, ReferenceEquals))
+                        throw EasyAssertion.Failure(FailureMessageFormatter.Current.ItemsNotSame(bufferedExpected, bufferedActual, message));
+                }
             });
         }
 
@@ -310,12 +357,14 @@ namespace EasyAssertions
                 {
                     ObjectAssertions.AssertType<IEnumerable<TItem>>(actual);
 
-                    List<TItem> actualList = actual.ToList();
-                    if (actualList.Count != assertions.Length)
-                        throw EasyAssertion.Failure(FailureMessageFormatter.Current.LengthMismatch(assertions.Length, actual));
+                    using (IBuffer<TItem> bufferedActual = actual.Buffer())
+                    {
+                        if (bufferedActual.Count() != assertions.Length)
+                            throw EasyAssertion.Failure(FailureMessageFormatter.Current.LengthMismatch(assertions.Length, bufferedActual));
 
-                    for (int i = 0; i < assertions.Length; i++)
-                        EasyAssertion.RegisterIndexedAssert(i, assertions[i].Method, () => assertions[i](actualList[i]));
+                        for (int i = 0; i < assertions.Length; i++)
+                            EasyAssertion.RegisterIndexedAssert(i, assertions[i].Method, () => assertions[i](bufferedActual[i]));
+                    }
                 });
         }
 

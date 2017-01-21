@@ -34,19 +34,27 @@ namespace EasyAssertions
         /// <summary>
         /// Determines whether one sequence starts with the items in another sequence, in the same order.
         /// </summary>
-        public static bool CollectionStartsWith(ICollection<object> actual, ICollection<object> expectedToStartWith, Func<object, object, bool> areEqual)
+        public static bool CollectionStartsWith(IEnumerable actual, IEnumerable expectedToStartWith, Func<object, object, bool> areEqual)
         {
-            return actual.Count >= expectedToStartWith.Count
-                && CollectionsMatch(actual.Take(expectedToStartWith.Count), expectedToStartWith, areEqual);
+            using (IBuffer<object> bufferedActual = actual.Buffer())
+            using (IBuffer<object> bufferedExpected = expectedToStartWith.Buffer())
+            {
+                return bufferedActual.Count() >= bufferedExpected.Count()
+                       && CollectionsMatch(bufferedActual.Take(bufferedExpected.Count()), bufferedExpected, areEqual);
+            }
         }
 
         /// <summary>
         /// Determines whether one sequence ends with the items in another sequence, in the same order.
         /// </summary>
-        public static bool CollectionEndsWith(ICollection<object> actual, ICollection<object> expectedToEndWith, Func<object, object, bool> areEqual)
+        public static bool CollectionEndsWith(IEnumerable actual, IEnumerable expectedToEndWith, Func<object, object, bool> areEqual)
         {
-            return actual.Count >= expectedToEndWith.Count
-                && CollectionsMatch(actual.Skip(actual.Count - expectedToEndWith.Count), expectedToEndWith, areEqual);
+            using (IBuffer<object> bufferedActual = actual.Buffer())
+            using (IBuffer<object> bufferedExpected = expectedToEndWith.Buffer())
+            {
+                return bufferedActual.Count() >= bufferedExpected.Count()
+                       && CollectionsMatch(bufferedActual.Skip(bufferedActual.Count() - bufferedExpected.Count()), bufferedExpected, areEqual);
+            }
         }
 
         /// <summary>
@@ -103,8 +111,15 @@ namespace EasyAssertions
         public static bool IsEmpty<TActual>(TActual actual) where TActual : IEnumerable
         {
             IEnumerator enumerator = actual.GetEnumerator();
-            bool empty = !enumerator.MoveNext();
-            Dispose(enumerator);
+            bool empty;
+            try
+            {
+                empty = !enumerator.MoveNext();
+            }
+            finally
+            {
+                Dispose(enumerator);
+            }
             return empty;
         }
 
@@ -122,11 +137,14 @@ namespace EasyAssertions
         /// </summary>
         public static bool ContainsAny(IEnumerable actual, IEnumerable itemsToLookFor)
         {
-            if (IsEmpty(itemsToLookFor))
-                return true;
+            using (IBuffer<object> bufferedItemsToLookFor = itemsToLookFor.Buffer())
+            {
+                if (IsEmpty(bufferedItemsToLookFor))
+                    return true;
 
-            HashSet<object> actualSet = new HashSet<object>(actual.Cast<object>());
-            return itemsToLookFor.Cast<object>().Any(actualSet.Contains);
+                HashSet<object> actualSet = new HashSet<object>(actual.Cast<object>());
+                return bufferedItemsToLookFor.Any(actualSet.Contains);
+            }
         }
 
         /// <summary>

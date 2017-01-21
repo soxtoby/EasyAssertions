@@ -161,7 +161,7 @@ but was {Sample(actualList)}" + message.OnNewLine();
             int unexpectedItemIndex = unexpectedList.FindIndex(actualSet.Contains);
             object unexpectedItem = unexpectedItemIndex == -1 ? null
                 : unexpectedList[unexpectedItemIndex];
-            int itemIndexInActual = actual.Cast<object>().ToList().IndexOf(unexpectedItem);
+            int itemIndexInActual = actualItems.IndexOf(unexpectedItem);
 
             string expectedSource = SourceExpectedDifferentToValue(expectedToNotContain);
 
@@ -220,7 +220,7 @@ should only contain {Sample(expectedItems)}
 but also contains {Sample(extraItems)}" + message.OnNewLine();
         }
 
-        public string ContainsDuplicate(IEnumerable actual, string message)
+        public string ContainsDuplicate(IEnumerable actual, string message = null)
         {
             List<object> actualItems = actual.Cast<object>().ToList();
             object duplicateItem = actualItems.GroupBy(i => i).First(g => g.Count() > 1).Key;

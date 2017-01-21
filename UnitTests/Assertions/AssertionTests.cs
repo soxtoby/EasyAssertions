@@ -23,6 +23,13 @@ namespace EasyAssertions.UnitTests
             SourceExpressionProvider.ForCurrentThread.Reset();
         }
 
+        protected static void AssertReturnsActual<T>(T actual, Func<Actual<T>> assert)
+        {
+            Actual<T> result = assert();
+
+            Assert.AreSame(actual, result.And);
+        }
+
         protected static void AssertArgumentNullException(string paramName, TestDelegate assertionCall)
         {
             ArgumentNullException result = Assert.Throws<ArgumentNullException>(assertionCall);

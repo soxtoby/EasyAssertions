@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -75,6 +76,16 @@ namespace EasyAssertions
                 while (leftEnumerator.MoveNext() && rightEnumerator.MoveNext())
                     yield return select(leftEnumerator.Current, rightEnumerator.Current);
             }
+        }
+
+        public static IBuffer<object> Buffer(this IEnumerable source)
+        {
+            return source.Cast<object>().Buffer();
+        }
+
+        public static IBuffer<T> Buffer<T>(this IEnumerable<T> source)
+        {
+            return new Buffer<T>(source);
         }
     }
 }

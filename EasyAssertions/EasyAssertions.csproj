@@ -51,6 +51,7 @@
     <Compile Include="Assertions\CollectionAssertions.cs" />
     <Compile Include="Assertions\TaskAssertions.cs" />
     <Compile Include="Assertions\TreeAssertions.cs" />
+    <Compile Include="Buffer.cs" />
     <Compile Include="Compare.cs" />
     <Compile Include="Assertions\EasyAssertion.cs" />
     <Compile Include="FailureMessages\DefaultFailureMessageFormatter.cs" />

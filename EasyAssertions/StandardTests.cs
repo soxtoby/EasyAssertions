@@ -5,12 +5,14 @@ using System.Linq;
 
 namespace EasyAssertions
 {
-    public static class Compare
+    public class StandardTests
     {
+        public static readonly StandardTests Instance = new StandardTests();
+
         /// <summary>
         /// Determines whether two objects are equal, using the default equality comparer.
         /// </summary>
-        public static bool ObjectsAreEqual<TActual, TExpected>(TActual actual, TExpected expected) where TExpected : TActual
+        public bool ObjectsAreEqual<TActual, TExpected>(TActual actual, TExpected expected) where TExpected : TActual
         {
             return EqualityComparer<TActual>.Default.Equals(actual, expected);
         }
@@ -18,7 +20,7 @@ namespace EasyAssertions
         /// <summary>
         /// Determines whether the difference between two <see cref="float"/> values is less than or equal to a given tolerance.
         /// </summary>
-        public static bool AreWithinTolerance(float actual, float expected, float tolerance)
+        public bool AreWithinTolerance(float actual, float expected, float tolerance)
         {
             return Math.Abs(actual - expected) <= tolerance;
         }
@@ -26,7 +28,7 @@ namespace EasyAssertions
         /// <summary>
         /// Determines whether the difference between two <see cref="double"/> values is less than or equal to a given tolerance.
         /// </summary>
-        public static bool AreWithinTolerance(double actual, double notExpected, double tolerance)
+        public bool AreWithinTolerance(double actual, double notExpected, double tolerance)
         {
             return Math.Abs(actual - notExpected) <= tolerance;
         }
@@ -34,7 +36,7 @@ namespace EasyAssertions
         /// <summary>
         /// Determines whether one sequence starts with the items in another sequence, in the same order.
         /// </summary>
-        public static bool CollectionStartsWith(IEnumerable actual, IEnumerable expectedToStartWith, Func<object, object, bool> areEqual)
+        public bool CollectionStartsWith(IEnumerable actual, IEnumerable expectedToStartWith, Func<object, object, bool> areEqual)
         {
             using (IBuffer<object> bufferedActual = actual.Buffer())
             using (IBuffer<object> bufferedExpected = expectedToStartWith.Buffer())
@@ -47,7 +49,7 @@ namespace EasyAssertions
         /// <summary>
         /// Determines whether one sequence ends with the items in another sequence, in the same order.
         /// </summary>
-        public static bool CollectionEndsWith(IEnumerable actual, IEnumerable expectedToEndWith, Func<object, object, bool> areEqual)
+        public bool CollectionEndsWith(IEnumerable actual, IEnumerable expectedToEndWith, Func<object, object, bool> areEqual)
         {
             using (IBuffer<object> bufferedActual = actual.Buffer())
             using (IBuffer<object> bufferedExpected = expectedToEndWith.Buffer())
@@ -62,7 +64,7 @@ namespace EasyAssertions
         /// <see cref="IEnumerable"/> items are compared recursively.
         /// Non-<c>IEnumerable</c> items are compared using the default equality comparer.
         /// </summary>
-        public static bool CollectionsMatch(IEnumerable actual, IEnumerable expected, Func<object, object, bool> areEqual)
+        public bool CollectionsMatch(IEnumerable actual, IEnumerable expected, Func<object, object, bool> areEqual)
         {
             IEnumerator actualEnumerator = actual.GetEnumerator();
             IEnumerator expectedEnumerator = expected.GetEnumerator();
@@ -90,12 +92,12 @@ namespace EasyAssertions
         /// <see cref="IEnumerable"/> items are compared recursively.
         /// Non-<c>IEnumerable</c> items are compared using the default equality comparer.
         /// </summary>
-        public static bool ObjectsMatch<TActual, TExpected>(TActual actual, TExpected expected)
+        public bool ObjectsMatch<TActual, TExpected>(TActual actual, TExpected expected)
         {
             return ObjectsMatch((object)actual, (object)expected);
         }
 
-        internal static bool ObjectsMatch(object actual, object expected)
+        internal bool ObjectsMatch(object actual, object expected)
         {
             IEnumerable actualEnumerable = actual as IEnumerable;
             IEnumerable expectedEnumerable = expected as IEnumerable;
@@ -108,7 +110,7 @@ namespace EasyAssertions
         /// <summary>
         /// Returns true if a sequence does not contain any elements.
         /// </summary>
-        public static bool IsEmpty<TActual>(TActual actual) where TActual : IEnumerable
+        public bool IsEmpty<TActual>(TActual actual) where TActual : IEnumerable
         {
             IEnumerator enumerator = actual.GetEnumerator();
             bool empty;
@@ -126,7 +128,7 @@ namespace EasyAssertions
         /// <summary>
         /// Determines whether a sequence contains all of the items in another sequence.
         /// </summary>
-        public static bool ContainsAllItems(IEnumerable superset, IEnumerable subset)
+        public bool ContainsAllItems(IEnumerable superset, IEnumerable subset)
         {
             HashSet<object> actualSet = new HashSet<object>(superset.Cast<object>());
             return subset.Cast<object>().All(actualSet.Contains);
@@ -135,7 +137,7 @@ namespace EasyAssertions
         /// <summary>
         /// Determines whether a sequence contains any of the items in another sequence.
         /// </summary>
-        public static bool ContainsAny(IEnumerable actual, IEnumerable itemsToLookFor)
+        public bool ContainsAny(IEnumerable actual, IEnumerable itemsToLookFor)
         {
             using (IBuffer<object> bufferedItemsToLookFor = itemsToLookFor.Buffer())
             {
@@ -150,7 +152,7 @@ namespace EasyAssertions
         /// <summary>
         /// Determines whether a sequence contains all of the items in another sequence, and no other items.
         /// </summary>
-        public static bool ContainsOnlyExpectedItems(IEnumerable actual, IEnumerable expected)
+        public bool ContainsOnlyExpectedItems(IEnumerable actual, IEnumerable expected)
         {
             HashSet<object> actualItems = new HashSet<object>(actual.Cast<object>());
             HashSet<object> expectedItems = new HashSet<object>(expected.Cast<object>());
@@ -161,7 +163,7 @@ namespace EasyAssertions
         /// <summary>
         /// Determines whether two trees have the same structure and values.
         /// </summary>
-        public static bool TreesMatch<TActual, TExpected>(IEnumerable<TActual> actualNodes, IEnumerable<TestNode<TExpected>> expectedNodes, Func<TActual, IEnumerable<TActual>> getChildren, Func<TActual, TExpected, bool> areEqual)
+        public bool TreesMatch<TActual, TExpected>(IEnumerable<TActual> actualNodes, IEnumerable<TestNode<TExpected>> expectedNodes, Func<TActual, IEnumerable<TActual>> getChildren, Func<TActual, TExpected, bool> areEqual)
         {
             return CollectionsMatch(actualNodes, expectedNodes, (a, e) =>
                 {

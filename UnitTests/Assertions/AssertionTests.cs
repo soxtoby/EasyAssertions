@@ -6,20 +6,22 @@ namespace EasyAssertions.UnitTests
 {
     public abstract class AssertionTests
     {
-        protected IFailureMessageFormatter MockFormatter;
+        protected IStandardErrors Error;
+        protected Exception ExpectedException;
 
         [SetUp]
         public void BaseSetUp()
         {
-            MockFormatter = Substitute.For<IFailureMessageFormatter>();
-            FailureMessageFormatter.Override(MockFormatter);
+            Error = Substitute.For<IStandardErrors>();
+            ExpectedException = new Exception();
+            StandardErrors.Override(Error);
             SourceExpressionProvider.ForCurrentThread.Reset();
         }
 
         [TearDown]
         public void BaseTearDown()
         {
-            FailureMessageFormatter.Default();
+            StandardErrors.Default();
             SourceExpressionProvider.ForCurrentThread.Reset();
         }
 
@@ -39,11 +41,11 @@ namespace EasyAssertions.UnitTests
 
         protected void AssertFailsWithTypesNotEqualMessage(Type expectedType, Type actualType, Action<string> assertionCall)
         {
-            MockFormatter.NotEqual(expectedType, actualType, "foo").Returns("bar");
+            Error.NotEqual(expectedType, actualType, "foo").Returns(ExpectedException);
 
-            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => assertionCall("foo"));
+            Exception result = Assert.Throws<Exception>(() => assertionCall("foo"));
 
-            Assert.AreEqual("bar", result.Message);
+            Assert.AreSame(ExpectedException, result);
         }
     }
 }

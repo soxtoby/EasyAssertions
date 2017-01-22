@@ -18,10 +18,10 @@ namespace EasyAssertions
         /// </summary>
         public ActualException<T> AndShouldNotBeA<TUnexpected>(string message = null) where TUnexpected : T
         {
-            And.RegisterAssert(() =>
+            And.RegisterAssert(c =>
                 {
                     if (And is TUnexpected)
-                        throw EasyAssertion.Failure(FailureMessage.Standard.AreEqual(typeof(TUnexpected), And?.GetType(), message));
+                        throw c.StandardError.AreEqual(typeof(TUnexpected), And?.GetType(), message);
                 });
             return this;
         }

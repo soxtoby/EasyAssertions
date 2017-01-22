@@ -24,27 +24,24 @@ namespace EasyAssertions
         /// <summary>
         /// Asserts that two <see cref="float"/> values are within a specified tolerance of eachother.
         /// </summary>
-        public static Actual<float> ShouldBe(this object actual, float expected, float tolerance, string message = null)
+        public static Actual<float> ShouldBe(this object actual, float expected, double tolerance, string message = null)
         {
-            actual.RegisterAssert(() => AssertFloatsWithinTolerance(actual, expected, tolerance, message));
-            return new Actual<float>((float)actual);
+            return actual.RegisterAssert(c => actual.ShouldBe(expected, (float)tolerance, message));
         }
 
         /// <summary>
         /// Asserts that two <see cref="float"/> values are within a specified tolerance of eachother.
         /// </summary>
-        public static Actual<float> ShouldBe(this object actual, float expected, double tolerance, string message = null)
+        public static Actual<float> ShouldBe(this object actual, float expected, float tolerance, string message = null)
         {
-            actual.RegisterAssert(() => AssertFloatsWithinTolerance(actual, expected, (float)tolerance, message));
+            actual.RegisterAssert(c =>
+                {
+                    actual.ShouldBeA<float>(message);
+
+                    if (!c.Test.AreWithinTolerance((float)actual, expected, tolerance))
+                        throw c.StandardError.NotEqual(expected, actual, message);
+                });
             return new Actual<float>((float)actual);
-        }
-
-        private static void AssertFloatsWithinTolerance(object actual, float expected, float tolerance, string message)
-        {
-            actual.ShouldBeA<float>(message);
-
-            if (!Compare.AreWithinTolerance((float)actual, expected, tolerance))
-                throw EasyAssertion.Failure(FailureMessage.Standard.NotEqual(expected, actual, message));
         }
 
         /// <summary>
@@ -52,10 +49,10 @@ namespace EasyAssertions
         /// </summary>
         public static Actual<float> ShouldNotBe(this float actual, float notExpected, float tolerance, string message = null)
         {
-            return actual.RegisterAssert(() =>
+            return actual.RegisterAssert(c =>
                 {
-                    if (Compare.AreWithinTolerance(actual, notExpected, tolerance))
-                        throw EasyAssertion.Failure(FailureMessage.Standard.AreEqual(notExpected, actual, message));
+                    if (c.Test.AreWithinTolerance(actual, notExpected, tolerance))
+                        throw c.StandardError.AreEqual(notExpected, actual, message);
                 });
         }
 
@@ -64,12 +61,12 @@ namespace EasyAssertions
         /// </summary>
         public static Actual<double> ShouldBe(this object actual, double expected, double delta, string message = null)
         {
-            actual.RegisterAssert(() =>
+            actual.RegisterAssert(c =>
                 {
                     actual.ShouldBeA<double>(message);
 
-                    if (!Compare.AreWithinTolerance((double)actual, expected, delta))
-                        throw EasyAssertion.Failure(FailureMessage.Standard.NotEqual(expected, actual, message));
+                    if (!c.Test.AreWithinTolerance((double)actual, expected, delta))
+                        throw c.StandardError.NotEqual(expected, actual, message);
                 });
             return new Actual<double>((double)actual);
         }
@@ -79,10 +76,10 @@ namespace EasyAssertions
         /// </summary>
         public static Actual<double> ShouldNotBe(this double actual, double notExpected, double delta, string message = null)
         {
-            return actual.RegisterAssert(() =>
+            return actual.RegisterAssert(c =>
                 {
-                    if (Compare.AreWithinTolerance(actual, notExpected, delta))
-                        throw EasyAssertion.Failure(FailureMessage.Standard.AreEqual(notExpected, actual, message));
+                    if (c.Test.AreWithinTolerance(actual, notExpected, delta))
+                        throw c.StandardError.AreEqual(notExpected, actual, message);
                 });
         }
 
@@ -91,10 +88,10 @@ namespace EasyAssertions
         /// </summary>
         public static Actual<TActual> ShouldBeGreaterThan<TActual, TExpected>(this TActual actual, TExpected expected, string message = null) where TActual : IComparable<TExpected>
         {
-            return actual.RegisterAssert(() =>
+            return actual.RegisterAssert(c =>
                 {
                     if (actual.CompareTo(expected) <= 0)
-                        throw EasyAssertion.Failure(FailureMessage.Standard.NotGreaterThan(expected, actual, message));
+                        throw c.StandardError.NotGreaterThan(expected, actual, message);
                 });
         }
 
@@ -103,10 +100,10 @@ namespace EasyAssertions
         /// </summary>
         public static Actual<TActual> ShouldBeLessThan<TActual, TExpected>(this TActual actual, TExpected expected, string message = null) where TActual : IComparable<TExpected>
         {
-            return actual.RegisterAssert(() =>
+            return actual.RegisterAssert(c =>
             {
                 if (actual.CompareTo(expected) >= 0)
-                    throw EasyAssertion.Failure(FailureMessage.Standard.NotLessThan(expected, actual, message));
+                    throw c.StandardError.NotLessThan(expected, actual, message);
             });
         }
 
@@ -115,10 +112,10 @@ namespace EasyAssertions
         /// </summary>
         public static void ShouldBeNaN(this float actual, string message = null)
         {
-            actual.RegisterAssert(() =>
+            actual.RegisterAssert(c =>
                 {
                     if (!float.IsNaN(actual))
-                        throw EasyAssertion.Failure(FailureMessage.Standard.NotEqual(float.NaN, actual, message));
+                        throw c.StandardError.NotEqual(float.NaN, actual, message);
                 });
         }
 
@@ -127,10 +124,10 @@ namespace EasyAssertions
         /// </summary>
         public static Actual<float> ShouldNotBeNaN(this float actual, string message = null)
         {
-            return actual.RegisterAssert(() =>
+            return actual.RegisterAssert(c =>
                 {
                     if (float.IsNaN(actual))
-                        throw EasyAssertion.Failure(FailureMessage.Standard.AreEqual(float.NaN, actual, message));
+                        throw c.StandardError.AreEqual(float.NaN, actual, message);
                 });
         }
 
@@ -139,10 +136,10 @@ namespace EasyAssertions
         /// </summary>
         public static void ShouldBeNaN(this double actual, string message = null)
         {
-            actual.RegisterAssert(() =>
+            actual.RegisterAssert(c =>
                 {
                     if (!double.IsNaN(actual))
-                        throw EasyAssertion.Failure(FailureMessage.Standard.NotEqual(double.NaN, actual, message));
+                        throw c.StandardError.NotEqual(double.NaN, actual, message);
                 });
         }
 
@@ -151,10 +148,10 @@ namespace EasyAssertions
         /// </summary>
         public static Actual<double> ShouldNotBeNaN(this double actual, string message = null)
         {
-            return actual.RegisterAssert(() =>
+            return actual.RegisterAssert(c =>
                 {
                     if (double.IsNaN(actual))
-                        throw EasyAssertion.Failure(FailureMessage.Standard.AreEqual(double.NaN, actual, message));
+                        throw c.StandardError.AreEqual(double.NaN, actual, message);
                 });
         }
     }

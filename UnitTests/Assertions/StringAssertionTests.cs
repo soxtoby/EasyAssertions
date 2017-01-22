@@ -1,3 +1,4 @@
+using System;
 using NSubstitute;
 using NUnit.Framework;
 using System.Text.RegularExpressions;
@@ -18,9 +19,9 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ShouldBeEmpty_IsNotEmpty_FailsWithStringNotEmptyMessage()
         {
-            MockFormatter.NotEmpty("foo", "bar").Returns("baz");
+            Error.NotEmpty("foo", "bar").Returns(new Exception("baz"));
 
-            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => "foo".ShouldBeEmpty("bar"));
+            Exception result = Assert.Throws<Exception>(() => "foo".ShouldBeEmpty("bar"));
 
             Assert.AreEqual("baz", result.Message);
         }
@@ -28,11 +29,11 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ShouldBeEmpty_ActualIsNull_FailsWithTypesNotEqualMessage()
         {
-            MockFormatter.NotEqual(typeof(string), null, "foo").Returns("bar");
+            Error.NotEqual(typeof(string), null, "foo").Returns(ExpectedException);
 
-            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => ((string)null).ShouldBeEmpty("foo"));
+            Exception result = Assert.Throws<Exception>(() => ((string)null).ShouldBeEmpty("foo"));
 
-            Assert.AreEqual("bar", result.Message);
+            Assert.AreSame(ExpectedException, result);
         }
 
         [Test]
@@ -55,9 +56,9 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ShouldContain_StringDoesNotContainSubstring_FailsWithStringDoesNotContainMessage()
         {
-            MockFormatter.DoesNotContain("bar", "foo", "baz").Returns("qux");
+            Error.DoesNotContain("bar", "foo", "baz").Returns(new Exception("qux"));
 
-            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => "foo".ShouldContain("bar", "baz"));
+            Exception result = Assert.Throws<Exception>(() => "foo".ShouldContain("bar", "baz"));
 
             Assert.AreEqual("qux", result.Message);
         }
@@ -65,9 +66,9 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ShouldContain_ActualIsNull_FailsWithTypesNotEqualMessage()
         {
-            MockFormatter.NotEqual(typeof(string), null, "message").Returns("foo");
+            Error.NotEqual(typeof(string), null, "message").Returns(new Exception("foo"));
 
-            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => ((string)null).ShouldContain("expected", "message"));
+            Exception result = Assert.Throws<Exception>(() => ((string)null).ShouldContain("expected", "message"));
 
             Assert.AreEqual("foo", result.Message);
         }
@@ -101,9 +102,9 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ShouldNotContain_StringContainsSubstring_FailsWithStringContainsMessage()
         {
-            MockFormatter.Contains("bar", "foobarbaz", "baz").Returns("qux");
+            Error.Contains("bar", "foobarbaz", "baz").Returns(new Exception("qux"));
 
-            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => "foobarbaz".ShouldNotContain("bar", "baz"));
+            Exception result = Assert.Throws<Exception>(() => "foobarbaz".ShouldNotContain("bar", "baz"));
 
             Assert.AreEqual("qux", result.Message);
         }
@@ -111,9 +112,9 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ShouldNotContain_ActualIsNull_FailsWithTypesNotEqualMessage()
         {
-            MockFormatter.NotEqual(typeof(string), null, "message").Returns("foo");
+            Error.NotEqual(typeof(string), null, "message").Returns(new Exception("foo"));
 
-            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => ((string)null).ShouldNotContain("expected", "message"));
+            Exception result = Assert.Throws<Exception>(() => ((string)null).ShouldNotContain("expected", "message"));
 
             Assert.AreEqual("foo", result.Message);
         }
@@ -151,9 +152,9 @@ namespace EasyAssertions.UnitTests
         {
             const string actual = "foobar";
             const string expectedStart = "bar";
-            MockFormatter.DoesNotStartWith(expectedStart, actual, "foo").Returns("baz");
+            Error.DoesNotStartWith(expectedStart, actual, "foo").Returns(new Exception("baz"));
 
-            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldStartWith(expectedStart, "foo"));
+            Exception result = Assert.Throws<Exception>(() => actual.ShouldStartWith(expectedStart, "foo"));
 
             Assert.AreEqual("baz", result.Message);
         }
@@ -161,9 +162,9 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ShouldStartWith_ActualIsNull_FailsWithTypesNotEqualMessage()
         {
-            MockFormatter.NotEqual(typeof(string), null, "message").Returns("foo");
+            Error.NotEqual(typeof(string), null, "message").Returns(new Exception("foo"));
 
-            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => ((string)null).ShouldStartWith("expected", "message"));
+            Exception result = Assert.Throws<Exception>(() => ((string)null).ShouldStartWith("expected", "message"));
 
             Assert.AreEqual("foo", result.Message);
         }
@@ -201,9 +202,9 @@ namespace EasyAssertions.UnitTests
         {
             const string actual = "foobar";
             const string expectedEnd = "foo";
-            MockFormatter.DoesNotEndWith(expectedEnd, actual, "bar").Returns("baz");
+            Error.DoesNotEndWith(expectedEnd, actual, "bar").Returns(new Exception("baz"));
 
-            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldEndWith(expectedEnd, "bar"));
+            Exception result = Assert.Throws<Exception>(() => actual.ShouldEndWith(expectedEnd, "bar"));
 
             Assert.AreEqual("baz", result.Message);
         }
@@ -211,9 +212,9 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ShouldEndWith_ActualIsNull_FailsWithTypesNotEqualMessage()
         {
-            MockFormatter.NotEqual(typeof(string), null, "message").Returns("foo");
+            Error.NotEqual(typeof(string), null, "message").Returns(new Exception("foo"));
 
-            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => ((string)null).ShouldEndWith("expected", "message"));
+            Exception result = Assert.Throws<Exception>(() => ((string)null).ShouldEndWith("expected", "message"));
 
             Assert.AreEqual("foo", result.Message);
 
@@ -248,9 +249,9 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ShouldBe_CaseSensitive_StringCaseDoesNotMatch_FailsWithStringsNotEqualMessage()
         {
-            MockFormatter.NotEqual("foo", "fOo", Case.Sensitive, "bar").Returns("baz");
+            Error.NotEqual("foo", "fOo", Case.Sensitive, "bar").Returns(new Exception("baz"));
 
-            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => "fOo".ShouldBe("foo", Case.Sensitive, "bar"));
+            Exception result = Assert.Throws<Exception>(() => "fOo".ShouldBe("foo", Case.Sensitive, "bar"));
 
             Assert.AreEqual("baz", result.Message);
         }
@@ -266,9 +267,9 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ShouldBe_CaseInsensitive_StringsNotEqual_FailsWithStringsNotEqualMessage()
         {
-            MockFormatter.NotEqual("bar", "foo", Case.Insensitive, "baz").Returns("qux");
+            Error.NotEqual("bar", "foo", Case.Insensitive, "baz").Returns(new Exception("qux"));
 
-            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => "foo".ShouldBe("bar", Case.Insensitive, "baz"));
+            Exception result = Assert.Throws<Exception>(() => "foo".ShouldBe("bar", Case.Insensitive, "baz"));
 
             Assert.AreEqual("qux", result.Message);
         }
@@ -276,9 +277,9 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ShouldBe_CustomCaseSensitivity_ActualIsNull_FailsWithTypesNotEqualMessage()
         {
-            MockFormatter.NotEqual(typeof(string), null, "bar").Returns("baz");
+            Error.NotEqual(typeof(string), null, "bar").Returns(new Exception("baz"));
 
-            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => ((string)null).ShouldBe("foo", Case.Insensitive, "bar"));
+            Exception result = Assert.Throws<Exception>(() => ((string)null).ShouldBe("foo", Case.Insensitive, "bar"));
 
             Assert.AreEqual("baz", result.Message);
         }
@@ -312,9 +313,9 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ShouldMatchPattern_DoesNotMatchRegex_FailsWithDoesNotMatchMessage()
         {
-            MockFormatter.DoesNotMatch(Arg.Is<Regex>(r => r.ToString() == "bar"), "foo", "baz").Returns("qux");
+            Error.DoesNotMatch(Arg.Is<Regex>(r => r.ToString() == "bar"), "foo", "baz").Returns(new Exception("qux"));
 
-            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => "foo".ShouldMatch("bar", "baz"));
+            Exception result = Assert.Throws<Exception>(() => "foo".ShouldMatch("bar", "baz"));
 
             Assert.AreEqual("qux", result.Message);
         }
@@ -322,11 +323,11 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ShouldMatchPattern_ActualIsNull_FailsWithTypesNotEqualMessage()
         {
-            MockFormatter.NotEqual(typeof(string), null, "foo").Returns("bar");
+            Error.NotEqual(typeof(string), null, "foo").Returns(ExpectedException);
 
-            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => ((string)null).ShouldMatch("", "foo"));
+            Exception result = Assert.Throws<Exception>(() => ((string)null).ShouldMatch("", "foo"));
 
-            Assert.AreEqual("bar", result.Message);
+            Assert.AreSame(ExpectedException, result);
         }
 
         [Test]
@@ -358,9 +359,9 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ShouldMatchPattern_WithRegexOptions_DoesNotMatchRegex_FailsWithDoesNotMatchMessage()
         {
-            MockFormatter.DoesNotMatch(Arg.Is<Regex>(r => r.ToString() == "bar" && r.Options == RegexOptions.IgnoreCase), "foo", "baz").Returns("qux");
+            Error.DoesNotMatch(Arg.Is<Regex>(r => r.ToString() == "bar" && r.Options == RegexOptions.IgnoreCase), "foo", "baz").Returns(new Exception("qux"));
 
-            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => "foo".ShouldMatch("bar", RegexOptions.IgnoreCase, "baz"));
+            Exception result = Assert.Throws<Exception>(() => "foo".ShouldMatch("bar", RegexOptions.IgnoreCase, "baz"));
 
             Assert.AreEqual("qux", result.Message);
         }
@@ -395,9 +396,9 @@ namespace EasyAssertions.UnitTests
         public void ShouldMatchRegex_DoesNotMatchRegex_FailsWithDoesNotMatchMessage()
         {
             Regex regex = new Regex("bar");
-            MockFormatter.DoesNotMatch(regex, "foo", "baz").Returns("qux");
+            Error.DoesNotMatch(regex, "foo", "baz").Returns(new Exception("qux"));
 
-            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => "foo".ShouldMatch(regex, "baz"));
+            Exception result = Assert.Throws<Exception>(() => "foo".ShouldMatch(regex, "baz"));
 
             Assert.AreEqual("qux", result.Message);
         }
@@ -431,9 +432,9 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ShouldNotMatchPattern_MatchesRegex_FailsWithMatchesMessage()
         {
-            MockFormatter.Matches(Arg.Is<Regex>(r => r.ToString() == ".*"), "foo", "bar").Returns("baz");
+            Error.Matches(Arg.Is<Regex>(r => r.ToString() == ".*"), "foo", "bar").Returns(new Exception("baz"));
 
-            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => "foo".ShouldNotMatch(".*", "bar"));
+            Exception result = Assert.Throws<Exception>(() => "foo".ShouldNotMatch(".*", "bar"));
 
             Assert.AreEqual("baz", result.Message);
         }
@@ -441,11 +442,11 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ShouldNotMatchPattern_ActualIsNull_FailsWithTypesNotEqualMessage()
         {
-            MockFormatter.NotEqual(typeof(string), null, "foo").Returns("bar");
+            Error.NotEqual(typeof(string), null, "foo").Returns(ExpectedException);
 
-            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => ((string)null).ShouldNotMatch("", "foo"));
+            Exception result = Assert.Throws<Exception>(() => ((string)null).ShouldNotMatch("", "foo"));
 
-            Assert.AreEqual("bar", result.Message);
+            Assert.AreSame(ExpectedException, result);
         }
 
         [Test]
@@ -477,9 +478,9 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ShouldNotMatchPattern_WithRegexOptions_MatchesRegex_FailsWithMatchesMessage()
         {
-            MockFormatter.Matches(Arg.Is<Regex>(r => r.ToString() == ".*" && r.Options == RegexOptions.IgnoreCase), "foo", "bar").Returns("baz");
+            Error.Matches(Arg.Is<Regex>(r => r.ToString() == ".*" && r.Options == RegexOptions.IgnoreCase), "foo", "bar").Returns(new Exception("baz"));
 
-            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => "foo".ShouldNotMatch(".*", RegexOptions.IgnoreCase, "bar"));
+            Exception result = Assert.Throws<Exception>(() => "foo".ShouldNotMatch(".*", RegexOptions.IgnoreCase, "bar"));
 
             Assert.AreEqual("baz", result.Message);
         }
@@ -514,9 +515,9 @@ namespace EasyAssertions.UnitTests
         public void ShouldNotMatchRegex_MatchesRegex_FailsWithMatchesMessage()
         {
             Regex regex = new Regex("foo");
-            MockFormatter.Matches(regex, "foo", "bar").Returns("baz");
+            Error.Matches(regex, "foo", "bar").Returns(new Exception("baz"));
 
-            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => "foo".ShouldNotMatch(regex, "bar"));
+            Exception result = Assert.Throws<Exception>(() => "foo".ShouldNotMatch(regex, "bar"));
 
             Assert.AreEqual("baz", result.Message);
         }

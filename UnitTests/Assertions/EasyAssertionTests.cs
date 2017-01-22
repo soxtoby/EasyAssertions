@@ -28,7 +28,7 @@ namespace EasyAssertions.UnitTests
         {
             object actual = new object();
 
-            Actual<object> result = actual.RegisterAssert(() => { });
+            Actual<object> result = actual.RegisterAssert(c => { });
 
             Assert.AreSame(actual, result.And);
         }
@@ -38,7 +38,7 @@ namespace EasyAssertions.UnitTests
         {
             object innerActual = new object();
 
-            Actual<object> result = new object().RegisterAssert(() => new Actual<object>(innerActual));
+            Actual<object> result = new object().RegisterAssert(c => new Actual<object>(innerActual));
 
             Assert.AreEqual(innerActual, result.And);
         }
@@ -53,7 +53,7 @@ namespace EasyAssertions.UnitTests
                 exceptionFactory("foo").Returns(expectedException);
 
                 EasyAssertion.UseFrameworkExceptions(exceptionFactory, null);
-                Exception result = EasyAssertion.Failure("foo");
+                Exception result = ErrorFactory.Instance.Custom("foo");
 
                 Assert.AreSame(expectedException, result);
             }
@@ -74,7 +74,7 @@ namespace EasyAssertions.UnitTests
                 exceptionFactory("foo", expectedInnerException).Returns(expectedResultException);
 
                 EasyAssertion.UseFrameworkExceptions(null, exceptionFactory);
-                Exception result = EasyAssertion.Failure("foo", expectedInnerException);
+                Exception result = ErrorFactory.Instance.Custom("foo", expectedInnerException);
 
                 Assert.AreSame(expectedResultException, result);
             }
@@ -90,8 +90,8 @@ namespace EasyAssertions.UnitTests
             EasyAssertion.UseFrameworkExceptions(Substitute.For<Func<string, Exception>>(), Substitute.For<Func<string, Exception, Exception>>());
             EasyAssertion.UseEasyAssertionExceptions();
 
-            Assert.IsInstanceOf<EasyAssertionException>(EasyAssertion.Failure("foo"));
-            Assert.IsInstanceOf<EasyAssertionException>(EasyAssertion.Failure("foo", new Exception()));
+            Assert.IsInstanceOf<EasyAssertionException>(ErrorFactory.Instance.Custom("foo"));
+            Assert.IsInstanceOf<EasyAssertionException>(ErrorFactory.Instance.Custom("foo", new Exception()));
         }
     }
 }

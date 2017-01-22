@@ -8,15 +8,12 @@ namespace EasyAssertions
     /// </summary>
     public static class EasyAssertion
     {
-        private static Func<string, Exception> createMessageException;
-        private static Func<string, Exception, Exception> createInnerExceptionException;
-
         /// <summary>
         /// Provides access to an object's child properties without changing the assertion chaining context.
         /// </summary>
         public static Actual<TActual> Assert<TActual>(this TActual actual, Action<TActual> assert)
         {
-            actual.RegisterAssert(() => RegisterInnerAssert(assert.Method, () => assert(actual)));
+            actual.RegisterAssert(c => RegisterInnerAssert(assert.Method, () => assert(actual)));
             return new Actual<TActual>(actual);
         }
 
@@ -25,7 +22,7 @@ namespace EasyAssertions
         /// </summary>
         public static Actual<TActual> And<TActual>(this Actual<TActual> actual, Action<TActual> assert)
         {
-            actual.RegisterAssert(() => RegisterInnerAssert(assert.Method, () => assert(actual.Value)));
+            actual.RegisterAssert(c => RegisterInnerAssert(assert.Method, () => assert(actual.Value)));
             return actual;
         }
 
@@ -33,10 +30,10 @@ namespace EasyAssertions
         /// Registers an assertion action for purposes of tracking the current position in the assertion expression's source code.
         /// Use this for custom assertions that act directly on the actual value.
         /// </summary>
-        public static Actual<TActual> RegisterAssert<TActual>(this TActual actual, Action assert)
+        public static Actual<TActual> RegisterAssert<TActual>(this TActual actual, Action<AssertionContext> assert)
         {
             SourceExpressionProvider.ForCurrentThread.EnterAssertion(1);
-            assert();
+            assert(new AssertionContext());
             SourceExpressionProvider.ForCurrentThread.ExitAssertion();
             return new Actual<TActual>(actual);
         }
@@ -48,10 +45,10 @@ namespace EasyAssertions
         /// <returns>
         /// The return value of the registered assertion function.
         /// </returns>
-        public static Actual<TActual> RegisterAssert<TActual>(this TActual actual, Func<Actual<TActual>> assert)
+        public static Actual<TReturnActual> RegisterAssert<TActual, TReturnActual>(this TActual actual, Func<AssertionContext, Actual<TReturnActual>> assert)
         {
             SourceExpressionProvider.ForCurrentThread.EnterAssertion(1);
-            Actual<TActual> ret = assert();
+            Actual<TReturnActual> ret = assert(new AssertionContext());
             SourceExpressionProvider.ForCurrentThread.ExitAssertion();
             return ret;
         }
@@ -87,8 +84,7 @@ namespace EasyAssertions
         /// </summary>
         public static void UseFrameworkExceptions(Func<string, Exception> messageExceptionFactory, Func<string, Exception, Exception> innerExceptionExceptionFactory)
         {
-            createMessageException = messageExceptionFactory;
-            createInnerExceptionException = innerExceptionExceptionFactory;
+            ErrorFactory.Instance.UseFrameworkExceptions(messageExceptionFactory, innerExceptionExceptionFactory);
         }
 
         /// <summary>
@@ -96,28 +92,7 @@ namespace EasyAssertions
         /// </summary>
         public static void UseEasyAssertionExceptions()
         {
-            createMessageException = null;
-            createInnerExceptionException = null;
-        }
-
-        /// <summary>
-        /// Creates an <see cref="Exception"/> to be thrown for a failed assertion.
-        /// </summary>
-        public static Exception Failure(string failureMessage)
-        {
-            return createMessageException != null
-                ? createMessageException(failureMessage)
-                : new EasyAssertionException(failureMessage);
-        }
-
-        /// <summary>
-        /// Creates an <see cref="Exception"/> to be thrown for a failed assertion.
-        /// </summary>
-        public static Exception Failure(string failureMessage, Exception innerException)
-        {
-            return createInnerExceptionException != null
-                ? createInnerExceptionException(failureMessage, innerException)
-                : new EasyAssertionException(failureMessage, innerException);
+            ErrorFactory.Instance.UseEasyAssertionExceptions();
         }
     }
 }

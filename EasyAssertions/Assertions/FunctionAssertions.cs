@@ -52,10 +52,10 @@ namespace EasyAssertions
             }
             catch (Exception actual)
             {
-                throw EasyAssertion.Failure(FailureMessage.Standard.WrongException(typeof(TException), actual.GetType(), expression, message), actual);
+                throw StandardErrors.Current.WrongException(typeof(TException), actual, expression, message);
             }
 
-            throw EasyAssertion.Failure(FailureMessage.Standard.NoException(typeof(TException), expression, message));
+            throw StandardErrors.Current.NoException(typeof(TException), expression, message);
         }
     }
 }

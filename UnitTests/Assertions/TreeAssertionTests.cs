@@ -25,22 +25,22 @@ namespace EasyAssertions.UnitTests
         {
             int[] actual = { 1 };
             TestNode<int>[] expected = { 2 };
-            MockFormatter.TreesDoNotMatch(expected, actual, NoChildren, Compare.ObjectsAreEqual, "foo").Returns("bar");
+            Error.TreesDoNotMatch(expected, actual, NoChildren, StandardTests.Instance.ObjectsAreEqual, "foo").Returns(ExpectedException);
 
-            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldMatch(expected, NoChildren, "foo"));
+            Exception result = Assert.Throws<Exception>(() => actual.ShouldMatch(expected, NoChildren, "foo"));
 
-            Assert.AreEqual("bar", result.Message);
+            Assert.AreSame(ExpectedException, result);
         }
 
         [Test]
         public void ShouldMatchTree_ActualIsNull_FailsWithTypedNotEqualMessage()
         {
             IEnumerable<int> actual = null;
-            MockFormatter.NotEqual(typeof(IEnumerable<int>), null, "foo").Returns("bar");
+            Error.NotEqual(typeof(IEnumerable<int>), null, "foo").Returns(ExpectedException);
 
-            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldMatch(1.Node(), NoChildren, "foo"));
+            Exception result = Assert.Throws<Exception>(() => actual.ShouldMatch(1.Node(), NoChildren, "foo"));
 
-            Assert.AreEqual("bar", result.Message);
+            Assert.AreSame(ExpectedException, result);
         }
 
         [Test]
@@ -85,11 +85,11 @@ namespace EasyAssertions.UnitTests
             TestNode<int>[] expected = { 1 };
             Func<int, int, bool> equality = Substitute.For<Func<int, int, bool>>();
             Func<object, object, bool> formatterEquality = null;
-            MockFormatter.TreesDoNotMatch(expected, actual, NoChildren, Arg.Do<Func<object, object, bool>>(func => formatterEquality = func), "foo").Returns("bar");
+            Error.TreesDoNotMatch(expected, actual, NoChildren, Arg.Do<Func<object, object, bool>>(func => formatterEquality = func), "foo").Returns(ExpectedException);
 
-            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldMatch(expected, NoChildren, equality, "foo"));
+            Exception result = Assert.Throws<Exception>(() => actual.ShouldMatch(expected, NoChildren, equality, "foo"));
 
-            Assert.AreEqual("bar", result.Message);
+            Assert.AreSame(ExpectedException, result);
             formatterEquality(2, 3);
             equality.Received()(2, 3);
         }
@@ -98,11 +98,11 @@ namespace EasyAssertions.UnitTests
         public void ShouldMatchTree_CustomEquality_ActualIsNull_FailsWithTypedNotEqualMessage()
         {
             IEnumerable<int> actual = null;
-            MockFormatter.NotEqual(typeof(IEnumerable<int>), null, "foo").Returns("bar");
+            Error.NotEqual(typeof(IEnumerable<int>), null, "foo").Returns(ExpectedException);
 
-            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldMatch(1.Node(), NoChildren, (a, e) => false, "foo"));
+            Exception result = Assert.Throws<Exception>(() => actual.ShouldMatch(1.Node(), NoChildren, (a, e) => false, "foo"));
 
-            Assert.AreEqual("bar", result.Message);
+            Assert.AreSame(ExpectedException, result);
         }
 
         [Test]

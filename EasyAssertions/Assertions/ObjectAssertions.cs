@@ -11,16 +11,16 @@ namespace EasyAssertions
         /// </summary>
         public static Actual<TActual> ShouldBe<TActual, TExpected>(this TActual actual, TExpected expected, string message = null) where TExpected : TActual
         {
-            return actual.RegisterAssert(() =>
+            return actual.RegisterAssert(c =>
                 {
-                    if (!Compare.ObjectsAreEqual(actual, expected))
+                    if (!c.Test.ObjectsAreEqual(actual, expected))
                     {
                         string actualString = actual as string;
                         string expectedString = expected as string;
                         if (actualString != null && expectedString != null)
-                            throw EasyAssertion.Failure(FailureMessage.Standard.NotEqual(expectedString, actualString, message: message));
+                            throw c.StandardError.NotEqual(expectedString, actualString, message: message);
 
-                        throw EasyAssertion.Failure(FailureMessage.Standard.NotEqual(expected, actual, message));
+                        throw c.StandardError.NotEqual(expected, actual, message);
                     }
                 });
         }
@@ -30,13 +30,13 @@ namespace EasyAssertions
         /// </summary>
         public static Actual<TActual> ShouldBe<TActual>(this TActual? actual, TActual expected, string message = null) where TActual : struct
         {
-            actual.RegisterAssert(() =>
+            actual.RegisterAssert(c =>
                 {
                     if (!actual.HasValue)
-                        throw EasyAssertion.Failure(FailureMessage.Standard.NotEqual(expected, actual, message));
+                        throw c.StandardError.NotEqual(expected, actual, message);
 
-                    if (!Compare.ObjectsAreEqual(actual.Value, expected))
-                        throw EasyAssertion.Failure(FailureMessage.Standard.NotEqual(expected, actual, message));
+                    if (!c.Test.ObjectsAreEqual(actual.Value, expected))
+                        throw c.StandardError.NotEqual(expected, actual, message);
                 });
 
             return new Actual<TActual>(actual.Value);
@@ -47,10 +47,10 @@ namespace EasyAssertions
         /// </summary>
         public static Actual<TActual> ShouldNotBe<TActual, TNotExpected>(this TActual actual, TNotExpected notExpected, string message = null) where TNotExpected : TActual
         {
-            return actual.RegisterAssert(() =>
+            return actual.RegisterAssert(c =>
                 {
-                    if (Compare.ObjectsAreEqual(actual, notExpected))
-                        throw EasyAssertion.Failure(FailureMessage.Standard.AreEqual(notExpected, actual, message));
+                    if (c.Test.ObjectsAreEqual(actual, notExpected))
+                        throw c.StandardError.AreEqual(notExpected, actual, message);
                 });
         }
 
@@ -59,10 +59,10 @@ namespace EasyAssertions
         /// </summary>
         public static void ShouldBeNull<TActual>(this TActual actual, string message = null)
         {
-            actual.RegisterAssert(() =>
+            actual.RegisterAssert(c =>
                 {
                     if (!Equals(actual, null))
-                        throw EasyAssertion.Failure(FailureMessage.Standard.NotEqual(null, actual, message));
+                        throw c.StandardError.NotEqual(null, actual, message);
                 });
         }
 
@@ -71,10 +71,10 @@ namespace EasyAssertions
         /// </summary>
         public static Actual<TActual> ShouldNotBeNull<TActual>(this TActual actual, string message = null)
         {
-            return actual.RegisterAssert(() =>
+            return actual.RegisterAssert(c =>
                 {
                     if (Equals(actual, null))
-                        throw EasyAssertion.Failure(FailureMessage.Standard.IsNull(message));
+                        throw c.StandardError.IsNull(message);
                 });
         }
 
@@ -83,10 +83,10 @@ namespace EasyAssertions
         /// </summary>
         public static Actual<TActual> ShouldReferTo<TActual, TExpected>(this TActual actual, TExpected expected, string message = null) where TExpected : TActual
         {
-            return actual.RegisterAssert(() =>
+            return actual.RegisterAssert(c =>
                 {
                     if (!ReferenceEquals(actual, expected))
-                        throw EasyAssertion.Failure(FailureMessage.Standard.NotSame(expected, actual, message));
+                        throw c.StandardError.NotSame(expected, actual, message);
                 });
         }
 
@@ -95,10 +95,10 @@ namespace EasyAssertions
         /// </summary>
         public static Actual<TActual> ShouldNotReferTo<TActual, TNotExpected>(this TActual actual, TNotExpected notExpected, string message = null) where TNotExpected : TActual
         {
-            return actual.RegisterAssert(() =>
+            return actual.RegisterAssert(c =>
                 {
                     if (ReferenceEquals(actual, notExpected))
-                        throw EasyAssertion.Failure(FailureMessage.Standard.AreSame(actual, message));
+                        throw c.StandardError.AreSame(actual, message);
                 });
         }
 
@@ -107,10 +107,10 @@ namespace EasyAssertions
         /// </summary>
         public static Actual<TExpected> ShouldBeA<TExpected>(this object actual, string message = null)
         {
-            actual.RegisterAssert(() =>
+            actual.RegisterAssert(c =>
                 {
                     if (!(actual is TExpected))
-                        throw EasyAssertion.Failure(FailureMessage.Standard.NotEqual(typeof(TExpected), actual?.GetType(), message));
+                        throw c.StandardError.NotEqual(typeof(TExpected), actual?.GetType(), message);
                 });
 
             return new Actual<TExpected>((TExpected)actual);

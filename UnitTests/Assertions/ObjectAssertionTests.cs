@@ -1,4 +1,5 @@
-﻿using NSubstitute;
+﻿using System;
+using NSubstitute;
 using NUnit.Framework;
 
 namespace EasyAssertions.UnitTests
@@ -21,19 +22,19 @@ namespace EasyAssertions.UnitTests
         {
             object obj1 = new object();
             object obj2 = new object();
-            MockFormatter.NotEqual(obj2, obj1, "foo").Returns("bar");
+            Error.NotEqual(obj2, obj1, "foo").Returns(ExpectedException);
 
-            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => obj1.ShouldBe(obj2, "foo"));
+            Exception result = Assert.Throws<Exception>(() => obj1.ShouldBe(obj2, "foo"));
 
-            Assert.AreEqual("bar", result.Message);
+            Assert.AreSame(ExpectedException, result);
         }
 
         [Test]
         public void ShouldBe_DifferentStrings_FailsWithStringsNotEqualMessage()
         {
-            MockFormatter.NotEqual("foo", "bar", message: "baz").Returns("qux");
+            Error.NotEqual("foo", "bar", message: "baz").Returns(new Exception("qux"));
 
-            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => "bar".ShouldBe("foo", "baz"));
+            Exception result = Assert.Throws<Exception>(() => "bar".ShouldBe("foo", "baz"));
 
             Assert.AreEqual("qux", result.Message);
         }
@@ -65,11 +66,11 @@ namespace EasyAssertions.UnitTests
         {
             int? actual = null;
             const int expected = 1;
-            MockFormatter.NotEqual(expected, actual, "foo").Returns("bar");
+            Error.NotEqual(expected, actual, "foo").Returns(ExpectedException);
 
-            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldBe(expected, "foo"));
+            Exception result = Assert.Throws<Exception>(() => actual.ShouldBe(expected, "foo"));
 
-            Assert.AreEqual("bar", result.Message);
+            Assert.AreSame(ExpectedException, result);
         }
 
         [Test]
@@ -77,11 +78,11 @@ namespace EasyAssertions.UnitTests
         {
             int? actual = 1;
             const int expected = 2;
-            MockFormatter.NotEqual(expected, actual, "foo").Returns("bar");
+            Error.NotEqual(expected, actual, "foo").Returns(ExpectedException);
 
-            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldBe(expected, "foo"));
+            Exception result = Assert.Throws<Exception>(() => actual.ShouldBe(expected, "foo"));
 
-            Assert.AreEqual("bar", result.Message);
+            Assert.AreSame(ExpectedException, result);
         }
 
         [Test]
@@ -111,11 +112,11 @@ namespace EasyAssertions.UnitTests
         {
             Equatable actual = new Equatable(1);
             Equatable notExpected = new Equatable(1);
-            MockFormatter.AreEqual(notExpected, actual, "foo").Returns("bar");
+            Error.AreEqual(notExpected, actual, "foo").Returns(ExpectedException);
 
-            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldNotBe(notExpected, "foo"));
+            Exception result = Assert.Throws<Exception>(() => actual.ShouldNotBe(notExpected, "foo"));
 
-            Assert.AreEqual("bar", result.Message);
+            Assert.AreSame(ExpectedException, result);
         }
 
         [Test]
@@ -140,11 +141,11 @@ namespace EasyAssertions.UnitTests
         public void ShouldBeNull_NotNull_FailsWithNotEqualToNullMessage()
         {
             object actual = new object();
-            MockFormatter.NotEqual(null, actual, "foo").Returns("bar");
+            Error.NotEqual(null, actual, "foo").Returns(ExpectedException);
 
-            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldBeNull("foo"));
+            Exception result = Assert.Throws<Exception>(() => actual.ShouldBeNull("foo"));
 
-            Assert.AreEqual("bar", result.Message);
+            Assert.AreSame(ExpectedException, result);
         }
 
         [Test]
@@ -170,11 +171,11 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ShouldNotBeNull_IsNull_FailsWithIsNullMessage()
         {
-            MockFormatter.IsNull("foo").Returns("bar");
+            Error.IsNull("foo").Returns(ExpectedException);
 
-            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => ((object)null).ShouldNotBeNull("foo"));
+            Exception result = Assert.Throws<Exception>(() => ((object)null).ShouldNotBeNull("foo"));
 
-            Assert.AreEqual("bar", result.Message);
+            Assert.AreSame(ExpectedException, result);
         }
 
         [Test]
@@ -201,11 +202,11 @@ namespace EasyAssertions.UnitTests
         {
             Equatable actual = new Equatable(1);
             Equatable expected = new Equatable(1);
-            MockFormatter.NotSame(expected, actual, "foo").Returns("bar");
+            Error.NotSame(expected, actual, "foo").Returns(ExpectedException);
 
-            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldReferTo(expected, "foo"));
+            Exception result = Assert.Throws<Exception>(() => actual.ShouldReferTo(expected, "foo"));
 
-            Assert.AreEqual("bar", result.Message);
+            Assert.AreSame(ExpectedException, result);
         }
 
         [Test]
@@ -234,11 +235,11 @@ namespace EasyAssertions.UnitTests
         public void ShouldNotReferTo_SameObject_FailsWithObjectsAreSameMessage()
         {
             object actual = new object();
-            MockFormatter.AreSame(actual, "foo").Returns("bar");
+            Error.AreSame(actual, "foo").Returns(ExpectedException);
 
-            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldNotReferTo(actual, "foo"));
+            Exception result = Assert.Throws<Exception>(() => actual.ShouldNotReferTo(actual, "foo"));
 
-            Assert.AreEqual("bar", result.Message);
+            Assert.AreSame(ExpectedException, result);
         }
 
         [Test]
@@ -267,10 +268,10 @@ namespace EasyAssertions.UnitTests
         public void ShouldBeA_SuperType_FailsWithTypesNotEqualMessage()
         {
             object actual = new Equatable(1);
-            MockFormatter.NotEqual(typeof(SubEquatable), typeof(Equatable), "foo").Returns("bar");
-            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldBeA<SubEquatable>("foo"));
+            Error.NotEqual(typeof(SubEquatable), typeof(Equatable), "foo").Returns(ExpectedException);
+            Exception result = Assert.Throws<Exception>(() => actual.ShouldBeA<SubEquatable>("foo"));
 
-            Assert.AreEqual("bar", result.Message);
+            Assert.AreSame(ExpectedException, result);
         }
 
         [Test]

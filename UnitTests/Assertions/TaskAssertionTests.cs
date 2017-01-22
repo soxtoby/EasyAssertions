@@ -496,33 +496,32 @@ namespace EasyAssertions.UnitTests
 
         private void AssertTimesOut(TimeSpan timeout, Action<string> callAssertion)
         {
-            MockFormatter.TaskTimedOut(timeout, "foo").Returns("bar");
+            Error.TaskTimedOut(timeout, "foo").Returns(ExpectedException);
             TaskTimesOut(timeout);
 
-            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => callAssertion("foo"));
+            Exception result = Assert.Throws<Exception>(() => callAssertion("foo"));
 
-            Assert.AreEqual("bar", result.Message);
+            Assert.AreSame(ExpectedException, result);
         }
 
         private void AssertFailsWithWrongExceptionMessage<TException>(Type expectedExceptionType, Exception actualException, TimeSpan timeout, Func<string, ActualException<TException>> callAssertion) where TException : Exception
         {
-            MockFormatter.WrongException(expectedExceptionType, actualException.GetType(), null, "foo").Returns("bar");
+            Error.WrongException(expectedExceptionType, actualException, null, "foo").Returns(ExpectedException);
             TaskFails(actualException, timeout);
 
-            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => callAssertion("foo"));
+            Exception result = Assert.Throws<Exception>(() => callAssertion("foo"));
 
-            Assert.AreEqual("bar", result.Message);
-            Assert.AreSame(actualException, result.InnerException);
+            Assert.AreSame(ExpectedException, result);
         }
 
         private void AssertFailsWithNoExceptionMessage<TException>(Func<string, ActualException<TException>> callAssertion) where TException : Exception
         {
-            MockFormatter.NoException(typeof(TException), message: "foo").Returns("bar");
+            Error.NoException(typeof(TException), message: "foo").Returns(ExpectedException);
             TaskReturns(0, Arg.Any<TimeSpan>());
 
-            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => callAssertion("foo"));
+            Exception result = Assert.Throws<Exception>(() => callAssertion("foo"));
 
-            Assert.AreEqual("bar", result.Message);
+            Assert.AreSame(ExpectedException, result);
         }
 
         private void TaskReturns(int expectedValue, TimeSpan timeout)

@@ -36,12 +36,12 @@ namespace EasyAssertions.UnitTests
         public void AndShouldNotBeA_ExceptionIsSpecifiedType_FailsWithTypesAreEqualMessage()
         {
             Exception exception = new InvalidOperationException();
-            MockFormatter.AreEqual(typeof(InvalidOperationException), typeof(InvalidOperationException), "foo").Returns("bar");
+            Error.AreEqual(typeof(InvalidOperationException), typeof(InvalidOperationException), "foo").Returns(ExpectedException);
             ActualException<Exception> sut = new ActualException<Exception>(exception);
 
-            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => sut.AndShouldNotBeA<InvalidOperationException>("foo"));
+            Exception result = Assert.Throws<Exception>(() => sut.AndShouldNotBeA<InvalidOperationException>("foo"));
 
-            Assert.AreEqual("bar", result.Message);
+            Assert.AreSame(ExpectedException, result);
         }
     }
 }

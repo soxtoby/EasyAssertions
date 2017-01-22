@@ -19,8 +19,6 @@ namespace EasyAssertions
         private static readonly Regex MemberPattern = new Regex(@"value\(.*?\)\.", RegexOptions.Compiled);
         private static readonly Regex BoxingPattern = new Regex(@"^Convert\((.*)\)$", RegexOptions.Compiled);
 
-        public static IFailureMessageFormatter Standard => FailureMessageFormatter.Current;
-
         /// <summary>
         /// Returns the source representation of the actual value.
         /// </summary>

@@ -19,9 +19,11 @@ namespace EasyAssertions
         {
             string expression = base.GetActualExpression(parentExpression);
             
-            return string.IsNullOrEmpty(expression)
+            return string.IsNullOrEmpty(expression) || !ExpressionAliasPattern.IsMatch(expression)
                 ? parentExpression
-                : Regex.Replace(expression, WordBoundary + expressionAlias + WordBoundary, parentExpression);
+                : ExpressionAliasPattern.Replace(expression, parentExpression);
         }
+
+        private Regex ExpressionAliasPattern => new Regex(WordBoundary + Regex.Escape(expressionAlias) + WordBoundary);
     }
 }

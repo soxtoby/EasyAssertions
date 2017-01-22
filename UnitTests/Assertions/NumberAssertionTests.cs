@@ -1,4 +1,5 @@
-﻿using NSubstitute;
+﻿using System;
+using NSubstitute;
 using NUnit.Framework;
 
 namespace EasyAssertions.UnitTests
@@ -41,11 +42,11 @@ namespace EasyAssertions.UnitTests
         public void ShouldBe_ActualNotAFloat_FailsWithTypesNotEqualMessage()
         {
             object actual = new object();
-            MockFormatter.NotEqual(typeof(float), typeof(object), "foo").Returns("bar");
+            Error.NotEqual(typeof(float), typeof(object), "foo").Returns(ExpectedException);
 
-            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldBe(1f, 1f, "foo"));
+            Exception result = Assert.Throws<Exception>(() => actual.ShouldBe(1f, 1f, "foo"));
 
-            Assert.AreEqual("bar", result.Message);
+            Assert.AreSame(ExpectedException, result);
         }
 
         [Test]
@@ -53,11 +54,11 @@ namespace EasyAssertions.UnitTests
         {
             const float expected = 10f;
             const float actual = 1f;
-            MockFormatter.NotEqual(expected, actual, "foo").Returns("bar");
+            Error.NotEqual(expected, actual, "foo").Returns(ExpectedException);
 
-            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldBe(expected, 1f, "foo"));
+            Exception result = Assert.Throws<Exception>(() => actual.ShouldBe(expected, 1f, "foo"));
 
-            Assert.AreEqual("bar", result.Message);
+            Assert.AreSame(ExpectedException, result);
         }
 
         [Test]
@@ -65,11 +66,11 @@ namespace EasyAssertions.UnitTests
         {
             const float expected = 10f;
             const float actual = 1f;
-            MockFormatter.NotEqual(expected, actual, "foo").Returns("bar");
+            Error.NotEqual(expected, actual, "foo").Returns(ExpectedException);
 
-            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldBe(expected, 1d, "foo"));
+            Exception result = Assert.Throws<Exception>(() => actual.ShouldBe(expected, 1d, "foo"));
 
-            Assert.AreEqual("bar", result.Message);
+            Assert.AreSame(ExpectedException, result);
         }
 
         [Test]
@@ -110,11 +111,11 @@ namespace EasyAssertions.UnitTests
         public void ShouldBe_ActualNotADouble_FailsWithTypesNotEqualMessage()
         {
             object actual = new object();
-            MockFormatter.NotEqual(typeof(double), typeof(object), "foo").Returns("bar");
+            Error.NotEqual(typeof(double), typeof(object), "foo").Returns(ExpectedException);
 
-            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldBe(1d, 1d, "foo"));
+            Exception result = Assert.Throws<Exception>(() => actual.ShouldBe(1d, 1d, "foo"));
 
-            Assert.AreEqual("bar", result.Message);
+            Assert.AreSame(ExpectedException, result);
         }
 
         [Test]
@@ -122,11 +123,11 @@ namespace EasyAssertions.UnitTests
         {
             const double expected = 10d;
             const double actual = 1d;
-            MockFormatter.NotEqual(expected, actual, "foo").Returns("bar");
+            Error.NotEqual(expected, actual, "foo").Returns(ExpectedException);
 
-            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldBe(expected, 1d, "foo"));
+            Exception result = Assert.Throws<Exception>(() => actual.ShouldBe(expected, 1d, "foo"));
 
-            Assert.AreEqual("bar", result.Message);
+            Assert.AreSame(ExpectedException, result);
         }
 
         [Test]
@@ -155,11 +156,11 @@ namespace EasyAssertions.UnitTests
         {
             const float actual = 1f;
             const float notExpected = 2f;
-            MockFormatter.AreEqual(notExpected, actual, "foo").Returns("bar");
+            Error.AreEqual(notExpected, actual, "foo").Returns(ExpectedException);
 
-            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldNotBe(notExpected, 1f, "foo"));
+            Exception result = Assert.Throws<Exception>(() => actual.ShouldNotBe(notExpected, 1f, "foo"));
 
-            Assert.AreEqual("bar", result.Message);
+            Assert.AreSame(ExpectedException, result);
         }
 
         [Test]
@@ -189,11 +190,11 @@ namespace EasyAssertions.UnitTests
         {
             const double actual = 1d;
             const double notExpected = 2d;
-            MockFormatter.AreEqual(notExpected, actual, "foo").Returns("bar");
+            Error.AreEqual(notExpected, actual, "foo").Returns(ExpectedException);
 
-            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldNotBe(notExpected, 1d, "foo"));
+            Exception result = Assert.Throws<Exception>(() => actual.ShouldNotBe(notExpected, 1d, "foo"));
 
-            Assert.AreEqual("bar", result.Message);
+            Assert.AreSame(ExpectedException, result);
         }
 
         [Test]
@@ -223,11 +224,11 @@ namespace EasyAssertions.UnitTests
         {
             const int actual = 1;
             const int expected = 2;
-            MockFormatter.NotGreaterThan(expected, actual, "foo").Returns("bar");
+            Error.NotGreaterThan(expected, actual, "foo").Returns(ExpectedException);
 
-            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldBeGreaterThan(expected, "foo"));
+            Exception result = Assert.Throws<Exception>(() => actual.ShouldBeGreaterThan(expected, "foo"));
 
-            Assert.AreEqual("bar", result.Message);
+            Assert.AreSame(ExpectedException, result);
         }
 
         [Test]
@@ -257,11 +258,11 @@ namespace EasyAssertions.UnitTests
         {
             const int actual = 2;
             const int expected = 1;
-            MockFormatter.NotLessThan(expected, actual, "foo").Returns("bar");
+            Error.NotLessThan(expected, actual, "foo").Returns(ExpectedException);
 
-            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldBeLessThan(expected, "foo"));
+            Exception result = Assert.Throws<Exception>(() => actual.ShouldBeLessThan(expected, "foo"));
 
-            Assert.AreEqual("bar", result.Message);
+            Assert.AreSame(ExpectedException, result);
         }
 
         [Test]
@@ -288,11 +289,11 @@ namespace EasyAssertions.UnitTests
         public void FloatShouldBeNaN_IsNotNaN_FailsWithObjectsNotEqualMessage()
         {
             const float actual = 1f;
-            MockFormatter.NotEqual(float.NaN, actual, "foo").Returns("bar");
+            Error.NotEqual(float.NaN, actual, "foo").Returns(ExpectedException);
 
-            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldBeNaN("foo"));
+            Exception result = Assert.Throws<Exception>(() => actual.ShouldBeNaN("foo"));
 
-            Assert.AreEqual("bar", result.Message);
+            Assert.AreSame(ExpectedException, result);
         }
 
         [Test]
@@ -319,11 +320,11 @@ namespace EasyAssertions.UnitTests
         public void FloatShouldNotBeNaN_IsNaN_FailsWithObjectsEqualMessage()
         {
             const float actual = float.NaN;
-            MockFormatter.AreEqual(float.NaN, actual, "foo").Returns("bar");
+            Error.AreEqual(float.NaN, actual, "foo").Returns(ExpectedException);
 
-            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldNotBeNaN("foo"));
+            Exception result = Assert.Throws<Exception>(() => actual.ShouldNotBeNaN("foo"));
 
-            Assert.AreEqual("bar", result.Message);
+            Assert.AreSame(ExpectedException, result);
         }
 
         [Test]
@@ -348,11 +349,11 @@ namespace EasyAssertions.UnitTests
         public void DoubleShouldBeNaN_IsNotNaN_FailsWithObjectsNotEqualMessage()
         {
             const double actual = 1d;
-            MockFormatter.NotEqual(double.NaN, actual, "foo").Returns("bar");
+            Error.NotEqual(double.NaN, actual, "foo").Returns(ExpectedException);
 
-            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldBeNaN("foo"));
+            Exception result = Assert.Throws<Exception>(() => actual.ShouldBeNaN("foo"));
 
-            Assert.AreEqual("bar", result.Message);
+            Assert.AreSame(ExpectedException, result);
         }
 
         [Test]
@@ -379,11 +380,11 @@ namespace EasyAssertions.UnitTests
         public void DoubleShouldNotBeNaN_IsNaN_FailsWithObjectsEqualMessage()
         {
             const double actual = double.NaN;
-            MockFormatter.AreEqual(double.NaN, actual, "foo").Returns("bar");
+            Error.AreEqual(double.NaN, actual, "foo").Returns(ExpectedException);
 
-            EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldNotBeNaN("foo"));
+            Exception result = Assert.Throws<Exception>(() => actual.ShouldNotBeNaN("foo"));
 
-            Assert.AreEqual("bar", result.Message);
+            Assert.AreSame(ExpectedException, result);
         }
 
         [Test]

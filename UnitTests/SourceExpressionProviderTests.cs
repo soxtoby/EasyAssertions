@@ -234,12 +234,12 @@ namespace EasyAssertions.UnitTests
     {
         public static Actual<object> TestActionAssert(this object actual)
         {
-            return actual.RegisterAssert(() => { actual.ShouldNotBeNull(); });
+            return actual.RegisterAssert(c => { actual.ShouldNotBeNull(); });
         }
 
         public static Actual<object> TestFuncAssert(this object actual)
         {
-            return actual.RegisterAssert(() => actual.ShouldNotBeNull());
+            return actual.RegisterAssert(c => actual.ShouldNotBeNull());
         }
     }
 }

@@ -48,9 +48,9 @@ namespace EasyAssertions.UnitTests
             public void NonEmpty_FailsWithEnumerableNotEmptyMessage()
             {
                 int[] actual = { 1 };
-                MockFormatter.NotEmpty(Matches(actual), "foo").Returns("bar");
+                Error.NotEmpty(Matches(actual), "foo").Returns(new Exception("bar"));
 
-                EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldBeEmpty("foo"));
+                Exception result = Assert.Throws<Exception>(() => actual.ShouldBeEmpty("foo"));
 
                 Assert.AreEqual("bar", result.Message);
             }
@@ -59,9 +59,9 @@ namespace EasyAssertions.UnitTests
             public void NonEmpty_OnlyEnumeratesOnce()
             {
                 TestEnumerable<int> actual = MakeEnumerable(1);
-                MockFormatter.NotEmpty(Arg.Any<IEnumerable>(), Arg.Any<string>()).Returns(EnumerateArgs);
+                Error.NotEmpty(Arg.Any<IEnumerable>(), Arg.Any<string>()).Returns(EnumerateArgs);
 
-                EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldBeEmpty());
+                Exception result = Assert.Throws<Exception>(() => actual.ShouldBeEmpty());
 
                 Assert.AreEqual(EnumerateArgsResult, result.Message);
                 Assert.AreEqual(1, actual.EnumerationCount);
@@ -99,9 +99,9 @@ namespace EasyAssertions.UnitTests
             public void IsEmpty_FailsWithEnumerableEmptyMessage()
             {
                 IEnumerable<object> actual = Enumerable.Empty<object>();
-                MockFormatter.IsEmpty("foo").Returns("bar");
+                Error.IsEmpty("foo").Returns(new Exception("bar"));
 
-                EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldNotBeEmpty("foo"));
+                Exception result = Assert.Throws<Exception>(() => actual.ShouldNotBeEmpty("foo"));
 
                 Assert.AreEqual("bar", result.Message);
             }
@@ -138,9 +138,9 @@ namespace EasyAssertions.UnitTests
             public void IsNotSingular_FailsWithLengthMismatchMessage()
             {
                 int[] actual = { };
-                MockFormatter.LengthMismatch(1, Matches(actual), "foo").Returns("bar");
+                Error.LengthMismatch(1, Matches(actual), "foo").Returns(new Exception("bar"));
 
-                EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldBeSingular("foo"));
+                Exception result = Assert.Throws<Exception>(() => actual.ShouldBeSingular("foo"));
 
                 Assert.AreEqual("bar", result.Message);
             }
@@ -149,9 +149,9 @@ namespace EasyAssertions.UnitTests
             public void IsNotSingular_OnlyEnumeratesOnce()
             {
                 TestEnumerable<int> actual = MakeEnumerable(1, 2);
-                MockFormatter.LengthMismatch(Arg.Any<int>(), Arg.Any<IEnumerable>(), Arg.Any<string>()).Returns(EnumerateArgs);
+                Error.LengthMismatch(Arg.Any<int>(), Arg.Any<IEnumerable>(), Arg.Any<string>()).Returns(EnumerateArgs);
 
-                EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldBeSingular());
+                Exception result = Assert.Throws<Exception>(() => actual.ShouldBeSingular());
 
                 Assert.AreEqual(EnumerateArgsResult, result.Message);
                 Assert.AreEqual(1, actual.EnumerationCount);
@@ -189,9 +189,9 @@ namespace EasyAssertions.UnitTests
             public void IsDifferentLength_FailsWithLengthMismatchMessage()
             {
                 int[] actual = { 1, 2, 3 };
-                MockFormatter.LengthMismatch(2, Matches(actual), "foo").Returns("bar");
+                Error.LengthMismatch(2, Matches(actual), "foo").Returns(new Exception("bar"));
 
-                EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldBeLength(2, "foo"));
+                Exception result = Assert.Throws<Exception>(() => actual.ShouldBeLength(2, "foo"));
 
                 Assert.AreEqual("bar", result.Message);
             }
@@ -200,9 +200,9 @@ namespace EasyAssertions.UnitTests
             public void IsDifferentLength_OnlyEnumeratesOnce()
             {
                 TestEnumerable<int> actual = MakeEnumerable(1);
-                MockFormatter.LengthMismatch(Arg.Any<int>(), Arg.Any<IEnumerable>(), Arg.Any<string>()).Returns(EnumerateArgs);
+                Error.LengthMismatch(Arg.Any<int>(), Arg.Any<IEnumerable>(), Arg.Any<string>()).Returns(EnumerateArgs);
 
-                EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldBeLength(2));
+                Exception result = Assert.Throws<Exception>(() => actual.ShouldBeLength(2));
 
                 Assert.AreEqual(EnumerateArgsResult, result.Message);
                 Assert.AreEqual(1, actual.EnumerationCount);
@@ -243,9 +243,9 @@ namespace EasyAssertions.UnitTests
             {
                 int[] expected = { 3, 4 };
                 int[] actual = { 1, 2 };
-                MockFormatter.DoNotMatch(Matches<int>(expected), Matches<int>(actual), Compare.ObjectsMatch, "foo").Returns("bar");
+                Error.DoNotMatch(Matches<int>(expected), Matches<int>(actual), StandardTests.Instance.ObjectsMatch, "foo").Returns(new Exception("bar"));
 
-                EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldMatch(expected, "foo"));
+                Exception result = Assert.Throws<Exception>(() => actual.ShouldMatch(expected, "foo"));
 
 
                 Assert.AreEqual("bar", result.Message);
@@ -256,9 +256,9 @@ namespace EasyAssertions.UnitTests
             {
                 TestEnumerable<int> actual = MakeEnumerable(1);
                 TestEnumerable<int> expected = MakeEnumerable(2);
-                MockFormatter.DoNotMatch(Arg.Any<IEnumerable<int>>(), Arg.Any<IEnumerable<int>>(), Arg.Any<Func<int, int, bool>>(), Arg.Any<string>()).Returns(EnumerateArgs);
+                Error.DoNotMatch(Arg.Any<IEnumerable<int>>(), Arg.Any<IEnumerable<int>>(), Arg.Any<Func<int, int, bool>>(), Arg.Any<string>()).Returns(EnumerateArgs);
 
-                EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldMatch(expected));
+                Exception result = Assert.Throws<Exception>(() => actual.ShouldMatch(expected));
 
                 Assert.AreEqual(EnumerateArgsResult, result.Message);
                 Assert.AreEqual(1, actual.EnumerationCount);
@@ -311,8 +311,8 @@ namespace EasyAssertions.UnitTests
                 int[] actual = { 1, 2, 4 };
                 int[] expected = { 2, 4, 6 };
                 Func<int, int, bool> predicate = (a, e) => a == e / 2;
-                MockFormatter.DoNotMatch(Matches<int>(expected), Matches<int>(actual), predicate, "foo").Returns("bar");
-                EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldMatch(expected, predicate, "foo"));
+                Error.DoNotMatch(Matches<int>(expected), Matches<int>(actual), predicate, "foo").Returns(new Exception("bar"));
+                Exception result = Assert.Throws<Exception>(() => actual.ShouldMatch(expected, predicate, "foo"));
 
                 Assert.AreEqual("bar", result.Message);
             }
@@ -322,9 +322,9 @@ namespace EasyAssertions.UnitTests
             {
                 TestEnumerable<int> actual = MakeEnumerable(1);
                 TestEnumerable<int> expected = MakeEnumerable(2);
-                MockFormatter.DoNotMatch(Arg.Any<IEnumerable<int>>(), Arg.Any<IEnumerable<int>>(), Arg.Any<Func<int, int, bool>>(), Arg.Any<string>()).Returns(EnumerateArgs);
+                Error.DoNotMatch(Arg.Any<IEnumerable<int>>(), Arg.Any<IEnumerable<int>>(), Arg.Any<Func<int, int, bool>>(), Arg.Any<string>()).Returns(EnumerateArgs);
 
-                EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldMatch(expected, (a, b) => a == b));
+                Exception result = Assert.Throws<Exception>(() => actual.ShouldMatch(expected, (a, b) => a == b));
 
                 Assert.AreEqual(EnumerateArgsResult, result.Message);
                 Assert.AreEqual(1, actual.EnumerationCount);
@@ -335,9 +335,9 @@ namespace EasyAssertions.UnitTests
             public void ActualIsNull_FailsWithTypeNotEqualMessage()
             {
                 IEnumerable<string> actual = null;
-                MockFormatter.NotEqual(typeof(IEnumerable<string>), null, "foo").Returns("bar");
+                Error.NotEqual(typeof(IEnumerable<string>), null, "foo").Returns(new Exception("bar"));
 
-                EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldMatch(Enumerable.Empty<string>(), (s, s1) => false, "foo"));
+                Exception result = Assert.Throws<Exception>(() => actual.ShouldMatch(Enumerable.Empty<string>(), (s, s1) => false, "foo"));
 
                 Assert.AreEqual("bar", result.Message);
             }
@@ -371,9 +371,9 @@ namespace EasyAssertions.UnitTests
                 float[] actual = { 10f, 20f };
                 float[] expected = { 11f, 21f };
                 Func<float, float, bool> predicate = null;
-                MockFormatter.DoNotMatch(Matches<float>(expected), Matches<float>(actual), Arg.Do<Func<float, float, bool>>(p => predicate = p), "foo").Returns("bar");
+                Error.DoNotMatch(Matches<float>(expected), Matches<float>(actual), Arg.Do<Func<float, float, bool>>(p => predicate = p), "foo").Returns(new Exception("bar"));
 
-                EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldMatch(expected, 0.9f, "foo"));
+                Exception result = Assert.Throws<Exception>(() => actual.ShouldMatch(expected, 0.9f, "foo"));
 
                 Assert.AreEqual("bar", result.Message);
                 Assert.IsTrue(predicate(1f, 1.9f));
@@ -385,9 +385,9 @@ namespace EasyAssertions.UnitTests
             {
                 TestEnumerable<float> actual = MakeEnumerable(1f);
                 TestEnumerable<float> expected = MakeEnumerable(2f);
-                MockFormatter.DoNotMatch(Arg.Any<IEnumerable<float>>(), Arg.Any<IEnumerable<float>>(), Arg.Any<Func<float, float, bool>>(), Arg.Any<string>()).Returns(EnumerateArgs);
+                Error.DoNotMatch(Arg.Any<IEnumerable<float>>(), Arg.Any<IEnumerable<float>>(), Arg.Any<Func<float, float, bool>>(), Arg.Any<string>()).Returns(EnumerateArgs);
 
-                EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldMatch(expected, float.Epsilon));
+                Exception result = Assert.Throws<Exception>(() => actual.ShouldMatch(expected, float.Epsilon));
 
                 Assert.AreEqual(EnumerateArgsResult, result.Message);
                 Assert.AreEqual(1, actual.EnumerationCount);
@@ -430,9 +430,9 @@ namespace EasyAssertions.UnitTests
                 double[] actual = { 10d, 20d };
                 double[] expected = { 11d, 21d };
                 Func<double, double, bool> predicate = null;
-                MockFormatter.DoNotMatch(Matches<double>(expected), Matches<double>(actual), Arg.Do<Func<double, double, bool>>(p => predicate = p), "foo").Returns("bar");
+                Error.DoNotMatch(Matches<double>(expected), Matches<double>(actual), Arg.Do<Func<double, double, bool>>(p => predicate = p), "foo").Returns(new Exception("bar"));
 
-                EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldMatch(expected, 0.9d, "foo"));
+                Exception result = Assert.Throws<Exception>(() => actual.ShouldMatch(expected, 0.9d, "foo"));
 
                 Assert.AreEqual("bar", result.Message);
                 Assert.IsTrue(predicate(1d, 1.9d));
@@ -444,9 +444,9 @@ namespace EasyAssertions.UnitTests
             {
                 TestEnumerable<double> actual = MakeEnumerable(1d);
                 TestEnumerable<double> expected = MakeEnumerable(2d);
-                MockFormatter.DoNotMatch(Arg.Any<IEnumerable<double>>(), Arg.Any<IEnumerable<double>>(), Arg.Any<Func<double, double, bool>>(), Arg.Any<string>()).Returns(EnumerateArgs);
+                Error.DoNotMatch(Arg.Any<IEnumerable<double>>(), Arg.Any<IEnumerable<double>>(), Arg.Any<Func<double, double, bool>>(), Arg.Any<string>()).Returns(EnumerateArgs);
 
-                EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldMatch(expected, double.Epsilon));
+                Exception result = Assert.Throws<Exception>(() => actual.ShouldMatch(expected, double.Epsilon));
 
                 Assert.AreEqual(EnumerateArgsResult, result.Message);
                 Assert.AreEqual(1, actual.EnumerationCount);
@@ -501,9 +501,9 @@ namespace EasyAssertions.UnitTests
             {
                 int[] actual = { 1 };
                 int[] expectedStart = { 2 };
-                MockFormatter.DoesNotStartWith(Matches(expectedStart), Matches(actual), Compare.ObjectsAreEqual, "foo").Returns("bar");
+                Error.DoesNotStartWith(Matches(expectedStart), Matches(actual), StandardTests.Instance.ObjectsAreEqual, "foo").Returns(new Exception("bar"));
 
-                EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldStartWith(expectedStart, "foo"));
+                Exception result = Assert.Throws<Exception>(() => actual.ShouldStartWith(expectedStart, "foo"));
 
                 Assert.AreEqual("bar", result.Message);
             }
@@ -513,9 +513,9 @@ namespace EasyAssertions.UnitTests
             {
                 TestEnumerable<int> actual = MakeEnumerable(1);
                 TestEnumerable<int> expected = MakeEnumerable(2);
-                MockFormatter.DoesNotStartWith(Arg.Any<IEnumerable>(), Arg.Any<IEnumerable>(), Arg.Any<Func<object, object, bool>>(), Arg.Any<string>()).Returns(EnumerateArgs);
+                Error.DoesNotStartWith(Arg.Any<IEnumerable>(), Arg.Any<IEnumerable>(), Arg.Any<Func<object, object, bool>>(), Arg.Any<string>()).Returns(EnumerateArgs);
 
-                EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldStartWith(expected));
+                Exception result = Assert.Throws<Exception>(() => actual.ShouldStartWith(expected));
 
                 Assert.AreEqual(EnumerateArgsResult, result.Message);
                 Assert.AreEqual(1, actual.EnumerationCount);
@@ -563,9 +563,9 @@ namespace EasyAssertions.UnitTests
             {
                 int[] actual = { 1 };
                 int[] expectedStart = { 2 };
-                MockFormatter.DoesNotEndWith(Matches(expectedStart), Matches(actual), Compare.ObjectsAreEqual, "foo").Returns("bar");
+                Error.DoesNotEndWith(Matches(expectedStart), Matches(actual), StandardTests.Instance.ObjectsAreEqual, "foo").Returns(new Exception("bar"));
 
-                EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldEndWith(expectedStart, "foo"));
+                Exception result = Assert.Throws<Exception>(() => actual.ShouldEndWith(expectedStart, "foo"));
 
                 Assert.AreEqual("bar", result.Message);
             }
@@ -575,9 +575,9 @@ namespace EasyAssertions.UnitTests
             {
                 TestEnumerable<int> actual = MakeEnumerable(1);
                 TestEnumerable<int> expected = MakeEnumerable(2);
-                MockFormatter.DoesNotEndWith(Arg.Any<IEnumerable>(), Arg.Any<IEnumerable>(), Arg.Any<Func<object, object, bool>>(), Arg.Any<string>()).Returns(EnumerateArgs);
+                Error.DoesNotEndWith(Arg.Any<IEnumerable>(), Arg.Any<IEnumerable>(), Arg.Any<Func<object, object, bool>>(), Arg.Any<string>()).Returns(EnumerateArgs);
 
-                EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldEndWith(expected));
+                Exception result = Assert.Throws<Exception>(() => actual.ShouldEndWith(expected));
 
                 Assert.AreEqual(EnumerateArgsResult, result.Message);
                 Assert.AreEqual(1, actual.EnumerationCount);
@@ -612,9 +612,9 @@ namespace EasyAssertions.UnitTests
             {
                 int[] actual = { 1, 2 };
                 const int expected = 3;
-                MockFormatter.DoesNotContain(expected, Matches(actual), message: "foo").Returns("bar");
+                Error.DoesNotContain(expected, Matches(actual), message: "foo").Returns(new Exception("bar"));
 
-                EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldContain(expected, "foo"));
+                Exception result = Assert.Throws<Exception>(() => actual.ShouldContain(expected, "foo"));
 
                 Assert.AreEqual("bar", result.Message);
             }
@@ -623,9 +623,9 @@ namespace EasyAssertions.UnitTests
             public void CollectionDoesNotContainExpected_OnlyEnumeratesOnce()
             {
                 TestEnumerable<int> actual = MakeEnumerable(1);
-                MockFormatter.DoesNotContain(Arg.Any<object>(), Arg.Any<IEnumerable>(), Arg.Any<string>(), Arg.Any<string>()).Returns(EnumerateArgs);
+                Error.DoesNotContain(Arg.Any<object>(), Arg.Any<IEnumerable>(), Arg.Any<string>(), Arg.Any<string>()).Returns(EnumerateArgs);
 
-                EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldContain(2));
+                Exception result = Assert.Throws<Exception>(() => actual.ShouldContain(2));
 
                 Assert.AreEqual(EnumerateArgsResult, result.Message);
                 Assert.AreEqual(1, actual.EnumerationCount);
@@ -665,9 +665,9 @@ namespace EasyAssertions.UnitTests
             public void CollectionContainsItem_FailsWithEnumerableContainsItemMessage()
             {
                 int[] actual = { 1 };
-                MockFormatter.Contains(1, Matches(actual), message: "foo").Returns("bar");
+                Error.Contains(1, Matches(actual), message: "foo").Returns(new Exception("bar"));
 
-                EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldNotContain(1, "foo"));
+                Exception result = Assert.Throws<Exception>(() => actual.ShouldNotContain(1, "foo"));
 
                 Assert.AreEqual("bar", result.Message);
             }
@@ -676,9 +676,9 @@ namespace EasyAssertions.UnitTests
             public void CollectionContainsItem_OnlyEnumeratesOnce()
             {
                 TestEnumerable<int> actual = MakeEnumerable(1);
-                MockFormatter.Contains(Arg.Any<object>(), Arg.Any<IEnumerable>(), Arg.Any<string>(), Arg.Any<string>()).Returns(EnumerateArgs);
+                Error.Contains(Arg.Any<object>(), Arg.Any<IEnumerable>(), Arg.Any<string>(), Arg.Any<string>()).Returns(EnumerateArgs);
 
-                EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldNotContain(1));
+                Exception result = Assert.Throws<Exception>(() => actual.ShouldNotContain(1));
 
                 Assert.AreEqual(EnumerateArgsResult, result.Message);
                 Assert.AreEqual(1, actual.EnumerationCount);
@@ -719,9 +719,9 @@ namespace EasyAssertions.UnitTests
             {
                 int[] actual = { 1, 2, 3 };
                 int[] expected = { 1, 4 };
-                MockFormatter.DoesNotContainItems(Matches(expected), Matches(actual), "foo").Returns("bar");
+                Error.DoesNotContainItems(Matches(expected), Matches(actual), "foo").Returns(new Exception("bar"));
 
-                EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldContainItems(expected, "foo"));
+                Exception result = Assert.Throws<Exception>(() => actual.ShouldContainItems(expected, "foo"));
 
                 Assert.AreEqual("bar", result.Message);
             }
@@ -731,9 +731,9 @@ namespace EasyAssertions.UnitTests
             {
                 TestEnumerable<int> actual = MakeEnumerable(1);
                 TestEnumerable<int> expected = MakeEnumerable(2);
-                MockFormatter.DoesNotContainItems(Arg.Any<IEnumerable>(), Arg.Any<IEnumerable>(), Arg.Any<string>()).Returns(EnumerateArgs);
+                Error.DoesNotContainItems(Arg.Any<IEnumerable>(), Arg.Any<IEnumerable>(), Arg.Any<string>()).Returns(EnumerateArgs);
 
-                EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldContainItems(expected));
+                Exception result = Assert.Throws<Exception>(() => actual.ShouldContainItems(expected));
 
                 Assert.AreEqual(EnumerateArgsResult, result.Message);
                 Assert.AreEqual(1, actual.EnumerationCount);
@@ -775,9 +775,9 @@ namespace EasyAssertions.UnitTests
             {
                 int[] actual = { 1, 2 };
                 int[] expected = { 1 };
-                MockFormatter.ContainsExtraItem(Matches(expected), Matches(actual), "foo").Returns("bar");
+                Error.ContainsExtraItem(Matches(expected), Matches(actual), "foo").Returns(new Exception("bar"));
 
-                EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ItemsShouldBeIn(expected, "foo"));
+                Exception result = Assert.Throws<Exception>(() => actual.ItemsShouldBeIn(expected, "foo"));
 
                 Assert.AreEqual("bar", result.Message);
             }
@@ -787,9 +787,9 @@ namespace EasyAssertions.UnitTests
             {
                 TestEnumerable<int> actual = MakeEnumerable(1);
                 TestEnumerable<int> expected = MakeEnumerable(2);
-                MockFormatter.ContainsExtraItem(Arg.Any<IEnumerable>(), Arg.Any<IEnumerable>(), Arg.Any<string>()).Returns(EnumerateArgs);
+                Error.ContainsExtraItem(Arg.Any<IEnumerable>(), Arg.Any<IEnumerable>(), Arg.Any<string>()).Returns(EnumerateArgs);
 
-                EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ItemsShouldBeIn(expected));
+                Exception result = Assert.Throws<Exception>(() => actual.ItemsShouldBeIn(expected));
 
                 Assert.AreEqual(EnumerateArgsResult, result.Message);
                 Assert.AreEqual(1, actual.EnumerationCount);
@@ -837,9 +837,9 @@ namespace EasyAssertions.UnitTests
             {
                 int[] actual = { 1, 2 };
                 int[] expectedToNotContain = { 3, 2 };
-                MockFormatter.Contains(Matches(expectedToNotContain), Matches(actual), "foo").Returns("bar");
+                Error.Contains(Matches(expectedToNotContain), Matches(actual), "foo").Returns(new Exception("bar"));
 
-                EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldNotContainItems(expectedToNotContain, "foo"));
+                Exception result = Assert.Throws<Exception>(() => actual.ShouldNotContainItems(expectedToNotContain, "foo"));
 
                 Assert.AreEqual("bar", result.Message);
             }
@@ -849,9 +849,9 @@ namespace EasyAssertions.UnitTests
             {
                 TestEnumerable<int> actual = MakeEnumerable(1);
                 TestEnumerable<int> expectedToNotContain = MakeEnumerable(1);
-                MockFormatter.Contains(Arg.Any<IEnumerable>(), Arg.Any<IEnumerable>(), Arg.Any<string>()).Returns(EnumerateArgs);
+                Error.Contains(Arg.Any<IEnumerable>(), Arg.Any<IEnumerable>(), Arg.Any<string>()).Returns(EnumerateArgs);
 
-                EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldNotContainItems(expectedToNotContain));
+                Exception result = Assert.Throws<Exception>(() => actual.ShouldNotContainItems(expectedToNotContain));
 
                 Assert.AreEqual(EnumerateArgsResult, result.Message);
                 Assert.AreEqual(1, actual.EnumerationCount);
@@ -893,9 +893,9 @@ namespace EasyAssertions.UnitTests
             {
                 int[] actual = { 1, 2 };
                 int[] expected = { 1, 3 };
-                MockFormatter.DoesNotOnlyContain(Matches(expected), Matches(actual), "foo").Returns("bar");
+                Error.DoesNotOnlyContain(Matches(expected), Matches(actual), "foo").Returns(new Exception("bar"));
 
-                EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldOnlyContain(expected, "foo"));
+                Exception result = Assert.Throws<Exception>(() => actual.ShouldOnlyContain(expected, "foo"));
 
                 Assert.AreEqual("bar", result.Message);
             }
@@ -905,9 +905,9 @@ namespace EasyAssertions.UnitTests
             {
                 int[] actual = { 1, 2 };
                 int[] expected = { 1 };
-                MockFormatter.DoesNotOnlyContain(Matches(expected), Matches(actual), "foo").Returns("bar");
+                Error.DoesNotOnlyContain(Matches(expected), Matches(actual), "foo").Returns(new Exception("bar"));
 
-                EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldOnlyContain(expected, "foo"));
+                Exception result = Assert.Throws<Exception>(() => actual.ShouldOnlyContain(expected, "foo"));
 
                 Assert.AreEqual("bar", result.Message);
             }
@@ -917,9 +917,9 @@ namespace EasyAssertions.UnitTests
             {
                 TestEnumerable<int> actual = MakeEnumerable(1);
                 TestEnumerable<int> expected = MakeEnumerable(2);
-                MockFormatter.DoesNotOnlyContain(Arg.Any<IEnumerable>(), Arg.Any<IEnumerable>(), Arg.Any<string>()).Returns(EnumerateArgs);
+                Error.DoesNotOnlyContain(Arg.Any<IEnumerable>(), Arg.Any<IEnumerable>(), Arg.Any<string>()).Returns(EnumerateArgs);
 
-                EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldOnlyContain(expected));
+                Exception result = Assert.Throws<Exception>(() => actual.ShouldOnlyContain(expected));
 
                 Assert.AreEqual(EnumerateArgsResult, result.Message);
                 Assert.AreEqual(1, actual.EnumerationCount);
@@ -930,9 +930,9 @@ namespace EasyAssertions.UnitTests
             public void HasDuplicate_FailsWithContainsDuplicateMessage()
             {
                 int[] actual = { 1, 1 };
-                MockFormatter.ContainsDuplicate(Matches(actual), "foo").Returns("bar");
+                Error.ContainsDuplicate(Matches(actual), "foo").Returns(new Exception("bar"));
 
-                EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldOnlyContain(new[] { 1 }, "foo"));
+                Exception result = Assert.Throws<Exception>(() => actual.ShouldOnlyContain(new[] { 1 }, "foo"));
 
                 Assert.AreEqual("bar", result.Message);
             }
@@ -942,9 +942,9 @@ namespace EasyAssertions.UnitTests
             {
                 TestEnumerable<int> actual = MakeEnumerable(1, 1);
                 TestEnumerable<int> expected = MakeEnumerable(1);
-                MockFormatter.ContainsDuplicate(Arg.Any<IEnumerable>(), Arg.Any<string>()).Returns(EnumerateArgs);
+                Error.ContainsDuplicate(Arg.Any<IEnumerable>(), Arg.Any<string>()).Returns(EnumerateArgs);
 
-                EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldOnlyContain(expected));
+                Exception result = Assert.Throws<Exception>(() => actual.ShouldOnlyContain(expected));
 
                 Assert.AreEqual(EnumerateArgsResult, result.Message);
                 Assert.AreEqual(1, actual.EnumerationCount);
@@ -986,9 +986,9 @@ namespace EasyAssertions.UnitTests
             {
                 int[] actual = { 1, 2 };
                 int[] expected = { 2, 1, 3 };
-                MockFormatter.OnlyContains(Matches(expected), Matches(actual), "foo").Returns("bar");
+                Error.OnlyContains(Matches(expected), Matches(actual), "foo").Returns(new Exception("bar"));
 
-                EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldNotOnlyContain(expected, "foo"));
+                Exception result = Assert.Throws<Exception>(() => actual.ShouldNotOnlyContain(expected, "foo"));
 
                 Assert.AreEqual("bar", result.Message);
             }
@@ -998,9 +998,9 @@ namespace EasyAssertions.UnitTests
             {
                 TestEnumerable<int> actual = MakeEnumerable(1);
                 TestEnumerable<int> expected = MakeEnumerable(1);
-                MockFormatter.OnlyContains(Arg.Any<IEnumerable>(), Arg.Any<IEnumerable>(), Arg.Any<string>()).Returns(EnumerateArgs);
+                Error.OnlyContains(Arg.Any<IEnumerable>(), Arg.Any<IEnumerable>(), Arg.Any<string>()).Returns(EnumerateArgs);
 
-                EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldNotOnlyContain(expected));
+                Exception result = Assert.Throws<Exception>(() => actual.ShouldNotOnlyContain(expected));
 
                 Assert.AreEqual(EnumerateArgsResult, result.Message);
                 Assert.AreEqual(1, actual.EnumerationCount);
@@ -1055,9 +1055,9 @@ namespace EasyAssertions.UnitTests
             public void ContainsDuplicate_FailsWithContainsDuplicateMessage()
             {
                 int[] actual = { 1, 2, 1 };
-                MockFormatter.ContainsDuplicate(Matches(actual), "foo").Returns("bar");
+                Error.ContainsDuplicate(Matches(actual), "foo").Returns(new Exception("bar"));
 
-                EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldBeDistinct("foo"));
+                Exception result = Assert.Throws<Exception>(() => actual.ShouldBeDistinct("foo"));
 
                 Assert.AreEqual("bar", result.Message);
             }
@@ -1066,9 +1066,9 @@ namespace EasyAssertions.UnitTests
             public void ContainsDuplicate_OnlyEnumeratesOnce()
             {
                 TestEnumerable<int> actual = MakeEnumerable(1, 1);
-                MockFormatter.ContainsDuplicate(Arg.Any<IEnumerable>(), Arg.Any<string>()).Returns(EnumerateArgs);
+                Error.ContainsDuplicate(Arg.Any<IEnumerable>(), Arg.Any<string>()).Returns(EnumerateArgs);
 
-                EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldBeDistinct());
+                Exception result = Assert.Throws<Exception>(() => actual.ShouldBeDistinct());
 
                 Assert.AreEqual(EnumerateArgsResult, result.Message);
                 Assert.AreEqual(1, actual.EnumerationCount);
@@ -1102,9 +1102,9 @@ namespace EasyAssertions.UnitTests
             {
                 object[] actual = { };
                 object[] expected = { new object() };
-                MockFormatter.LengthMismatch(1, Matches(actual), "foo").Returns("bar");
+                Error.LengthMismatch(1, Matches(actual), "foo").Returns(new Exception("bar"));
 
-                EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldMatchReferences(expected, "foo"));
+                Exception result = Assert.Throws<Exception>(() => actual.ShouldMatchReferences(expected, "foo"));
 
                 Assert.AreEqual("bar", result.Message);
             }
@@ -1114,9 +1114,9 @@ namespace EasyAssertions.UnitTests
             {
                 TestEnumerable<object> actual = MakeEnumerable(new object());
                 TestEnumerable<object> expected = MakeEnumerable(new object(), new object());
-                MockFormatter.LengthMismatch(Arg.Any<int>(), Arg.Any<IEnumerable>(), Arg.Any<string>()).Returns(EnumerateArgs);
+                Error.LengthMismatch(Arg.Any<int>(), Arg.Any<IEnumerable>(), Arg.Any<string>()).Returns(EnumerateArgs);
 
-                EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldMatchReferences(expected));
+                Exception result = Assert.Throws<Exception>(() => actual.ShouldMatchReferences(expected));
 
                 Assert.AreEqual(EnumerateArgsResult, result.Message);
                 Assert.AreEqual(1, actual.EnumerationCount);
@@ -1129,9 +1129,9 @@ namespace EasyAssertions.UnitTests
                 object a = new object();
                 object[] actual = { a, new object() };
                 object[] expected = { a, new object() };
-                MockFormatter.ItemsNotSame(Matches(expected), Matches(actual), "foo").Returns("bar");
+                Error.ItemsNotSame(Matches(expected), Matches(actual), "foo").Returns(new Exception("bar"));
 
-                EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldMatchReferences(expected, "foo"));
+                Exception result = Assert.Throws<Exception>(() => actual.ShouldMatchReferences(expected, "foo"));
 
                 Assert.AreSame("bar", result.Message);
             }
@@ -1141,9 +1141,9 @@ namespace EasyAssertions.UnitTests
             {
                 TestEnumerable<object> actual = MakeEnumerable(new object());
                 TestEnumerable<object> expected = MakeEnumerable(new object());
-                MockFormatter.ItemsNotSame(Arg.Any<IEnumerable>(), Arg.Any<IEnumerable>(), Arg.Any<string>()).Returns(EnumerateArgs);
+                Error.ItemsNotSame(Arg.Any<IEnumerable>(), Arg.Any<IEnumerable>(), Arg.Any<string>()).Returns(EnumerateArgs);
 
-                EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldMatchReferences(expected));
+                Exception result = Assert.Throws<Exception>(() => actual.ShouldMatchReferences(expected));
 
                 Assert.AreEqual(EnumerateArgsResult, result.Message);
                 Assert.AreEqual(1, actual.EnumerationCount);
@@ -1184,9 +1184,9 @@ namespace EasyAssertions.UnitTests
             public void DoesNotContainKey_FailsWithDoesNotContainKeyMessage()
             {
                 TestKeyedCollection actual = new TestKeyedCollection();
-                MockFormatter.DoesNotContain('a', actual, "key", "foo").Returns("bar");
+                Error.DoesNotContain('a', actual, "key", "foo").Returns(new Exception("bar"));
 
-                EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldContainKey('a', "foo"));
+                Exception result = Assert.Throws<Exception>(() => actual.ShouldContainKey('a', "foo"));
 
                 Assert.AreEqual("bar", result.Message);
             }
@@ -1225,9 +1225,9 @@ namespace EasyAssertions.UnitTests
             public void ContainsKey_FailsWithContainsKeyMessage()
             {
                 TestKeyedCollection actual = new TestKeyedCollection { "foo" };
-                MockFormatter.Contains('f', actual, "key", "bar").Returns("baz");
+                Error.Contains('f', actual, "key", "bar").Returns(new Exception("baz"));
 
-                EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ShouldNotContainKey('f', "bar"));
+                Exception result = Assert.Throws<Exception>(() => actual.ShouldNotContainKey('f', "bar"));
 
                 Assert.AreEqual("baz", result.Message);
             }
@@ -1280,20 +1280,20 @@ namespace EasyAssertions.UnitTests
             public void WrongNumberOfItems_FailsWithEnumerableLengthMismatchMessage()
             {
                 int[] actual = { 1 };
-                MockFormatter.LengthMismatch(2, Matches(actual)).Returns("foo");
+                Error.LengthMismatch(2, Matches(actual)).Returns(ExpectedException);
 
-                EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ItemsSatisfy(i => { }, i => { }));
+                Exception result = Assert.Throws<Exception>(() => actual.ItemsSatisfy(i => { }, i => { }));
 
-                Assert.AreEqual("foo", result.Message);
+                Assert.AreSame(ExpectedException, result);
             }
 
             [Test]
             public void WrongNumberOfItems_OnlyEnumeratesOnce()
             {
                 TestEnumerable<int> actual = MakeEnumerable(1, 2);
-                MockFormatter.LengthMismatch(Arg.Any<int>(), Arg.Any<IEnumerable>(), Arg.Any<string>()).Returns(EnumerateArgs);
+                Error.LengthMismatch(Arg.Any<int>(), Arg.Any<IEnumerable>(), Arg.Any<string>()).Returns(EnumerateArgs);
 
-                EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ItemsSatisfy(i => i.ShouldBe(1)));
+                Exception result = Assert.Throws<Exception>(() => actual.ItemsSatisfy(i => i.ShouldBe(1)));
 
                 Assert.AreEqual(EnumerateArgsResult, result.Message);
                 Assert.AreEqual(1, actual.EnumerationCount);
@@ -1303,7 +1303,7 @@ namespace EasyAssertions.UnitTests
             public void ItemDoesNotSatisfyItsAssertion_FailsWithThrownException()
             {
                 int[] actual = { 1, 2 };
-                Exception failure = new Exception("foo");
+                Exception failure = ExpectedException;
 
                 Exception result = Assert.Throws<Exception>(() => actual.ItemsSatisfy(
                     i => { },
@@ -1316,9 +1316,9 @@ namespace EasyAssertions.UnitTests
             public void ItemDoesNotSatisfyItsAssertion_OnlyEnumeratesOnce()
             {
                 TestEnumerable<int> actual = MakeEnumerable(1);
-                MockFormatter.NotEqual(Arg.Any<object>(), Arg.Any<object>(), Arg.Any<string>()).Returns(EnumerateArgs);
+                Error.NotEqual(Arg.Any<object>(), Arg.Any<object>(), Arg.Any<string>()).Returns(EnumerateArgs);
 
-                EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ItemsSatisfy(i => i.ShouldBe(2)));
+                Exception result = Assert.Throws<Exception>(() => actual.ItemsSatisfy(i => i.ShouldBe(2)));
 
                 Assert.AreEqual(EnumerateArgsResult, result.Message);
                 Assert.AreEqual(1, actual.EnumerationCount);
@@ -1328,11 +1328,11 @@ namespace EasyAssertions.UnitTests
             public void ActualIsNull_FailsWithTypesNotEqualMessage()
             {
                 IEnumerable<int> actual = null;
-                MockFormatter.NotEqual(typeof(IEnumerable<int>), null).Returns("foo");
+                Error.NotEqual(typeof(IEnumerable<int>), null).Returns(ExpectedException);
 
-                EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.ItemsSatisfy(i => { }));
+                Exception result = Assert.Throws<Exception>(() => actual.ItemsSatisfy(i => { }));
 
-                Assert.AreEqual("foo", result.Message);
+                Assert.AreSame(ExpectedException, result);
             }
 
             [Test]
@@ -1340,8 +1340,9 @@ namespace EasyAssertions.UnitTests
             {
                 int[] actual = { 1 };
                 int expected = 2;
+                Error.NotEqual(Arg.Any<object>(), Arg.Any<object>(), Arg.Any<string>()).Returns(ExpectedException);
 
-                Assert.Throws<EasyAssertionException>(() => actual.ItemsSatisfy(item => item.ShouldBe(expected)));
+                Assert.Throws<Exception>(() => actual.ItemsSatisfy(item => item.ShouldBe(expected)));
 
                 Assert.AreEqual($"{nameof(actual)}[0]", TestExpression.GetActual());
                 Assert.AreEqual(nameof(expected), TestExpression.GetExpected());
@@ -1362,7 +1363,7 @@ namespace EasyAssertions.UnitTests
             public void ItemsDoNotSatisfyAssertion_FailsWithThrownException()
             {
                 int[] actual = { 1, 2 };
-                Exception failure = new Exception("foo");
+                Exception failure = ExpectedException;
 
                 Exception result = Assert.Throws<Exception>(() => actual.AllItemsSatisfy(i =>
                 {
@@ -1376,11 +1377,11 @@ namespace EasyAssertions.UnitTests
             public void ActualIsNull_FailsWithTypesNotEqualMessage()
             {
                 IEnumerable<int> actual = null;
-                MockFormatter.NotEqual(typeof(IEnumerable<int>), null).Returns("foo");
+                Error.NotEqual(typeof(IEnumerable<int>), null).Returns(ExpectedException);
 
-                EasyAssertionException result = Assert.Throws<EasyAssertionException>(() => actual.AllItemsSatisfy(i => { }));
+                Exception result = Assert.Throws<Exception>(() => actual.AllItemsSatisfy(i => { }));
 
-                Assert.AreEqual("foo", result.Message);
+                Assert.AreSame(ExpectedException, result);
             }
 
             [Test]
@@ -1396,8 +1397,9 @@ namespace EasyAssertions.UnitTests
             {
                 int[] actual = { 1 };
                 int expected = 2;
+                Error.NotEqual(Arg.Any<object>(), Arg.Any<object>(), Arg.Any<string>()).Returns(ExpectedException);
 
-                Assert.Throws<EasyAssertionException>(() => actual.AllItemsSatisfy(item => item.ShouldBe(expected)));
+                Assert.Throws<Exception>(() => actual.AllItemsSatisfy(item => item.ShouldBe(expected)));
 
                 Assert.AreEqual($"{nameof(actual)}[0]", TestExpression.GetActual());
                 Assert.AreEqual(nameof(expected), TestExpression.GetExpected());
@@ -1408,11 +1410,11 @@ namespace EasyAssertions.UnitTests
 
         private static readonly string EnumerateArgsResult = "foo";
 
-        private static string EnumerateArgs(CallInfo call)
+        private static Exception EnumerateArgs(CallInfo call)
         {
             foreach (IEnumerable enumerable in call.Args().OfType<IEnumerable>())
                 enumerable.Cast<object>().ToList();
-            return EnumerateArgsResult;
+            return new Exception(EnumerateArgsResult);
         }
 
         private class TestKeyedCollection : KeyedCollection<char, string>

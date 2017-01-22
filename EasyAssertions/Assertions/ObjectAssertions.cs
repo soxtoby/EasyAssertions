@@ -18,9 +18,9 @@ namespace EasyAssertions
                         string actualString = actual as string;
                         string expectedString = expected as string;
                         if (actualString != null && expectedString != null)
-                            throw EasyAssertion.Failure(FailureMessageFormatter.Current.NotEqual(expectedString, actualString, message: message));
+                            throw EasyAssertion.Failure(FailureMessage.Standard.NotEqual(expectedString, actualString, message: message));
 
-                        throw EasyAssertion.Failure(FailureMessageFormatter.Current.NotEqual(expected, actual, message));
+                        throw EasyAssertion.Failure(FailureMessage.Standard.NotEqual(expected, actual, message));
                     }
                 });
         }
@@ -33,10 +33,10 @@ namespace EasyAssertions
             actual.RegisterAssert(() =>
                 {
                     if (!actual.HasValue)
-                        throw EasyAssertion.Failure(FailureMessageFormatter.Current.NotEqual(expected, actual, message));
+                        throw EasyAssertion.Failure(FailureMessage.Standard.NotEqual(expected, actual, message));
 
                     if (!Compare.ObjectsAreEqual(actual.Value, expected))
-                        throw EasyAssertion.Failure(FailureMessageFormatter.Current.NotEqual(expected, actual, message));
+                        throw EasyAssertion.Failure(FailureMessage.Standard.NotEqual(expected, actual, message));
                 });
 
             return new Actual<TActual>(actual.Value);
@@ -50,7 +50,7 @@ namespace EasyAssertions
             return actual.RegisterAssert(() =>
                 {
                     if (Compare.ObjectsAreEqual(actual, notExpected))
-                        throw EasyAssertion.Failure(FailureMessageFormatter.Current.AreEqual(notExpected, actual, message));
+                        throw EasyAssertion.Failure(FailureMessage.Standard.AreEqual(notExpected, actual, message));
                 });
         }
 
@@ -62,7 +62,7 @@ namespace EasyAssertions
             actual.RegisterAssert(() =>
                 {
                     if (!Equals(actual, null))
-                        throw EasyAssertion.Failure(FailureMessageFormatter.Current.NotEqual(null, actual, message));
+                        throw EasyAssertion.Failure(FailureMessage.Standard.NotEqual(null, actual, message));
                 });
         }
 
@@ -74,7 +74,7 @@ namespace EasyAssertions
             return actual.RegisterAssert(() =>
                 {
                     if (Equals(actual, null))
-                        throw EasyAssertion.Failure(FailureMessageFormatter.Current.IsNull(message));
+                        throw EasyAssertion.Failure(FailureMessage.Standard.IsNull(message));
                 });
         }
 
@@ -86,7 +86,7 @@ namespace EasyAssertions
             return actual.RegisterAssert(() =>
                 {
                     if (!ReferenceEquals(actual, expected))
-                        throw EasyAssertion.Failure(FailureMessageFormatter.Current.NotSame(expected, actual, message));
+                        throw EasyAssertion.Failure(FailureMessage.Standard.NotSame(expected, actual, message));
                 });
         }
 
@@ -98,7 +98,7 @@ namespace EasyAssertions
             return actual.RegisterAssert(() =>
                 {
                     if (ReferenceEquals(actual, notExpected))
-                        throw EasyAssertion.Failure(FailureMessageFormatter.Current.AreSame(actual, message));
+                        throw EasyAssertion.Failure(FailureMessage.Standard.AreSame(actual, message));
                 });
         }
 
@@ -115,7 +115,7 @@ namespace EasyAssertions
         internal static void AssertType<TExpected>(object actual, string message = null)
         {
             if (!(actual is TExpected))
-                throw EasyAssertion.Failure(FailureMessageFormatter.Current.NotEqual(typeof(TExpected),
+                throw EasyAssertion.Failure(FailureMessage.Standard.NotEqual(typeof(TExpected),
                     actual?.GetType(), message));
         }
     }

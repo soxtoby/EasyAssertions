@@ -72,7 +72,7 @@ namespace EasyAssertions
             ObjectAssertions.AssertType<TTask>(actualTask, message);
 
             if (!WaitForTask(actualTask, timeout))
-                throw EasyAssertion.Failure(FailureMessageFormatter.Current.TaskTimedOut(timeout, message));
+                throw EasyAssertion.Failure(FailureMessage.Standard.TaskTimedOut(timeout, message));
         }
 
         /// <summary>
@@ -141,17 +141,17 @@ namespace EasyAssertions
             try
             {
                 if (!WaitForTask(actualTask, timeout))
-                    throw EasyAssertion.Failure(FailureMessageFormatter.Current.TaskTimedOut(timeout, message));
+                    throw EasyAssertion.Failure(FailureMessage.Standard.TaskTimedOut(timeout, message));
             }
             catch (AggregateException e)
             {
                 if (e.InnerException is TException)
                     return;
 
-                throw EasyAssertion.Failure(FailureMessageFormatter.Current.WrongException(typeof(TException), e.InnerException.GetType(), message: message), e.InnerException);
+                throw EasyAssertion.Failure(FailureMessage.Standard.WrongException(typeof(TException), e.InnerException.GetType(), message: message), e.InnerException);
             }
 
-            throw EasyAssertion.Failure(FailureMessageFormatter.Current.NoException(typeof(TException), message: message));
+            throw EasyAssertion.Failure(FailureMessage.Standard.NoException(typeof(TException), message: message));
         }
 
         private static ArgumentOutOfRangeException NegativeTimeoutException(TimeSpan timeout)

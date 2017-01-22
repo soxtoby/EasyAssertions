@@ -44,7 +44,7 @@ namespace EasyAssertions
             ObjectAssertions.AssertType<float>(actual, message);
 
             if (!Compare.AreWithinTolerance((float)actual, expected, tolerance))
-                throw EasyAssertion.Failure(FailureMessageFormatter.Current.NotEqual(expected, actual, message));
+                throw EasyAssertion.Failure(FailureMessage.Standard.NotEqual(expected, actual, message));
         }
 
         /// <summary>
@@ -55,7 +55,7 @@ namespace EasyAssertions
             return actual.RegisterAssert(() =>
                 {
                     if (Compare.AreWithinTolerance(actual, notExpected, tolerance))
-                        throw EasyAssertion.Failure(FailureMessageFormatter.Current.AreEqual(notExpected, actual, message));
+                        throw EasyAssertion.Failure(FailureMessage.Standard.AreEqual(notExpected, actual, message));
                 });
         }
 
@@ -69,7 +69,7 @@ namespace EasyAssertions
                     ObjectAssertions.AssertType<double>(actual, message);
 
                     if (!Compare.AreWithinTolerance((double)actual, expected, delta))
-                        throw EasyAssertion.Failure(FailureMessageFormatter.Current.NotEqual(expected, actual, message));
+                        throw EasyAssertion.Failure(FailureMessage.Standard.NotEqual(expected, actual, message));
                 });
             return new Actual<double>((double)actual);
         }
@@ -82,7 +82,7 @@ namespace EasyAssertions
             return actual.RegisterAssert(() =>
                 {
                     if (Compare.AreWithinTolerance(actual, notExpected, delta))
-                        throw EasyAssertion.Failure(FailureMessageFormatter.Current.AreEqual(notExpected, actual, message));
+                        throw EasyAssertion.Failure(FailureMessage.Standard.AreEqual(notExpected, actual, message));
                 });
         }
 
@@ -94,7 +94,7 @@ namespace EasyAssertions
             return actual.RegisterAssert(() =>
                 {
                     if (actual.CompareTo(expected) <= 0)
-                        throw EasyAssertion.Failure(FailureMessageFormatter.Current.NotGreaterThan(expected, actual, message));
+                        throw EasyAssertion.Failure(FailureMessage.Standard.NotGreaterThan(expected, actual, message));
                 });
         }
 
@@ -106,7 +106,7 @@ namespace EasyAssertions
             return actual.RegisterAssert(() =>
             {
                 if (actual.CompareTo(expected) >= 0)
-                    throw EasyAssertion.Failure(FailureMessageFormatter.Current.NotLessThan(expected, actual, message));
+                    throw EasyAssertion.Failure(FailureMessage.Standard.NotLessThan(expected, actual, message));
             });
         }
 
@@ -118,7 +118,7 @@ namespace EasyAssertions
             actual.RegisterAssert(() =>
                 {
                     if (!float.IsNaN(actual))
-                        throw EasyAssertion.Failure(FailureMessageFormatter.Current.NotEqual(float.NaN, actual, message));
+                        throw EasyAssertion.Failure(FailureMessage.Standard.NotEqual(float.NaN, actual, message));
                 });
         }
 
@@ -130,7 +130,7 @@ namespace EasyAssertions
             return actual.RegisterAssert(() =>
                 {
                     if (float.IsNaN(actual))
-                        throw EasyAssertion.Failure(FailureMessageFormatter.Current.AreEqual(float.NaN, actual, message));
+                        throw EasyAssertion.Failure(FailureMessage.Standard.AreEqual(float.NaN, actual, message));
                 });
         }
 
@@ -142,7 +142,7 @@ namespace EasyAssertions
             actual.RegisterAssert(() =>
                 {
                     if (!double.IsNaN(actual))
-                        throw EasyAssertion.Failure(FailureMessageFormatter.Current.NotEqual(double.NaN, actual, message));
+                        throw EasyAssertion.Failure(FailureMessage.Standard.NotEqual(double.NaN, actual, message));
                 });
         }
 
@@ -154,7 +154,7 @@ namespace EasyAssertions
             return actual.RegisterAssert(() =>
                 {
                     if (double.IsNaN(actual))
-                        throw EasyAssertion.Failure(FailureMessageFormatter.Current.AreEqual(double.NaN, actual, message));
+                        throw EasyAssertion.Failure(FailureMessage.Standard.AreEqual(double.NaN, actual, message));
                 });
         }
     }

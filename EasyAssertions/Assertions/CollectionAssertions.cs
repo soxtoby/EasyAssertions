@@ -42,7 +42,7 @@ namespace EasyAssertions
                     using (IBuffer<object> bufferedActual = actual.Buffer())
                     {
                         if (!Compare.IsEmpty(bufferedActual))
-                            throw EasyAssertion.Failure(FailureMessageFormatter.Current.NotEmpty(bufferedActual, message));
+                            throw EasyAssertion.Failure(FailureMessage.Standard.NotEmpty(bufferedActual, message));
                     }
                 });
         }
@@ -56,12 +56,12 @@ namespace EasyAssertions
                 {
                     ObjectAssertions.AssertType<TActual>(actual, message);
                     if (Compare.IsEmpty(actual))
-                        throw EasyAssertion.Failure(FailureMessageFormatter.Current.IsEmpty(message));
+                        throw EasyAssertion.Failure(FailureMessage.Standard.IsEmpty(message));
                 });
         }
 
         /// <summary>
-        /// Asserts that a sequnce contains exactly one element.
+        /// Asserts that a sequence contains exactly one element.
         /// </summary>
         public static Actual<TActual> ShouldBeSingular<TActual>(this TActual actual, string message = null) where TActual : IEnumerable
         {
@@ -83,7 +83,7 @@ namespace EasyAssertions
             using (IBuffer<object> bufferedActual = actual.Buffer())
             {
                 if (bufferedActual.Count() != expectedLength)
-                    throw EasyAssertion.Failure(FailureMessageFormatter.Current.LengthMismatch(expectedLength, bufferedActual, message));
+                    throw EasyAssertion.Failure(FailureMessage.Standard.LengthMismatch(expectedLength, bufferedActual, message));
             }
         }
 
@@ -131,7 +131,7 @@ namespace EasyAssertions
             using (IBuffer<TExpected> bufferedExpected = expected.Buffer())
             {
                 if (!Compare.CollectionsMatch(bufferedActual, bufferedExpected, (a, e) => predicate((TActual)a, (TExpected)e)))
-                    throw EasyAssertion.Failure(FailureMessageFormatter.Current.DoNotMatch(bufferedExpected, bufferedActual, predicate, message));
+                    throw EasyAssertion.Failure(FailureMessage.Standard.DoNotMatch(bufferedExpected, bufferedActual, predicate, message));
             }
         }
 
@@ -150,7 +150,7 @@ namespace EasyAssertions
                     using (IBuffer<TExpected> bufferedExpected = expectedStart.Buffer())
                     {
                         if (!Compare.CollectionStartsWith(bufferedActual, bufferedExpected, Compare.ObjectsAreEqual))
-                            throw EasyAssertion.Failure(FailureMessageFormatter.Current.DoesNotStartWith(bufferedExpected, bufferedActual, Compare.ObjectsAreEqual, message));
+                            throw EasyAssertion.Failure(FailureMessage.Standard.DoesNotStartWith(bufferedExpected, bufferedActual, Compare.ObjectsAreEqual, message));
                     }
                 });
         }
@@ -167,7 +167,7 @@ namespace EasyAssertions
                     using (IBuffer<TExpected> bufferedExpected = expectedEnd.Buffer())
                     {
                         if (!Compare.CollectionEndsWith(bufferedActual, bufferedExpected, Compare.ObjectsAreEqual))
-                            throw EasyAssertion.Failure(FailureMessageFormatter.Current.DoesNotEndWith(bufferedExpected, bufferedActual, Compare.ObjectsAreEqual, message));
+                            throw EasyAssertion.Failure(FailureMessage.Standard.DoesNotEndWith(bufferedExpected, bufferedActual, Compare.ObjectsAreEqual, message));
                     }
                 });
         }
@@ -184,7 +184,7 @@ namespace EasyAssertions
                     using (IBuffer<TActual> bufferedActual = actual.Buffer())
                     {
                         if (!bufferedActual.Contains(expected))
-                            throw EasyAssertion.Failure(FailureMessageFormatter.Current.DoesNotContain(expected, bufferedActual, message: message));
+                            throw EasyAssertion.Failure(FailureMessage.Standard.DoesNotContain(expected, bufferedActual, message: message));
                     }
                 });
         }
@@ -202,7 +202,7 @@ namespace EasyAssertions
                     using (IBuffer<TExpected> bufferedExpected = expected.Buffer())
                     {
                         if (!Compare.ContainsAllItems(bufferedActual, bufferedExpected))
-                            throw EasyAssertion.Failure(FailureMessageFormatter.Current.DoesNotContainItems(bufferedExpected, bufferedActual, message));
+                            throw EasyAssertion.Failure(FailureMessage.Standard.DoesNotContainItems(bufferedExpected, bufferedActual, message));
                     }
                 });
         }
@@ -222,7 +222,7 @@ namespace EasyAssertions
                     using (IBuffer<TExpected> bufferedExpected = expectedSuperset.Buffer())
                     {
                         if (!Compare.ContainsAllItems(bufferedExpected, bufferedActual))
-                            throw EasyAssertion.Failure(FailureMessageFormatter.Current.ContainsExtraItem(bufferedExpected, bufferedActual, message));
+                            throw EasyAssertion.Failure(FailureMessage.Standard.ContainsExtraItem(bufferedExpected, bufferedActual, message));
                     }
                 });
         }
@@ -239,7 +239,7 @@ namespace EasyAssertions
                     using (IBuffer<TItem> bufferedActual = actual.Buffer())
                     {
                         if (bufferedActual.Contains(expectedToNotContain))
-                            throw EasyAssertion.Failure(FailureMessageFormatter.Current.Contains(expectedToNotContain, bufferedActual, message: message));
+                            throw EasyAssertion.Failure(FailureMessage.Standard.Contains(expectedToNotContain, bufferedActual, message: message));
                     }
                 });
         }
@@ -257,7 +257,7 @@ namespace EasyAssertions
                     using (IBuffer<TExpected> bufferedExpected = expectedToNotContain.Buffer())
                     {
                         if (Compare.ContainsAny(bufferedActual, bufferedExpected))
-                            throw EasyAssertion.Failure(FailureMessageFormatter.Current.Contains(bufferedExpected, bufferedActual, message));
+                            throw EasyAssertion.Failure(FailureMessage.Standard.Contains(bufferedExpected, bufferedActual, message));
                     }
                 });
         }
@@ -275,7 +275,7 @@ namespace EasyAssertions
                     using (IBuffer<TExpected> bufferedExpected = expected.Buffer())
                     {
                         if (!Compare.ContainsOnlyExpectedItems(bufferedActual, bufferedExpected))
-                            throw EasyAssertion.Failure(FailureMessageFormatter.Current.DoesNotOnlyContain(bufferedExpected, bufferedActual, message));
+                            throw EasyAssertion.Failure(FailureMessage.Standard.DoesNotOnlyContain(bufferedExpected, bufferedActual, message));
                         AssertDistinct(bufferedActual, message);
                     }
                 });
@@ -296,7 +296,7 @@ namespace EasyAssertions
                     using (IBuffer<TExpected> bufferedExpected = expected.Buffer())
                     {
                         if (Compare.ContainsAllItems(bufferedExpected, bufferedActual))
-                            throw EasyAssertion.Failure(FailureMessageFormatter.Current.OnlyContains(bufferedExpected, bufferedActual, message));
+                            throw EasyAssertion.Failure(FailureMessage.Standard.OnlyContains(bufferedExpected, bufferedActual, message));
                     }
                 });
         }
@@ -316,7 +316,7 @@ namespace EasyAssertions
             using (IBuffer<TActual> bufferedActual = actual.Buffer())
             {
                 if (bufferedActual.GroupBy(i => i).Any(group => @group.Count() > 1))
-                    throw EasyAssertion.Failure(FailureMessageFormatter.Current.ContainsDuplicate(bufferedActual, message));
+                    throw EasyAssertion.Failure(FailureMessage.Standard.ContainsDuplicate(bufferedActual, message));
             }
         }
 
@@ -333,10 +333,10 @@ namespace EasyAssertions
                 using (IBuffer<TExpected> bufferedExpected = expected.Buffer())
                 {
                     if (bufferedActual.Count() != bufferedExpected.Count())
-                        throw EasyAssertion.Failure(FailureMessageFormatter.Current.LengthMismatch(bufferedExpected.Count(), bufferedActual, message));
+                        throw EasyAssertion.Failure(FailureMessage.Standard.LengthMismatch(bufferedExpected.Count(), bufferedActual, message));
 
                     if (!Compare.CollectionsMatch(bufferedActual, bufferedExpected, ReferenceEquals))
-                        throw EasyAssertion.Failure(FailureMessageFormatter.Current.ItemsNotSame(bufferedExpected, bufferedActual, message));
+                        throw EasyAssertion.Failure(FailureMessage.Standard.ItemsNotSame(bufferedExpected, bufferedActual, message));
                 }
             });
         }
@@ -350,7 +350,7 @@ namespace EasyAssertions
                 {
                     ObjectAssertions.AssertType<KeyedCollection<TKey, TItem>>(actual, message);
                     if (!actual.Contains(expectedKey))
-                        throw EasyAssertion.Failure(FailureMessageFormatter.Current.DoesNotContain(expectedKey, actual, "key", message));
+                        throw EasyAssertion.Failure(FailureMessage.Standard.DoesNotContain(expectedKey, actual, "key", message));
                 });
         }
 
@@ -363,7 +363,7 @@ namespace EasyAssertions
                 {
                     ObjectAssertions.AssertType<KeyedCollection<TKey, TItem>>(actual, message);
                     if (actual.Contains(notExpectedKey))
-                        throw EasyAssertion.Failure(FailureMessageFormatter.Current.Contains(notExpectedKey, actual, "key", message));
+                        throw EasyAssertion.Failure(FailureMessage.Standard.Contains(notExpectedKey, actual, "key", message));
                 });
         }
 
@@ -379,7 +379,7 @@ namespace EasyAssertions
                     using (IBuffer<TItem> bufferedActual = actual.Buffer())
                     {
                         if (bufferedActual.Count() != assertions.Length)
-                            throw EasyAssertion.Failure(FailureMessageFormatter.Current.LengthMismatch(assertions.Length, bufferedActual));
+                            throw EasyAssertion.Failure(FailureMessage.Standard.LengthMismatch(assertions.Length, bufferedActual));
 
                         for (int i = 0; i < assertions.Length; i++)
                             EasyAssertion.RegisterIndexedAssert(i, assertions[i].Method, () => assertions[i](bufferedActual[i]));

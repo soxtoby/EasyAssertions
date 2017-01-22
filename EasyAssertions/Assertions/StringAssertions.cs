@@ -18,7 +18,7 @@ namespace EasyAssertions
                     ObjectAssertions.AssertType<string>(actual, message);
 
                     if (actual != string.Empty)
-                        throw EasyAssertion.Failure(FailureMessageFormatter.Current.NotEmpty(actual, message));
+                        throw EasyAssertion.Failure(FailureMessage.Standard.NotEmpty(actual, message));
                 });
         }
 
@@ -34,7 +34,7 @@ namespace EasyAssertions
                     ObjectAssertions.AssertType<string>(actual, message);
 
                     if (!actual.Contains(expectedToContain))
-                        throw EasyAssertion.Failure(FailureMessageFormatter.Current.DoesNotContain(expectedToContain, actual, message));
+                        throw EasyAssertion.Failure(FailureMessage.Standard.DoesNotContain(expectedToContain, actual, message));
                 });
         }
 
@@ -50,7 +50,7 @@ namespace EasyAssertions
                     ObjectAssertions.AssertType<string>(actual, message);
 
                     if (actual.Contains(expectedToNotContain))
-                        throw EasyAssertion.Failure(FailureMessageFormatter.Current.Contains(expectedToNotContain, actual, message));
+                        throw EasyAssertion.Failure(FailureMessage.Standard.Contains(expectedToNotContain, actual, message));
                 });
         }
 
@@ -66,7 +66,7 @@ namespace EasyAssertions
                     ObjectAssertions.AssertType<string>(actual, message);
 
                     if (!actual.StartsWith(expectedStart))
-                        throw EasyAssertion.Failure(FailureMessageFormatter.Current.DoesNotStartWith(expectedStart, actual, message));
+                        throw EasyAssertion.Failure(FailureMessage.Standard.DoesNotStartWith(expectedStart, actual, message));
                 });
         }
 
@@ -82,7 +82,7 @@ namespace EasyAssertions
                     ObjectAssertions.AssertType<string>(actual, message);
 
                     if (!actual.EndsWith(expectedEnd))
-                        throw EasyAssertion.Failure(FailureMessageFormatter.Current.DoesNotEndWith(expectedEnd, actual, message));
+                        throw EasyAssertion.Failure(FailureMessage.Standard.DoesNotEndWith(expectedEnd, actual, message));
                 });
         }
 
@@ -102,7 +102,7 @@ namespace EasyAssertions
                         : StringComparison.OrdinalIgnoreCase;
 
                     if (!actual.Equals(expected, stringComparison))
-                        throw EasyAssertion.Failure(FailureMessageFormatter.Current.NotEqual(expected, actual, caseSensitivity, message));
+                        throw EasyAssertion.Failure(FailureMessage.Standard.NotEqual(expected, actual, caseSensitivity, message));
                 });
         }
 
@@ -141,7 +141,7 @@ namespace EasyAssertions
             ObjectAssertions.AssertType<string>(actual, message);
 
             if (!regex.IsMatch(actual))
-                throw EasyAssertion.Failure(FailureMessageFormatter.Current.DoesNotMatch(regex, actual, message));
+                throw EasyAssertion.Failure(FailureMessage.Standard.DoesNotMatch(regex, actual, message));
         }
 
         /// <summary>
@@ -179,7 +179,7 @@ namespace EasyAssertions
             ObjectAssertions.AssertType<string>(actual, message);
 
             if (regex.IsMatch(actual))
-                throw EasyAssertion.Failure(FailureMessageFormatter.Current.Matches(regex, actual, message));
+                throw EasyAssertion.Failure(FailureMessage.Standard.Matches(regex, actual, message));
         }
     }
 }

@@ -21,7 +21,7 @@ namespace EasyAssertions
             And.RegisterAssert(() =>
                 {
                     if (And is TUnexpected)
-                        throw EasyAssertion.Failure(FailureMessageFormatter.Current.AreEqual(typeof(TUnexpected), And?.GetType(), message));
+                        throw EasyAssertion.Failure(FailureMessage.Standard.AreEqual(typeof(TUnexpected), And?.GetType(), message));
                 });
             return this;
         }

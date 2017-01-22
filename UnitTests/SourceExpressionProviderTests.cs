@@ -8,6 +8,14 @@ namespace EasyAssertions.UnitTests
     [TestFixture]
     public class SourceExpressionProviderTests
     {
+        private SourceExpressionProvider sut;
+
+        [SetUp]
+        public void SetUp()
+        {
+            sut = SourceExpressionProvider.ForCurrentThread;
+        }
+
         [Test]
         public void ResultOnSameLine()
         {
@@ -15,7 +23,7 @@ namespace EasyAssertions.UnitTests
             TestClass expectedExpression = new TestClass(2);
             Assert.Throws<EasyAssertionException>(() => actualExpression.ShouldBe(expectedExpression));
 
-            Assert.AreEqual("actualExpression", SourceExpressionProvider.ForCurrentThread.GetActualExpression());
+            Assert.AreEqual("actualExpression", sut.GetActualExpression());
         }
 
         [Test]
@@ -26,7 +34,7 @@ namespace EasyAssertions.UnitTests
             Assert.Throws<EasyAssertionException>(() => actualExpression
                 .ShouldBe(expectedExpression));
 
-            Assert.AreEqual("actualExpression", SourceExpressionProvider.ForCurrentThread.GetActualExpression());
+            Assert.AreEqual("actualExpression", sut.GetActualExpression());
         }
 
         [Test]
@@ -38,7 +46,7 @@ namespace EasyAssertions.UnitTests
                 actualExpression.ShouldBeA<TestClass>()
                     .And.ShouldBe(expectedExpression));
 
-            Assert.AreEqual("actualExpression", SourceExpressionProvider.ForCurrentThread.GetActualExpression());
+            Assert.AreEqual("actualExpression", sut.GetActualExpression());
         }
 
         [Test]
@@ -51,7 +59,7 @@ namespace EasyAssertions.UnitTests
                 actualExpression.ShouldBeA<TestClass>()
                     .And.Value.ShouldBe(expectedExpression));
 
-            Assert.AreEqual("actualExpression.Value", SourceExpressionProvider.ForCurrentThread.GetActualExpression());
+            Assert.AreEqual("actualExpression.Value", sut.GetActualExpression());
         }
 
         [Test]
@@ -63,7 +71,7 @@ namespace EasyAssertions.UnitTests
             Assert.Throws<EasyAssertionException>(() =>
                 actualExpression.Assert(a => a.Value.ShouldBe(expectedExpression)));
 
-            Assert.AreEqual("actualExpression.Value", SourceExpressionProvider.ForCurrentThread.GetActualExpression());
+            Assert.AreEqual("actualExpression.Value", sut.GetActualExpression());
         }
 
         [Test]
@@ -79,7 +87,7 @@ namespace EasyAssertions.UnitTests
                         tc.Value.ShouldBe(expectedExpression);
                     }));
 
-            Assert.AreEqual("actualExpression.Value", SourceExpressionProvider.ForCurrentThread.GetActualExpression());
+            Assert.AreEqual("actualExpression.Value", sut.GetActualExpression());
         }
 
         [Test]
@@ -91,7 +99,7 @@ namespace EasyAssertions.UnitTests
                     .Assert(a => a.Value.ShouldBe(12)
                         .And(b => b.ToString().ShouldBe("2"))));
 
-            Assert.AreEqual("actualExpression.Value.ToString()", SourceExpressionProvider.ForCurrentThread.GetActualExpression());
+            Assert.AreEqual("actualExpression.Value.ToString()", sut.GetActualExpression());
         }
 
         [Test]
@@ -105,7 +113,7 @@ namespace EasyAssertions.UnitTests
                     .Assert(tc => tc.ShouldBeA<TestClass>())
                     .And.Value.ShouldBe(expectedExpression));
 
-            Assert.AreEqual("actualExpression.Value", SourceExpressionProvider.ForCurrentThread.GetActualExpression());
+            Assert.AreEqual("actualExpression.Value", sut.GetActualExpression());
         }
 
         [Test]
@@ -119,7 +127,7 @@ namespace EasyAssertions.UnitTests
                     tc => { },
                     tc => tc.Value.ShouldBe(expectedExpression)));
 
-            Assert.AreEqual("actualExpression[1].Value", SourceExpressionProvider.ForCurrentThread.GetActualExpression());
+            Assert.AreEqual("actualExpression[1].Value", sut.GetActualExpression());
         }
 
         [Test]
@@ -133,7 +141,7 @@ namespace EasyAssertions.UnitTests
                     .ItemsSatisfy(tc => { })
                     .And.Single().ShouldBe(expectedExpression));
 
-            Assert.AreEqual("actualExpression.Single()", SourceExpressionProvider.ForCurrentThread.GetActualExpression());
+            Assert.AreEqual("actualExpression.Single()", sut.GetActualExpression());
         }
 
         [Test]
@@ -151,7 +159,7 @@ namespace EasyAssertions.UnitTests
                         .ShouldBe(expectedExpression);
                 });
 
-            Assert.AreEqual("actualExpression", SourceExpressionProvider.ForCurrentThread.GetActualExpression());
+            Assert.AreEqual("actualExpression", sut.GetActualExpression());
         }
 
         [Test]
@@ -161,7 +169,7 @@ namespace EasyAssertions.UnitTests
 
             Assert.Throws<EasyAssertionException>(() => actualExpression.TestActionAssert());
 
-            Assert.AreEqual("actualExpression", SourceExpressionProvider.ForCurrentThread.GetActualExpression());
+            Assert.AreEqual("actualExpression", sut.GetActualExpression());
         }
 
         [Test]
@@ -171,7 +179,7 @@ namespace EasyAssertions.UnitTests
 
             Assert.Throws<EasyAssertionException>(() => actualExpression.TestFuncAssert());
 
-            Assert.AreEqual("actualExpression", SourceExpressionProvider.ForCurrentThread.GetActualExpression());
+            Assert.AreEqual("actualExpression", sut.GetActualExpression());
         }
 
         [Test, Ignore("After upgrade to .NET 4.0, compiled expression now has a source file")]
@@ -181,7 +189,7 @@ namespace EasyAssertions.UnitTests
 
             Assert.Throws<EasyAssertionException>(() => assert.Compile()());
 
-            Assert.AreEqual(string.Empty, SourceExpressionProvider.ForCurrentThread.GetActualExpression());
+            Assert.AreEqual(string.Empty, sut.GetActualExpression());
         }
 
         [Test]
@@ -191,7 +199,7 @@ namespace EasyAssertions.UnitTests
             for (int i = 0; i < 2; i++)
                 Assert.Throws<EasyAssertionException>(() => foo.ShouldBe("bar"));
 
-            Assert.AreEqual("foo", SourceExpressionProvider.ForCurrentThread.GetActualExpression());
+            Assert.AreEqual("foo", sut.GetActualExpression());
         }
 
         private class TestClass
@@ -226,12 +234,12 @@ namespace EasyAssertions.UnitTests
     {
         public static Actual<object> TestActionAssert(this object actual)
         {
-            return actual.RegisterAssert(a => { a.ShouldNotBeNull(); });
+            return actual.RegisterAssert(() => { actual.ShouldNotBeNull(); });
         }
 
         public static Actual<object> TestFuncAssert(this object actual)
         {
-            return actual.RegisterAssert(a => a.ShouldNotBeNull());
+            return actual.RegisterAssert(() => actual.ShouldNotBeNull());
         }
     }
 }

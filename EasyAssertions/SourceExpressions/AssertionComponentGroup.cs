@@ -14,12 +14,9 @@ namespace EasyAssertions
 
         public virtual string GetActualExpression(string parentExpression)
         {
-            string expression = string.Empty;
-            AggregateMethodCalls(
-                (method, source, nextSegment) => method.GetActualSegment(source, nextSegment),
-                segment => expression += segment.Expression.Trim());
-
-            return expression;
+            return AggregateMethodCalls(
+                (method, source, nextSegment) => method.GetActualSegment(source, nextSegment), 
+                (expression, segment) => expression + segment.Expression.Trim());
         }
 
         public void AddComponent(AssertionComponent component)
@@ -31,30 +28,33 @@ namespace EasyAssertions
 
         public string GetExpectedExpression()
         {
-            string lastExpression = string.Empty;
-            AggregateMethodCalls(
-                (method, source, nextSegment) => method.GetExpectedSegment(source, nextSegment),
-                segment => lastExpression = segment.Expression);
-
-            return lastExpression.Trim();
+            return AggregateMethodCalls(
+                    (method, source, nextSegment) => method.GetExpectedSegment(source, nextSegment), 
+                    (_, segment) => segment.Expression)
+                .Trim();
         }
 
-        private void AggregateMethodCalls(Func<AssertionComponent, string, int, ExpressionSegment> getSegment, Action<ExpressionSegment> useSegment)
+        private string AggregateMethodCalls(Func<AssertionComponent, string, int, ExpressionSegment> getSegment, Func<string, ExpressionSegment, string> aggregateSegment)
         {
+            if (calls.None())
+                return string.Empty;
+
             SourceAddress assertionsAddress = calls.First().SourceAddress;
 
             string[] sourceLines;
             if (!Utils.TryReadAllLines(assertionsAddress, out sourceLines))
-                return;
+                return string.Empty;
 
             string expressionSource = sourceLines.Skip(assertionsAddress.LineIndex).Join(Environment.NewLine);
 
             ExpressionSegment segment = new ExpressionSegment { IndexOfNextSegment = assertionsAddress.ExpressionIndex };
+            string currentResult = string.Empty;
             foreach (AssertionComponent method in MethodCalls)
             {
                 segment = getSegment(method, expressionSource, segment.IndexOfNextSegment);
-                useSegment(segment);
+                currentResult = aggregateSegment(currentResult, segment);
             }
+            return currentResult;
         }
     }
 }

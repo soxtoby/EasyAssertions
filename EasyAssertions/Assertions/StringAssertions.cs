@@ -15,7 +15,7 @@ namespace EasyAssertions
         {
             return actual.RegisterAssert(() =>
                 {
-                    ObjectAssertions.AssertType<string>(actual, message);
+                    actual.ShouldBeA<string>(message);
 
                     if (actual != string.Empty)
                         throw EasyAssertion.Failure(FailureMessage.Standard.NotEmpty(actual, message));
@@ -31,7 +31,7 @@ namespace EasyAssertions
 
             return actual.RegisterAssert(() =>
                 {
-                    ObjectAssertions.AssertType<string>(actual, message);
+                    actual.ShouldBeA<string>(message);
 
                     if (!actual.Contains(expectedToContain))
                         throw EasyAssertion.Failure(FailureMessage.Standard.DoesNotContain(expectedToContain, actual, message));
@@ -47,7 +47,7 @@ namespace EasyAssertions
 
             return actual.RegisterAssert(() =>
                 {
-                    ObjectAssertions.AssertType<string>(actual, message);
+                    actual.ShouldBeA<string>(message);
 
                     if (actual.Contains(expectedToNotContain))
                         throw EasyAssertion.Failure(FailureMessage.Standard.Contains(expectedToNotContain, actual, message));
@@ -63,7 +63,7 @@ namespace EasyAssertions
 
             return actual.RegisterAssert(() =>
                 {
-                    ObjectAssertions.AssertType<string>(actual, message);
+                    actual.ShouldBeA<string>(message);
 
                     if (!actual.StartsWith(expectedStart))
                         throw EasyAssertion.Failure(FailureMessage.Standard.DoesNotStartWith(expectedStart, actual, message));
@@ -79,7 +79,7 @@ namespace EasyAssertions
 
             return actual.RegisterAssert(() =>
                 {
-                    ObjectAssertions.AssertType<string>(actual, message);
+                    actual.ShouldBeA<string>(message);
 
                     if (!actual.EndsWith(expectedEnd))
                         throw EasyAssertion.Failure(FailureMessage.Standard.DoesNotEndWith(expectedEnd, actual, message));
@@ -95,7 +95,7 @@ namespace EasyAssertions
 
             return actual.RegisterAssert(() =>
                 {
-                    ObjectAssertions.AssertType<string>(actual, message);
+                    actual.ShouldBeA<string>(message);
 
                     StringComparison stringComparison = caseSensitivity == Case.Sensitive
                         ? StringComparison.Ordinal
@@ -138,7 +138,7 @@ namespace EasyAssertions
 
         private static void AssertMatch(string actual, Regex regex, string message)
         {
-            ObjectAssertions.AssertType<string>(actual, message);
+            actual.ShouldBeA<string>(message);
 
             if (!regex.IsMatch(actual))
                 throw EasyAssertion.Failure(FailureMessage.Standard.DoesNotMatch(regex, actual, message));
@@ -176,7 +176,7 @@ namespace EasyAssertions
 
         private static void AssertDoesNotMatch(string actual, Regex regex, string message)
         {
-            ObjectAssertions.AssertType<string>(actual, message);
+            actual.ShouldBeA<string>(message);
 
             if (regex.IsMatch(actual))
                 throw EasyAssertion.Failure(FailureMessage.Standard.Matches(regex, actual, message));

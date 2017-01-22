@@ -18,7 +18,10 @@ namespace EasyAssertions
         public override string GetActualExpression(string parentExpression)
         {
             string expression = base.GetActualExpression(parentExpression);
-            return Regex.Replace(expression, WordBoundary + expressionAlias + WordBoundary, parentExpression);
+            
+            return string.IsNullOrEmpty(expression)
+                ? parentExpression
+                : Regex.Replace(expression, WordBoundary + expressionAlias + WordBoundary, parentExpression);
         }
     }
 }

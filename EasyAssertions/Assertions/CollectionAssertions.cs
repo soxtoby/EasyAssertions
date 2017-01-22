@@ -37,7 +37,7 @@ namespace EasyAssertions
         {
             return actual.RegisterAssert(() =>
                 {
-                    ObjectAssertions.AssertType<TActual>(actual, message);
+                    actual.ShouldBeA<TActual>(message);
 
                     using (IBuffer<object> bufferedActual = actual.Buffer())
                     {
@@ -54,7 +54,7 @@ namespace EasyAssertions
         {
             return actual.RegisterAssert(() =>
                 {
-                    ObjectAssertions.AssertType<TActual>(actual, message);
+                    actual.ShouldBeA<TActual>(message);
                     if (Compare.IsEmpty(actual))
                         throw EasyAssertion.Failure(FailureMessage.Standard.IsEmpty(message));
                 });
@@ -78,7 +78,7 @@ namespace EasyAssertions
 
         private static void AssertLength<TActual>(TActual actual, int expectedLength, string message) where TActual : IEnumerable
         {
-            ObjectAssertions.AssertType<TActual>(actual, message);
+            actual.ShouldBeA<TActual>(message);
 
             using (IBuffer<object> bufferedActual = actual.Buffer())
             {
@@ -125,7 +125,7 @@ namespace EasyAssertions
 
         private static void AssertMatch<TActual, TExpected>(IEnumerable<TActual> actual, IEnumerable<TExpected> expected, Func<TActual, TExpected, bool> predicate, string message = null)
         {
-            ObjectAssertions.AssertType<IEnumerable<TActual>>(actual, message);
+            actual.ShouldBeA<IEnumerable<TActual>>(message);
 
             using (IBuffer<TActual> bufferedActual = actual.Buffer())
             using (IBuffer<TExpected> bufferedExpected = expected.Buffer())
@@ -144,7 +144,7 @@ namespace EasyAssertions
 
             return actual.RegisterAssert(() =>
                 {
-                    ObjectAssertions.AssertType<IEnumerable<TActual>>(actual, message);
+                    actual.ShouldBeA<IEnumerable<TActual>>(message);
 
                     using (IBuffer<TActual> bufferedActual = actual.Buffer())
                     using (IBuffer<TExpected> bufferedExpected = expectedStart.Buffer())
@@ -161,7 +161,7 @@ namespace EasyAssertions
 
             return actual.RegisterAssert(() =>
                 {
-                    ObjectAssertions.AssertType<IEnumerable<TActual>>(actual, message);
+                    actual.ShouldBeA<IEnumerable<TActual>>(message);
 
                     using (IBuffer<TActual> bufferedActual = actual.Buffer())
                     using (IBuffer<TExpected> bufferedExpected = expectedEnd.Buffer())
@@ -179,7 +179,7 @@ namespace EasyAssertions
         {
             return actual.RegisterAssert(() =>
                 {
-                    ObjectAssertions.AssertType<IEnumerable<TActual>>(actual, message);
+                    actual.ShouldBeA<IEnumerable<TActual>>(message);
 
                     using (IBuffer<TActual> bufferedActual = actual.Buffer())
                     {
@@ -196,7 +196,7 @@ namespace EasyAssertions
         {
             return actual.RegisterAssert(() =>
                 {
-                    ObjectAssertions.AssertType<IEnumerable<TActual>>(actual, message);
+                    actual.ShouldBeA<IEnumerable<TActual>>(message);
 
                     using (IBuffer<TActual> bufferedActual = actual.Buffer())
                     using (IBuffer<TExpected> bufferedExpected = expected.Buffer())
@@ -216,7 +216,7 @@ namespace EasyAssertions
 
             return actual.RegisterAssert(() =>
                 {
-                    ObjectAssertions.AssertType<IEnumerable<TActual>>(actual, message);
+                    actual.ShouldBeA<IEnumerable<TActual>>(message);
 
                     using (IBuffer<TActual> bufferedActual = actual.Buffer())
                     using (IBuffer<TExpected> bufferedExpected = expectedSuperset.Buffer())
@@ -234,7 +234,7 @@ namespace EasyAssertions
         {
             return actual.RegisterAssert(() =>
                 {
-                    ObjectAssertions.AssertType<TActual>(actual, message);
+                    actual.ShouldBeA<TActual>(message);
 
                     using (IBuffer<TItem> bufferedActual = actual.Buffer())
                     {
@@ -251,7 +251,7 @@ namespace EasyAssertions
         {
             return actual.RegisterAssert(() =>
                 {
-                    ObjectAssertions.AssertType<IEnumerable<TActual>>(actual, message);
+                    actual.ShouldBeA<IEnumerable<TActual>>(message);
 
                     using (IBuffer<TActual> bufferedActual = actual.Buffer())
                     using (IBuffer<TExpected> bufferedExpected = expectedToNotContain.Buffer())
@@ -269,7 +269,7 @@ namespace EasyAssertions
         {
             return actual.RegisterAssert(() =>
                 {
-                    ObjectAssertions.AssertType<IEnumerable<TActual>>(actual, message);
+                    actual.ShouldBeA<IEnumerable<TActual>>(message);
 
                     using (IBuffer<TActual> bufferedActual = actual.Buffer())
                     using (IBuffer<TExpected> bufferedExpected = expected.Buffer())
@@ -290,7 +290,7 @@ namespace EasyAssertions
 
             return actual.RegisterAssert(() =>
                 {
-                    ObjectAssertions.AssertType<IEnumerable<TActual>>(actual, message);
+                    actual.ShouldBeA<IEnumerable<TActual>>(message);
 
                     using (IBuffer<TActual> bufferedActual = actual.Buffer())
                     using (IBuffer<TExpected> bufferedExpected = expected.Buffer())
@@ -311,7 +311,7 @@ namespace EasyAssertions
 
         private static void AssertDistinct<TActual>(IEnumerable<TActual> actual, string message)
         {
-            ObjectAssertions.AssertType<IEnumerable<TActual>>(actual, message);
+            actual.ShouldBeA<IEnumerable<TActual>>(message);
 
             using (IBuffer<TActual> bufferedActual = actual.Buffer())
             {
@@ -327,7 +327,7 @@ namespace EasyAssertions
         {
             return actual.RegisterAssert(() =>
             {
-                ObjectAssertions.AssertType<IEnumerable<TActual>>(actual, message);
+                actual.ShouldBeA<IEnumerable<TActual>>(message);
 
                 using (IBuffer<TActual> bufferedActual = actual.Buffer())
                 using (IBuffer<TExpected> bufferedExpected = expected.Buffer())
@@ -348,7 +348,7 @@ namespace EasyAssertions
         {
             return actual.RegisterAssert(() =>
                 {
-                    ObjectAssertions.AssertType<KeyedCollection<TKey, TItem>>(actual, message);
+                    actual.ShouldBeA<KeyedCollection<TKey, TItem>>(message);
                     if (!actual.Contains(expectedKey))
                         throw EasyAssertion.Failure(FailureMessage.Standard.DoesNotContain(expectedKey, actual, "key", message));
                 });
@@ -361,7 +361,7 @@ namespace EasyAssertions
         {
             return actual.RegisterAssert(() =>
                 {
-                    ObjectAssertions.AssertType<KeyedCollection<TKey, TItem>>(actual, message);
+                    actual.ShouldBeA<KeyedCollection<TKey, TItem>>(message);
                     if (actual.Contains(notExpectedKey))
                         throw EasyAssertion.Failure(FailureMessage.Standard.Contains(notExpectedKey, actual, "key", message));
                 });
@@ -374,7 +374,7 @@ namespace EasyAssertions
         {
             return actual.RegisterAssert(() =>
                 {
-                    ObjectAssertions.AssertType<IEnumerable<TItem>>(actual);
+                    actual.ShouldBeA<IEnumerable<TItem>>(null);
 
                     using (IBuffer<TItem> bufferedActual = actual.Buffer())
                     {
@@ -396,7 +396,7 @@ namespace EasyAssertions
 
             return actual.RegisterAssert(() =>
                 {
-                    ObjectAssertions.AssertType<IEnumerable<TItem>>(actual);
+                    actual.ShouldBeA<IEnumerable<TItem>>(null);
 
                     int i = 0;
                     foreach (TItem item in actual)

@@ -35,19 +35,9 @@ namespace EasyAssertions
         /// </summary>
         public static Actual<TActual> RegisterAssert<TActual>(this TActual actual, Action assert)
         {
-            SourceExpressionProvider.ForCurrentThread.RegisterAssertionMethod(1);
+            SourceExpressionProvider.ForCurrentThread.EnterAssertion(1);
             assert();
-            return new Actual<TActual>(actual);
-        }
-
-        /// <summary>
-        /// Registers an assertion action with a named parameter for following the assertion expression into the action.
-        /// Use this for custom assertions that call other existing assertions.
-        /// </summary>
-        public static Actual<TActual> RegisterAssert<TActual>(this TActual actual, Action<TActual> assert)
-        {
-            SourceExpressionProvider.ForCurrentThread.RegisterAssertionMethod(1);
-            RegisterInnerAssert(assert.Method, () => assert(actual));
+            SourceExpressionProvider.ForCurrentThread.ExitAssertion();
             return new Actual<TActual>(actual);
         }
 
@@ -58,11 +48,11 @@ namespace EasyAssertions
         /// <returns>
         /// The return value of the registered assertion function.
         /// </returns>
-        public static Actual<TActual> RegisterAssert<TActual>(this TActual actual, Func<TActual, Actual<TActual>> assert)
+        public static Actual<TActual> RegisterAssert<TActual>(this TActual actual, Func<Actual<TActual>> assert)
         {
-            SourceExpressionProvider.ForCurrentThread.RegisterAssertionMethod(1);
-            Actual<TActual> ret = null;
-            RegisterInnerAssert(assert.Method, () => ret = assert(actual));
+            SourceExpressionProvider.ForCurrentThread.EnterAssertion(1);
+            Actual<TActual> ret = assert();
+            SourceExpressionProvider.ForCurrentThread.ExitAssertion();
             return ret;
         }
 
@@ -73,9 +63,9 @@ namespace EasyAssertions
         /// </summary>
         public static void RegisterIndexedAssert(int index, MethodInfo itemAssertionMethod, Action assert)
         {
-            SourceExpressionProvider.ForCurrentThread.EnterIndexedAssertion(itemAssertionMethod, index);
+            SourceExpressionProvider.ForCurrentThread.EnterIndexedAssertion(itemAssertionMethod, index, 1);
             assert();
-            SourceExpressionProvider.ForCurrentThread.ExitNestedAssertion();
+            SourceExpressionProvider.ForCurrentThread.ExitAssertion();
         }
 
         /// <summary>
@@ -86,9 +76,9 @@ namespace EasyAssertions
         /// </summary>
         public static void RegisterInnerAssert(MethodInfo innerAssertionMethod, Action assert)
         {
-            SourceExpressionProvider.ForCurrentThread.EnterNestedAssertion(innerAssertionMethod);
+            SourceExpressionProvider.ForCurrentThread.EnterNestedAssertion(innerAssertionMethod, 1);
             assert();
-            SourceExpressionProvider.ForCurrentThread.ExitNestedAssertion();
+            SourceExpressionProvider.ForCurrentThread.ExitAssertion();
         }
 
         /// <summary>

@@ -16,7 +16,7 @@ namespace EasyAssertions
 
             return actualRootNodes.RegisterAssert(() =>
                 {
-                    ObjectAssertions.AssertType<IEnumerable<TActual>>(actualRootNodes, message);
+                    actualRootNodes.ShouldBeA<IEnumerable<TActual>>(message);
 
                     if (!Compare.TreesMatch(actualRootNodes, expectedRootNodes, getChildren, Compare.ObjectsAreEqual))
                         throw EasyAssertion.Failure(FailureMessage.Standard.TreesDoNotMatch(expectedRootNodes, actualRootNodes, getChildren, Compare.ObjectsAreEqual, message));
@@ -35,7 +35,7 @@ namespace EasyAssertions
 
             return actualRootNodes.RegisterAssert(() =>
                 {
-                    ObjectAssertions.AssertType<IEnumerable<TActual>>(actualRootNodes, message);
+                    actualRootNodes.ShouldBeA<IEnumerable<TActual>>(message);
 
                     if (!Compare.TreesMatch(actualRootNodes, expectedRootNodes, getChildren, predicate))
                         throw EasyAssertion.Failure(FailureMessage.Standard.TreesDoNotMatch(expectedRootNodes, actualRootNodes, getChildren, (a, e) => predicate((TActual)a, (TExpected)e), message));

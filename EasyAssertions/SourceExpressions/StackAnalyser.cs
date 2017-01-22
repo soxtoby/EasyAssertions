@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 
 namespace EasyAssertions
 {
@@ -85,11 +86,16 @@ namespace EasyAssertions
 
         public string GetMethodName(int frameIndex)
         {
-            StackFrame assertionFrame = frames[frameIndex];
-            string methodName = assertionFrame.GetMethod().Name;
+            string methodName = GetMethod(frameIndex).Name;
             return methodName.StartsWith("get_")
                 ? methodName.Substring(4)
                 : methodName;
+        }
+
+        public MethodBase GetMethod(int frameIndex)
+        {
+            StackFrame assertionFrame = frames[frameIndex];
+            return assertionFrame.GetMethod();
         }
     }
 }

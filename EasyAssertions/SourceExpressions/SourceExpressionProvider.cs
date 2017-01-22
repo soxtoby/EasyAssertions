@@ -25,25 +25,31 @@ namespace EasyAssertions
 
         public string GetExpectedExpression()
         {
-            return assertionGroupChain.Last().GetExpectedExpression();
+            return assertionGroupChain
+                .AsEnumerable()
+                .Reverse()
+                .Select(g => g.GetExpectedExpression())
+                .FirstOrDefault(e => !string.IsNullOrEmpty(e)) ?? string.Empty;
         }
 
-        public void RegisterAssertionMethod(int assertionFrameIndex)
-        {
-            RegisterComponent((address, methodName) => new AssertionMethod(address, methodName), assertionFrameIndex + 1);
-        }
-
-        public void RegisterContinuation(int continuationFrameIndex)
-        {
-            RegisterComponent((address, methodName) => new Continuation(address, methodName), continuationFrameIndex + 1);
-        }
-
-        private void RegisterComponent(Func<SourceAddress, string, AssertionComponent> createMethod, int assertionFrameIndex)
+        public void EnterAssertion(int assertionFrameIndex)
         {
             assertionFrameIndex++;
 
             StackAnalyser analyser = StackAnalyser.ForCurrentStack();
 
+            RegisterComponent((address, methodName) => new AssertionMethod(address, methodName), assertionFrameIndex, analyser);
+
+            EnterNestedAssertion(analyser.GetMethod(assertionFrameIndex), assertionFrameIndex);
+        }
+
+        public void RegisterContinuation(int continuationFrameIndex)
+        {
+            RegisterComponent((address, methodName) => new Continuation(address, methodName), continuationFrameIndex + 1, StackAnalyser.ForCurrentStack());
+        }
+
+        private void RegisterComponent(Func<SourceAddress, string, AssertionComponent> createMethod, int assertionFrameIndex, StackAnalyser analyser)
+        {
             PopStackBackToAssertion(assertionFrameIndex, analyser);
 
             SourceAddress callAddress = analyser.GetCallAddress(assertionFrameIndex);
@@ -62,31 +68,33 @@ namespace EasyAssertions
                 assertionGroupChain.Add(new BaseGroup());
         }
 
-        public void EnterNestedAssertion(MethodInfo innerAssertionMethod)
+        public void EnterNestedAssertion(MethodBase innerAssertionMethod, int assertionFrameIndex)
         {
-            AddGroup(innerAssertionMethod, 2, (callAddress, expressionAlias) =>
+            assertionFrameIndex++;
+            AddGroup(innerAssertionMethod, assertionFrameIndex, (callAddress, expressionAlias) =>
                 new NestedAssertionGroup(callAddress, expressionAlias));
         }
 
-        public void EnterIndexedAssertion(MethodInfo innerAssertionMethod, int index)
+        public void EnterIndexedAssertion(MethodInfo innerAssertionMethod, int index, int assertionFrameIndex)
         {
-            AddGroup(innerAssertionMethod, 2, (callAddress, expressionAlias) =>
+            assertionFrameIndex++;
+            AddGroup(innerAssertionMethod, assertionFrameIndex, (callAddress, expressionAlias) =>
                 new IndexedAssertionGroup(callAddress, GetExpressionAlias(innerAssertionMethod), index));
         }
 
-        private void AddGroup(MethodInfo innerAssertionMethod, int callFrameIndex, Func<SourceAddress, string, AssertionComponentGroup> createGroup)
+        private void AddGroup(MethodBase innerAssertionMethod, int callFrameIndex, Func<SourceAddress, string, AssertionComponentGroup> createGroup)
         {
             SourceAddress callerAddress = StackAnalyser.ForCurrentStack().GetCallAddress(callFrameIndex + 1);
             string expressionAlias = GetExpressionAlias(innerAssertionMethod);
             assertionGroupChain.Add(createGroup(callerAddress, expressionAlias));
         }
 
-        private static string GetExpressionAlias(MethodInfo innerAssertion)
+        private static string GetExpressionAlias(MethodBase innerAssertion)
         {
-            return innerAssertion.GetParameters().First().Name;
+            return innerAssertion.GetParameters().FirstOrDefault()?.Name ?? string.Empty;
         }
 
-        public void ExitNestedAssertion()
+        public void ExitAssertion()
         {
             assertionGroupChain.Remove(CurrentGroup);
         }

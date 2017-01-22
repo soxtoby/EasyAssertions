@@ -68,8 +68,8 @@ namespace EasyAssertions
         {
             if (timeout < TimeSpan.Zero)
                 throw NegativeTimeoutException(timeout);
-            
-            ObjectAssertions.AssertType<TTask>(actualTask, message);
+
+            actualTask.ShouldBeA<TTask>(message);
 
             if (!WaitForTask(actualTask, timeout))
                 throw EasyAssertion.Failure(FailureMessage.Standard.TaskTimedOut(timeout, message));
@@ -136,7 +136,7 @@ namespace EasyAssertions
             if (timeout < TimeSpan.Zero)
                 throw NegativeTimeoutException(timeout);
 
-            ObjectAssertions.AssertType<Task>(actualTask, message);
+            actualTask.ShouldBeA<Task>(message);
 
             try
             {

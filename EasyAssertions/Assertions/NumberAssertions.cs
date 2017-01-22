@@ -41,7 +41,7 @@ namespace EasyAssertions
 
         private static void AssertFloatsWithinTolerance(object actual, float expected, float tolerance, string message)
         {
-            ObjectAssertions.AssertType<float>(actual, message);
+            actual.ShouldBeA<float>(message);
 
             if (!Compare.AreWithinTolerance((float)actual, expected, tolerance))
                 throw EasyAssertion.Failure(FailureMessage.Standard.NotEqual(expected, actual, message));
@@ -66,7 +66,7 @@ namespace EasyAssertions
         {
             actual.RegisterAssert(() =>
                 {
-                    ObjectAssertions.AssertType<double>(actual, message);
+                    actual.ShouldBeA<double>(message);
 
                     if (!Compare.AreWithinTolerance((double)actual, expected, delta))
                         throw EasyAssertion.Failure(FailureMessage.Standard.NotEqual(expected, actual, message));

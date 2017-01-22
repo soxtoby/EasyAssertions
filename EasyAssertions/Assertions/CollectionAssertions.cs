@@ -79,7 +79,7 @@ namespace EasyAssertions
 
                     using (IBuffer<object> bufferedActual = actual.Buffer())
                     {
-                        if (bufferedActual.Count() != expectedLength)
+                        if (bufferedActual.Count != expectedLength)
                             throw c.StandardError.LengthMismatch(expectedLength, bufferedActual, message);
                     }
                 });
@@ -312,7 +312,7 @@ namespace EasyAssertions
 
             using (IBuffer<TActual> bufferedActual = actual.Buffer())
             {
-                if (bufferedActual.GroupBy(i => i).Any(group => @group.Count() > 1))
+                if (bufferedActual.GroupBy(i => i).Any(group => group.Count() > 1))
                     throw assertionContext.StandardError.ContainsDuplicate(bufferedActual, message);
             }
         }
@@ -323,19 +323,19 @@ namespace EasyAssertions
         public static Actual<IEnumerable<TActual>> ShouldMatchReferences<TActual, TExpected>(this IEnumerable<TActual> actual, IEnumerable<TExpected> expected, string message = null) where TExpected : TActual
         {
             return actual.RegisterAssert(c =>
-            {
-                actual.ShouldBeA<IEnumerable<TActual>>(message);
-
-                using (IBuffer<TActual> bufferedActual = actual.Buffer())
-                using (IBuffer<TExpected> bufferedExpected = expected.Buffer())
                 {
-                    if (bufferedActual.Count() != bufferedExpected.Count())
-                        throw c.StandardError.LengthMismatch(bufferedExpected.Count(), bufferedActual, message);
+                    actual.ShouldBeA<IEnumerable<TActual>>(message);
 
-                    if (!c.Test.CollectionsMatch(bufferedActual, bufferedExpected, ReferenceEquals))
-                        throw c.StandardError.ItemsNotSame(bufferedExpected, bufferedActual, message);
-                }
-            });
+                    using (IBuffer<TActual> bufferedActual = actual.Buffer())
+                    using (IBuffer<TExpected> bufferedExpected = expected.Buffer())
+                    {
+                        if (bufferedActual.Count != bufferedExpected.Count)
+                            throw c.StandardError.LengthMismatch(bufferedExpected.Count, bufferedActual, message);
+
+                        if (!c.Test.CollectionsMatch(bufferedActual, bufferedExpected, ReferenceEquals))
+                            throw c.StandardError.ItemsNotSame(bufferedExpected, bufferedActual, message);
+                    }
+                });
         }
 
         /// <summary>
@@ -375,7 +375,7 @@ namespace EasyAssertions
 
                     using (IBuffer<TItem> bufferedActual = actual.Buffer())
                     {
-                        if (bufferedActual.Count() != assertions.Length)
+                        if (bufferedActual.Count != assertions.Length)
                             throw c.StandardError.LengthMismatch(assertions.Length, bufferedActual);
 
                         for (int i = 0; i < assertions.Length; i++)

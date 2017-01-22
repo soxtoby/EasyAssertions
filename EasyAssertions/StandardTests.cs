@@ -41,8 +41,8 @@ namespace EasyAssertions
             using (IBuffer<object> bufferedActual = actual.Buffer())
             using (IBuffer<object> bufferedExpected = expectedToStartWith.Buffer())
             {
-                return bufferedActual.Count() >= bufferedExpected.Count()
-                       && CollectionsMatch(bufferedActual.Take(bufferedExpected.Count()), bufferedExpected, areEqual);
+                return bufferedActual.Count >= bufferedExpected.Count
+                       && CollectionsMatch(bufferedActual.Take(bufferedExpected.Count), bufferedExpected, areEqual);
             }
         }
 
@@ -54,8 +54,8 @@ namespace EasyAssertions
             using (IBuffer<object> bufferedActual = actual.Buffer())
             using (IBuffer<object> bufferedExpected = expectedToEndWith.Buffer())
             {
-                return bufferedActual.Count() >= bufferedExpected.Count()
-                       && CollectionsMatch(bufferedActual.Skip(bufferedActual.Count() - bufferedExpected.Count()), bufferedExpected, areEqual);
+                return bufferedActual.Count >= bufferedExpected.Count
+                       && CollectionsMatch(bufferedActual.Skip(bufferedActual.Count - bufferedExpected.Count), bufferedExpected, areEqual);
             }
         }
 

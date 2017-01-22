@@ -1,17 +1,43 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
 
 namespace EasyAssertions
 {
+    /// <summary>
+    /// Represents a buffered <see cref="IEnumerable{T}"/>.
+    /// The buffer can be enumerated multiple times without enumerating the source enumerable more than once.
+    /// </summary>
     public interface IBuffer<out T> : IEnumerable<T>, IDisposable
     {
+        /// <summary>
+        /// Gets the element at the specified index.
+        /// </summary>
+        /// <exception cref="ArgumentOutOfRangeException"><see cref="index"/> is less than 0.-or-index is equal to or greater than <see cref="Count"/></exception>
         T this[int index] { get; }
+
+        /// <summary>
+        /// Gets the number of elements in the source enumerable.
+        /// </summary>
+        int Count { get; }
     }
 
-    public class Buffer<T> : IBuffer<T>
+    /// <summary>
+    /// Wraps an <see cref="IEnumerable{T}"/> in a buffer.
+    /// The buffer can be enumerated multiple times without enumerating the source enumerable more than once.
+    /// </summary>
+    public static class Buffer
+    {
+        /// <summary>
+        /// Creates a buffer based on the specified source.
+        /// </summary>
+        public static IBuffer<T> Create<T>(IEnumerable<T> source)
+        {
+            return new Buffer<T>(source);
+        }
+    }
+
+    class Buffer<T> : IBuffer<T>
     {
         private readonly List<T> buffer = new List<T>();
         private readonly IEnumerator<T> sourceEnumerator;
@@ -38,9 +64,20 @@ namespace EasyAssertions
         {
             get
             {
+                if (index < 0)
+                    throw new ArgumentOutOfRangeException(nameof(index));
                 if (!EnumerateTo(index))
                     throw new ArgumentOutOfRangeException(nameof(index));
                 return buffer[index];
+            }
+        }
+
+        public int Count
+        {
+            get
+            {
+                EnumerateTo(int.MaxValue);
+                return buffer.Count;
             }
         }
 

@@ -7,7 +7,10 @@ using System.Text.RegularExpressions;
 
 namespace EasyAssertions
 {
-    public static class FailureMessageHelper
+    /// <summary>
+    /// A helper class for building assertion failure messages in a consistent format.
+    /// </summary>
+    public static class FailureMessage
     {
         private const int SampleSize = 10;
         private const int MaxStringWidth = 60;
@@ -16,30 +19,40 @@ namespace EasyAssertions
         private static readonly Regex MemberPattern = new Regex(@"value\(.*?\)\.", RegexOptions.Compiled);
         private static readonly Regex BoxingPattern = new Regex(@"^Convert\((.*)\)$", RegexOptions.Compiled);
 
+        public static IFailureMessageFormatter Standard => FailureMessageFormatter.Current;
+
         /// <summary>
-        /// The source representation of the actual value.
+        /// Returns the source representation of the actual value.
         /// </summary>
         public static string ActualExpression => TestExpression.GetActual().NullIfEmpty() ?? "Actual value";
 
+        /// <summary>
+        /// Returns the source representation of the expected value, if available,
+        /// and a snippet of the expected value underneath it.
+        /// </summary>
         public static string Expected(string expectedValue, int differenceIndex, string indent)
         {
             return Expected(Snippet(expectedValue, differenceIndex), indent);
         }
 
+        /// <summary>
+        /// Returns the source representation of the expected value, if available,
+        /// and the expected value underneath it.
+        /// </summary>
         public static string Expected(object expectedValue, string indent)
         {
-            string sourceExpression = SourceExpectedDifferentToValue(expectedValue);
+            string sourceExpression = ExpectedSourceIfDifferentToValue(expectedValue);
             return sourceExpression == null
                 ? Value(expectedValue)
                 : sourceExpression + indent + Value(expectedValue);
         }
 
         /// <summary>
-        /// The source representation of the expected value.
+        /// Returns the source representation of the expected value.
         /// Returns null if the source representation is the same as the value output
         /// (e.g. if the source was a literal value)
         /// </summary>
-        public static string SourceExpectedDifferentToValue(object expectedValue)
+        public static string ExpectedSourceIfDifferentToValue(object expectedValue)
         {
             string expectedExpression = TestExpression.GetExpected() ?? string.Empty;
 
@@ -88,28 +101,47 @@ namespace EasyAssertions
             return expectedExpression == "null";
         }
 
+        /// <summary>
+        /// Returns <see cref="singleMessage"/> or <see cref="multipleMessage"/>, depending on whether
+        /// <see cref="collection"/> has 1 element or more.
+        /// </summary>
         public static string Count(ICollection<object> collection, string singleMessage, string multipleMessage)
         {
             return Count(collection.Count, singleMessage, multipleMessage);
         }
 
+        /// <summary>
+        /// Returns <see cref="singleMessage"/> or <see cref="multipleMessage"/>, depending on whether
+        /// <see cref="count"/> is 1 or higher.
+        /// </summary>
         public static string Count(int count, string singleMessage, string multipleMessage)
         {
             return count == 1 ? singleMessage : multipleMessage;
         }
 
+        /// <summary>
+        /// Returns <see cref="emptyMessage"/>, <see cref="singleMessage"/> or <see cref="multipleMessage"/>, depending on
+        /// whether <see cref="collection"/> has no elements, a single element, or more elements.
+        /// </summary>
         public static string Count(ICollection<object> collection, string emptyMessage, string singleMessage, string multipleMessage)
         {
             return Count(collection.Count, emptyMessage, singleMessage, multipleMessage);
         }
 
-        private static string Count(int count, string emptyMessage, string singleMessage, string multipleMessage)
+        /// <summary>
+        /// Returns <see cref="emptyMessage"/>, <see cref="singleMessage"/> or <see cref="multipleMessage"/>, depending on
+        /// whether <see cref="count"/> is 0, 1 or higher.
+        /// </summary>
+        public static string Count(int count, string emptyMessage, string singleMessage, string multipleMessage)
         {
             return count == 0 ? emptyMessage
                 : count == 1 ? singleMessage
                     : multipleMessage;
         }
 
+        /// <summary>
+        /// Returns a string representation of the first item in <see cref="collection"/>.
+        /// </summary>
         public static string Single(ICollection<object> collection)
         {
             return Value(collection.FirstOrDefault());
@@ -134,7 +166,7 @@ namespace EasyAssertions
             }
         }
 
-        public static IEnumerable<string> SampleItems(ICollection<object> items)
+        private static IEnumerable<string> SampleItems(ICollection<object> items)
         {
             return items.Count > SampleSize
                 ? items.Take(SampleSize).Select(Value).Concat(new[] { "..." }).ToList()
@@ -156,11 +188,7 @@ namespace EasyAssertions
             return new string(' ', arrowIndex + 1) + '^';   // + 1 for the quotes wrapped around string values
         }
 
-        /// <summary>
-        /// Reduces a string down to a smaller snippet around the <see cref="failureIndex"/>,
-        /// to avoid blowing out the size of the failure message.
-        /// </summary>
-        public static string Snippet(string wholeString, int failureIndex)
+        private static string Snippet(string wholeString, int failureIndex)
         {
             int fromIndex = SnippetStart(wholeString, failureIndex);
             int snippetLength = MaxStringWidth;
@@ -203,11 +231,17 @@ namespace EasyAssertions
                 { '\n', "\\n" }
             };
 
+        /// <summary>
+        /// Renders a string value as a snippet around the <see cref="differenceIndex"/>.
+        /// </summary>
         public static string Value(string value, int differenceIndex = 0)
         {
             return '"' + Snippet(value, differenceIndex) + '"';
         }
 
+        /// <summary>
+        /// Returns whitespace with the same length as <see cref="text"/>.
+        /// </summary>
         public static string SpaceFor(string text)
         {
             return new string(' ', text.Length);
@@ -225,6 +259,9 @@ namespace EasyAssertions
                 .Join(" -> ");
         }
 
+        /// <summary>
+        /// Returns the source representation of <see cref="function"/>.
+        /// </summary>
         public static string Value(LambdaExpression function)
         {
             string body = function.Body.ToString();
@@ -233,11 +270,17 @@ namespace EasyAssertions
             return body;
         }
 
+        /// <summary>
+        /// Returns a string representation of <see cref="type"/>.
+        /// </summary>
         public static string Value(Type type)
         {
             return $"<{type.Name}>";
         }
 
+        /// <summary>
+        /// Returns a string representation of <see cref="regex"/>.
+        /// </summary>
         public static string Value(Regex regex)
         {
             string value = "/" + regex + "/";
@@ -248,6 +291,9 @@ namespace EasyAssertions
             return value;
         }
 
+        /// <summary>
+        /// Returns a string representation of <see cref="timespan"/>.
+        /// </summary>
         public static string Value(TimeSpan timespan)
         {
             return timespan.TotalMilliseconds < 1 ? $"{timespan.Ticks} ticks"
@@ -256,7 +302,7 @@ namespace EasyAssertions
         }
 
         /// <summary>
-        /// Wraps objects in &lt; &gt; and strings in " ", and escapes the result for SmartFormat.
+        /// Returns a string representation of an object.
         /// </summary>
         public static string Value(object value)
         {
@@ -268,6 +314,9 @@ namespace EasyAssertions
                 : "<" + (value ?? "null") + ">";
         }
 
+        /// <summary>
+        /// Returns <see cref="value"/> on a new line if it has anything in it.
+        /// </summary>
         public static string OnNewLine(this string value)
         {
             return string.IsNullOrEmpty(value) 
@@ -275,6 +324,9 @@ namespace EasyAssertions
                 : Environment.NewLine + value;
         }
 
+        /// <summary>
+        /// Returns <see cref="value"/> with a trailing space, if it has anything in it.
+        /// </summary>
         public static string WithSpace(this string value)
         {
             return string.IsNullOrEmpty(value)

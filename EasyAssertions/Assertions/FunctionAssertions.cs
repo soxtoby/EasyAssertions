@@ -4,7 +4,7 @@ using System.Linq.Expressions;
 namespace EasyAssertions
 {
     /// <summary>
-    /// Provides assertions on functions, which are unwieldly to pass into extension methods.
+    /// Provides assertions on functions, which are unwieldy to pass into extension methods.
     /// </summary>
     public static class Should
     {

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text.RegularExpressions;
-using static EasyAssertions.FailureMessageHelper;
+using static EasyAssertions.FailureMessage;
 
 namespace EasyAssertions
 {
@@ -131,7 +131,7 @@ but was {Count(actualList,
             object missingItem;
             FindMissingItem(expectedItems, actualItems, out missingItemIndex, out missingItem);
 
-            string expectedSource = SourceExpectedDifferentToValue(expected);
+            string expectedSource = ExpectedSourceIfDifferentToValue(expected);
 
             return expectedSource == null
                 ? $@"{ActualExpression}
@@ -163,7 +163,7 @@ but was {Sample(actualList)}" + message.OnNewLine();
                 : unexpectedList[unexpectedItemIndex];
             int itemIndexInActual = actualItems.IndexOf(unexpectedItem);
 
-            string expectedSource = SourceExpectedDifferentToValue(expectedToNotContain);
+            string expectedSource = ExpectedSourceIfDifferentToValue(expectedToNotContain);
 
             return expectedSource != null
                 ? $@"{ActualExpression}
@@ -182,7 +182,7 @@ Match at index {itemIndexInActual}." + message.OnNewLine();
             List<object> actualItems = new List<object>(actual.Cast<object>());
             HashSet<object> expectedItems = new HashSet<object>(expected.Cast<object>());
 
-            string expectedSource = SourceExpectedDifferentToValue(expected);
+            string expectedSource = ExpectedSourceIfDifferentToValue(expected);
 
             return expectedSource != null
                 ? $@"{ActualExpression}
@@ -209,7 +209,7 @@ but was {Sample(actualItems)}" + message.OnNewLine();
             HashSet<object> expectedItems = new HashSet<object>(expected.Cast<object>());
             List<object> extraItems = actual.Cast<object>().Where(a => !expectedItems.Contains(a)).ToList();
 
-            string expectedSource = SourceExpectedDifferentToValue(expectedItems);
+            string expectedSource = ExpectedSourceIfDifferentToValue(expectedItems);
 
             return expectedSource != null
                 ? $@"{ActualExpression}
@@ -256,7 +256,7 @@ was found at indices {duplicateIndices.Take(duplicateIndices.Count - 1).Join(", 
             List<object> expectedList = expected.Cast<object>().ToList();
             List<object> actualList = actual.Cast<object>().ToList();
 
-            string expectedSource = SourceExpectedDifferentToValue(expected);
+            string expectedSource = ExpectedSourceIfDifferentToValue(expected);
 
             if (expectedList.Count != actualList.Count)
                 return $@"{ActualExpression}{(expectedSource == null ? null : $"doesn't match {expectedSource}.").OnNewLine()}
@@ -356,7 +356,7 @@ but was   {Value(actualValue)}" + message.OnNewLine();
         private static string TreeNodeChildrenLengthMismatch<TActual>(ICollection<object> expectedItems, ICollection<object> actualItems, string message, IEnumerable<TActual> path)
         {
             List<object> pathItems = path.Cast<object>().ToList();
-            string expectedSource = SourceExpectedDifferentToValue(expectedItems);
+            string expectedSource = ExpectedSourceIfDifferentToValue(expectedItems);
 
             return $@"{ActualExpression}{(expectedItems == null ? null : $"doesn't match {expectedSource}.").OnNewLine()}
 {Path(pathItems)} node should have {Count(expectedItems, "1 child", $"{expectedItems.Count} children")}
@@ -372,7 +372,7 @@ but {Count(actualItems,
             object actualItem;
             int differenceIndex = FindDifference(expectedItems, actualItems, predicate, out expectedItem, out actualItem);
             List<object> pathItems = path.Cast<object>().ToList();
-            string expectedSource = SourceExpectedDifferentToValue(expectedItem);
+            string expectedSource = ExpectedSourceIfDifferentToValue(expectedItem);
 
             return $@"{ActualExpression}
 doesn't match {expectedSource ?? "expected tree"}.

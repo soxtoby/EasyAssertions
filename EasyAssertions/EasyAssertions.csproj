@@ -58,7 +58,7 @@
     <Compile Include="Assertions\ObjectAssertions.cs" />
     <Compile Include="EasyAssertionException.cs" />
     <Compile Include="FailureMessageFormatter.cs" />
-    <Compile Include="FailureMessages\FailureMessageHelper.cs" />
+    <Compile Include="FailureMessages\FailureMessage.cs" />
     <Compile Include="Assertions\NumberAssertions.cs" />
     <Compile Include="IFailureMessageFormatter.cs" />
     <Compile Include="TestNode.cs" />

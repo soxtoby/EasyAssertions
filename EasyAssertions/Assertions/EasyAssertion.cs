@@ -92,7 +92,7 @@ namespace EasyAssertions
         }
 
         /// <summary>
-        /// Overrides the expceptions used when assertions fail.
+        /// Overrides the exceptions used when assertions fail.
         /// Test frameworks will detect their own exception types and display the correct assertion failure messages.
         /// </summary>
         public static void UseFrameworkExceptions(Func<string, Exception> messageExceptionFactory, Func<string, Exception, Exception> innerExceptionExceptionFactory)

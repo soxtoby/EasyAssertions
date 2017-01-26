@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Security.Policy;
 using System.Text.RegularExpressions;
 
 namespace EasyAssertions
@@ -151,24 +153,60 @@ namespace EasyAssertions
         /// </summary>
         public static string Sample(ICollection<object> items)
         {
-            switch (items.Count)
-            {
-                case 0:
-                    return "empty.";
-                case 1:
-                    return "[" + Value(items.Single()) + "]";
-                default:
-                    return $@"[{SampleItems(items).Select(i => Environment.NewLine + "    " + i)
-                        .Join(",")}
-]";
-            }
+            if (items.None())
+                return "empty.";
+
+            int remainingItems = SampleSize;
+            List<string> sample = InnerSample(items, ref remainingItems);
+
+            return sample.Count == 1
+                ? $"[ {sample[0]} ]"
+                : "[" + sample.Select(i => Environment.NewLine + "    " + i).Join("") + Environment.NewLine + "]";
         }
 
-        private static IEnumerable<string> SampleItems(ICollection<object> items)
+        private static List<string> InnerSample(IEnumerable items, ref int remainingItems)
         {
-            return items.Count > SampleSize
-                ? items.Take(SampleSize).Select(Value).Concat(new[] { "..." }).ToList()
-                : items.Select(Value);
+            List<string> sample = new List<string>();
+
+            foreach (object item in items)
+            {
+                if (sample.Any())
+                    sample[sample.Count - 1] += ",";
+
+                if (remainingItems == 0)
+                {
+                    sample.Add("...");
+                    break;
+                }
+
+                IEnumerable enumerable = item as IEnumerable;
+                if (enumerable != null)
+                {
+                    List<string> innerSample = InnerSample(enumerable, ref remainingItems);
+                    switch (innerSample.Count)
+                    {
+                        case 0:
+                            sample.Add("[]");
+                            remainingItems--;
+                            break;
+                        case 1:
+                            sample.Add($"[ {innerSample[0]} ]");
+                            break;
+                        default:
+                            sample.Add("[");
+                            sample.AddRange(innerSample.Select(s => "    " + s));
+                            sample.Add("]");
+                            break;
+                    }
+                }
+                else
+                {
+                    sample.Add(Value(item));
+                    remainingItems--;
+                }
+            }
+
+            return sample;
         }
 
         /// <summary>
@@ -218,7 +256,7 @@ namespace EasyAssertions
             int maxLength = Math.Max(wholeString.Length, otherString.Length);
             return Math.Max(0, Math.Min(failureIndex - IdealArrowIndex, maxLength - MaxStringWidth));
         }
-        
+
         private static string StringEscape(string value)
         {
             return Escapes.Aggregate(value, (s, escape) => s.Replace(escape.Key.ToString(CultureInfo.InvariantCulture), escape.Value));
@@ -327,7 +365,7 @@ namespace EasyAssertions
         /// </summary>
         public static string OnNewLine(this string value)
         {
-            return string.IsNullOrEmpty(value) 
+            return string.IsNullOrEmpty(value)
                 ? string.Empty
                 : Environment.NewLine + value;
         }

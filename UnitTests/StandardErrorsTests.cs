@@ -475,7 +475,7 @@ namespace EasyAssertions.UnitTests
             Assert.AreEqual(ActualExpression + NewLine
                 + "should contain " + ExpectedExpression + NewLine
                 + "but was missing item 1 <2>" + NewLine
-                + "and was [<1>]", result);
+                + "and was [ <1> ]", result);
         }
 
         [Test]
@@ -639,7 +639,7 @@ namespace EasyAssertions.UnitTests
             Assert.AreEqual(ActualExpression + NewLine
                 + "should contain " + ExpectedExpression + NewLine
                 + "but was missing item 0 <1>" + NewLine
-                + "and was [<2>]", result);
+                + "and was [ <2> ]", result);
         }
 
         [Test]
@@ -661,7 +661,7 @@ namespace EasyAssertions.UnitTests
 
             Assert.AreEqual(ActualExpression + NewLine
                 + "should only contain " + ExpectedExpression + NewLine
-                + "but also contains [<2>]", result);
+                + "but also contains [ <2> ]", result);
         }
 
         [Test]
@@ -683,7 +683,7 @@ namespace EasyAssertions.UnitTests
 
             Assert.AreEqual(ActualExpression + NewLine
                 + "should only contain " + ExpectedExpression + NewLine
-                + "but also contains [<2>]", result);
+                + "but also contains [ <2> ]", result);
         }
 
         [Test]
@@ -694,8 +694,8 @@ namespace EasyAssertions.UnitTests
             string result = sut.ContainsExtraItem(new[] { 1 }, new[] { 1, 2 }).Message;
 
             Assert.AreEqual(ActualExpression + NewLine
-                + "should only contain [<1>]" + NewLine
-                + "but also contains [<2>]", result);
+                + "should only contain [ <1> ]" + NewLine
+                + "but also contains [ <2> ]", result);
         }
 
         [Test]

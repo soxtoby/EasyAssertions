@@ -68,7 +68,7 @@
     <Compile Include="Assertions\CollectionAssertionTests.cs" />
     <Compile Include="CompareTests.cs" />
     <Compile Include="ContinuationTests.cs" />
-    <Compile Include="DefaultFailureMessageFormatterTests.cs" />
+    <Compile Include="StandardErrorsTests.cs" />
     <Compile Include="EasyAssertionExceptionTests.cs" />
     <Compile Include="EnumerableArg.cs" />
     <Compile Include="FakeObject.cs" />

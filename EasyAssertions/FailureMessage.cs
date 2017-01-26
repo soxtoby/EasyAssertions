@@ -28,9 +28,9 @@ namespace EasyAssertions
         /// Returns the source representation of the expected value, if available,
         /// and a snippet of the expected value underneath it.
         /// </summary>
-        public static string Expected(string expectedValue, int differenceIndex, string indent)
+        public static string Expected(string expectedValue, string actualValue, int differenceIndex, string indent)
         {
-            return Expected(Snippet(expectedValue, differenceIndex), indent);
+            return Expected(Snippet(expectedValue, actualValue, differenceIndex), indent);
         }
 
         /// <summary>
@@ -176,9 +176,9 @@ namespace EasyAssertions
         /// When aligned with the actual or expected value in an error message,
         /// the ^ character will line up with the character at the specified index.
         /// </summary>
-        public static string Arrow(object actualValue, int failureIndex)
+        public static string Arrow(string actualValue, string expectedValue, int failureIndex)
         {
-            int arrowIndex = failureIndex - SnippetStart((string)actualValue, failureIndex);
+            int arrowIndex = failureIndex - SnippetStart(actualValue, expectedValue, failureIndex);
             arrowIndex += ((string)actualValue)
                 .Substring(0, arrowIndex)
                 .Count(Escapes.ContainsKey);
@@ -186,9 +186,9 @@ namespace EasyAssertions
             return new string(' ', arrowIndex + 1) + '^';   // + 1 for the quotes wrapped around string values
         }
 
-        private static string Snippet(string wholeString, int failureIndex)
+        private static string Snippet(string wholeString, string otherString, int failureIndex)
         {
-            int fromIndex = SnippetStart(wholeString, failureIndex);
+            int fromIndex = SnippetStart(wholeString, otherString, failureIndex);
             int snippetLength = MaxStringWidth;
             string prefix = string.Empty;
             string suffix = string.Empty;
@@ -213,9 +213,10 @@ namespace EasyAssertions
             return prefix + StringEscape(wholeString.Substring(fromIndex, snippetLength)) + suffix;
         }
 
-        private static int SnippetStart(string wholeString, int failureIndex)
+        private static int SnippetStart(string wholeString, string otherString, int failureIndex)
         {
-            return Math.Max(0, Math.Min(failureIndex - IdealArrowIndex, wholeString.Length - MaxStringWidth));
+            int maxLength = Math.Max(wholeString.Length, otherString.Length);
+            return Math.Max(0, Math.Min(failureIndex - IdealArrowIndex, maxLength - MaxStringWidth));
         }
         
         private static string StringEscape(string value)
@@ -230,11 +231,20 @@ namespace EasyAssertions
             };
 
         /// <summary>
-        /// Renders a string value as a snippet around the <see cref="differenceIndex"/>.
+        /// Renders a string value as a snippet.
         /// </summary>
-        public static string Value(string value, int differenceIndex = 0)
+        public static string Value(string value)
         {
-            return '"' + Snippet(value, differenceIndex) + '"';
+            return '"' + Snippet(value, value, 0) + '"';
+        }
+
+        /// <summary>
+        /// Renders a string value as a snippet around the <see cref="differenceIndex"/>,
+        /// with the goal of lining up with a snippet of <see cref="otherValue"/>.
+        /// </summary>
+        public static string Value(string value, string otherValue, int differenceIndex)
+        {
+            return '"' + Snippet(value, otherValue, differenceIndex) + '"';
         }
 
         /// <summary>

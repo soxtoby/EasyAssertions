@@ -43,10 +43,11 @@ but was   {Value(actual)}" + message.OnNewLine());
         {
             int differenceIndex = Enumerable.Range(0, Math.Max(expected.Length, actual.Length))
                 .FirstOrDefault(i => i == actual.Length || i == expected.Length || !CharactersMatch(expected, actual, i, caseSensitivity));
-            return error.WithActualExpression($@"should be {Expected(expected, differenceIndex, @"
+
+            return error.WithActualExpression($@"should be {Expected(expected, actual, differenceIndex, @"
           ")}
-but was   {Value(actual, differenceIndex)}
-          {Arrow(actual, differenceIndex)}
+but was   {Value(actual, expected, differenceIndex)}
+          {Arrow(actual, expected, differenceIndex)}
 Difference at index {differenceIndex}." + message.OnNewLine());
         }
 
@@ -424,10 +425,11 @@ but was        {Value(actual)}" + message.OnNewLine());
         public Exception Contains(string expectedToNotContain, string actual, string message = null)
         {
             int matchIndex = actual.IndexOf(expectedToNotContain, StringComparison.Ordinal);
+
             return error.WithActualExpression($@"shouldn't contain {Expected(expectedToNotContain, @"
                   ")}
-but was           {Value(actual, matchIndex)}
-                  {Arrow(actual, matchIndex)}
+but was           {Value(actual, expectedToNotContain, matchIndex)}
+                  {Arrow(actual, expectedToNotContain, matchIndex)}
 Match at index {matchIndex}." + message.OnNewLine());
         }
 
@@ -440,9 +442,9 @@ but starts with   {Value(actual)}" + message.OnNewLine());
 
         public Exception DoesNotEndWith(string expectedEnd, string actual, string message = null)
         {
-            return error.WithActualExpression($@"should end with {Expected(expectedEnd, expectedEnd.Length - 1, @"
+            return error.WithActualExpression($@"should end with {Expected(expectedEnd, actual, expectedEnd.Length - 1, @"
                 ")}
-but ends with   {Value(actual, actual.Length - 1)}" + message.OnNewLine());
+but ends with   {Value(actual, expectedEnd, actual.Length - 1)}" + message.OnNewLine());
         }
 
         public Exception NotGreaterThan(object expected, object actual, string message = null)

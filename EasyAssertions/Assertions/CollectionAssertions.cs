@@ -33,7 +33,8 @@ namespace EasyAssertions
         /// <summary>
         /// Asserts that a sequence has no elements in it.
         /// </summary>
-        public static Actual<TActual> ShouldBeEmpty<TActual>(this TActual actual, string message = null) where TActual : IEnumerable
+        public static Actual<TActual> ShouldBeEmpty<TActual>(this TActual actual, string message = null) 
+            where TActual : IEnumerable
         {
             return actual.RegisterAssert(c =>
                 {
@@ -50,7 +51,8 @@ namespace EasyAssertions
         /// <summary>
         /// Asserts that a sequence contains at least one element.
         /// </summary>
-        public static Actual<TActual> ShouldNotBeEmpty<TActual>(this TActual actual, string message = null) where TActual : IEnumerable
+        public static Actual<TActual> ShouldNotBeEmpty<TActual>(this TActual actual, string message = null) 
+            where TActual : IEnumerable
         {
             return actual.RegisterAssert(c =>
                 {
@@ -63,7 +65,8 @@ namespace EasyAssertions
         /// <summary>
         /// Asserts that a sequence contains exactly one element.
         /// </summary>
-        public static Actual<TActual> ShouldBeSingular<TActual>(this TActual actual, string message = null) where TActual : IEnumerable
+        public static Actual<TActual> ShouldBeSingular<TActual>(this TActual actual, string message = null) 
+            where TActual : IEnumerable
         {
             return actual.RegisterAssert(c => actual.ShouldBeLength(1, message));
         }
@@ -71,7 +74,8 @@ namespace EasyAssertions
         /// <summary>
         /// Asserts that a sequence contains a specific number of elements.
         /// </summary>
-        public static Actual<TActual> ShouldBeLength<TActual>(this TActual actual, int expectedLength, string message = null) where TActual : IEnumerable
+        public static Actual<TActual> ShouldBeLength<TActual>(this TActual actual, int expectedLength, string message = null) 
+            where TActual : IEnumerable
         {
             return actual.RegisterAssert(c =>
                 {
@@ -90,7 +94,8 @@ namespace EasyAssertions
         /// <see cref="IEnumerable"/> items are compared recursively.
         /// Non-<c>IEnumerable</c> items are compared using the default equality comparer.
         /// </summary>
-        public static Actual<IEnumerable<TActual>> ShouldMatch<TActual, TExpected>(this IEnumerable<TActual> actual, IEnumerable<TExpected> expected, string message = null) where TExpected : TActual
+        public static Actual<IEnumerable<TActual>> ShouldMatch<TActual, TExpected>(this IEnumerable<TActual> actual, IEnumerable<TExpected> expected, string message = null) 
+            where TExpected : TActual
         {
             if (expected == null) throw new ArgumentNullException(nameof(expected));
 
@@ -134,7 +139,8 @@ namespace EasyAssertions
         /// <summary>
         /// Asserts that a sequence starts with another sub-sequence, using the default equality comparer.
         /// </summary>
-        public static Actual<IEnumerable<TActual>> ShouldStartWith<TActual, TExpected>(this IEnumerable<TActual> actual, IEnumerable<TExpected> expectedStart, string message = null)
+        public static Actual<IEnumerable<TActual>> ShouldStartWith<TActual, TExpected>(this IEnumerable<TActual> actual, IEnumerable<TExpected> expectedStart, string message = null) 
+            where TExpected : TActual
         {
             if (expectedStart == null) throw new ArgumentNullException(nameof(expectedStart));
 
@@ -151,7 +157,8 @@ namespace EasyAssertions
                 });
         }
 
-        public static Actual<IEnumerable<TActual>> ShouldEndWith<TActual, TExpected>(this IEnumerable<TActual> actual, IEnumerable<TExpected> expectedEnd, string message = null)
+        public static Actual<IEnumerable<TActual>> ShouldEndWith<TActual, TExpected>(this IEnumerable<TActual> actual, IEnumerable<TExpected> expectedEnd, string message = null) 
+            where TExpected : TActual
         {
             if (expectedEnd == null) throw new ArgumentNullException(nameof(expectedEnd));
 
@@ -171,7 +178,8 @@ namespace EasyAssertions
         /// <summary>
         /// Asserts that a sequence contains a specified element, using the default equality comparer.
         /// </summary>
-        public static Actual<IEnumerable<TActual>> ShouldContain<TActual, TExpected>(this IEnumerable<TActual> actual, TExpected expected, string message = null) where TExpected : TActual
+        public static Actual<IEnumerable<TActual>> ShouldContain<TActual, TExpected>(this IEnumerable<TActual> actual, TExpected expected, string message = null) 
+            where TExpected : TActual
         {
             return actual.RegisterAssert(c =>
                 {
@@ -188,7 +196,8 @@ namespace EasyAssertions
         /// <summary>
         /// Asserts that a sequence contains all specified elements, in any order, using the default equality comparer.
         /// </summary>
-        public static Actual<IEnumerable<TActual>> ShouldContainItems<TActual, TExpected>(this IEnumerable<TActual> actual, IEnumerable<TExpected> expected, string message = null) where TExpected : TActual
+        public static Actual<IEnumerable<TActual>> ShouldContainItems<TActual, TExpected>(this IEnumerable<TActual> actual, IEnumerable<TExpected> expected, string message = null) 
+            where TExpected : TActual
         {
             return actual.RegisterAssert(c =>
                 {
@@ -206,7 +215,8 @@ namespace EasyAssertions
         /// <summary>
         /// Asserts that all elements in a sequence are contained within another sequence, in any order, using the default equality comparer.
         /// </summary>
-        public static Actual<IEnumerable<TActual>> ItemsShouldBeIn<TActual, TExpected>(this IEnumerable<TActual> actual, IEnumerable<TExpected> expectedSuperset, string message = null) where TExpected : TActual
+        public static Actual<IEnumerable<TActual>> ItemsShouldBeIn<TActual, TExpected>(this IEnumerable<TActual> actual, IEnumerable<TExpected> expectedSuperset, string message = null) 
+            where TExpected : TActual
         {
             if (expectedSuperset == null) throw new ArgumentNullException(nameof(expectedSuperset));
 
@@ -226,13 +236,14 @@ namespace EasyAssertions
         /// <summary>
         /// Asserts that a sequence does not contain a specified element, using the default equality comparer.
         /// </summary>
-        public static Actual<TActual> ShouldNotContain<TActual, TItem>(this TActual actual, TItem expectedToNotContain, string message = null) where TActual : IEnumerable<TItem>
+        public static Actual<IEnumerable<TActual>> ShouldNotContain<TActual, TExpected>(this IEnumerable<TActual> actual, TExpected expectedToNotContain, string message = null) 
+            where TExpected : TActual
         {
             return actual.RegisterAssert(c =>
                 {
-                    actual.ShouldBeA<TActual>(message);
+                    actual.ShouldBeA<IEnumerable<TActual>>(message);
 
-                    using (IBuffer<TItem> bufferedActual = actual.Buffer())
+                    using (IBuffer<TActual> bufferedActual = actual.Buffer())
                     {
                         if (bufferedActual.Contains(expectedToNotContain))
                             throw c.StandardError.Contains(expectedToNotContain, bufferedActual, message: message);
@@ -243,7 +254,8 @@ namespace EasyAssertions
         /// <summary>
         /// Asserts that a sequence does not contain any of the specified elements, using the default equality comparer.
         /// </summary>
-        public static Actual<IEnumerable<TActual>> ShouldNotContainItems<TActual, TExpected>(this IEnumerable<TActual> actual, IEnumerable<TExpected> expectedToNotContain, string message = null) where TExpected : TActual
+        public static Actual<IEnumerable<TActual>> ShouldNotContainItems<TActual, TExpected>(this IEnumerable<TActual> actual, IEnumerable<TExpected> expectedToNotContain, string message = null) 
+            where TExpected : TActual
         {
             return actual.RegisterAssert(c =>
                 {
@@ -261,7 +273,8 @@ namespace EasyAssertions
         /// <summary>
         /// Asserts thats a sequence only contains the specified elements, and nothing else, in any order, with no duplicates, using the default equality comparer.
         /// </summary>
-        public static Actual<IEnumerable<TActual>> ShouldOnlyContain<TActual, TExpected>(this IEnumerable<TActual> actual, IEnumerable<TExpected> expected, string message = null) where TExpected : TActual
+        public static Actual<IEnumerable<TActual>> ShouldOnlyContain<TActual, TExpected>(this IEnumerable<TActual> actual, IEnumerable<TExpected> expected, string message = null) 
+            where TExpected : TActual
         {
             return actual.RegisterAssert(c =>
                 {
@@ -281,7 +294,8 @@ namespace EasyAssertions
         /// <summary>
         /// Asserts that a sequence contains at least one item that does appear in another specified sequence, using the default equality comparer.
         /// </summary>
-        public static Actual<IEnumerable<TActual>> ShouldNotOnlyContain<TActual, TExpected>(this IEnumerable<TActual> actual, IEnumerable<TExpected> expected, string message = null) where TExpected : TActual
+        public static Actual<IEnumerable<TActual>> ShouldNotOnlyContain<TActual, TExpected>(this IEnumerable<TActual> actual, IEnumerable<TExpected> expected, string message = null) 
+            where TExpected : TActual
         {
             if (expected == null) throw new ArgumentNullException(nameof(expected));
 
@@ -301,16 +315,18 @@ namespace EasyAssertions
         /// <summary>
         /// Asserts that a sequence contains no duplicated elements, using the default equality comparer.
         /// </summary>
-        public static Actual<IEnumerable<TActual>> ShouldBeDistinct<TActual>(this IEnumerable<TActual> actual, string message = null)
+        public static Actual<TActual> ShouldBeDistinct<TActual>(this TActual actual, string message = null) 
+            where TActual : IEnumerable
         {
             return actual.RegisterAssert(c => AssertDistinct(c, actual, message));
         }
 
-        private static void AssertDistinct<TActual>(AssertionContext assertionContext, IEnumerable<TActual> actual, string message)
+        private static void AssertDistinct<TActual>(AssertionContext assertionContext, TActual actual, string message) 
+            where TActual : IEnumerable
         {
-            actual.ShouldBeA<IEnumerable<TActual>>(message);
+            actual.ShouldBeA<TActual>(message);
 
-            using (IBuffer<TActual> bufferedActual = actual.Buffer())
+            using (IBuffer<object> bufferedActual = actual.Buffer())
             {
                 if (bufferedActual.GroupBy(i => i).Any(group => group.Count() > 1))
                     throw assertionContext.StandardError.ContainsDuplicate(bufferedActual, message);
@@ -320,7 +336,8 @@ namespace EasyAssertions
         /// <summary>
         /// Asserts that two sequences contain the same object instances in the same order.
         /// </summary>
-        public static Actual<IEnumerable<TActual>> ShouldMatchReferences<TActual, TExpected>(this IEnumerable<TActual> actual, IEnumerable<TExpected> expected, string message = null) where TExpected : TActual
+        public static Actual<IEnumerable<TActual>> ShouldMatchReferences<TActual, TExpected>(this IEnumerable<TActual> actual, IEnumerable<TExpected> expected, string message = null) 
+            where TExpected : TActual
         {
             return actual.RegisterAssert(c =>
                 {

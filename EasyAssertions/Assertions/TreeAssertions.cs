@@ -9,7 +9,8 @@ namespace EasyAssertions
         /// Asserts that two trees have the same structure and values.
         /// Values are compared using the default equality comparer.
         /// </summary>
-        public static Actual<IEnumerable<TActual>> ShouldMatch<TActual, TExpected>(this IEnumerable<TActual> actualRootNodes, IEnumerable<TestNode<TExpected>> expectedRootNodes, Func<TActual, IEnumerable<TActual>> getChildren, string message = null) where TExpected : TActual
+        public static Actual<IEnumerable<TActual>> ShouldMatch<TActual, TExpected>(this IEnumerable<TActual> actualRootNodes, IEnumerable<TestNode<TExpected>> expectedRootNodes, Func<TActual, IEnumerable<TActual>> getChildren, string message = null) 
+            where TExpected : TActual
         {
             if (expectedRootNodes == null) throw new ArgumentNullException(nameof(expectedRootNodes));
             if (getChildren == null) throw new ArgumentNullException(nameof(getChildren));
@@ -27,7 +28,8 @@ namespace EasyAssertions
         /// Asserts that two trees have the same structure and values.
         /// Values are compared using the default equality comparer.
         /// </summary>
-        public static Actual<IEnumerable<TActual>> ShouldMatch<TActual, TExpected>(this IEnumerable<TActual> actualRootNodes, IEnumerable<TestNode<TExpected>> expectedRootNodes, Func<TActual, IEnumerable<TActual>> getChildren, Func<TActual, TExpected, bool> predicate, string message = null) where TExpected : TActual
+        public static Actual<IEnumerable<TActual>> ShouldMatch<TActual, TExpected>(this IEnumerable<TActual> actualRootNodes, IEnumerable<TestNode<TExpected>> expectedRootNodes, Func<TActual, IEnumerable<TActual>> getChildren, Func<TActual, TExpected, bool> predicate, string message = null) 
+            where TExpected : TActual
         {
             if (expectedRootNodes == null) throw new ArgumentNullException(nameof(expectedRootNodes));
             if (getChildren == null) throw new ArgumentNullException(nameof(getChildren));

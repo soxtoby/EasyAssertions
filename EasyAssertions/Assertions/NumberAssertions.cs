@@ -86,7 +86,8 @@ namespace EasyAssertions
         /// <summary>
         /// Asserts that one value is greater than another.
         /// </summary>
-        public static Actual<TActual> ShouldBeGreaterThan<TActual, TExpected>(this TActual actual, TExpected expected, string message = null) where TActual : IComparable<TExpected>
+        public static Actual<TActual> ShouldBeGreaterThan<TActual, TExpected>(this TActual actual, TExpected expected, string message = null) 
+            where TActual : IComparable<TExpected>
         {
             return actual.RegisterAssert(c =>
                 {
@@ -98,7 +99,8 @@ namespace EasyAssertions
         /// <summary>
         /// Asserts that one value is less than another.
         /// </summary>
-        public static Actual<TActual> ShouldBeLessThan<TActual, TExpected>(this TActual actual, TExpected expected, string message = null) where TActual : IComparable<TExpected>
+        public static Actual<TActual> ShouldBeLessThan<TActual, TExpected>(this TActual actual, TExpected expected, string message = null) 
+            where TActual : IComparable<TExpected>
         {
             return actual.RegisterAssert(c =>
             {

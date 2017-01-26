@@ -9,7 +9,8 @@ namespace EasyAssertions
         /// <summary>
         /// Asserts that two objects are equal, using the default equality comparer.
         /// </summary>
-        public static Actual<TActual> ShouldBe<TActual, TExpected>(this TActual actual, TExpected expected, string message = null) where TExpected : TActual
+        public static Actual<TActual> ShouldBe<TActual, TExpected>(this TActual actual, TExpected expected, string message = null) 
+            where TExpected : TActual
         {
             return actual.RegisterAssert(c =>
                 {
@@ -28,7 +29,8 @@ namespace EasyAssertions
         /// <summary>
         /// Asserts that a nullable value is equal to another value, using the default equality comparer.
         /// </summary>
-        public static Actual<TActual> ShouldBe<TActual>(this TActual? actual, TActual expected, string message = null) where TActual : struct
+        public static Actual<TActual> ShouldBe<TActual>(this TActual? actual, TActual expected, string message = null) 
+            where TActual : struct
         {
             actual.RegisterAssert(c =>
                 {
@@ -45,7 +47,8 @@ namespace EasyAssertions
         /// <summary>
         /// Asserts that two objects are not equal, using the default equality comparer.
         /// </summary>
-        public static Actual<TActual> ShouldNotBe<TActual, TNotExpected>(this TActual actual, TNotExpected notExpected, string message = null) where TNotExpected : TActual
+        public static Actual<TActual> ShouldNotBe<TActual, TNotExpected>(this TActual actual, TNotExpected notExpected, string message = null) 
+            where TNotExpected : TActual
         {
             return actual.RegisterAssert(c =>
                 {
@@ -81,7 +84,8 @@ namespace EasyAssertions
         /// <summary>
         /// Asserts that two object instances are the same instance.
         /// </summary>
-        public static Actual<TActual> ShouldReferTo<TActual, TExpected>(this TActual actual, TExpected expected, string message = null) where TExpected : TActual
+        public static Actual<TActual> ShouldReferTo<TActual, TExpected>(this TActual actual, TExpected expected, string message = null) 
+            where TExpected : TActual
         {
             return actual.RegisterAssert(c =>
                 {
@@ -93,7 +97,8 @@ namespace EasyAssertions
         /// <summary>
         /// Asserts that two object instances are different instances.
         /// </summary>
-        public static Actual<TActual> ShouldNotReferTo<TActual, TNotExpected>(this TActual actual, TNotExpected notExpected, string message = null) where TNotExpected : TActual
+        public static Actual<TActual> ShouldNotReferTo<TActual, TNotExpected>(this TActual actual, TNotExpected notExpected, string message = null) 
+            where TNotExpected : TActual
         {
             return actual.RegisterAssert(c =>
                 {

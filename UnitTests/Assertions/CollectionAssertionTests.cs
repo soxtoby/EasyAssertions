@@ -487,7 +487,7 @@ namespace EasyAssertions.UnitTests
             public void ActualIsNull_FailsWithTypesNotEqualMessage()
             {
                 IEnumerable<int> actual = null;
-                AssertFailsWithTypesNotEqualMessage(typeof(IEnumerable<int>), null, msg => actual.ShouldStartWith(Enumerable.Empty<object>(), msg));
+                AssertFailsWithTypesNotEqualMessage(typeof(IEnumerable<int>), null, msg => actual.ShouldStartWith(Enumerable.Empty<int>(), msg));
             }
 
             [Test]
@@ -549,7 +549,7 @@ namespace EasyAssertions.UnitTests
             public void ActualIsNull_FailsWithTypesNotEqualMessage()
             {
                 IEnumerable<int> actual = null;
-                AssertFailsWithTypesNotEqualMessage(typeof(IEnumerable<int>), null, msg => actual.ShouldEndWith(Enumerable.Empty<object>(), msg));
+                AssertFailsWithTypesNotEqualMessage(typeof(IEnumerable<int>), null, msg => actual.ShouldEndWith(Enumerable.Empty<int>(), msg));
             }
 
             [Test]

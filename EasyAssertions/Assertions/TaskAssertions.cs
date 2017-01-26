@@ -57,7 +57,8 @@ namespace EasyAssertions
         /// <summary>
         /// Assert that a task completes successfully within a specified time span.
         /// </summary>
-        public static void ShouldComplete<TTask>(this TTask actualTask, TimeSpan timeout, string message = null) where TTask : Task
+        public static void ShouldComplete<TTask>(this TTask actualTask, TimeSpan timeout, string message = null) 
+            where TTask : Task
         {
             if (timeout < TimeSpan.Zero)
                 throw NegativeTimeoutException(timeout);
@@ -103,7 +104,8 @@ namespace EasyAssertions
         /// Assert that a task fails with a particular type of exception.
         /// Times out after 1 second.
         /// </summary>
-        public static ActualException<TException> ShouldFail<TException>(this Task actualTask, string message = null) where TException : Exception
+        public static ActualException<TException> ShouldFail<TException>(this Task actualTask, string message = null) 
+            where TException : Exception
         {
             actualTask.RegisterAssert(c => actualTask.ShouldFail<TException>(DefaultTimeout, message));
             return new ActualException<TException>((TException)actualTask.Exception.InnerException);
@@ -112,7 +114,8 @@ namespace EasyAssertions
         /// <summary>
         /// Assert that a task fails within a specified number of milliseconds, with a particular type of exception.
         /// </summary>
-        public static ActualException<TException> ShouldFail<TException>(this Task actualTask, uint millisecondsTimeout, string message = null) where TException : Exception
+        public static ActualException<TException> ShouldFail<TException>(this Task actualTask, uint millisecondsTimeout, string message = null) 
+            where TException : Exception
         {
             actualTask.RegisterAssert(c => actualTask.ShouldFail<TException>(TimeSpan.FromMilliseconds(millisecondsTimeout), message));
             return new ActualException<TException>((TException)actualTask.Exception.InnerException);
@@ -121,7 +124,8 @@ namespace EasyAssertions
         /// <summary>
         /// Assert that a task fails within a specified time span, with a particular type of exception.
         /// </summary>
-        public static ActualException<TException> ShouldFail<TException>(this Task actualTask, TimeSpan timeout, string message = null) where TException : Exception
+        public static ActualException<TException> ShouldFail<TException>(this Task actualTask, TimeSpan timeout, string message = null) 
+            where TException : Exception
         {
             if (timeout < TimeSpan.Zero)
                 throw NegativeTimeoutException(timeout);

@@ -38,6 +38,23 @@ namespace EasyAssertions.UnitTests
         }
 
         [Test]
+        public void MulltiLineActual_AlignsIndents()
+        {
+            var actual = new { one = new { two = new { three = 3 } } };
+
+            Assert.Throws<EasyAssertionException>(() => actual
+                .one
+                    .two
+            .three
+                .ShouldBe(1));
+
+            Assert.AreEqual(@"actual
+        .one
+            .two
+    .three", sut.GetActualExpression());
+        }
+
+        [Test]
         public void MultiAssertionMessage_TakesExpressionFromFirstAssertion()
         {
             TestClass actualExpression = new TestClass(12);

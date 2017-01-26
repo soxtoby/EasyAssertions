@@ -20,16 +20,35 @@ namespace EasyAssertions
 
         public string GetActualExpression()
         {
-            return assertionGroupChain.Aggregate(string.Empty, (expression, group) => group.GetActualExpression(expression));
+            return NormalizeIndentation(assertionGroupChain.Aggregate(string.Empty, (expression, group) => group.GetActualExpression(expression)));
         }
 
         public string GetExpectedExpression()
         {
-            return assertionGroupChain
-                .AsEnumerable()
-                .Reverse()
-                .Select(g => g.GetExpectedExpression())
-                .FirstOrDefault(e => !string.IsNullOrEmpty(e)) ?? string.Empty;
+            return NormalizeIndentation(
+                assertionGroupChain
+                    .AsEnumerable()
+                    .Reverse()
+                    .Select(g => g.GetExpectedExpression())
+                    .FirstOrDefault(e => !string.IsNullOrEmpty(e)) ?? string.Empty);
+        }
+
+        private static string NormalizeIndentation(string input)
+        {
+            string[] lines = input.Split('\n');
+
+            int minIndent = lines
+                .Skip(1)
+                .Select(l => l.Length - l.TrimStart(' ').Length)
+                .Aggregate(int.MaxValue, Math.Min);
+
+            return minIndent <= 4
+                ? input 
+                : lines.Take(1)
+                    .Concat(lines
+                        .Skip(1)
+                        .Select(l => l.Substring(minIndent - 4)))
+                    .Join("\n");
         }
 
         public void EnterAssertion(int assertionFrameIndex)

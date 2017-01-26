@@ -24,10 +24,8 @@ namespace EasyAssertions.UnitTests
             Expression<Action> noThrow = () => "".Trim();
             Error.NoException(typeof(Exception), noThrow, "foo").Returns(ExpectedException);
 
-            Exception result = Assert.Throws<Exception>(() =>
+            AssertThrowsExpectedError(() =>
                 Should.Throw<Exception>(noThrow, "foo"));
-
-            Assert.AreSame(ExpectedException, result);
         }
 
         [Test]
@@ -38,10 +36,8 @@ namespace EasyAssertions.UnitTests
             Expression<Action> throwsException = () => thrower.Throw();
             Error.WrongException(typeof(InvalidOperationException), innerException, throwsException, "foo").Returns(ExpectedException);
 
-            Exception result = Assert.Throws<Exception>(() =>
+            AssertThrowsExpectedError(() =>
                 Should.Throw<InvalidOperationException>(throwsException, "foo"));
-
-            Assert.AreSame(ExpectedException, result);
         }
 
         [Test]
@@ -60,10 +56,8 @@ namespace EasyAssertions.UnitTests
             Expression<Func<object>> noThrow = () => "".Length;
             Error.NoException(typeof(Exception), noThrow, "foo").Returns(ExpectedException);
 
-            Exception result = Assert.Throws<Exception>(() =>
+            AssertThrowsExpectedError(() =>
                 Should.Throw<Exception>(noThrow, "foo"));
-
-            Assert.AreSame(ExpectedException, result);
         }
 
         [Test]
@@ -82,10 +76,8 @@ namespace EasyAssertions.UnitTests
             Expression<Action> noThrow = () => "".Trim();
             Error.NoException(typeof(Exception), noThrow, "foo").Returns(ExpectedException);
 
-            Exception result = Assert.Throws<Exception>(() =>
+            AssertThrowsExpectedError(() =>
                 Should.Throw(noThrow, "foo"));
-
-            Assert.AreSame(ExpectedException, result);
         }
 
         [Test]
@@ -104,10 +96,8 @@ namespace EasyAssertions.UnitTests
             Expression<Func<object>> noThrow = () => "".Length;
             Error.NoException(typeof(Exception), noThrow, "foo").Returns(ExpectedException);
 
-            Exception result = Assert.Throws<Exception>(() =>
+            AssertThrowsExpectedError(() =>
                 Should.Throw(noThrow, "foo"));
-
-            Assert.AreSame(ExpectedException, result);
         }
 
         private class ExceptionThrower

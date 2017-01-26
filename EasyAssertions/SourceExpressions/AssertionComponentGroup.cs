@@ -26,7 +26,7 @@ namespace EasyAssertions
             calls.Add(component);
         }
 
-        public string GetExpectedExpression()
+        public virtual string GetExpectedExpression(string actualExpression)
         {
             return AggregateMethodCalls(
                     (method, source, nextSegment) => method.GetExpectedSegment(source, nextSegment), 

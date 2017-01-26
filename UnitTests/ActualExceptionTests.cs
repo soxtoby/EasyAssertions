@@ -39,9 +39,7 @@ namespace EasyAssertions.UnitTests
             Error.AreEqual(typeof(InvalidOperationException), typeof(InvalidOperationException), "foo").Returns(ExpectedException);
             ActualException<Exception> sut = new ActualException<Exception>(exception);
 
-            Exception result = Assert.Throws<Exception>(() => sut.AndShouldNotBeA<InvalidOperationException>("foo"));
-
-            Assert.AreSame(ExpectedException, result);
+            AssertThrowsExpectedError(() => sut.AndShouldNotBeA<InvalidOperationException>("foo"));
         }
     }
 }

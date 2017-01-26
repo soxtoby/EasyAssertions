@@ -20,17 +20,26 @@ namespace EasyAssertions
 
         public string GetActualExpression()
         {
-            return NormalizeIndentation(assertionGroupChain.Aggregate(string.Empty, (expression, group) => group.GetActualExpression(expression)));
+            return GetActualExpression(assertionGroupChain);
+        }
+
+        private static string GetActualExpression(IEnumerable<AssertionComponentGroup> assertionComponentGroups)
+        {
+            return NormalizeIndentation(assertionComponentGroups.Aggregate(string.Empty, (expression, group) => @group.GetActualExpression(expression)));
         }
 
         public string GetExpectedExpression()
         {
-            return NormalizeIndentation(
-                assertionGroupChain
-                    .AsEnumerable()
-                    .Reverse()
-                    .Select(g => g.GetExpectedExpression())
-                    .FirstOrDefault(e => !string.IsNullOrEmpty(e)) ?? string.Empty);
+            if (assertionGroupChain.Count < 2)
+                return string.Empty;
+
+            // The last group will be _inside_ the component that has the expected parameter
+            AssertionComponentGroup assertionGroupEntryPoint = assertionGroupChain.SkipLast(1).Last();
+
+            // In case the expected expression references the actual value, get the actual expression from outside the component
+            string actualExpression = GetActualExpression(assertionGroupChain.SkipLast(2));
+
+            return NormalizeIndentation(assertionGroupEntryPoint.GetExpectedExpression(actualExpression));
         }
 
         private static string NormalizeIndentation(string input)

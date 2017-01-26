@@ -76,6 +76,7 @@
     <Compile Include="SourceExpressionProviderTests.cs" />
     <Compile Include="TestEnumerable.cs" />
     <Compile Include="TestNodeTests.cs" />
+    <Compile Include="UtilsTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\EasyAssertions\EasyAssertions.csproj">

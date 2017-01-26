@@ -23,7 +23,8 @@ namespace EasyAssertions.UnitTests
             TestClass expectedExpression = new TestClass(2);
             Assert.Throws<EasyAssertionException>(() => actualExpression.ShouldBe(expectedExpression));
 
-            Assert.AreEqual("actualExpression", sut.GetActualExpression());
+            Assert.AreEqual(nameof(actualExpression), sut.GetActualExpression());
+            Assert.AreEqual(nameof(expectedExpression), sut.GetExpectedExpression());
         }
 
         [Test]
@@ -34,7 +35,8 @@ namespace EasyAssertions.UnitTests
             Assert.Throws<EasyAssertionException>(() => actualExpression
                 .ShouldBe(expectedExpression));
 
-            Assert.AreEqual("actualExpression", sut.GetActualExpression());
+            Assert.AreEqual(nameof(actualExpression), sut.GetActualExpression());
+            Assert.AreEqual(nameof(expectedExpression), sut.GetExpectedExpression());
         }
 
         [Test]
@@ -63,7 +65,8 @@ namespace EasyAssertions.UnitTests
                 actualExpression.ShouldBeA<TestClass>()
                     .And.ShouldBe(expectedExpression));
 
-            Assert.AreEqual("actualExpression", sut.GetActualExpression());
+            Assert.AreEqual(nameof(actualExpression), sut.GetActualExpression());
+            Assert.AreEqual(nameof(expectedExpression), sut.GetExpectedExpression());
         }
 
         [Test]
@@ -76,7 +79,8 @@ namespace EasyAssertions.UnitTests
                 actualExpression.ShouldBeA<TestClass>()
                     .And.Value.ShouldBe(expectedExpression));
 
-            Assert.AreEqual("actualExpression.Value", sut.GetActualExpression());
+            Assert.AreEqual($"{nameof(actualExpression)}.{nameof(actualExpression.Value)}", sut.GetActualExpression());
+            Assert.AreEqual(nameof(expectedExpression), sut.GetExpectedExpression());
         }
 
         [Test]
@@ -88,7 +92,8 @@ namespace EasyAssertions.UnitTests
             Assert.Throws<EasyAssertionException>(() =>
                 actualExpression.Assert(a => a.Value.ShouldBe(expectedExpression)));
 
-            Assert.AreEqual("actualExpression.Value", sut.GetActualExpression());
+            Assert.AreEqual($"{nameof(actualExpression)}.{nameof(actualExpression.Value)}", sut.GetActualExpression());
+            Assert.AreEqual(nameof(expectedExpression), sut.GetExpectedExpression());
         }
 
         [Test]
@@ -104,19 +109,22 @@ namespace EasyAssertions.UnitTests
                         tc.Value.ShouldBe(expectedExpression);
                     }));
 
-            Assert.AreEqual("actualExpression.Value", sut.GetActualExpression());
+            Assert.AreEqual($"{nameof(actualExpression)}.{nameof(actualExpression.Value)}", sut.GetActualExpression());
+            Assert.AreEqual(nameof(expectedExpression), sut.GetExpectedExpression());
         }
 
         [Test]
         public void ExpressionTwoLevelsIn_CombinesOuterMiddleAndInnerExpressions()
         {
             TestClass actualExpression = new TestClass(12);
+            string expectedExpression = "2";
             Assert.Throws<EasyAssertionException>(() =>
                 actualExpression
                     .Assert(a => a.Value.ShouldBe(12)
-                        .And(b => b.ToString().ShouldBe("2"))));
+                        .And(b => b.ToString().ShouldBe(expectedExpression))));
 
-            Assert.AreEqual("actualExpression.Value.ToString()", sut.GetActualExpression());
+            Assert.AreEqual($"{nameof(actualExpression)}.{nameof(actualExpression.Value)}.ToString()", sut.GetActualExpression());
+            Assert.AreEqual(nameof(expectedExpression), sut.GetExpectedExpression());
         }
 
         [Test]
@@ -130,7 +138,8 @@ namespace EasyAssertions.UnitTests
                     .Assert(tc => tc.ShouldBeA<TestClass>())
                     .And.Value.ShouldBe(expectedExpression));
 
-            Assert.AreEqual("actualExpression.Value", sut.GetActualExpression());
+            Assert.AreEqual($"{nameof(actualExpression)}.{nameof(actualExpression.Value)}", sut.GetActualExpression());
+            Assert.AreEqual(nameof(expectedExpression), sut.GetExpectedExpression());
         }
 
         [Test]
@@ -144,7 +153,8 @@ namespace EasyAssertions.UnitTests
                     tc => { },
                     tc => tc.Value.ShouldBe(expectedExpression)));
 
-            Assert.AreEqual("actualExpression[1].Value", sut.GetActualExpression());
+            Assert.AreEqual($"{nameof(actualExpression)}[1].{nameof(TestClass.Value)}", sut.GetActualExpression());
+            Assert.AreEqual(nameof(expectedExpression), sut.GetExpectedExpression());
         }
 
         [Test]
@@ -158,7 +168,8 @@ namespace EasyAssertions.UnitTests
                     .ItemsSatisfy(tc => { })
                     .And.Single().ShouldBe(expectedExpression));
 
-            Assert.AreEqual("actualExpression.Single()", sut.GetActualExpression());
+            Assert.AreEqual($"{nameof(actualExpression)}.Single()", sut.GetActualExpression());
+            Assert.AreEqual(nameof(expectedExpression), sut.GetExpectedExpression());
         }
 
         [Test]
@@ -176,7 +187,8 @@ namespace EasyAssertions.UnitTests
                         .ShouldBe(expectedExpression);
                 });
 
-            Assert.AreEqual("actualExpression", sut.GetActualExpression());
+            Assert.AreEqual(nameof(actualExpression), sut.GetActualExpression());
+            Assert.AreEqual(nameof(expectedExpression), sut.GetExpectedExpression());
         }
 
         [Test]
@@ -186,7 +198,7 @@ namespace EasyAssertions.UnitTests
 
             Assert.Throws<EasyAssertionException>(() => actualExpression.TestActionAssert());
 
-            Assert.AreEqual("actualExpression", sut.GetActualExpression());
+            Assert.AreEqual(nameof(actualExpression), sut.GetActualExpression());
         }
 
         [Test]
@@ -196,7 +208,7 @@ namespace EasyAssertions.UnitTests
 
             Assert.Throws<EasyAssertionException>(() => actualExpression.TestFuncAssert());
 
-            Assert.AreEqual("actualExpression", sut.GetActualExpression());
+            Assert.AreEqual(nameof(actualExpression), sut.GetActualExpression());
         }
 
         [Test, Ignore("After upgrade to .NET 4.0, compiled expression now has a source file")]
@@ -212,11 +224,40 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void SameAssertionCalledTwice()
         {
-            const string foo = "foo";
+            string actualExpression = "foo";
+            string expectedExpression = "bar";
             for (int i = 0; i < 2; i++)
-                Assert.Throws<EasyAssertionException>(() => foo.ShouldBe("bar"));
+                Assert.Throws<EasyAssertionException>(() => actualExpression.ShouldBe(expectedExpression));
 
-            Assert.AreEqual("foo", sut.GetActualExpression());
+            Assert.AreEqual(nameof(actualExpression), sut.GetActualExpression());
+            Assert.AreEqual(nameof(expectedExpression), sut.GetExpectedExpression());
+        }
+
+        [Test]
+        public void ExpectedExpression_IsStringLiteral()
+        {
+            Assert.Throws<EasyAssertionException>(() => "foo".ShouldBe("bar"));
+
+            Assert.AreEqual("\"bar\"", sut.GetExpectedExpression());
+        }
+
+        [Test]
+        public void ExpectedExpression_IsNumberLiteral()
+        {
+            Assert.Throws<EasyAssertionException>(() => 1f.ShouldBe(2f, 0));
+
+            Assert.AreEqual("2f", sut.GetExpectedExpression());
+        }
+
+        [Test]
+        public void ExpectedExpression_ContainsActualExpression()
+        {
+            TestClass actualExpression = new TestClass(1);
+            Func<TestClass, int> valueOf = x => x.Value;
+
+            Assert.Throws<EasyAssertionException>(() => actualExpression.Assert(a => a.Value.ShouldNotBe(valueOf(a))));
+
+            Assert.AreEqual($"{nameof(valueOf)}({nameof(actualExpression)})", sut.GetExpectedExpression());
         }
 
         private class TestClass

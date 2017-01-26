@@ -32,6 +32,13 @@ namespace EasyAssertions.UnitTests
             Assert.AreSame(actual, result.And);
         }
 
+        protected void AssertThrowsExpectedError(Action assert)
+        {
+            Exception result = Assert.Throws<Exception>(() => assert());
+
+            Assert.AreSame(ExpectedException, result);
+        }
+
         protected static void AssertArgumentNullException(string paramName, TestDelegate assertionCall)
         {
             ArgumentNullException result = Assert.Throws<ArgumentNullException>(assertionCall);

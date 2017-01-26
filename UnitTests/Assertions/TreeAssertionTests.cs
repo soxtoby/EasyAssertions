@@ -27,9 +27,7 @@ namespace EasyAssertions.UnitTests
             TestNode<int>[] expected = { 2 };
             Error.TreesDoNotMatch(expected, actual, NoChildren, StandardTests.Instance.ObjectsAreEqual, "foo").Returns(ExpectedException);
 
-            Exception result = Assert.Throws<Exception>(() => actual.ShouldMatch(expected, NoChildren, "foo"));
-
-            Assert.AreSame(ExpectedException, result);
+            AssertThrowsExpectedError(() => actual.ShouldMatch(expected, NoChildren, "foo"));
         }
 
         [Test]
@@ -38,9 +36,7 @@ namespace EasyAssertions.UnitTests
             IEnumerable<int> actual = null;
             Error.NotEqual(typeof(IEnumerable<int>), null, "foo").Returns(ExpectedException);
 
-            Exception result = Assert.Throws<Exception>(() => actual.ShouldMatch(1.Node(), NoChildren, "foo"));
-
-            Assert.AreSame(ExpectedException, result);
+            AssertThrowsExpectedError(() => actual.ShouldMatch(1.Node(), NoChildren, "foo"));
         }
 
         [Test]
@@ -59,9 +55,10 @@ namespace EasyAssertions.UnitTests
         public void ShouldMatchTree_CorrectlyRegistersAssertion()
         {
             int[] actual = { 1 };
-            TestNode<int>[] expected = { 1.Node() };
+            TestNode<int>[] expected = { 2 };
+            Error.TreesDoNotMatch(Arg.Any<IEnumerable<TestNode<int>>>(), Arg.Any<IEnumerable<int>>(), Arg.Any<Func<int, IEnumerable<int>>>(), Arg.Any<Func<object, object, bool>>()).Returns(ExpectedException);
 
-            actual.ShouldMatch(expected, NoChildren);
+            AssertThrowsExpectedError(() => actual.ShouldMatch(expected, NoChildren));
 
             Assert.AreEqual(nameof(actual), TestExpression.GetActual());
             Assert.AreEqual(nameof(expected), TestExpression.GetExpected());
@@ -87,9 +84,8 @@ namespace EasyAssertions.UnitTests
             Func<object, object, bool> formatterEquality = null;
             Error.TreesDoNotMatch(expected, actual, NoChildren, Arg.Do<Func<object, object, bool>>(func => formatterEquality = func), "foo").Returns(ExpectedException);
 
-            Exception result = Assert.Throws<Exception>(() => actual.ShouldMatch(expected, NoChildren, equality, "foo"));
+            AssertThrowsExpectedError(() => actual.ShouldMatch(expected, NoChildren, equality, "foo"));
 
-            Assert.AreSame(ExpectedException, result);
             formatterEquality(2, 3);
             equality.Received()(2, 3);
         }
@@ -100,9 +96,7 @@ namespace EasyAssertions.UnitTests
             IEnumerable<int> actual = null;
             Error.NotEqual(typeof(IEnumerable<int>), null, "foo").Returns(ExpectedException);
 
-            Exception result = Assert.Throws<Exception>(() => actual.ShouldMatch(1.Node(), NoChildren, (a, e) => false, "foo"));
-
-            Assert.AreSame(ExpectedException, result);
+            AssertThrowsExpectedError(() => actual.ShouldMatch(1.Node(), NoChildren, (a, e) => false, "foo"));
         }
 
         [Test]
@@ -127,9 +121,11 @@ namespace EasyAssertions.UnitTests
         public void ShouldMatchTree_CustomEquality_CorrectlyRegistersAssertion()
         {
             int[] actual = { 1 };
-            TestNode<int>[] expected = { 1.Node() };
+            TestNode<int>[] expected = { 1 };
+            Func<int, int, bool> equality = Substitute.For<Func<int, int, bool>>();
+            Error.TreesDoNotMatch(Arg.Any<IEnumerable<TestNode<int>>>(), Arg.Any<IEnumerable<int>>(), Arg.Any<Func<int, IEnumerable<int>>>(), Arg.Any<Func<object, object, bool>>()).Returns(ExpectedException);
 
-            actual.ShouldMatch(expected, NoChildren, (a, b) => a == b);
+            AssertThrowsExpectedError(() => actual.ShouldMatch(expected, NoChildren, equality));
 
             Assert.AreEqual(nameof(actual), TestExpression.GetActual());
             Assert.AreEqual(nameof(expected), TestExpression.GetExpected());

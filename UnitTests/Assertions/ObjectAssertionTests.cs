@@ -24,28 +24,25 @@ namespace EasyAssertions.UnitTests
             object obj2 = new object();
             Error.NotEqual(obj2, obj1, "foo").Returns(ExpectedException);
 
-            Exception result = Assert.Throws<Exception>(() => obj1.ShouldBe(obj2, "foo"));
-
-            Assert.AreSame(ExpectedException, result);
+            AssertThrowsExpectedError(() => obj1.ShouldBe(obj2, "foo"));
         }
 
         [Test]
         public void ShouldBe_DifferentStrings_FailsWithStringsNotEqualMessage()
         {
-            Error.NotEqual("foo", "bar", message: "baz").Returns(new Exception("qux"));
+            Error.NotEqual("foo", "bar", message: "baz").Returns(ExpectedException);
 
-            Exception result = Assert.Throws<Exception>(() => "bar".ShouldBe("foo", "baz"));
-
-            Assert.AreEqual("qux", result.Message);
+            AssertThrowsExpectedError(() => "bar".ShouldBe("foo", "baz"));
         }
 
         [Test]
         public void ShouldBe_CorrectlyRegistersAssertion()
         {
             Equatable actual = new Equatable(1);
-            Equatable expected = actual;
+            Equatable expected = new Equatable(2);
+            Error.NotEqual(Arg.Any<object>(), Arg.Any<object>()).Returns(ExpectedException);
 
-            actual.ShouldBe(expected);
+            AssertThrowsExpectedError(() => actual.ShouldBe(expected));
 
             Assert.AreEqual(nameof(actual), TestExpression.GetActual());
             Assert.AreEqual(nameof(expected), TestExpression.GetExpected());
@@ -68,9 +65,7 @@ namespace EasyAssertions.UnitTests
             const int expected = 1;
             Error.NotEqual(expected, actual, "foo").Returns(ExpectedException);
 
-            Exception result = Assert.Throws<Exception>(() => actual.ShouldBe(expected, "foo"));
-
-            Assert.AreSame(ExpectedException, result);
+            AssertThrowsExpectedError(() => actual.ShouldBe(expected, "foo"));
         }
 
         [Test]
@@ -80,18 +75,17 @@ namespace EasyAssertions.UnitTests
             const int expected = 2;
             Error.NotEqual(expected, actual, "foo").Returns(ExpectedException);
 
-            Exception result = Assert.Throws<Exception>(() => actual.ShouldBe(expected, "foo"));
-
-            Assert.AreSame(ExpectedException, result);
+            AssertThrowsExpectedError(() => actual.ShouldBe(expected, "foo"));
         }
 
         [Test]
         public void NullableShouldBe_CorrectlyRegistersAssertion()
         {
             int? actual = 1;
-            int expected = actual.Value;
+            const int expected = 2;
+            Error.NotEqual(Arg.Any<object>(), Arg.Any<object>()).Returns(ExpectedException);
 
-            actual.ShouldBe(expected);
+            Assert.Throws<Exception>(() => actual.ShouldBe(expected));
 
             Assert.AreEqual(nameof(actual), TestExpression.GetActual());
             Assert.AreEqual(nameof(expected), TestExpression.GetExpected());
@@ -114,18 +108,17 @@ namespace EasyAssertions.UnitTests
             Equatable notExpected = new Equatable(1);
             Error.AreEqual(notExpected, actual, "foo").Returns(ExpectedException);
 
-            Exception result = Assert.Throws<Exception>(() => actual.ShouldNotBe(notExpected, "foo"));
-
-            Assert.AreSame(ExpectedException, result);
+            AssertThrowsExpectedError(() => actual.ShouldNotBe(notExpected, "foo"));
         }
 
         [Test]
         public void ShouldNotBe_CorrectlyRegistersAssertion()
         {
             Equatable actual = new Equatable(1);
-            Equatable notExpected = new Equatable(2);
+            Equatable notExpected = new Equatable(1);
+            Error.AreEqual(Arg.Any<object>(), Arg.Any<object>()).Returns(ExpectedException);
 
-            actual.ShouldNotBe(notExpected);
+            AssertThrowsExpectedError(() => actual.ShouldNotBe(notExpected));
 
             Assert.AreEqual(nameof(actual), TestExpression.GetActual());
             Assert.AreEqual(nameof(notExpected), TestExpression.GetExpected());
@@ -143,9 +136,7 @@ namespace EasyAssertions.UnitTests
             object actual = new object();
             Error.NotEqual(null, actual, "foo").Returns(ExpectedException);
 
-            Exception result = Assert.Throws<Exception>(() => actual.ShouldBeNull("foo"));
-
-            Assert.AreSame(ExpectedException, result);
+            AssertThrowsExpectedError(() => actual.ShouldBeNull("foo"));
         }
 
         [Test]
@@ -173,9 +164,7 @@ namespace EasyAssertions.UnitTests
         {
             Error.IsNull("foo").Returns(ExpectedException);
 
-            Exception result = Assert.Throws<Exception>(() => ((object)null).ShouldNotBeNull("foo"));
-
-            Assert.AreSame(ExpectedException, result);
+            AssertThrowsExpectedError(() => ((object)null).ShouldNotBeNull("foo"));
         }
 
         [Test]
@@ -204,18 +193,17 @@ namespace EasyAssertions.UnitTests
             Equatable expected = new Equatable(1);
             Error.NotSame(expected, actual, "foo").Returns(ExpectedException);
 
-            Exception result = Assert.Throws<Exception>(() => actual.ShouldReferTo(expected, "foo"));
-
-            Assert.AreSame(ExpectedException, result);
+            AssertThrowsExpectedError(() => actual.ShouldReferTo(expected, "foo"));
         }
 
         [Test]
         public void ShouldReferTo_CorrectlyRegistersAssertion()
         {
             object actual = new object();
-            object expected = actual;
+            object expected = new object();
+            Error.NotSame(Arg.Any<object>(), Arg.Any<object>()).Returns(ExpectedException);
 
-            actual.ShouldReferTo(expected);
+            AssertThrowsExpectedError(() => actual.ShouldReferTo(expected));
 
             Assert.AreEqual(nameof(actual), TestExpression.GetActual());
             Assert.AreEqual(nameof(expected), TestExpression.GetExpected());
@@ -237,18 +225,17 @@ namespace EasyAssertions.UnitTests
             object actual = new object();
             Error.AreSame(actual, "foo").Returns(ExpectedException);
 
-            Exception result = Assert.Throws<Exception>(() => actual.ShouldNotReferTo(actual, "foo"));
-
-            Assert.AreSame(ExpectedException, result);
+            AssertThrowsExpectedError(() => actual.ShouldNotReferTo(actual, "foo"));
         }
 
         [Test]
         public void ShouldNotReferTo_CorrectlyRegistersAssertion()
         {
             object actual = new object();
-            object notExpected = new object();
+            object notExpected = actual;
+            Error.AreSame(Arg.Any<object>(), Arg.Any<string>()).Returns(ExpectedException);
 
-            actual.ShouldNotReferTo(notExpected);
+            AssertThrowsExpectedError(() => actual.ShouldNotReferTo(notExpected));
 
             Assert.AreEqual(nameof(actual), TestExpression.GetActual());
             Assert.AreEqual(nameof(notExpected), TestExpression.GetExpected());
@@ -269,9 +256,7 @@ namespace EasyAssertions.UnitTests
         {
             object actual = new Equatable(1);
             Error.NotEqual(typeof(SubEquatable), typeof(Equatable), "foo").Returns(ExpectedException);
-            Exception result = Assert.Throws<Exception>(() => actual.ShouldBeA<SubEquatable>("foo"));
-
-            Assert.AreSame(ExpectedException, result);
+            AssertThrowsExpectedError(() => actual.ShouldBeA<SubEquatable>("foo"));
         }
 
         [Test]

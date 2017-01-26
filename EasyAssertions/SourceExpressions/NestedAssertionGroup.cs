@@ -17,11 +17,22 @@ namespace EasyAssertions
 
         public override string GetActualExpression(string parentExpression)
         {
-            string expression = base.GetActualExpression(parentExpression);
-            
+            return ReplaceAliasWithActualExpression(base.GetActualExpression(parentExpression), parentExpression)
+                ?? parentExpression;
+        }
+
+        public override string GetExpectedExpression(string actualExpression)
+        {
+            string expectedExpression = base.GetExpectedExpression(actualExpression);
+            return ReplaceAliasWithActualExpression(expectedExpression, actualExpression)
+                ?? expectedExpression;
+        }
+
+        private string ReplaceAliasWithActualExpression(string expression, string actualExpression)
+        {
             return string.IsNullOrEmpty(expression) || !ExpressionAliasPattern.IsMatch(expression)
-                ? parentExpression
-                : ExpressionAliasPattern.Replace(expression, parentExpression);
+                ? null
+                : ExpressionAliasPattern.Replace(expression, actualExpression);
         }
 
         private Regex ExpressionAliasPattern => new Regex(WordBoundary + Regex.Escape(expressionAlias) + WordBoundary);

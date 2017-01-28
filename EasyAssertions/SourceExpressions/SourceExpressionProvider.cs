@@ -68,7 +68,43 @@ namespace EasyAssertions
 
             RegisterComponent((address, methodName) => new AssertionMethod(address, methodName), assertionFrameIndex, analyser);
 
-            EnterNestedAssertion(analyser.GetMethod(assertionFrameIndex), assertionFrameIndex);
+            EnterNestedAssertion(analyser.GetMethod(assertionFrameIndex), assertionFrameIndex, analyser);
+        }
+
+        public void EnterAssertion(MethodInfo method, int assertionFrameIndex)
+        {
+            assertionFrameIndex++;
+
+            StackAnalyser analyser = StackAnalyser.ForCurrentStack();
+
+            RegisterComponent((address, methodName) => new AssertionMethod(address, methodName), assertionFrameIndex, analyser);
+
+            EnterNestedAssertion(method, assertionFrameIndex, analyser);
+        }
+
+        private void EnterNestedAssertion(MethodBase innerAssertionMethod, int assertionFrameIndex, StackAnalyser analyser)
+        {
+            AddGroup(innerAssertionMethod, assertionFrameIndex, (callAddress, expressionAlias) =>
+                new NestedAssertionGroup(callAddress, expressionAlias), analyser);
+        }
+
+        public void EnterIndexedAssertion(int index, int assertionFrameIndex)
+        {
+            assertionFrameIndex++;
+
+            StackAnalyser analyser = StackAnalyser.ForCurrentStack();
+
+            RegisterComponent((address, methodName) => new AssertionMethod(address, methodName), assertionFrameIndex, analyser);
+
+            AddGroup(analyser.GetMethod(assertionFrameIndex), assertionFrameIndex, (callAddress, expressionAlias) =>
+                new IndexedAssertionGroup(callAddress, expressionAlias, index), analyser);
+        }
+
+        private void AddGroup(MethodBase innerAssertionMethod, int callFrameIndex, Func<SourceAddress, string, AssertionComponentGroup> createGroup, StackAnalyser analyser)
+        {
+            SourceAddress callerAddress = analyser.GetCallAddress(callFrameIndex);
+            string expressionAlias = GetExpressionAlias(innerAssertionMethod);
+            assertionGroupChain.Add(createGroup(callerAddress, expressionAlias));
         }
 
         public void RegisterContinuation(int continuationFrameIndex)
@@ -94,27 +130,6 @@ namespace EasyAssertions
 
             if (assertionGroupChain.None())
                 assertionGroupChain.Add(new BaseGroup());
-        }
-
-        public void EnterNestedAssertion(MethodBase innerAssertionMethod, int assertionFrameIndex)
-        {
-            assertionFrameIndex++;
-            AddGroup(innerAssertionMethod, assertionFrameIndex, (callAddress, expressionAlias) =>
-                new NestedAssertionGroup(callAddress, expressionAlias));
-        }
-
-        public void EnterIndexedAssertion(MethodInfo innerAssertionMethod, int index, int assertionFrameIndex)
-        {
-            assertionFrameIndex++;
-            AddGroup(innerAssertionMethod, assertionFrameIndex, (callAddress, expressionAlias) =>
-                new IndexedAssertionGroup(callAddress, GetExpressionAlias(innerAssertionMethod), index));
-        }
-
-        private void AddGroup(MethodBase innerAssertionMethod, int callFrameIndex, Func<SourceAddress, string, AssertionComponentGroup> createGroup)
-        {
-            SourceAddress callerAddress = StackAnalyser.ForCurrentStack().GetCallAddress(callFrameIndex + 1);
-            string expressionAlias = GetExpressionAlias(innerAssertionMethod);
-            assertionGroupChain.Add(createGroup(callerAddress, expressionAlias));
         }
 
         private static string GetExpressionAlias(MethodBase innerAssertion)

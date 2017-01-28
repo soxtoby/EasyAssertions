@@ -396,7 +396,7 @@ namespace EasyAssertions
                             throw c.StandardError.LengthMismatch(assertions.Length, bufferedActual);
 
                         for (int i = 0; i < assertions.Length; i++)
-                            EasyAssertion.RegisterIndexedAssert(i, assertions[i].Method, () => assertions[i](bufferedActual[i]));
+                            actual.RegisterAssert(i, c2 => actual.RegisterAssert(assertions[i], () => assertions[i](bufferedActual[i])));
                     }
                 });
         }
@@ -410,11 +410,11 @@ namespace EasyAssertions
 
             return actual.RegisterAssert(c =>
                 {
-                    actual.ShouldBeA<IEnumerable<TItem>>(null);
+                    actual.ShouldBeA<IEnumerable<TItem>>();
 
                     int i = 0;
                     foreach (TItem item in actual)
-                        EasyAssertion.RegisterIndexedAssert(i++, assertion.Method, () => assertion(item));
+                        item.RegisterAssert(i, c2 => item.RegisterAssert(assertion, () => assertion(item)));
                 });
         }
     }

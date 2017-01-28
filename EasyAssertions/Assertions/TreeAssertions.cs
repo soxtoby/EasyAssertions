@@ -15,7 +15,7 @@ namespace EasyAssertions
             if (expectedRootNodes == null) throw new ArgumentNullException(nameof(expectedRootNodes));
             if (getChildren == null) throw new ArgumentNullException(nameof(getChildren));
 
-            return actualRootNodes.RegisterAssert(c =>
+            return actualRootNodes.RegisterAssertion(c =>
                 {
                     actualRootNodes.ShouldBeA<IEnumerable<TActual>>(message);
 
@@ -35,7 +35,7 @@ namespace EasyAssertions
             if (getChildren == null) throw new ArgumentNullException(nameof(getChildren));
             if (predicate == null) throw new ArgumentNullException(nameof(predicate));
 
-            return actualRootNodes.RegisterAssert(c =>
+            return actualRootNodes.RegisterAssertion(c =>
                 {
                     actualRootNodes.ShouldBeA<IEnumerable<TActual>>(message);
 

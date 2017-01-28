@@ -13,7 +13,7 @@ namespace EasyAssertions
         /// </summary>
         public static Actual<string> ShouldBeEmpty(this string actual, string message = null)
         {
-            return actual.RegisterAssert(c =>
+            return actual.RegisterAssertion(c =>
                 {
                     actual.ShouldBeA<string>(message);
 
@@ -29,7 +29,7 @@ namespace EasyAssertions
         {
             if (expectedToContain == null) throw new ArgumentNullException(nameof(expectedToContain));
 
-            return actual.RegisterAssert(c =>
+            return actual.RegisterAssertion(c =>
                 {
                     actual.ShouldBeA<string>(message);
 
@@ -45,7 +45,7 @@ namespace EasyAssertions
         {
             if (expectedToNotContain == null) throw new ArgumentNullException(nameof(expectedToNotContain));
 
-            return actual.RegisterAssert(c =>
+            return actual.RegisterAssertion(c =>
                 {
                     actual.ShouldBeA<string>(message);
 
@@ -61,7 +61,7 @@ namespace EasyAssertions
         {
             if (expectedStart == null) throw new ArgumentNullException(nameof(expectedStart));
 
-            return actual.RegisterAssert(c =>
+            return actual.RegisterAssertion(c =>
                 {
                     actual.ShouldBeA<string>(message);
 
@@ -77,7 +77,7 @@ namespace EasyAssertions
         {
             if (expectedEnd == null) throw new ArgumentNullException(nameof(expectedEnd));
 
-            return actual.RegisterAssert(c =>
+            return actual.RegisterAssertion(c =>
                 {
                     actual.ShouldBeA<string>(message);
 
@@ -93,7 +93,7 @@ namespace EasyAssertions
         {
             if (expected == null) throw new ArgumentNullException(nameof(expected));
 
-            return actual.RegisterAssert(c =>
+            return actual.RegisterAssertion(c =>
                 {
                     actual.ShouldBeA<string>(message);
 
@@ -113,7 +113,7 @@ namespace EasyAssertions
         {
             if (regexPattern == null) throw new ArgumentNullException(nameof(regexPattern));
 
-            return actual.RegisterAssert(c => AssertMatch(actual, new Regex(regexPattern), message, c));
+            return actual.RegisterAssertion(c => AssertMatch(actual, new Regex(regexPattern), message, c));
         }
 
         /// <summary>
@@ -123,7 +123,7 @@ namespace EasyAssertions
         {
             if (regexPattern == null) throw new ArgumentNullException(nameof(regexPattern));
 
-            return actual.RegisterAssert(c => AssertMatch(actual, new Regex(regexPattern, options), message, c));
+            return actual.RegisterAssertion(c => AssertMatch(actual, new Regex(regexPattern, options), message, c));
         }
 
         /// <summary>
@@ -133,7 +133,7 @@ namespace EasyAssertions
         {
             if (regex == null) throw new ArgumentNullException(nameof(regex));
 
-            return actual.RegisterAssert(c => AssertMatch(actual, regex, message, c));
+            return actual.RegisterAssertion(c => AssertMatch(actual, regex, message, c));
         }
 
         private static void AssertMatch(string actual, Regex regex, string message, AssertionContext context)
@@ -151,7 +151,7 @@ namespace EasyAssertions
         {
             if (regexPattern == null) throw new ArgumentNullException(nameof(regexPattern));
 
-            return actual.RegisterAssert(c => AssertDoesNotMatch(actual, new Regex(regexPattern), message, c));
+            return actual.RegisterAssertion(c => AssertDoesNotMatch(actual, new Regex(regexPattern), message, c));
         }
 
         /// <summary>
@@ -161,7 +161,7 @@ namespace EasyAssertions
         {
             if (regexPattern == null) throw new ArgumentNullException(nameof(regexPattern));
 
-            return actual.RegisterAssert(c => AssertDoesNotMatch(actual, new Regex(regexPattern, options), message, c));
+            return actual.RegisterAssertion(c => AssertDoesNotMatch(actual, new Regex(regexPattern, options), message, c));
         }
 
         /// <summary>
@@ -171,7 +171,7 @@ namespace EasyAssertions
         {
             if (regex == null) throw new ArgumentNullException(nameof(regex));
 
-            return actual.RegisterAssert(c => AssertDoesNotMatch(actual, regex, message, c));
+            return actual.RegisterAssertion(c => AssertDoesNotMatch(actual, regex, message, c));
         }
 
         private static void AssertDoesNotMatch(string actual, Regex regex, string message, AssertionContext context)

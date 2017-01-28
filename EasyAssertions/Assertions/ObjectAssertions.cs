@@ -12,7 +12,7 @@ namespace EasyAssertions
         public static Actual<TActual> ShouldBe<TActual, TExpected>(this TActual actual, TExpected expected, string message = null) 
             where TExpected : TActual
         {
-            return actual.RegisterAssert(c =>
+            return actual.RegisterAssertion(c =>
                 {
                     if (!c.Test.ObjectsAreEqual(actual, expected))
                     {
@@ -32,7 +32,7 @@ namespace EasyAssertions
         public static Actual<TActual> ShouldBe<TActual>(this TActual? actual, TActual expected, string message = null) 
             where TActual : struct
         {
-            actual.RegisterAssert(c =>
+            actual.RegisterAssertion(c =>
                 {
                     if (!actual.HasValue)
                         throw c.StandardError.NotEqual(expected, actual, message);
@@ -50,7 +50,7 @@ namespace EasyAssertions
         public static Actual<TActual> ShouldNotBe<TActual, TNotExpected>(this TActual actual, TNotExpected notExpected, string message = null) 
             where TNotExpected : TActual
         {
-            return actual.RegisterAssert(c =>
+            return actual.RegisterAssertion(c =>
                 {
                     if (c.Test.ObjectsAreEqual(actual, notExpected))
                         throw c.StandardError.AreEqual(notExpected, actual, message);
@@ -62,7 +62,7 @@ namespace EasyAssertions
         /// </summary>
         public static void ShouldBeNull<TActual>(this TActual actual, string message = null)
         {
-            actual.RegisterAssert(c =>
+            actual.RegisterAssertion(c =>
                 {
                     if (!Equals(actual, null))
                         throw c.StandardError.NotEqual(null, actual, message);
@@ -74,7 +74,7 @@ namespace EasyAssertions
         /// </summary>
         public static Actual<TActual> ShouldNotBeNull<TActual>(this TActual actual, string message = null)
         {
-            return actual.RegisterAssert(c =>
+            return actual.RegisterAssertion(c =>
                 {
                     if (Equals(actual, null))
                         throw c.StandardError.IsNull(message);
@@ -87,7 +87,7 @@ namespace EasyAssertions
         public static Actual<TActual> ShouldReferTo<TActual, TExpected>(this TActual actual, TExpected expected, string message = null) 
             where TExpected : TActual
         {
-            return actual.RegisterAssert(c =>
+            return actual.RegisterAssertion(c =>
                 {
                     if (!ReferenceEquals(actual, expected))
                         throw c.StandardError.NotSame(expected, actual, message);
@@ -100,7 +100,7 @@ namespace EasyAssertions
         public static Actual<TActual> ShouldNotReferTo<TActual, TNotExpected>(this TActual actual, TNotExpected notExpected, string message = null) 
             where TNotExpected : TActual
         {
-            return actual.RegisterAssert(c =>
+            return actual.RegisterAssertion(c =>
                 {
                     if (ReferenceEquals(actual, notExpected))
                         throw c.StandardError.AreSame(actual, message);
@@ -112,7 +112,7 @@ namespace EasyAssertions
         /// </summary>
         public static Actual<TExpected> ShouldBeA<TExpected>(this object actual, string message = null)
         {
-            actual.RegisterAssert(c =>
+            actual.RegisterAssertion(c =>
                 {
                     if (!(actual is TExpected))
                         throw c.StandardError.NotEqual(typeof(TExpected), actual?.GetType(), message);

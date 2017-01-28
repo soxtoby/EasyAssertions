@@ -17,7 +17,7 @@ namespace EasyAssertions
         /// </summary>
         public static Actual<TActual> ShouldComplete<TActual>(this Task<TActual> actualTask, string message = null)
         {
-            return actualTask.RegisterAssert(c => actualTask.ShouldComplete(DefaultTimeout, message));
+            return actualTask.RegisterAssertion(c => actualTask.ShouldComplete(DefaultTimeout, message));
         }
 
         /// <summary>
@@ -25,7 +25,7 @@ namespace EasyAssertions
         /// </summary>
         public static Actual<TActual> ShouldComplete<TActual>(this Task<TActual> actualTask, uint millisecondsTimeout, string message = null)
         {
-            return actualTask.RegisterAssert(c => actualTask.ShouldComplete(TimeSpan.FromMilliseconds(millisecondsTimeout), message));
+            return actualTask.RegisterAssertion(c => actualTask.ShouldComplete(TimeSpan.FromMilliseconds(millisecondsTimeout), message));
         }
 
         /// <summary>
@@ -33,7 +33,7 @@ namespace EasyAssertions
         /// </summary>
         public static Actual<TActual> ShouldComplete<TActual>(this Task<TActual> actualTask, TimeSpan timeout, string message = null)
         {
-            actualTask.RegisterAssert(c => actualTask.ShouldComplete<Task<TActual>>(timeout, message));
+            actualTask.RegisterAssertion(c => actualTask.ShouldComplete<Task<TActual>>(timeout, message));
             return new Actual<TActual>(actualTask.Result);
         }
 
@@ -43,7 +43,7 @@ namespace EasyAssertions
         /// </summary>
         public static void ShouldComplete(this Task actualTask, string message = null)
         {
-            actualTask.RegisterAssert(c => actualTask.ShouldComplete(DefaultTimeout, message));
+            actualTask.RegisterAssertion(c => actualTask.ShouldComplete(DefaultTimeout, message));
         }
 
         /// <summary>
@@ -51,7 +51,7 @@ namespace EasyAssertions
         /// </summary>
         public static void ShouldComplete(this Task actualTask, uint millisecondsTimeout, string message = null)
         {
-            actualTask.RegisterAssert(c => actualTask.ShouldComplete(TimeSpan.FromMilliseconds(millisecondsTimeout), message));
+            actualTask.RegisterAssertion(c => actualTask.ShouldComplete(TimeSpan.FromMilliseconds(millisecondsTimeout), message));
         }
 
         /// <summary>
@@ -63,7 +63,7 @@ namespace EasyAssertions
             if (timeout < TimeSpan.Zero)
                 throw NegativeTimeoutException(timeout);
 
-            actualTask.RegisterAssert(c =>
+            actualTask.RegisterAssertion(c =>
                 {
                     actualTask.ShouldBeA<TTask>(message);
 
@@ -78,7 +78,7 @@ namespace EasyAssertions
         /// </summary>
         public static ActualException<Exception> ShouldFail(this Task actualTask, string message = null)
         {
-            actualTask.RegisterAssert(c => actualTask.ShouldFail<Exception>(DefaultTimeout, message));
+            actualTask.RegisterAssertion(c => actualTask.ShouldFail<Exception>(DefaultTimeout, message));
             return new ActualException<Exception>(actualTask.Exception.InnerException);
         }
 
@@ -87,7 +87,7 @@ namespace EasyAssertions
         /// </summary>
         public static ActualException<Exception> ShouldFail(this Task actualTask, uint millisecondsTimeout, string message = null)
         {
-            actualTask.RegisterAssert(c => actualTask.ShouldFail<Exception>(TimeSpan.FromMilliseconds(millisecondsTimeout), message));
+            actualTask.RegisterAssertion(c => actualTask.ShouldFail<Exception>(TimeSpan.FromMilliseconds(millisecondsTimeout), message));
             return new ActualException<Exception>(actualTask.Exception.InnerException);
         }
 
@@ -96,7 +96,7 @@ namespace EasyAssertions
         /// </summary>
         public static ActualException<Exception> ShouldFail(this Task actualTask, TimeSpan timeout, string message = null)
         {
-            actualTask.RegisterAssert(c => actualTask.ShouldFail<Exception>(timeout, message));
+            actualTask.RegisterAssertion(c => actualTask.ShouldFail<Exception>(timeout, message));
             return new ActualException<Exception>(actualTask.Exception.InnerException);
         }
 
@@ -107,7 +107,7 @@ namespace EasyAssertions
         public static ActualException<TException> ShouldFail<TException>(this Task actualTask, string message = null) 
             where TException : Exception
         {
-            actualTask.RegisterAssert(c => actualTask.ShouldFail<TException>(DefaultTimeout, message));
+            actualTask.RegisterAssertion(c => actualTask.ShouldFail<TException>(DefaultTimeout, message));
             return new ActualException<TException>((TException)actualTask.Exception.InnerException);
         }
 
@@ -117,7 +117,7 @@ namespace EasyAssertions
         public static ActualException<TException> ShouldFail<TException>(this Task actualTask, uint millisecondsTimeout, string message = null) 
             where TException : Exception
         {
-            actualTask.RegisterAssert(c => actualTask.ShouldFail<TException>(TimeSpan.FromMilliseconds(millisecondsTimeout), message));
+            actualTask.RegisterAssertion(c => actualTask.ShouldFail<TException>(TimeSpan.FromMilliseconds(millisecondsTimeout), message));
             return new ActualException<TException>((TException)actualTask.Exception.InnerException);
         }
 
@@ -130,7 +130,7 @@ namespace EasyAssertions
             if (timeout < TimeSpan.Zero)
                 throw NegativeTimeoutException(timeout);
 
-            return (ActualException<TException>)actualTask.RegisterAssert(c =>
+            return (ActualException<TException>)actualTask.RegisterAssertion(c =>
                 {
                     actualTask.ShouldBeA<Task>(message);
 

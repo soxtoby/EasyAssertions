@@ -36,7 +36,7 @@ namespace EasyAssertions
         public static Actual<TActual> ShouldBeEmpty<TActual>(this TActual actual, string message = null) 
             where TActual : IEnumerable
         {
-            return actual.RegisterAssert(c =>
+            return actual.RegisterAssertion(c =>
                 {
                     actual.ShouldBeA<TActual>(message);
 
@@ -54,7 +54,7 @@ namespace EasyAssertions
         public static Actual<TActual> ShouldNotBeEmpty<TActual>(this TActual actual, string message = null) 
             where TActual : IEnumerable
         {
-            return actual.RegisterAssert(c =>
+            return actual.RegisterAssertion(c =>
                 {
                     actual.ShouldBeA<TActual>(message);
                     if (c.Test.IsEmpty(actual))
@@ -68,7 +68,7 @@ namespace EasyAssertions
         public static Actual<TActual> ShouldBeSingular<TActual>(this TActual actual, string message = null) 
             where TActual : IEnumerable
         {
-            return actual.RegisterAssert(c => actual.ShouldBeLength(1, message));
+            return actual.RegisterAssertion(c => actual.ShouldBeLength(1, message));
         }
 
         /// <summary>
@@ -77,7 +77,7 @@ namespace EasyAssertions
         public static Actual<TActual> ShouldBeLength<TActual>(this TActual actual, int expectedLength, string message = null) 
             where TActual : IEnumerable
         {
-            return actual.RegisterAssert(c =>
+            return actual.RegisterAssertion(c =>
                 {
                     actual.ShouldBeA<TActual>(message);
 
@@ -99,7 +99,7 @@ namespace EasyAssertions
         {
             if (expected == null) throw new ArgumentNullException(nameof(expected));
 
-            return actual.RegisterAssert(c => actual.ShouldMatch(expected, c.Test.ObjectsMatch, message));
+            return actual.RegisterAssertion(c => actual.ShouldMatch(expected, c.Test.ObjectsMatch, message));
         }
 
         /// <summary>
@@ -107,7 +107,7 @@ namespace EasyAssertions
         /// </summary>
         public static Actual<IEnumerable<float>> ShouldMatch(this IEnumerable<float> actual, IEnumerable<float> expected, float delta, string message = null)
         {
-            return actual.RegisterAssert(c => actual.ShouldMatch(expected, (a, e) => c.Test.AreWithinTolerance(a, e, delta), message));
+            return actual.RegisterAssertion(c => actual.ShouldMatch(expected, (a, e) => c.Test.AreWithinTolerance(a, e, delta), message));
         }
 
         /// <summary>
@@ -115,7 +115,7 @@ namespace EasyAssertions
         /// </summary>
         public static Actual<IEnumerable<double>> ShouldMatch(this IEnumerable<double> actual, IEnumerable<double> expected, double delta, string message = null)
         {
-            return actual.RegisterAssert(c => actual.ShouldMatch(expected, (a, e) => c.Test.AreWithinTolerance(a, e, delta), message));
+            return actual.RegisterAssertion(c => actual.ShouldMatch(expected, (a, e) => c.Test.AreWithinTolerance(a, e, delta), message));
         }
 
         /// <summary>
@@ -123,7 +123,7 @@ namespace EasyAssertions
         /// </summary>
         public static Actual<IEnumerable<TActual>> ShouldMatch<TActual, TExpected>(this IEnumerable<TActual> actual, IEnumerable<TExpected> expected, Func<TActual, TExpected, bool> predicate, string message = null)
         {
-            return actual.RegisterAssert(c =>
+            return actual.RegisterAssertion(c =>
                 {
                     actual.ShouldBeA<IEnumerable<TActual>>(message);
 
@@ -144,7 +144,7 @@ namespace EasyAssertions
         {
             if (expectedStart == null) throw new ArgumentNullException(nameof(expectedStart));
 
-            return actual.RegisterAssert(c =>
+            return actual.RegisterAssertion(c =>
                 {
                     actual.ShouldBeA<IEnumerable<TActual>>(message);
 
@@ -162,7 +162,7 @@ namespace EasyAssertions
         {
             if (expectedEnd == null) throw new ArgumentNullException(nameof(expectedEnd));
 
-            return actual.RegisterAssert(c =>
+            return actual.RegisterAssertion(c =>
                 {
                     actual.ShouldBeA<IEnumerable<TActual>>(message);
 
@@ -181,7 +181,7 @@ namespace EasyAssertions
         public static Actual<IEnumerable<TActual>> ShouldContain<TActual, TExpected>(this IEnumerable<TActual> actual, TExpected expected, string message = null) 
             where TExpected : TActual
         {
-            return actual.RegisterAssert(c =>
+            return actual.RegisterAssertion(c =>
                 {
                     actual.ShouldBeA<IEnumerable<TActual>>(message);
 
@@ -199,7 +199,7 @@ namespace EasyAssertions
         public static Actual<IEnumerable<TActual>> ShouldContainItems<TActual, TExpected>(this IEnumerable<TActual> actual, IEnumerable<TExpected> expected, string message = null) 
             where TExpected : TActual
         {
-            return actual.RegisterAssert(c =>
+            return actual.RegisterAssertion(c =>
                 {
                     actual.ShouldBeA<IEnumerable<TActual>>(message);
 
@@ -220,7 +220,7 @@ namespace EasyAssertions
         {
             if (expectedSuperset == null) throw new ArgumentNullException(nameof(expectedSuperset));
 
-            return actual.RegisterAssert(c =>
+            return actual.RegisterAssertion(c =>
                 {
                     actual.ShouldBeA<IEnumerable<TActual>>(message);
 
@@ -239,7 +239,7 @@ namespace EasyAssertions
         public static Actual<IEnumerable<TActual>> ShouldNotContain<TActual, TExpected>(this IEnumerable<TActual> actual, TExpected expectedToNotContain, string message = null) 
             where TExpected : TActual
         {
-            return actual.RegisterAssert(c =>
+            return actual.RegisterAssertion(c =>
                 {
                     actual.ShouldBeA<IEnumerable<TActual>>(message);
 
@@ -257,7 +257,7 @@ namespace EasyAssertions
         public static Actual<IEnumerable<TActual>> ShouldNotContainItems<TActual, TExpected>(this IEnumerable<TActual> actual, IEnumerable<TExpected> expectedToNotContain, string message = null) 
             where TExpected : TActual
         {
-            return actual.RegisterAssert(c =>
+            return actual.RegisterAssertion(c =>
                 {
                     actual.ShouldBeA<IEnumerable<TActual>>(message);
 
@@ -276,7 +276,7 @@ namespace EasyAssertions
         public static Actual<IEnumerable<TActual>> ShouldOnlyContain<TActual, TExpected>(this IEnumerable<TActual> actual, IEnumerable<TExpected> expected, string message = null) 
             where TExpected : TActual
         {
-            return actual.RegisterAssert(c =>
+            return actual.RegisterAssertion(c =>
                 {
                     actual.ShouldBeA<IEnumerable<TActual>>(message);
 
@@ -299,7 +299,7 @@ namespace EasyAssertions
         {
             if (expected == null) throw new ArgumentNullException(nameof(expected));
 
-            return actual.RegisterAssert(c =>
+            return actual.RegisterAssertion(c =>
                 {
                     actual.ShouldBeA<IEnumerable<TActual>>(message);
 
@@ -318,7 +318,7 @@ namespace EasyAssertions
         public static Actual<TActual> ShouldBeDistinct<TActual>(this TActual actual, string message = null) 
             where TActual : IEnumerable
         {
-            return actual.RegisterAssert(c => AssertDistinct(c, actual, message));
+            return actual.RegisterAssertion(c => AssertDistinct(c, actual, message));
         }
 
         private static void AssertDistinct<TActual>(AssertionContext assertionContext, TActual actual, string message) 
@@ -339,7 +339,7 @@ namespace EasyAssertions
         public static Actual<IEnumerable<TActual>> ShouldMatchReferences<TActual, TExpected>(this IEnumerable<TActual> actual, IEnumerable<TExpected> expected, string message = null) 
             where TExpected : TActual
         {
-            return actual.RegisterAssert(c =>
+            return actual.RegisterAssertion(c =>
                 {
                     actual.ShouldBeA<IEnumerable<TActual>>(message);
 
@@ -360,7 +360,7 @@ namespace EasyAssertions
         /// </summary>
         public static Actual<KeyedCollection<TKey, TItem>> ShouldContainKey<TKey, TItem>(this KeyedCollection<TKey, TItem> actual, TKey expectedKey, string message = null)
         {
-            return actual.RegisterAssert(c =>
+            return actual.RegisterAssertion(c =>
                 {
                     actual.ShouldBeA<KeyedCollection<TKey, TItem>>(message);
                     if (!actual.Contains(expectedKey))
@@ -373,7 +373,7 @@ namespace EasyAssertions
         /// </summary>
         public static Actual<KeyedCollection<TKey, TItem>> ShouldNotContainKey<TKey, TItem>(this KeyedCollection<TKey, TItem> actual, TKey notExpectedKey, string message = null)
         {
-            return actual.RegisterAssert(c =>
+            return actual.RegisterAssertion(c =>
                 {
                     actual.ShouldBeA<KeyedCollection<TKey, TItem>>(message);
                     if (actual.Contains(notExpectedKey))
@@ -386,7 +386,7 @@ namespace EasyAssertions
         /// </summary>
         public static Actual<IEnumerable<TItem>> ItemsSatisfy<TItem>(this IEnumerable<TItem> actual, params Action<TItem>[] assertions)
         {
-            return actual.RegisterAssert(c =>
+            return actual.RegisterAssertion(c =>
                 {
                     actual.ShouldBeA<IEnumerable<TItem>>(null);
 
@@ -396,7 +396,7 @@ namespace EasyAssertions
                             throw c.StandardError.LengthMismatch(assertions.Length, bufferedActual);
 
                         for (int i = 0; i < assertions.Length; i++)
-                            actual.RegisterAssert(i, c2 => actual.RegisterAssert(assertions[i], () => assertions[i](bufferedActual[i])));
+                            actual.RegisterIndexedAssertion(i, c2 => actual.RegisterUserAssertion(assertions[i], () => assertions[i](bufferedActual[i])));
                     }
                 });
         }
@@ -408,13 +408,13 @@ namespace EasyAssertions
         {
             if (assertion == null) throw new ArgumentNullException(nameof(assertion));
 
-            return actual.RegisterAssert(c =>
+            return actual.RegisterAssertion(c =>
                 {
                     actual.ShouldBeA<IEnumerable<TItem>>();
 
                     int i = 0;
                     foreach (TItem item in actual)
-                        item.RegisterAssert(i, c2 => item.RegisterAssert(assertion, () => assertion(item)));
+                        item.RegisterIndexedAssertion(i, c2 => item.RegisterUserAssertion(assertion, () => assertion(item)));
                 });
         }
     }

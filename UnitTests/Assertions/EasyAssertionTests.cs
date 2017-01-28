@@ -28,7 +28,7 @@ namespace EasyAssertions.UnitTests
         {
             object actual = new object();
 
-            Actual<object> result = actual.RegisterAssert(c => { });
+            Actual<object> result = actual.RegisterAssertion(c => { });
 
             Assert.AreSame(actual, result.And);
         }
@@ -38,7 +38,7 @@ namespace EasyAssertions.UnitTests
         {
             object innerActual = new object();
 
-            Actual<object> result = new object().RegisterAssert(c => new Actual<object>(innerActual));
+            Actual<object> result = new object().RegisterAssertion(c => new Actual<object>(innerActual));
 
             Assert.AreEqual(innerActual, result.And);
         }

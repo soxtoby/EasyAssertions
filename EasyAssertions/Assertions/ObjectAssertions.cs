@@ -112,13 +112,14 @@ namespace EasyAssertions
         /// </summary>
         public static Actual<TExpected> ShouldBeA<TExpected>(this object actual, string message = null)
         {
-            actual.RegisterAssertion(c =>
-                {
-                    if (!(actual is TExpected))
-                        throw c.StandardError.NotEqual(typeof(TExpected), actual?.GetType(), message);
-                });
-
+            actual.RegisterAssertion(c => AssertType<TExpected>(actual, message, c));
             return new Actual<TExpected>((TExpected)actual);
+        }
+
+        internal static void AssertType<TExpected>(object actual, string message, IAssertionContext context)
+        {
+            if (!(actual is TExpected))
+                throw context.StandardError.NotEqual(typeof(TExpected), actual?.GetType(), message);
         }
     }
 }

@@ -167,6 +167,52 @@ namespace EasyAssertions.UnitTests
             }
         }
 
+        class ShouldBeASingular : CollectionAssertionTests
+        {
+            [Test]
+            public void IsSingularItemWithExpectedType_ReturnsActualValue()
+            {
+                Equatable actualItem = new Equatable(1);
+                AssertReturnsActual(actualItem, () => new[] { actualItem }.ShouldBeASingular<Equatable>());
+            }
+
+            [Test]
+            public void IsNotSingular_FailsWithLengthMismatchMessage()
+            {
+                IEnumerable actual = new[] { 1, 2 };
+                Error.LengthMismatch(1, Matches(actual), "foo").Returns(ExpectedException);
+
+                AssertThrowsExpectedError(() => actual.ShouldBeASingular<int>("foo"));
+            }
+
+            [Test]
+            public void IsSingularItemWithWrongType_FailsWithTypesNotEqualMessage()
+            {
+                IEnumerable actual = new[] { 1.2 };
+                
+                AssertFailsWithTypesNotEqualMessage(typeof(int), typeof(double), msg => actual.ShouldBeASingular<int>(msg));
+            }
+
+            [Test]
+            public void ActualIsNull_FailsWithTypesNotEqualMessage()
+            {
+                IEnumerable actual = null;
+
+                AssertFailsWithTypesNotEqualMessage(typeof(IEnumerable), null, msg => actual.ShouldBeASingular<int>(msg));
+            }
+
+            [Test]
+            public void CorrectlyRegistersAssertion()
+            {
+                IEnumerable actual = new[] { 1, 2 };
+                Error.LengthMismatch(Arg.Any<int>(), Arg.Any<IEnumerable>()).Returns(ExpectedException);
+
+                AssertThrowsExpectedError(() => actual.ShouldBeASingular<int>());
+
+                Assert.AreEqual(nameof(actual), TestExpression.GetActual());
+            }
+        }
+
         class ShouldBeLength : CollectionAssertionTests
         {
             [Test]

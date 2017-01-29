@@ -5,6 +5,7 @@
  - `ShouldStartWith`, for asserting that a collection starts with the items of another collection.
  - `ShouldEndWith`, for asserting that a collection ends with the items of another collection.
  - `ShouldBeDistinct`, for asserting that a collection does not contain any duplicates.
+ - `ShouldBeASingular`, for asserting that a collection has a single item of the specified type, and returning that item.
  - Added a `Buffer.Create()` helper function, which creates an `IBuffer<T>` that can be enumerated multiple times without enumerating the underlying sequence more than once.
 
 ## Breaking Changes

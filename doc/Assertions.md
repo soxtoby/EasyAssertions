@@ -52,6 +52,7 @@ Enumerable.Empty<int>().ShouldBeEmpty();
 
 var singleItemCollection = new[] { 1 };
 singleItemCollection.ShouldBeSingular();
+singleItemCollection.ShouldBeASingular<int>();
     
 var collection = new[] { 1, 2, 3 };
 collection.ShouldNotBeEmpty();

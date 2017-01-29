@@ -55,6 +55,7 @@
   <ItemGroup>
     <Compile Include="ActualExceptionTests.cs" />
     <Compile Include="AssertionMethodTests.cs" />
+    <Compile Include="Equatable.cs" />
     <Compile Include="BufferTests.cs" />
     <Compile Include="Assertions\AssertionTests.cs" />
     <Compile Include="Assertions\EasyAssertionTests.cs" />

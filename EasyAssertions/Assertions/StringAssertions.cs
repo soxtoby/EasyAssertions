@@ -136,7 +136,7 @@ namespace EasyAssertions
             return actual.RegisterAssertion(c => AssertMatch(actual, regex, message, c));
         }
 
-        private static void AssertMatch(string actual, Regex regex, string message, AssertionContext context)
+        private static void AssertMatch(string actual, Regex regex, string message, IAssertionContext context)
         {
             actual.ShouldBeA<string>(message);
 
@@ -174,7 +174,7 @@ namespace EasyAssertions
             return actual.RegisterAssertion(c => AssertDoesNotMatch(actual, regex, message, c));
         }
 
-        private static void AssertDoesNotMatch(string actual, Regex regex, string message, AssertionContext context)
+        private static void AssertDoesNotMatch(string actual, Regex regex, string message, IAssertionContext context)
         {
             actual.ShouldBeA<string>(message);
 

@@ -321,7 +321,7 @@ namespace EasyAssertions
             return actual.RegisterAssertion(c => AssertDistinct(c, actual, message));
         }
 
-        private static void AssertDistinct<TActual>(AssertionContext assertionContext, TActual actual, string message) 
+        private static void AssertDistinct<TActual>(IAssertionContext assertionContext, TActual actual, string message) 
             where TActual : IEnumerable
         {
             actual.ShouldBeA<TActual>(message);

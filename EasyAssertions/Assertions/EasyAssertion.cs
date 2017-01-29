@@ -27,7 +27,7 @@ namespace EasyAssertions
         /// Registers an assertion action for purposes of tracking the current position in the assertion expression's source code.
         /// Use this for custom assertions that act directly on the actual value.
         /// </summary>
-        public static Actual<TActual> RegisterAssertion<TActual>(this TActual actual, Action<AssertionContext> assert)
+        public static Actual<TActual> RegisterAssertion<TActual>(this TActual actual, Action<IAssertionContext> assert)
         {
             SourceExpressionProvider.ForCurrentThread.EnterAssertion(1);
             assert(new AssertionContext());
@@ -42,7 +42,7 @@ namespace EasyAssertions
         /// <returns>
         /// The return value of the registered assertion function.
         /// </returns>
-        public static Actual<TReturnActual> RegisterAssertion<TActual, TReturnActual>(this TActual actual, Func<AssertionContext, Actual<TReturnActual>> assert)
+        public static Actual<TReturnActual> RegisterAssertion<TActual, TReturnActual>(this TActual actual, Func<IAssertionContext, Actual<TReturnActual>> assert)
         {
             SourceExpressionProvider.ForCurrentThread.EnterAssertion(1);
             Actual<TReturnActual> ret = assert(new AssertionContext());
@@ -55,7 +55,7 @@ namespace EasyAssertions
         /// The first parameter of the item assertion method is assumed to be the actual value.
         /// Use this when executing a user-provided assertion on an item in a sequence.
         /// </summary>
-        public static void RegisterIndexedAssertion<TActual>(this TActual actual, int index, Action<AssertionContext> assert)
+        public static void RegisterIndexedAssertion<TActual>(this TActual actual, int index, Action<IAssertionContext> assert)
         {
             SourceExpressionProvider.ForCurrentThread.EnterIndexedAssertion(index, 1);
             assert(new AssertionContext());

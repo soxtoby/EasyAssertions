@@ -1,6 +1,16 @@
 ﻿namespace EasyAssertions
 {
-    public class AssertionContext
+    /// <summary>
+    /// Helpers for creating custom assertions that behave consistently.
+    /// </summary>
+    public interface IAssertionContext
+    {
+        StandardTests Test { get; }
+        IStandardErrors StandardError { get; }
+        IErrorFactory Error { get; }
+    }
+
+    class AssertionContext : IAssertionContext
     {
         public StandardTests Test => StandardTests.Instance;
         public IStandardErrors StandardError => StandardErrors.Current;

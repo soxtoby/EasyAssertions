@@ -41,6 +41,6 @@ name.ShouldEndWith("ed")
 Using EasyAssertions is as easy as installing the [NuGet package](https://www.nuget.org/packages/EasyAssertions/).
 
 # Documentation
-See [examples of all the available assertions](doc/assertions).
+See [examples of all the available assertions](doc/Assertions).
 
-Or find out [how to make your own assertions](doc/custom-assertions).
+Or find out [how to make your own assertions](doc/CustomAssertions).

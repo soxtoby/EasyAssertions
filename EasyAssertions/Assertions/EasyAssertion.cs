@@ -64,11 +64,12 @@ namespace EasyAssertions
 
         /// <summary>
         /// Registers a user assertion, for purposes of following the assertion expression into the user's assertion function.
-        /// The first parameter of the user's assertion function is assumed to be the actual value.
         /// </summary>
-        public static Actual<TActual> RegisterUserAssertion<TActual>(this TActual actual, Delegate userAssert, Action runUserAssertion)
+        /// <param name="userAssertion">A reference to the user's assertion delegate. The first parameter is assumed to be the actual value.</param>
+        /// <param name="runUserAssertion">An <see cref="Action"/> that executes the user's assertion delegate.</param>
+        public static Actual<TActual> RegisterUserAssertion<TActual>(this TActual actual, Delegate userAssertion, Action runUserAssertion)
         {
-            SourceExpressionProvider.ForCurrentThread.EnterAssertion(userAssert.Method, 1);
+            SourceExpressionProvider.ForCurrentThread.EnterAssertion(userAssertion.Method, 1);
             runUserAssertion();
             SourceExpressionProvider.ForCurrentThread.ExitAssertion();
             return new Actual<TActual>(actual);

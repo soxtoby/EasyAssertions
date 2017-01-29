@@ -5,9 +5,12 @@ using System.Linq;
 
 namespace EasyAssertions
 {
+    /// <summary>
+    /// Provides a set of standard testing functions for implementing assertion logic.
+    /// </summary>
     public class StandardTests
     {
-        public static readonly StandardTests Instance = new StandardTests();
+        internal static readonly StandardTests Instance = new StandardTests();
 
         /// <summary>
         /// Determines whether two objects are equal, using the default equality comparer.

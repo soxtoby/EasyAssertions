@@ -13,22 +13,5 @@
     <language>en-AU</language>
     <tags>testing assertion unittesting</tags>
     <projectUrl>https://github.com/soxtoby/EasyAssertions</projectUrl>
-    <releaseNotes>
-New Assertions:
- - ItemsShouldBeIn, for asserting that a collection is a subset of another collection.
- - ShouldNotOnlyContain, for asserting that a collection is not a subset of another collection.
- - ShouldMatch for tree structures.
- - ShouldBe for strings with optional case insensitivity.
- - Should.Throw with no generic parameter that expect any Exception type.
- - AndShouldNotBeA, for asserting that the actual value of Should.Throw is not of a particular type.
- - ShouldBeEmpty, for asserting that a string is empty.
- - ShouldMatch &amp; ShouldNotMatch, for asserting on strings with regular expressions.
-      
-Other Changes/Fixes:
- - Added null checks to all assertions.
- - Fixed an exception that often occurred while running several tests in parallel.
- - Fixed difference index when actual string is longer than expected string.
- - String assertion failure messages no longer insert backslashes before braces.
-    </releaseNotes>
   </metadata>
 </package>

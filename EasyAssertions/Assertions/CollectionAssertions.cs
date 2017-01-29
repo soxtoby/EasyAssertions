@@ -11,7 +11,7 @@ namespace EasyAssertions
     /// </summary>
     public static class CollectionAssertions
     {
-        private const string UnorderedCollectionComparisonError = "Don't compare unordered collections with ordered sequences. Use an assertion that doesn't test ordering instead.";
+        private const string UnorderedCollectionComparisonError = "Do not compare unordered collections with ordered sequences. Use an assertion that does not test ordering instead.";
 
         [Obsolete(UnorderedCollectionComparisonError, true)]
         public static void ShouldMatch<TActualKey, TActualValue, TExpectedKey, TExpectedValue>(this IDictionary<TActualKey, TActualValue> actual, IEnumerable<KeyValuePair<TExpectedKey, TExpectedValue>> expected, string message = null) { }

@@ -172,7 +172,7 @@ namespace EasyAssertions.UnitTests
             [Test]
             public void IsSingularItemWithExpectedType_ReturnsActualValue()
             {
-                Equatable actualItem = new Equatable(1);
+                Equatable actualItem = new SubEquatable(1);
                 AssertReturnsActual(actualItem, () => new[] { actualItem }.ShouldBeASingular<Equatable>());
             }
 
@@ -210,6 +210,45 @@ namespace EasyAssertions.UnitTests
                 AssertThrowsExpectedError(() => actual.ShouldBeASingular<int>());
 
                 Assert.AreEqual(nameof(actual), TestExpression.GetActual());
+            }
+        }
+
+        class ShouldAllBeA : CollectionAssertionTests
+        {
+            [Test]
+            public void AllItemsAreCorrectType_ReturnsTypedEnumerable()
+            {
+                IEnumerable actual = new[] { new SubEquatable(1), new SubEquatable(2) };
+
+                Actual<IEnumerable<Equatable>> result = actual.ShouldAllBeA<Equatable>();
+
+                CollectionAssert.AreEqual(actual, result.And);
+            }
+
+            [Test]
+            public void NotAllItemsAreCorrectType_FailsWithTypesNotEqualMessage()
+            {
+                IEnumerable actual = new[] { new Equatable(1), new object() };
+
+                AssertFailsWithTypesNotEqualMessage(typeof(Equatable), typeof(object), msg => actual.ShouldAllBeA<Equatable>(msg));
+            }
+
+            [Test]
+            public void ActualIsNull_FailsWithTypesNotEqualMessage()
+            {
+                IEnumerable actual = null;
+
+                AssertFailsWithTypesNotEqualMessage(typeof(IEnumerable), null, msg => actual.ShouldAllBeA<Equatable>(msg));
+            }
+
+            [Test]
+            public void CorrectlyRegistersAssertion()
+            {
+                IEnumerable actual = new[] { new Equatable(1), new object() };
+
+                AssertFailsWithTypesNotEqualMessage(typeof(Equatable), typeof(object), msg => actual.ShouldAllBeA<Equatable>(msg));
+
+                Assert.AreEqual($"{nameof(actual)}[1]", TestExpression.GetActual());
             }
         }
 

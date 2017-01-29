@@ -70,6 +70,7 @@ collection.ShouldNotOnlyContain(new[] { 3, 2 });
 collection.ShouldStartWith(new[] { 1, 2 });
 collection.ShouldEndWith(new[] { 2, 3 });
 collection.ShouldBeDistinct();
+collection.ShouldAllBeA<int>();
 
 var keyedCollection = new KeyedOnFirstCharCollection { "foo" }; // KeyedCollection<char, string>
 keyedCollection.ShouldContainKey('f');

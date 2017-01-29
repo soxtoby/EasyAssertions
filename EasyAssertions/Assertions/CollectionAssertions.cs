@@ -89,6 +89,26 @@ namespace EasyAssertions
         }
 
         /// <summary>
+        /// Assert that all items in a sequence are assignable to the specified type.
+        /// </summary>
+        public static Actual<IEnumerable<TExpected>> ShouldAllBeA<TExpected>(this IEnumerable actual, string message = null)
+        {
+            return actual.RegisterAssertion(c =>
+                {
+                    actual.ShouldBeA<IEnumerable>(message);
+
+                    using (IBuffer<object> bufferedActual = actual.Buffer())
+                    {
+                        int i = 0;
+                        foreach (object item in bufferedActual)
+                            item.RegisterIndexedAssertion(i++, c2 => item.ShouldBeA<TExpected>(message));
+                    }
+
+                    return new Actual<IEnumerable<TExpected>>(actual.Cast<TExpected>());
+                });
+        }
+
+        /// <summary>
         /// Asserts that a sequence contains a specific number of elements.
         /// </summary>
         public static Actual<TActual> ShouldBeLength<TActual>(this TActual actual, int expectedLength, string message = null)

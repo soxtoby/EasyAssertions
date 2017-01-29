@@ -72,7 +72,7 @@ namespace EasyAssertions
         /// <summary>
         /// Asserts that two <see cref="float"/> values are not within a specified tolerance of eachother.
         /// </summary>
-        public static Actual<float> ShouldNotBe(this float actual, float notExpected, float tolerance, string message = null)
+        public static Actual<float> ShouldNotBe(this float actual, float notExpected, double tolerance, string message = null)
         {
             return actual.RegisterAssertion(c =>
                 {

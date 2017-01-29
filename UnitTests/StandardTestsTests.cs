@@ -5,66 +5,74 @@ using System.Linq;
 namespace EasyAssertions.UnitTests
 {
     [TestFixture]
-    public class CompareTests
+    public class StandardTestsTests
     {
+        private StandardTests sut;
+
+        [SetUp]
+        public void SetUp()
+        {
+            sut = StandardTests.Instance;
+        }
+
         [Test]
         public void ObjectsAreEqual_EqualValues_AreEqual()
         {
-            Assert.IsTrue(StandardTests.Instance.ObjectsAreEqual(1, 1));
+            Assert.IsTrue(sut.ObjectsAreEqual(1, 1));
         }
 
         [Test]
         public void ObjectsAreEqual_DifferentValues_AreNotEqual()
         {
-            Assert.IsFalse(StandardTests.Instance.ObjectsAreEqual(1, 2));
+            Assert.IsFalse(sut.ObjectsAreEqual(1, 2));
         }
 
         [Test]
         public void FloatsAreWithinDelta_WithinDelta()
         {
-            Assert.IsTrue(StandardTests.Instance.AreWithinTolerance(1f, 2f, 1f));
+            Assert.IsTrue(sut.AreWithinTolerance(1f, 2f, 1d));
         }
 
         [Test]
         public void FloatsAreWithinDelta_OutsideDelta()
         {
-            Assert.IsFalse(StandardTests.Instance.AreWithinTolerance(1f, 2f, 0.9f));
+            Assert.IsFalse(sut.AreWithinTolerance(1f, 2f, 0.9d));
         }
 
         [Test]
         public void DoublesAreWithinDelta_WithinDelta()
         {
-            Assert.IsTrue(StandardTests.Instance.AreWithinTolerance(1d, 2d, 1d));
+            Assert.IsTrue(sut.AreWithinTolerance(1d, 2d, 1d));
         }
 
         [Test]
         public void DoublesAreWithinDelta_OutsideDelta()
         {
-            Assert.IsFalse(StandardTests.Instance.AreWithinTolerance(1d, 2d, 0.9d));
+            Assert.IsFalse(sut.AreWithinTolerance(1d, 2d, 0.9d));
         }
 
         [Test]
         public void CollectionsMatch_MatchingIEnumerables_AreEqual()
         {
-            Assert.IsTrue(StandardTests.Instance.CollectionsMatch(new[] { 1, 2, 3 }, new[] { 1, 2, 3 }, StandardTests.Instance.ObjectsMatch));
+            Assert.IsTrue(sut.CollectionsMatch(new[] { 1, 2, 3 }, new[] { 1, 2, 3 }, sut.ObjectsMatch));
         }
 
         [Test]
         public void CollectionsMatch_NonMatchingIEnumerables_AreNotEqual()
         {
-            Assert.IsFalse(StandardTests.Instance.CollectionsMatch(new[] { 1, 2, 3 }, new[] { 1, 3, 2 }, StandardTests.Instance.ObjectsMatch));
+            Assert.IsFalse(sut.CollectionsMatch(new[] { 1, 2, 3 }, new[] { 1, 3, 2 }, sut.ObjectsMatch));
         }
 
         [Test]
         public void CollectionsMatch_ActualIEnumerableLongerThanExpectedIEnumerable_AreNotEqual()
         {
-            Assert.IsFalse(StandardTests.Instance.CollectionsMatch(new[] { 1, 2, 3 }, new[] { 1, 2 }, StandardTests.Instance.ObjectsMatch));
+            Assert.IsFalse(sut.CollectionsMatch(new[] { 1, 2, 3 }, new[] { 1, 2 }, sut.ObjectsMatch));
         }
 
         [Test]
         public void CollectionsMatch_ActualIEnumerableShorterThanExpectedIEnumerable_AreNotEqual()
         {
-            Assert.IsFalse(StandardTests.Instance.CollectionsMatch(new[] { 1, 2 }, new[] { 1, 2, 3 }, StandardTests.Instance.ObjectsMatch));
+            Assert.IsFalse(sut.CollectionsMatch(new[] { 1, 2 }, new[] { 1, 2, 3 }, sut.ObjectsMatch));
         }
 
         [Test]
@@ -80,7 +88,7 @@ namespace EasyAssertions.UnitTests
                     new[] { 1, 2, 3 },
                     new[] { 4, 5, 6 }
                 };
-            Assert.IsTrue(StandardTests.Instance.CollectionsMatch(actual, expected, StandardTests.Instance.ObjectsMatch));
+            Assert.IsTrue(sut.CollectionsMatch(actual, expected, sut.ObjectsMatch));
         }
 
         [Test]
@@ -89,7 +97,7 @@ namespace EasyAssertions.UnitTests
             TestEnumerable<int> actual = MakeEnumerable(1);
             TestEnumerable<int> expected = MakeEnumerable(1);
 
-            StandardTests.Instance.CollectionsMatch(actual, expected, StandardTests.Instance.ObjectsMatch);
+            sut.CollectionsMatch(actual, expected, sut.ObjectsMatch);
 
             Assert.AreEqual(1, actual.EnumerationCount);
             Assert.AreEqual(1, expected.EnumerationCount);
@@ -98,25 +106,25 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void CollectionStartsWith_MatchingCollections_StartsWith()
         {
-            Assert.IsTrue(StandardTests.Instance.CollectionStartsWith(new object[] { 1, 2, 3 }, new object[] { 1, 2, 3 }, Equals));
+            Assert.IsTrue(sut.CollectionStartsWith(new object[] { 1, 2, 3 }, new object[] { 1, 2, 3 }, Equals));
         }
 
         [Test]
         public void CollectionStartsWith_Subset_StartsWith()
         {
-            Assert.IsTrue(StandardTests.Instance.CollectionStartsWith(new object[] { 1, 2, 3 }, new object[] { 1, 2 }, Equals));
+            Assert.IsTrue(sut.CollectionStartsWith(new object[] { 1, 2, 3 }, new object[] { 1, 2 }, Equals));
         }
 
         [Test]
         public void CollectionStartsWith_LongerCollection_DoesNotStartWith()
         {
-            Assert.IsFalse(StandardTests.Instance.CollectionStartsWith(new object[] { 1 }, new object[] { 1, 2 }, Equals));
+            Assert.IsFalse(sut.CollectionStartsWith(new object[] { 1 }, new object[] { 1, 2 }, Equals));
         }
 
         [Test]
         public void CollectionStartsWith_DifferentItems_DoesNotStartWith()
         {
-            Assert.IsFalse(StandardTests.Instance.CollectionStartsWith(new object[] { 1, 2 }, new object[] { 1, 3 }, Equals));
+            Assert.IsFalse(sut.CollectionStartsWith(new object[] { 1, 2 }, new object[] { 1, 3 }, Equals));
         }
 
         [Test]
@@ -125,7 +133,7 @@ namespace EasyAssertions.UnitTests
             TestEnumerable<int> actual = MakeEnumerable(1);
             TestEnumerable<int> expected = MakeEnumerable(1);
 
-            StandardTests.Instance.CollectionStartsWith(actual, expected, StandardTests.Instance.ObjectsMatch);
+            sut.CollectionStartsWith(actual, expected, sut.ObjectsMatch);
 
             Assert.AreEqual(1, actual.EnumerationCount);
             Assert.AreEqual(1, expected.EnumerationCount);
@@ -134,25 +142,25 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void CollectionEndsWith_MatchingCollections_StartsWith()
         {
-            Assert.IsTrue(StandardTests.Instance.CollectionEndsWith(new object[] { 1, 2, 3 }, new object[] { 1, 2, 3 }, Equals));
+            Assert.IsTrue(sut.CollectionEndsWith(new object[] { 1, 2, 3 }, new object[] { 1, 2, 3 }, Equals));
         }
 
         [Test]
         public void CollectionEndsWith_Subset_StartsWith()
         {
-            Assert.IsTrue(StandardTests.Instance.CollectionEndsWith(new object[] { 1, 2, 3 }, new object[] { 2, 3 }, Equals));
+            Assert.IsTrue(sut.CollectionEndsWith(new object[] { 1, 2, 3 }, new object[] { 2, 3 }, Equals));
         }
 
         [Test]
         public void CollectionEndsWith_LongerCollection_DoesNotEndWith()
         {
-            Assert.IsFalse(StandardTests.Instance.CollectionEndsWith(new object[] { 1 }, new object[] { 1, 2 }, Equals));
+            Assert.IsFalse(sut.CollectionEndsWith(new object[] { 1 }, new object[] { 1, 2 }, Equals));
         }
 
         [Test]
         public void CollectionEndsWith_DifferentItems_DoesNotEndWith()
         {
-            Assert.IsFalse(StandardTests.Instance.CollectionEndsWith(new object[] { 1, 2 }, new object[] { 3, 2 }, Equals));
+            Assert.IsFalse(sut.CollectionEndsWith(new object[] { 1, 2 }, new object[] { 3, 2 }, Equals));
         }
 
         [Test]
@@ -161,7 +169,7 @@ namespace EasyAssertions.UnitTests
             TestEnumerable<int> actual = MakeEnumerable(1);
             TestEnumerable<int> expected = MakeEnumerable(1);
 
-            StandardTests.Instance.CollectionEndsWith(actual, expected, StandardTests.Instance.ObjectsMatch);
+            sut.CollectionEndsWith(actual, expected, sut.ObjectsMatch);
 
             Assert.AreEqual(1, actual.EnumerationCount);
             Assert.AreEqual(1, expected.EnumerationCount);
@@ -170,19 +178,19 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ContainsAny_EmptySequence_DoesNotContainItems()
         {
-            Assert.IsFalse(StandardTests.Instance.ContainsAny(Enumerable.Empty<int>(), new[] { 1 }));
+            Assert.IsFalse(sut.ContainsAny(Enumerable.Empty<int>(), new[] { 1 }));
         }
 
         [Test]
         public void ContainsAny_NothingToLookFor_DoesNotContainItems()
         {
-            Assert.IsTrue(StandardTests.Instance.ContainsAny(new[] { 1 }, Enumerable.Empty<int>()));
+            Assert.IsTrue(sut.ContainsAny(new[] { 1 }, Enumerable.Empty<int>()));
         }
 
         [Test]
         public void ContainsAny_ContainsItem()
         {
-            Assert.IsTrue(StandardTests.Instance.ContainsAny(new[] { 1, 2 }, new[] { 3, 2 }));
+            Assert.IsTrue(sut.ContainsAny(new[] { 1, 2 }, new[] { 3, 2 }));
         }
 
         [Test]
@@ -191,7 +199,7 @@ namespace EasyAssertions.UnitTests
             TestEnumerable<int> actual = MakeEnumerable(1);
             TestEnumerable<int> expected = MakeEnumerable(1);
 
-            StandardTests.Instance.ContainsAny(actual, expected);
+            sut.ContainsAny(actual, expected);
 
             Assert.AreEqual(1, actual.EnumerationCount);
             Assert.AreEqual(1, expected.EnumerationCount);
@@ -200,39 +208,39 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void IsEmpty_Empty()
         {
-            Assert.IsTrue(StandardTests.Instance.IsEmpty(Enumerable.Empty<int>()));
+            Assert.IsTrue(sut.IsEmpty(Enumerable.Empty<int>()));
         }
 
         [Test]
         public void IsEmpty_NotEmpty()
         {
-            Assert.IsFalse(StandardTests.Instance.IsEmpty(new[] { 1 }));
+            Assert.IsFalse(sut.IsEmpty(new[] { 1 }));
         }
 
         [Test]
         public void TreesMatch_SingleMatchingLevel_ReturnsTrue()
         {
-            Assert.IsTrue(StandardTests.Instance.TreesMatch(
+            Assert.IsTrue(sut.TreesMatch(
                 new[] { 1, 2, 3 },
                 new TestNode<int> { 1, 2, 3 },
                 n => Enumerable.Empty<int>(),
-                StandardTests.Instance.ObjectsAreEqual));
+                sut.ObjectsAreEqual));
         }
 
         [Test]
         public void TreesMatch_SingleNonMatchingLevel_ReturnsFalse()
         {
-            Assert.IsFalse(StandardTests.Instance.TreesMatch(
+            Assert.IsFalse(sut.TreesMatch(
                 new[] { 1, 2, 3 },
                 new TestNode<int> { 1, 3, 2 },
                 n => Enumerable.Empty<int>(),
-                StandardTests.Instance.ObjectsAreEqual));
+                sut.ObjectsAreEqual));
         }
 
         [Test]
         public void TreesMatch_MatchingRootNodesWithNonMatchingChildren_ReturnsFalse()
         {
-            Assert.IsFalse(StandardTests.Instance.TreesMatch(
+            Assert.IsFalse(sut.TreesMatch(
                 new[]{
                         new ActualNode(1)
                             {
@@ -258,7 +266,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void TreesMatch_MatchingRootNodesWithDifferentLengthChildren_ReturnsFalse()
         {
-            Assert.IsFalse(StandardTests.Instance.TreesMatch(
+            Assert.IsFalse(sut.TreesMatch(
                 new[]
                     {
                         new ActualNode(1),
@@ -286,7 +294,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void TreesMatch_MatchingRootNodesWithMatchingChildren_ReturnsTrue()
         {
-            Assert.IsTrue(StandardTests.Instance.TreesMatch(
+            Assert.IsTrue(sut.TreesMatch(
                 new[]
                     {
                         new ActualNode(1)

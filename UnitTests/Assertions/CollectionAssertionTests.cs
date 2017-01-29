@@ -428,7 +428,7 @@ namespace EasyAssertions.UnitTests
         class ShouldMatch_Floats : CollectionAssertionTests
         {
             [Test]
-            public void WithinDelta_ReturnsActualValue()
+            public void WithinTolerance_ReturnsActualValue()
             {
                 float[] actual = { 10f, 20f };
 
@@ -436,7 +436,7 @@ namespace EasyAssertions.UnitTests
             }
 
             [Test]
-            public void OutsideDelta_FailsWithEnumerablesDoNotMatchMessage()
+            public void OutsideTolerance_FailsWithEnumerablesDoNotMatchMessage()
             {
                 float[] actual = { 10f, 20f };
                 float[] expected = { 11f, 21f };
@@ -450,7 +450,7 @@ namespace EasyAssertions.UnitTests
             }
 
             [Test]
-            public void OutsideDelta_OnlyEnumeratesOnce()
+            public void OutsideTolerance_OnlyEnumeratesOnce()
             {
                 TestEnumerable<float> actual = MakeEnumerable(1f);
                 TestEnumerable<float> expected = MakeEnumerable(2f);
@@ -486,7 +486,7 @@ namespace EasyAssertions.UnitTests
         class ShouldMatch_Doubles : CollectionAssertionTests
         {
             [Test]
-            public void WithinDelta_ReturnsActualValue()
+            public void WithinTolerance_ReturnsActualValue()
             {
                 double[] actual = { 10d, 20d };
 
@@ -494,7 +494,7 @@ namespace EasyAssertions.UnitTests
             }
 
             [Test]
-            public void OutsideDelta_FailsWithEnumerablesDoNotMatchMessage()
+            public void OutsideTolerance_FailsWithEnumerablesDoNotMatchMessage()
             {
                 double[] actual = { 10d, 20d };
                 double[] expected = { 11d, 21d };
@@ -508,7 +508,7 @@ namespace EasyAssertions.UnitTests
             }
 
             [Test]
-            public void OutsideDelta_OnlyEnumeratesOnce()
+            public void OutsideTolerance_OnlyEnumeratesOnce()
             {
                 TestEnumerable<double> actual = MakeEnumerable(1d);
                 TestEnumerable<double> expected = MakeEnumerable(2d);
@@ -538,6 +538,262 @@ namespace EasyAssertions.UnitTests
 
                 Assert.AreEqual(nameof(actual), TestExpression.GetActual());
                 Assert.AreEqual(nameof(expected), TestExpression.GetExpected());
+            }
+        }
+
+        class ShouldNotMatch : CollectionAssertionTests
+        {
+            [Test]
+            public void NonMatchingEnumerables_ReturnsActual()
+            {
+                IEnumerable<Equatable> actual = new[] { new Equatable(1), new Equatable(2), new Equatable(3) };
+                IEnumerable<Equatable> notExpected = new[] { new Equatable(1), new Equatable(2), new Equatable(4) };
+
+                AssertReturnsActual(actual, () => actual.ShouldNotMatch(notExpected));
+            }
+
+            [Test]
+            public void MatchingEnumerables_FailsWithCollectionsMatchMessage()
+            {
+                IEnumerable<Equatable> actual = new[] { new Equatable(1), new Equatable(2), new Equatable(3) };
+                IEnumerable<Equatable> notExpected = actual;
+                Error.Matches(Matches(notExpected), Matches(actual), "foo").Returns(ExpectedException);
+
+                AssertThrowsExpectedError(() => actual.ShouldNotMatch(notExpected, "foo"));
+            }
+
+            [Test]
+            public void ActualIsNull_FailsWithTypesNotEqualMessage()
+            {
+                IEnumerable<int> actual = null;
+
+                AssertFailsWithTypesNotEqualMessage(typeof(IEnumerable<int>), null, msg => actual.ShouldNotMatch(new[] { 1 }, msg));
+            }
+
+            [Test]
+            public void NotExpectedIsNull_ThrowsArgumentNullException()
+            {
+                IEnumerable<int> actual = new[] { 1 };
+
+                AssertArgumentNullException("notExpected", () => actual.ShouldNotMatch((IEnumerable<int>)null));
+            }
+
+            [Test]
+            public void MatchingEnumerables_OnlyEnumeratesOnce()
+            {
+                TestEnumerable<int> actual = MakeEnumerable(1);
+                TestEnumerable<int> notExpected = MakeEnumerable(1);
+                Error.Matches(Arg.Any<IEnumerable>(), Arg.Any<IEnumerable>()).Returns(EnumerateArgs);
+
+                AssertThrowsExpectedError(() => actual.ShouldNotMatch(notExpected));
+
+                Assert.AreEqual(1, actual.EnumerationCount);
+                Assert.AreEqual(1, notExpected.EnumerationCount);
+            }
+
+            [Test]
+            public void CorrectlyRegistersAssertion()
+            {
+                IEnumerable<int> actual = new[] { 1, 2, 3 };
+                IEnumerable<int> notExpected = actual;
+                Error.Matches(Arg.Any<IEnumerable>(), Arg.Any<IEnumerable>()).Returns(ExpectedException);
+
+                AssertThrowsExpectedError(() => actual.ShouldNotMatch(notExpected));
+
+                Assert.AreEqual(nameof(actual), TestExpression.GetActual());
+                Assert.AreEqual(nameof(notExpected), TestExpression.GetExpected());
+            }
+        }
+
+        class ShouldNotMatch_Floats : CollectionAssertionTests
+        {
+            [Test]
+            public void OutsideTolerance_ReturnsActual()
+            {
+                IEnumerable<float> actual = new[] { 1f, 2f };
+                IEnumerable<float> notExpected = new[] { 1f, 5f };
+
+                AssertReturnsActual(actual, () => actual.ShouldNotMatch(notExpected, 1));
+            }
+
+            [Test]
+            public void WithinTolerance_FailsWithCollectionsMatchMessage()
+            {
+                IEnumerable<float> actual = new[] { 10f, 20f };
+                IEnumerable<float> notExpected = new[] { 9f, 21f };
+                Error.Matches(Matches(notExpected), Matches(actual), "foo").Returns(ExpectedException);
+
+                AssertThrowsExpectedError(() => actual.ShouldNotMatch(notExpected, 1, "foo"));
+            }
+
+            [Test]
+            public void ActualIsNull_FailsWithTypesNotEqualMessage()
+            {
+                IEnumerable<float> actual = null;
+
+                AssertFailsWithTypesNotEqualMessage(typeof(IEnumerable<float>), null, msg => actual.ShouldNotMatch(new[] { 1f }, 1, msg));
+            }
+
+            [Test]
+            public void NotExpectedIsNull_ThrowsArgumentNullException()
+            {
+                IEnumerable<float> actual = new[] { 1f };
+
+                AssertArgumentNullException("notExpected", () => actual.ShouldNotMatch(null, 1));
+            }
+
+            [Test]
+            public void MatchingEnumerables_OnlyEnumeratesOnce()
+            {
+                TestEnumerable<float> actual = MakeEnumerable(1f);
+                TestEnumerable<float> notExpected = MakeEnumerable(1f);
+                Error.Matches(Arg.Any<IEnumerable>(), Arg.Any<IEnumerable>()).Returns(EnumerateArgs);
+
+                AssertThrowsExpectedError(() => actual.ShouldNotMatch(notExpected, 1));
+
+                Assert.AreEqual(1, actual.EnumerationCount);
+                Assert.AreEqual(1, notExpected.EnumerationCount);
+            }
+
+            [Test]
+            public void CorrectlyRegistersAssertion()
+            {
+                IEnumerable<float> actual = new[] { 1f };
+                IEnumerable<float> notExpected = actual;
+                Error.Matches(Arg.Any<IEnumerable>(), Arg.Any<IEnumerable>()).Returns(ExpectedException);
+
+                AssertThrowsExpectedError(() => actual.ShouldNotMatch(notExpected, 1));
+
+                Assert.AreEqual(nameof(actual), TestExpression.GetActual());
+                Assert.AreEqual(nameof(notExpected), TestExpression.GetExpected());
+            }
+        }
+
+        class ShouldNotMatch_Doubles : CollectionAssertionTests
+        {
+            [Test]
+            public void OutsideTolerance_ReturnsActual()
+            {
+                IEnumerable<double> actual = new[] { 1d, 2d };
+                IEnumerable<double> notExpected = new[] { 1d, 5d };
+
+                AssertReturnsActual(actual, () => actual.ShouldNotMatch(notExpected, 1));
+            }
+
+            [Test]
+            public void WithinTolerance_FailsWithCollectionsMatchMessage()
+            {
+                IEnumerable<double> actual = new[] { 10d, 20d };
+                IEnumerable<double> notExpected = new[] { 9d, 21d };
+                Error.Matches(Matches(notExpected), Matches(actual), "foo").Returns(ExpectedException);
+
+                AssertThrowsExpectedError(() => actual.ShouldNotMatch(notExpected, 1, "foo"));
+            }
+
+            [Test]
+            public void ActualIsNull_FailsWithTypesNotEqualMessage()
+            {
+                IEnumerable<double> actual = null;
+
+                AssertFailsWithTypesNotEqualMessage(typeof(IEnumerable<double>), null, msg => actual.ShouldNotMatch(new[] { 1d }, 1, msg));
+            }
+
+            [Test]
+            public void NotExpectedIsNull_ThrowsArgumentNullException()
+            {
+                IEnumerable<double> actual = new[] { 1d };
+
+                AssertArgumentNullException("notExpected", () => actual.ShouldNotMatch(null, 1));
+            }
+
+            [Test]
+            public void MatchingEnumerables_OnlyEnumeratesOnce()
+            {
+                TestEnumerable<double> actual = MakeEnumerable(1d);
+                TestEnumerable<double> notExpected = MakeEnumerable(1d);
+                Error.Matches(Arg.Any<IEnumerable>(), Arg.Any<IEnumerable>()).Returns(EnumerateArgs);
+
+                AssertThrowsExpectedError(() => actual.ShouldNotMatch(notExpected, 1));
+
+                Assert.AreEqual(1, actual.EnumerationCount);
+                Assert.AreEqual(1, notExpected.EnumerationCount);
+            }
+
+            [Test]
+            public void CorrectlyRegistersAssertion()
+            {
+                IEnumerable<double> actual = new[] { 1d };
+                IEnumerable<double> notExpected = actual;
+                Error.Matches(Arg.Any<IEnumerable>(), Arg.Any<IEnumerable>()).Returns(ExpectedException);
+
+                AssertThrowsExpectedError(() => actual.ShouldNotMatch(notExpected, 1));
+
+                Assert.AreEqual(nameof(actual), TestExpression.GetActual());
+                Assert.AreEqual(nameof(notExpected), TestExpression.GetExpected());
+            }
+        }
+
+        class ShouldNotMatch_CustomEquality : CollectionAssertionTests
+        {
+            [Test]
+            public void NonMatchingEnumerables_ReturnsActual()
+            {
+                IEnumerable<Equatable> actual = new[] { new Equatable(1), new Equatable(2), new Equatable(3) };
+                IEnumerable<int> notExpected = new[] { 1, 2, 4 };
+
+                AssertReturnsActual(actual, () => actual.ShouldNotMatch(notExpected, (a, e) => a.Value == e));
+            }
+
+            [Test]
+            public void MatchingEnumerables_FailsWithCollectionsMatchMessage()
+            {
+                IEnumerable<Equatable> actual = new[] { new Equatable(1), new Equatable(2), new Equatable(3) };
+                IEnumerable<int> notExpected = new[] { 1, 2, 3 };
+                Error.Matches(Matches(notExpected), Matches(actual), "foo").Returns(ExpectedException);
+
+                AssertThrowsExpectedError(() => actual.ShouldNotMatch(notExpected, (a, e) => a.Value == e, "foo"));
+            }
+
+            [Test]
+            public void ActualIsNull_FailsWithTypesNotEqualMessage()
+            {
+                IEnumerable<int> actual = null;
+
+                AssertFailsWithTypesNotEqualMessage(typeof(IEnumerable<int>), null, msg => actual.ShouldNotMatch(new[] { 1 }, (a, e) => a == e, msg));
+            }
+
+            [Test]
+            public void NotExpectedIsNull_ThrowsArgumentNullException()
+            {
+                IEnumerable<int> actual = new[] { 1 };
+
+                AssertArgumentNullException("notExpected", () => actual.ShouldNotMatch((IEnumerable<int>)null, (a, e) => a == e));
+            }
+
+            [Test]
+            public void MatchingEnumerables_OnlyEnumeratesOnce()
+            {
+                TestEnumerable<int> actual = MakeEnumerable(1);
+                TestEnumerable<int> notExpected = MakeEnumerable(1);
+                Error.Matches(Arg.Any<IEnumerable>(), Arg.Any<IEnumerable>()).Returns(EnumerateArgs);
+
+                AssertThrowsExpectedError(() => actual.ShouldNotMatch(notExpected, (a, e) => a == e));
+
+                Assert.AreEqual(1, actual.EnumerationCount);
+                Assert.AreEqual(1, notExpected.EnumerationCount);
+            }
+
+            [Test]
+            public void CorrectlyRegistersAssertion()
+            {
+                IEnumerable<int> actual = new[] { 1, 2, 3 };
+                IEnumerable<int> notExpected = actual;
+                Error.Matches(Arg.Any<IEnumerable>(), Arg.Any<IEnumerable>()).Returns(ExpectedException);
+
+                AssertThrowsExpectedError(() => actual.ShouldNotMatch(notExpected, (a, e) => a == e));
+
+                Assert.AreEqual(nameof(actual), TestExpression.GetActual());
+                Assert.AreEqual(nameof(notExpected), TestExpression.GetExpected());
             }
         }
 

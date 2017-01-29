@@ -503,5 +503,20 @@ but was {Value(actual)}" + message.OnNewLine());
         {
             return error.WithActualExpression($@"timed out after {Value(timeout)}." + message.OnNewLine());
         }
+
+        public Exception Matches(IEnumerable notExpected, IEnumerable actual, string message = null)
+        {
+            List<object> actualItems = actual.Cast<object>().ToList();
+
+            string expectedSource = ExpectedSourceIfDifferentToValue(notExpected);
+
+            return error.WithActualExpression(expectedSource == null
+                ? $@"
+should not match {Sample(actualItems)}
+but did." + message.OnNewLine()
+                : $@"
+should not match {expectedSource}
+but was {Sample(actualItems)}" + message.OnNewLine());
+        }
     }
 }

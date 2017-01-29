@@ -142,17 +142,17 @@ namespace EasyAssertions
         /// <summary>
         /// Asserts that two sequences contain the same <see cref="float"/> values (within a specified tolerance), in the same order.
         /// </summary>
-        public static Actual<IEnumerable<float>> ShouldMatch(this IEnumerable<float> actual, IEnumerable<float> expected, float delta, string message = null)
+        public static Actual<IEnumerable<float>> ShouldMatch(this IEnumerable<float> actual, IEnumerable<float> expected, double tolerance, string message = null)
         {
-            return actual.RegisterAssertion(c => actual.ShouldMatch(expected, (a, e) => c.Test.AreWithinTolerance(a, e, delta), message));
+            return actual.RegisterAssertion(c => actual.ShouldMatch(expected, (a, e) => c.Test.AreWithinTolerance(a, e, tolerance), message));
         }
 
         /// <summary>
         /// Asserts that two sequences contain the same <see cref="double"/> values (within a specified tolerance), in the same order.
         /// </summary>
-        public static Actual<IEnumerable<double>> ShouldMatch(this IEnumerable<double> actual, IEnumerable<double> expected, double delta, string message = null)
+        public static Actual<IEnumerable<double>> ShouldMatch(this IEnumerable<double> actual, IEnumerable<double> expected, double tolerance, string message = null)
         {
-            return actual.RegisterAssertion(c => actual.ShouldMatch(expected, (a, e) => c.Test.AreWithinTolerance(a, e, delta), message));
+            return actual.RegisterAssertion(c => actual.ShouldMatch(expected, (a, e) => c.Test.AreWithinTolerance(a, e, tolerance), message));
         }
 
         /// <summary>
@@ -169,6 +169,59 @@ namespace EasyAssertions
                     {
                         if (!c.Test.CollectionsMatch(bufferedActual, bufferedExpected, (a, e) => predicate((TActual)a, (TExpected)e)))
                             throw c.StandardError.DoNotMatch(bufferedExpected, bufferedActual, predicate, message);
+                    }
+                });
+        }
+
+        /// <summary>
+        /// Asserts that two sequences do not contain the same items in the same order.
+        /// <see cref="IEnumerable"/> items are compared recursively.
+        /// Non-<c>IEnumerable</c> items are compared using the default equality comparer.
+        /// </summary>
+        public static Actual<IEnumerable<TActual>> ShouldNotMatch<TActual, TExpected>(this IEnumerable<TActual> actual, IEnumerable<TExpected> notExpected, string message = null)
+            where TExpected : TActual
+        {
+            if (notExpected == null) throw new ArgumentNullException(nameof(notExpected));
+
+            return actual.RegisterAssertion(c => actual.ShouldNotMatch(notExpected, c.Test.ObjectsMatch, message));
+        }
+
+        /// <summary>
+        /// Asserts that two sequences do not contain the same <see cref="float"/> values (within a specified tolerance), in the same order.
+        /// </summary>
+        public static Actual<IEnumerable<float>> ShouldNotMatch(this IEnumerable<float> actual, IEnumerable<float> notExpected, double tolerance, string message = null)
+        {
+            if (notExpected == null) throw new ArgumentNullException(nameof(notExpected));
+
+            return actual.RegisterAssertion(c => actual.ShouldNotMatch(notExpected, (a, e) => c.Test.AreWithinTolerance(a, e, tolerance), message));
+        }
+
+        /// <summary>
+        /// Asserts that two sequences do not contain the same <see cref="double"/> values (within a specified tolerance), in the same order.
+        /// </summary>
+        public static Actual<IEnumerable<double>> ShouldNotMatch(this IEnumerable<double> actual, IEnumerable<double> notExpected, double tolerance, string message = null)
+        {
+            if (notExpected == null) throw new ArgumentNullException(nameof(notExpected));
+
+            return actual.RegisterAssertion(c => actual.ShouldNotMatch(notExpected, (a, e) => c.Test.AreWithinTolerance(a, e, tolerance), message));
+        }
+
+        /// <summary>
+        /// Asserts that two sequences do not contain the same items in the same order, using a custom equality function.
+        /// </summary>
+        public static Actual<IEnumerable<TActual>> ShouldNotMatch<TActual, TExpected>(this IEnumerable<TActual> actual, IEnumerable<TExpected> notExpected, Func<TActual, TExpected, bool> predicate, string message = null)
+        {
+            if (notExpected == null) throw new ArgumentNullException(nameof(notExpected));
+
+            return actual.RegisterAssertion(c =>
+                {
+                    actual.ShouldBeA<IEnumerable<TActual>>(message);
+
+                    using (IBuffer<TActual> bufferedActual = actual.Buffer())
+                    using (IBuffer<TExpected> bufferedExpected = notExpected.Buffer())
+                    {
+                        if (c.Test.CollectionsMatch(bufferedActual, bufferedExpected, (a, e) => predicate((TActual)a, (TExpected)e)))
+                            throw c.StandardError.Matches(bufferedExpected, bufferedActual, message);
                     }
                 });
         }

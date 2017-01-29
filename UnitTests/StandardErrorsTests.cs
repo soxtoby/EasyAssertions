@@ -1317,6 +1317,37 @@ timed out after 1ms.
 foo", result);
         }
 
+        [Test]
+        public void Matches_Collections()
+        {
+            string result = sut.Matches(new[] { 1, 2 }, new[] { 1, 2 }, "foo").Message;
+
+            Assert.AreEqual($@"{ActualExpression}
+should not match {ExpectedExpression}
+but was [
+    <1>,
+    <2>
+]
+foo", result);
+        }
+
+        [Test]
+        public void Matches_Collections_ExpectedIsNewCollection()
+        {
+            expressionProvider.GetExpectedExpression().Returns("new[] { 1, 2 }");
+
+            string result = sut.Matches(new[] { 1, 2 }, new[] { 1, 2 }, "foo").Message;
+
+            Assert.AreEqual($@"{ActualExpression}
+should not match [
+    <1>,
+    <2>
+]
+but did.
+foo", result);
+
+        }
+
         private static TestEnumerable<T> MakeEnumerable<T>(params T[] items) => new TestEnumerable<T>(items);
     }
 }

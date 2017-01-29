@@ -181,5 +181,10 @@ namespace EasyAssertions
         /// Task timed out while waiting for it to complete.
         /// </summary>
         Exception TaskTimedOut(TimeSpan timeout, string message = null);
+
+        /// <summary>
+        /// Sequences should not match, but did.
+        /// </summary>
+        Exception Matches(IEnumerable notExpected, IEnumerable actual, string message = null);
     }
 }

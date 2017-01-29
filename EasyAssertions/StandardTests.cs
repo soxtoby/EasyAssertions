@@ -23,7 +23,7 @@ namespace EasyAssertions
         /// <summary>
         /// Determines whether the difference between two <see cref="float"/> values is less than or equal to a given tolerance.
         /// </summary>
-        public bool AreWithinTolerance(float actual, float expected, float tolerance)
+        public bool AreWithinTolerance(float actual, float expected, double tolerance)
         {
             return Math.Abs(actual - expected) <= tolerance;
         }
@@ -31,9 +31,9 @@ namespace EasyAssertions
         /// <summary>
         /// Determines whether the difference between two <see cref="double"/> values is less than or equal to a given tolerance.
         /// </summary>
-        public bool AreWithinTolerance(double actual, double notExpected, double tolerance)
+        public bool AreWithinTolerance(double actual, double expected, double tolerance)
         {
-            return Math.Abs(actual - notExpected) <= tolerance;
+            return Math.Abs(actual - expected) <= tolerance;
         }
 
         /// <summary>

@@ -7,6 +7,7 @@
  - `ShouldBeDistinct`, for asserting that a collection does not contain any duplicates.
  - `ShouldBeASingular`, for asserting that a collection has a single item of the specified type, and returning that item.
  - `ShouldAllBeA`, for asserting that all items in a collection are of the specified type.
+ - `ShouldNotMatch`, for asserting that two collections do not have the same items in the same order.
  - Added a `Buffer.Create()` helper function, which creates an `IBuffer<T>` that can be enumerated multiple times without enumerating the underlying sequence more than once.
 
 ## Breaking Changes

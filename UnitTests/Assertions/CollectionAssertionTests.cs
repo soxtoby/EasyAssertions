@@ -60,7 +60,7 @@ namespace EasyAssertions.UnitTests
                 Error.NotEmpty(Arg.Any<IEnumerable>(), Arg.Any<string>()).Returns(EnumerateArgs);
 
                 AssertThrowsExpectedError(() => actual.ShouldBeEmpty());
-                
+
                 Assert.AreEqual(1, actual.EnumerationCount);
             }
 
@@ -189,7 +189,7 @@ namespace EasyAssertions.UnitTests
             public void IsSingularItemWithWrongType_FailsWithTypesNotEqualMessage()
             {
                 IEnumerable actual = new[] { 1.2 };
-                
+
                 AssertFailsWithTypesNotEqualMessage(typeof(int), typeof(double), msg => actual.ShouldBeASingular<int>(msg));
             }
 
@@ -228,7 +228,7 @@ namespace EasyAssertions.UnitTests
             [Test]
             public void NotAllItemsAreCorrectType_FailsWithTypesNotEqualMessage()
             {
-                IEnumerable actual = new[] { new Equatable(1), new object() };
+                IEnumerable actual = new[] { Equatable(1), new object() };
 
                 AssertFailsWithTypesNotEqualMessage(typeof(Equatable), typeof(object), msg => actual.ShouldAllBeA<Equatable>(msg));
             }
@@ -244,7 +244,7 @@ namespace EasyAssertions.UnitTests
             [Test]
             public void CorrectlyRegistersAssertion()
             {
-                IEnumerable actualExpression = new[] { new Equatable(1), new object() };
+                IEnumerable actualExpression = new[] { Equatable(1), new object() };
 
                 AssertFailsWithTypesNotEqualMessage(typeof(Equatable), typeof(object), msg => actualExpression.ShouldAllBeA<Equatable>(msg));
 
@@ -344,7 +344,7 @@ namespace EasyAssertions.UnitTests
             }
 
             [Test]
-            public void ExpectedIsNull_FailsWithArgumentNullException()
+            public void ExpectedIsNull_ThrowsArgumentNullException()
             {
                 string[] actual = { };
 
@@ -404,10 +404,19 @@ namespace EasyAssertions.UnitTests
             [Test]
             public void ActualIsNull_FailsWithTypeNotEqualMessage()
             {
-                IEnumerable<string> actual = null;
-                Error.NotEqual(typeof(IEnumerable<string>), null, "foo").Returns(ExpectedException);
+                AssertFailsWithTypesNotEqualMessage(typeof(IEnumerable<string>), null, msg => ((IEnumerable<string>)null).ShouldMatch(Enumerable.Empty<string>(), (s, s1) => false, msg));
+            }
 
-                AssertThrowsExpectedError(() => actual.ShouldMatch(Enumerable.Empty<string>(), (s, s1) => false, "foo"));
+            [Test]
+            public void ExpectedIsNull_ThrowsArgumentNullException()
+            {
+                AssertArgumentNullException("expected", () => new Equatable[0].ShouldMatch((IEnumerable<int>)null, ValueEquals));
+            }
+
+            [Test]
+            public void PredicateIsNull_ThrowsArgumentNullException()
+            {
+                AssertArgumentNullException("predicate", () => new Equatable[0].ShouldMatch(new int[0], (Func<Equatable, int, bool>)null));
             }
 
             [Test]
@@ -470,6 +479,12 @@ namespace EasyAssertions.UnitTests
             }
 
             [Test]
+            public void ExpectedIsNull_ThrowsArgumentNullException()
+            {
+                AssertArgumentNullException("expected", () => new float[0].ShouldMatch(null, 1));
+            }
+
+            [Test]
             public void CorrectlyRegistersAssertion()
             {
                 float[] actualExpression = { 10f, 20f };
@@ -528,6 +543,12 @@ namespace EasyAssertions.UnitTests
             }
 
             [Test]
+            public void ExpectedIsNull_ThrowArgumentNullException()
+            {
+                AssertArgumentNullException("expected", () => new double[0].ShouldMatch(null, 1));
+            }
+
+            [Test]
             public void CorrectlyRegistersAssertion()
             {
                 double[] actualExpression = { 10d, 20d };
@@ -546,8 +567,8 @@ namespace EasyAssertions.UnitTests
             [Test]
             public void NonMatchingEnumerables_ReturnsActual()
             {
-                IEnumerable<Equatable> actual = new[] { new Equatable(1), new Equatable(2), new Equatable(3) };
-                IEnumerable<Equatable> notExpected = new[] { new Equatable(1), new Equatable(2), new Equatable(4) };
+                IEnumerable<Equatable> actual = new[] { Equatable(1), Equatable(2), Equatable(3) };
+                IEnumerable<Equatable> notExpected = new[] { Equatable(1), Equatable(2), Equatable(4) };
 
                 AssertReturnsActual(actual, () => actual.ShouldNotMatch(notExpected));
             }
@@ -555,7 +576,7 @@ namespace EasyAssertions.UnitTests
             [Test]
             public void MatchingEnumerables_FailsWithCollectionsMatchMessage()
             {
-                IEnumerable<Equatable> actual = new[] { new Equatable(1), new Equatable(2), new Equatable(3) };
+                IEnumerable<Equatable> actual = new[] { Equatable(1), Equatable(2), Equatable(3) };
                 IEnumerable<Equatable> notExpected = actual;
                 Error.Matches(Matches(notExpected), Matches(actual), "foo").Returns(ExpectedException);
 
@@ -738,20 +759,20 @@ namespace EasyAssertions.UnitTests
             [Test]
             public void NonMatchingEnumerables_ReturnsActual()
             {
-                IEnumerable<Equatable> actual = new[] { new Equatable(1), new Equatable(2), new Equatable(3) };
+                IEnumerable<Equatable> actual = new[] { Equatable(1), Equatable(2), Equatable(3) };
                 IEnumerable<int> notExpected = new[] { 1, 2, 4 };
 
-                AssertReturnsActual(actual, () => actual.ShouldNotMatch(notExpected, (a, e) => a.Value == e));
+                AssertReturnsActual(actual, () => actual.ShouldNotMatch(notExpected, ValueEquals));
             }
 
             [Test]
             public void MatchingEnumerables_FailsWithCollectionsMatchMessage()
             {
-                IEnumerable<Equatable> actual = new[] { new Equatable(1), new Equatable(2), new Equatable(3) };
+                IEnumerable<Equatable> actual = new[] { Equatable(1), Equatable(2), Equatable(3) };
                 IEnumerable<int> notExpected = new[] { 1, 2, 3 };
                 Error.Matches(Matches(notExpected), Matches(actual), "foo").Returns(ExpectedException);
 
-                AssertThrowsExpectedError(() => actual.ShouldNotMatch(notExpected, (a, e) => a.Value == e, "foo"));
+                AssertThrowsExpectedError(() => actual.ShouldNotMatch(notExpected, ValueEquals, "foo"));
             }
 
             [Test]
@@ -768,6 +789,12 @@ namespace EasyAssertions.UnitTests
                 IEnumerable<int> actual = new[] { 1 };
 
                 AssertArgumentNullException("notExpected", () => actual.ShouldNotMatch((IEnumerable<int>)null, (a, e) => a == e));
+            }
+
+            [Test]
+            public void PredicateIsNull_ThrowsArgumentNullException()
+            {
+                AssertArgumentNullException("predicate", () => new int[0].ShouldNotMatch(new[] { 1 }, (Func<int, int, bool>)null));
             }
 
             [Test]
@@ -815,7 +842,7 @@ namespace EasyAssertions.UnitTests
             }
 
             [Test]
-            public void ExpectedIsNull_FailsWithArgumentNullException()
+            public void ExpectedIsNull_ThrowsArgumentNullException()
             {
                 AssertArgumentNullException("expectedStart", () => new[] { 1 }.ShouldStartWith((IEnumerable<int>)null));
             }
@@ -825,7 +852,7 @@ namespace EasyAssertions.UnitTests
             {
                 int[] actual = { 1 };
                 int[] expectedStart = { 2 };
-                Error.DoesNotStartWith(Matches(expectedStart), Matches(actual), StandardTests.Instance.ObjectsAreEqual, "foo").Returns(ExpectedException);
+                Error.DoesNotStartWith(Matches<int>(expectedStart), Matches<int>(actual), StandardTests.Instance.ObjectsAreEqual, "foo").Returns(ExpectedException);
 
                 AssertThrowsExpectedError(() => actual.ShouldStartWith(expectedStart, "foo"));
             }
@@ -835,7 +862,7 @@ namespace EasyAssertions.UnitTests
             {
                 TestEnumerable<int> actual = MakeEnumerable(1);
                 TestEnumerable<int> expected = MakeEnumerable(2);
-                Error.DoesNotStartWith(Arg.Any<IEnumerable>(), Arg.Any<IEnumerable>(), Arg.Any<Func<object, object, bool>>(), Arg.Any<string>()).Returns(EnumerateArgs);
+                Error.DoesNotStartWith(Arg.Any<IEnumerable<int>>(), Arg.Any<IEnumerable<int>>(), Arg.Any<Func<int, int, bool>>(), Arg.Any<string>()).Returns(EnumerateArgs);
 
                 AssertThrowsExpectedError(() => actual.ShouldStartWith(expected));
 
@@ -848,9 +875,76 @@ namespace EasyAssertions.UnitTests
             {
                 int[] actualExpression = { 1 };
                 int[] expectedExpression = { 2 };
-                Error.DoesNotStartWith(Arg.Any<IEnumerable>(), Arg.Any<IEnumerable>(), Arg.Any<Func<object, object, bool>>()).Returns(ExpectedException);
+                Error.DoesNotStartWith(Arg.Any<IEnumerable<int>>(), Arg.Any<IEnumerable<int>>(), Arg.Any<Func<int, int, bool>>()).Returns(ExpectedException);
 
-                Assert.Throws<Exception>(() => actualExpression.ShouldStartWith(expectedExpression));
+                AssertThrowsExpectedError(() => actualExpression.ShouldStartWith(expectedExpression));
+
+                Assert.AreEqual(nameof(actualExpression), TestExpression.GetActual());
+                Assert.AreEqual(nameof(expectedExpression), TestExpression.GetExpected());
+            }
+        }
+
+        class ShouldStartWith_CustomEquality : CollectionAssertionTests
+        {
+            [Test]
+            public void StartsWithExpected_ReturnsActualValue()
+            {
+                Equatable[] actual = { Equatable(1), Equatable(2), Equatable(3) };
+
+                AssertReturnsActual(actual, () => actual.ShouldStartWith(new[] { 1, 2 }, ValueEquals));
+            }
+
+            [Test]
+            public void ActualIsNull_FailsWithTypesNotEqualMessage()
+            {
+                IEnumerable<int> actual = null;
+                AssertFailsWithTypesNotEqualMessage(typeof(IEnumerable<int>), null, msg => actual.ShouldStartWith(Enumerable.Empty<int>(), (a, e) => a == e, msg));
+            }
+
+            [Test]
+            public void ExpectedIsNull_ThrowsArgumentNullException()
+            {
+                AssertArgumentNullException("expectedStart", () => new[] { 1 }.ShouldStartWith((IEnumerable<int>)null, (a, e) => a == e));
+            }
+
+            [Test]
+            public void PredicateIsNull_ThrowsArgumentNullException()
+            {
+                AssertArgumentNullException("predicate", () => new[] { 1 }.ShouldStartWith(new[] { 1 }, (Func<int, int, bool>)null));
+            }
+
+            [Test]
+            public void DoesNotStartWithExpected_FailsWithDoesNotStartWithMessage()
+            {
+                Equatable[] actual = { Equatable(1), };
+                int[] expectedStart = { 2 };
+                Func<Equatable, int, bool> predicate = ValueEquals;
+                Error.DoesNotStartWith(Matches<int>(expectedStart), Matches<Equatable>(actual), predicate, "foo").Returns(ExpectedException);
+
+                AssertThrowsExpectedError(() => actual.ShouldStartWith(expectedStart, predicate, "foo"));
+            }
+
+            [Test]
+            public void DoesNotStartWithExpected_OnlyEnumeratesOnce()
+            {
+                TestEnumerable<int> actual = MakeEnumerable(1);
+                TestEnumerable<int> expected = MakeEnumerable(2);
+                Error.DoesNotStartWith(Arg.Any<IEnumerable<int>>(), Arg.Any<IEnumerable<int>>(), Arg.Any<Func<int, int, bool>>(), Arg.Any<string>()).Returns(EnumerateArgs);
+
+                AssertThrowsExpectedError(() => actual.ShouldStartWith(expected, (a, e) => a == e));
+
+                Assert.AreEqual(1, actual.EnumerationCount);
+                Assert.AreEqual(1, expected.EnumerationCount);
+            }
+
+            [Test]
+            public void CorrectlyRegistersAssertion()
+            {
+                int[] actualExpression = { 1 };
+                int[] expectedExpression = { 2 };
+                Error.DoesNotStartWith(Arg.Any<IEnumerable<int>>(), Arg.Any<IEnumerable<int>>(), Arg.Any<Func<int, int, bool>>()).Returns(ExpectedException);
+
+                Assert.Throws<Exception>(() => actualExpression.ShouldStartWith(expectedExpression, (a, e) => a == e));
 
                 Assert.AreEqual(nameof(actualExpression), TestExpression.GetActual());
                 Assert.AreEqual(nameof(expectedExpression), TestExpression.GetExpected());
@@ -875,7 +969,7 @@ namespace EasyAssertions.UnitTests
             }
 
             [Test]
-            public void ExpectedIsNull_FailsWithArgumentNullException()
+            public void ExpectedIsNull_ThrowsArgumentNullException()
             {
                 AssertArgumentNullException("expectedEnd", () => new[] { 1 }.ShouldEndWith((IEnumerable<int>)null));
             }
@@ -885,7 +979,7 @@ namespace EasyAssertions.UnitTests
             {
                 int[] actual = { 1 };
                 int[] expectedStart = { 2 };
-                Error.DoesNotEndWith(Matches(expectedStart), Matches(actual), StandardTests.Instance.ObjectsAreEqual, "foo").Returns(ExpectedException);
+                Error.DoesNotEndWith(Matches<int>(expectedStart), Matches<int>(actual), StandardTests.Instance.ObjectsAreEqual, "foo").Returns(ExpectedException);
 
                 AssertThrowsExpectedError(() => actual.ShouldEndWith(expectedStart, "foo"));
             }
@@ -895,7 +989,7 @@ namespace EasyAssertions.UnitTests
             {
                 TestEnumerable<int> actual = MakeEnumerable(1);
                 TestEnumerable<int> expected = MakeEnumerable(2);
-                Error.DoesNotEndWith(Arg.Any<IEnumerable>(), Arg.Any<IEnumerable>(), Arg.Any<Func<object, object, bool>>(), Arg.Any<string>()).Returns(EnumerateArgs);
+                Error.DoesNotEndWith(Arg.Any<IEnumerable<int>>(), Arg.Any<IEnumerable<int>>(), Arg.Any<Func<int, int, bool>>(), Arg.Any<string>()).Returns(EnumerateArgs);
 
                 AssertThrowsExpectedError(() => actual.ShouldEndWith(expected));
 
@@ -908,9 +1002,76 @@ namespace EasyAssertions.UnitTests
             {
                 int[] actualExpression = { 1 };
                 int[] expectedExpression = { 2 };
-                Error.DoesNotEndWith(Arg.Any<IEnumerable>(), Arg.Any<IEnumerable>(), Arg.Any<Func<object, object, bool>>()).Returns(ExpectedException);
+                Error.DoesNotEndWith(Arg.Any<IEnumerable<int>>(), Arg.Any<IEnumerable<int>>(), Arg.Any<Func<int, int, bool>>()).Returns(ExpectedException);
 
-                Assert.Throws<Exception>(() => actualExpression.ShouldEndWith(expectedExpression));
+                AssertThrowsExpectedError(() => actualExpression.ShouldEndWith(expectedExpression));
+
+                Assert.AreEqual(nameof(actualExpression), TestExpression.GetActual());
+                Assert.AreEqual(nameof(expectedExpression), TestExpression.GetExpected());
+            }
+        }
+
+        class ShouldEndWith_CustomEquality : CollectionAssertionTests
+        {
+            [Test]
+            public void StartsWithExpected_ReturnsActualValue()
+            {
+                Equatable[] actual = { Equatable(1), Equatable(2), Equatable(3) };
+
+                AssertReturnsActual(actual, () => actual.ShouldEndWith(new[] { 2, 3 }, ValueEquals));
+            }
+
+            [Test]
+            public void ActualIsNull_FailsWithTypesNotEqualMessage()
+            {
+                IEnumerable<int> actual = null;
+                AssertFailsWithTypesNotEqualMessage(typeof(IEnumerable<int>), null, msg => actual.ShouldEndWith(Enumerable.Empty<int>(), (a, e) => a == e, msg));
+            }
+
+            [Test]
+            public void ExpectedIsNull_ThrowsArgumentNullException()
+            {
+                AssertArgumentNullException("expectedEnd", () => new[] { 1 }.ShouldEndWith((IEnumerable<int>)null, (a, e) => a == e));
+            }
+
+            [Test]
+            public void PredicateIsNull_ThrowsArgumentNullException()
+            {
+                AssertArgumentNullException("predicate", () => new[] { 1 }.ShouldEndWith(new[] { 1 }, (Func<int, int, bool>)null));
+            }
+
+            [Test]
+            public void DoesNotEndWithExpected_FailsWithDoesNotEndWithMessage()
+            {
+                Equatable[] actual = { Equatable(1) };
+                int[] expectedStart = { 2 };
+                Func<Equatable, int, bool> predicate = ValueEquals;
+                Error.DoesNotEndWith(Matches<int>(expectedStart), Matches<Equatable>(actual), predicate, "foo").Returns(ExpectedException);
+
+                AssertThrowsExpectedError(() => actual.ShouldEndWith(expectedStart, predicate, "foo"));
+            }
+
+            [Test]
+            public void DoesNotEndWithExpected_OnlyEnumeratesOnce()
+            {
+                TestEnumerable<int> actual = MakeEnumerable(1);
+                TestEnumerable<int> expected = MakeEnumerable(2);
+                Error.DoesNotEndWith(Arg.Any<IEnumerable<int>>(), Arg.Any<IEnumerable<int>>(), Arg.Any<Func<int, int, bool>>(), Arg.Any<string>()).Returns(EnumerateArgs);
+
+                AssertThrowsExpectedError(() => actual.ShouldEndWith(expected, (a, e) => a == e));
+
+                Assert.AreEqual(1, actual.EnumerationCount);
+                Assert.AreEqual(1, expected.EnumerationCount);
+            }
+
+            [Test]
+            public void CorrectlyRegistersAssertion()
+            {
+                int[] actualExpression = { 1 };
+                int[] expectedExpression = { 2 };
+                Error.DoesNotEndWith(Arg.Any<IEnumerable<int>>(), Arg.Any<IEnumerable<int>>(), Arg.Any<Func<int, int, bool>>()).Returns(ExpectedException);
+
+                Assert.Throws<Exception>(() => actualExpression.ShouldEndWith(expectedExpression, (a, e) => a == e));
 
                 Assert.AreEqual(nameof(actualExpression), TestExpression.GetActual());
                 Assert.AreEqual(nameof(expectedExpression), TestExpression.GetExpected());
@@ -922,16 +1083,16 @@ namespace EasyAssertions.UnitTests
             [Test]
             public void CollectionContainsExpected_ReturnsActualValue()
             {
-                int[] actual = { 1, 2 };
+                Equatable[] actual = { Equatable(1), Equatable(2) };
 
-                AssertReturnsActual(actual, () => actual.ShouldContain(2));
+                AssertReturnsActual(actual, () => actual.ShouldContain(Equatable(2)));
             }
 
             [Test]
             public void CollectionDoesNotContainExpected_FailsWithEnumerableDoesNotContainMessage()
             {
-                int[] actual = { 1, 2 };
-                const int expected = 3;
+                Equatable[] actual = { Equatable(1), Equatable(2) };
+                Equatable expected = Equatable(3);
                 Error.DoesNotContain(expected, Matches(actual), message: "foo").Returns(ExpectedException);
 
                 AssertThrowsExpectedError(() => actual.ShouldContain(expected, "foo"));
@@ -969,32 +1130,33 @@ namespace EasyAssertions.UnitTests
             }
         }
 
-        class ShouldNotContain : CollectionAssertionTests
+        class ShouldContain_CustomEquality : CollectionAssertionTests
         {
             [Test]
-            public void CollectionDoesNotContainExpected_ReturnsActualValue()
+            public void CollectionContainsExpected_ReturnsActualValue()
             {
-                IEnumerable<int> actual = Enumerable.Empty<int>();
+                Equatable[] actual = { Equatable(1), Equatable(2) };
 
-                AssertReturnsActual(actual, () => actual.ShouldNotContain(1));
+                AssertReturnsActual(actual, () => actual.ShouldContain(2, ValueEquals));
             }
 
             [Test]
-            public void CollectionContainsItem_FailsWithEnumerableContainsItemMessage()
+            public void CollectionDoesNotContainExpected_FailsWithEnumerableDoesNotContainMessage()
             {
-                int[] actual = { 1 };
-                Error.Contains(1, Matches(actual), message: "foo").Returns(ExpectedException);
+                Equatable[] actual = { Equatable(1), Equatable(2) };
+                int expected = 3;
+                Error.DoesNotContain(expected, Matches<Equatable>(actual), message: "foo").Returns(ExpectedException);
 
-                AssertThrowsExpectedError(() => actual.ShouldNotContain(1, "foo"));
+                AssertThrowsExpectedError(() => actual.ShouldContain(expected, ValueEquals, "foo"));
             }
 
             [Test]
-            public void CollectionContainsItem_OnlyEnumeratesOnce()
+            public void CollectionDoesNotContainExpected_OnlyEnumeratesOnce()
             {
-                TestEnumerable<int> actual = MakeEnumerable(1);
-                Error.Contains(Arg.Any<object>(), Arg.Any<IEnumerable>(), Arg.Any<string>(), Arg.Any<string>()).Returns(EnumerateArgs);
+                TestEnumerable<Equatable> actual = MakeEnumerable(Equatable(1));
+                Error.DoesNotContain(Arg.Any<object>(), Arg.Any<IEnumerable>(), Arg.Any<string>(), Arg.Any<string>()).Returns(EnumerateArgs);
 
-                AssertThrowsExpectedError(() => actual.ShouldNotContain(1));
+                AssertThrowsExpectedError(() => actual.ShouldContain(2, ValueEquals));
 
                 Assert.AreEqual(1, actual.EnumerationCount);
             }
@@ -1002,18 +1164,132 @@ namespace EasyAssertions.UnitTests
             [Test]
             public void ActualIsNull_FailsWithTypesNotEqualMessage()
             {
-                IEnumerable<int> actual = null;
-                AssertFailsWithTypesNotEqualMessage(typeof(IEnumerable<int>), null, msg => actual.ShouldNotContain(1, msg));
+                IEnumerable<Equatable> actual = null;
+                AssertFailsWithTypesNotEqualMessage(typeof(IEnumerable<Equatable>), null, msg => actual.ShouldContain(1, ValueEquals, msg));
+            }
+
+            [Test]
+            public void PredicateIsNull_ThrowsArgumentNullException()
+            {
+                AssertArgumentNullException("predicate", () => new Equatable[0].ShouldContain(1, (Func<Equatable, int, bool>)null));
             }
 
             [Test]
             public void CorrectlyRegistersAssertion()
             {
-                int[] actualExpression = { 1 };
-                int expectedExpression = 1;
+                Equatable[] actualExpression = { Equatable(1), Equatable(2) };
+                const int expectedExpression = 3;
+                Error.DoesNotContain(Arg.Any<object>(), Arg.Any<IEnumerable>()).Returns(ExpectedException);
+
+                Assert.Throws<Exception>(() => actualExpression.ShouldContain(expectedExpression, ValueEquals));
+
+                Assert.AreEqual(nameof(actualExpression), TestExpression.GetActual());
+                Assert.AreEqual(nameof(expectedExpression), TestExpression.GetExpected());
+            }
+        }
+
+        class ShouldNotContain : CollectionAssertionTests
+        {
+            [Test]
+            public void CollectionDoesNotContainExpected_ReturnsActualValue()
+            {
+                IEnumerable<Equatable> actual = Enumerable.Empty<Equatable>();
+
+                AssertReturnsActual(actual, () => actual.ShouldNotContain(Equatable(1)));
+            }
+
+            [Test]
+            public void CollectionContainsItem_FailsWithEnumerableContainsItemMessage()
+            {
+                Equatable[] actual = { Equatable(1) };
+                Error.Contains(Equatable(1), Matches(actual), message: "foo").Returns(ExpectedException);
+
+                AssertThrowsExpectedError(() => actual.ShouldNotContain(Equatable(1), "foo"));
+            }
+
+            [Test]
+            public void CollectionContainsItem_OnlyEnumeratesOnce()
+            {
+                TestEnumerable<Equatable> actual = MakeEnumerable(Equatable(1));
+                Error.Contains(Arg.Any<object>(), Arg.Any<IEnumerable>(), Arg.Any<string>(), Arg.Any<string>()).Returns(EnumerateArgs);
+
+                AssertThrowsExpectedError(() => actual.ShouldNotContain(Equatable(1)));
+
+                Assert.AreEqual(1, actual.EnumerationCount);
+            }
+
+            [Test]
+            public void ActualIsNull_FailsWithTypesNotEqualMessage()
+            {
+                IEnumerable<Equatable> actual = null;
+                AssertFailsWithTypesNotEqualMessage(typeof(IEnumerable<Equatable>), null, msg => actual.ShouldNotContain(Equatable(1), msg));
+            }
+
+            [Test]
+            public void CorrectlyRegistersAssertion()
+            {
+                Equatable[] actualExpression = { Equatable(1) };
+                Equatable expectedExpression = Equatable(1);
                 Error.Contains(Arg.Any<object>(), Arg.Any<IEnumerable>()).Returns(ExpectedException);
 
                 Assert.Throws<Exception>(() => actualExpression.ShouldNotContain(expectedExpression));
+
+                Assert.AreEqual(nameof(actualExpression), TestExpression.GetActual());
+                Assert.AreEqual(nameof(expectedExpression), TestExpression.GetExpected());
+            }
+        }
+
+        class ShouldNotContain_CustomEquality : CollectionAssertionTests
+        {
+            [Test]
+            public void CollectionDoesNotContainExpected_ReturnsActualValue()
+            {
+                IEnumerable<Equatable> actual = Enumerable.Empty<Equatable>();
+
+                AssertReturnsActual(actual, () => actual.ShouldNotContain(1, ValueEquals));
+            }
+
+            [Test]
+            public void CollectionContainsItem_FailsWithEnumerableContainsItemMessage()
+            {
+                Equatable[] actual = { Equatable(1) };
+                Error.Contains(1, Matches(actual), message: "foo").Returns(ExpectedException);
+
+                AssertThrowsExpectedError(() => actual.ShouldNotContain(1, ValueEquals, "foo"));
+            }
+
+            [Test]
+            public void CollectionContainsItem_OnlyEnumeratesOnce()
+            {
+                TestEnumerable<Equatable> actual = MakeEnumerable(Equatable(1));
+                Error.Contains(Arg.Any<object>(), Arg.Any<IEnumerable>(), Arg.Any<string>(), Arg.Any<string>()).Returns(EnumerateArgs);
+
+                AssertThrowsExpectedError(() => actual.ShouldNotContain(1, ValueEquals));
+
+                Assert.AreEqual(1, actual.EnumerationCount);
+            }
+
+            [Test]
+            public void ActualIsNull_FailsWithTypesNotEqualMessage()
+            {
+                IEnumerable<Equatable> actual = null;
+                AssertFailsWithTypesNotEqualMessage(typeof(IEnumerable<Equatable>), null, msg => actual.ShouldNotContain(1, ValueEquals, msg));
+            }
+
+            [Test]
+            public void PredicateIsNull_ThrowsArgumentNullException()
+            {
+                AssertArgumentNullException("predicate", () => new Equatable[0].ShouldNotContain(1, (Func<Equatable, int, bool>)null));
+            }
+
+            [Test]
+            public void CorrectlyRegistersAssertion()
+            {
+                Equatable[] actualExpression = { Equatable(1) };
+                int expectedExpression = 1;
+                Error.Contains(Arg.Any<object>(), Arg.Any<IEnumerable>()).Returns(ExpectedException);
+
+                Assert.Throws<Exception>(() => actualExpression.ShouldNotContain(expectedExpression, ValueEquals));
 
                 Assert.AreEqual(nameof(actualExpression), TestExpression.GetActual());
                 Assert.AreEqual(nameof(expectedExpression), TestExpression.GetExpected());
@@ -1025,17 +1301,17 @@ namespace EasyAssertions.UnitTests
             [Test]
             public void CollectionContainsAllItems_ReturnsActualValue()
             {
-                int[] actual = { 1, 2, 3 };
+                Equatable[] actual = { Equatable(1), Equatable(2), Equatable(3) };
 
-                AssertReturnsActual(actual, () => actual.ShouldContainItems(new[] { 2, 3, 1 }));
+                AssertReturnsActual(actual, () => actual.ShouldContainItems(new[] { Equatable(2), Equatable(3), Equatable(1) }));
             }
 
             [Test]
             public void CollectionDoesNotContainAllItems_FailsWithEnumerableDoesNotContainItemsMessage()
             {
-                int[] actual = { 1, 2, 3 };
-                int[] expected = { 1, 4 };
-                Error.DoesNotContainItems(Matches(expected), Matches(actual), "foo").Returns(ExpectedException);
+                Equatable[] actual = { Equatable(1), Equatable(2), Equatable(3) };
+                Equatable[] expected = { Equatable(1), Equatable(4) };
+                Error.DoesNotContainItems(Matches<Equatable>(expected), Matches<Equatable>(actual), StandardTests.Instance.ObjectsAreEqual, "foo").Returns(ExpectedException);
 
                 AssertThrowsExpectedError(() => actual.ShouldContainItems(expected, "foo"));
             }
@@ -1043,9 +1319,9 @@ namespace EasyAssertions.UnitTests
             [Test]
             public void CollectionDoesNotContainAllItems_OnlyEnumeratesOnce()
             {
-                TestEnumerable<int> actual = MakeEnumerable(1);
-                TestEnumerable<int> expected = MakeEnumerable(2);
-                Error.DoesNotContainItems(Arg.Any<IEnumerable>(), Arg.Any<IEnumerable>(), Arg.Any<string>()).Returns(EnumerateArgs);
+                TestEnumerable<Equatable> actual = MakeEnumerable(Equatable(1));
+                TestEnumerable<Equatable> expected = MakeEnumerable(Equatable(2));
+                Error.DoesNotContainItems(Arg.Any<IEnumerable<Equatable>>(), Arg.Any<IEnumerable<Equatable>>(), Arg.Any<Func<Equatable, Equatable, bool>>(), Arg.Any<string>()).Returns(EnumerateArgs);
 
                 AssertThrowsExpectedError(() => actual.ShouldContainItems(expected));
 
@@ -1056,18 +1332,90 @@ namespace EasyAssertions.UnitTests
             [Test]
             public void ActualIsNull_FailsWithTypesNotEqualMessage()
             {
-                IEnumerable<int> actual = null;
-                AssertFailsWithTypesNotEqualMessage(typeof(IEnumerable<int>), null, msg => actual.ShouldContainItems(new[] { 1 }, msg));
+                IEnumerable<Equatable> actual = null;
+                AssertFailsWithTypesNotEqualMessage(typeof(IEnumerable<Equatable>), null, msg => actual.ShouldContainItems(new[] { Equatable(1) }, msg));
+            }
+
+            [Test]
+            public void ExpectedIsNull_ThrowsArgumentNullException()
+            {
+                AssertArgumentNullException("expected", () => new Equatable[0].ShouldContainItems((IEnumerable<Equatable>)null));
             }
 
             [Test]
             public void CorrectlyRegistersAssertion()
             {
-                int[] actualExpression = { 1, 2, 3 };
-                int[] expectedExpression = { 1, 4 };
-                Error.DoesNotContainItems(Arg.Any<IEnumerable>(), Arg.Any<IEnumerable>()).Returns(ExpectedException);
+                Equatable[] actualExpression = { Equatable(1), Equatable(2), Equatable(3) };
+                Equatable[] expectedExpression = { Equatable(1), Equatable(4) };
+                Error.DoesNotContainItems(Arg.Any<IEnumerable<Equatable>>(), Arg.Any<IEnumerable<Equatable>>(), Arg.Any<Func<Equatable, Equatable, bool>>()).Returns(ExpectedException);
 
                 Assert.Throws<Exception>(() => actualExpression.ShouldContainItems(expectedExpression));
+
+                Assert.AreEqual(nameof(actualExpression), TestExpression.GetActual());
+                Assert.AreEqual(nameof(expectedExpression), TestExpression.GetExpected());
+            }
+        }
+
+        class ShouldContainItems_CustomEquality : CollectionAssertionTests
+        {
+            [Test]
+            public void CollectionContainsAllItems_ReturnsActualValue()
+            {
+                Equatable[] actual = { Equatable(1), Equatable(2), Equatable(3) };
+
+                AssertReturnsActual(actual, () => actual.ShouldContainItems(new[] { 2, 3, 1 }, ValueEquals));
+            }
+
+            [Test]
+            public void CollectionDoesNotContainAllItems_FailsWithEnumerableDoesNotContainItemsMessage()
+            {
+                Equatable[] actual = { Equatable(1), Equatable(2), Equatable(3) };
+                int[] expected = { 1, 4 };
+                Error.DoesNotContainItems(Matches<int>(expected), Matches<Equatable>(actual), ValueEquals, "foo").Returns(ExpectedException);
+
+                AssertThrowsExpectedError(() => actual.ShouldContainItems(expected, ValueEquals, "foo"));
+            }
+
+            [Test]
+            public void CollectionDoesNotContainAllItems_OnlyEnumeratesOnce()
+            {
+                TestEnumerable<Equatable> actual = MakeEnumerable(Equatable(1));
+                TestEnumerable<int> expected = MakeEnumerable(2);
+                Error.DoesNotContainItems(Arg.Any<IEnumerable<int>>(), Arg.Any<IEnumerable<Equatable>>(), Arg.Any<Func<Equatable, int, bool>>(), Arg.Any<string>()).Returns(EnumerateArgs);
+
+                AssertThrowsExpectedError(() => actual.ShouldContainItems(expected, ValueEquals));
+
+                Assert.AreEqual(1, actual.EnumerationCount);
+                Assert.AreEqual(1, expected.EnumerationCount);
+            }
+
+            [Test]
+            public void ActualIsNull_FailsWithTypesNotEqualMessage()
+            {
+                IEnumerable<Equatable> actual = null;
+                AssertFailsWithTypesNotEqualMessage(typeof(IEnumerable<Equatable>), null, msg => actual.ShouldContainItems(new[] { 1 }, ValueEquals, msg));
+            }
+
+            [Test]
+            public void ExpectedIsNull_ThrowsArgumentNullException()
+            {
+                AssertArgumentNullException("expected", () => new Equatable[0].ShouldContainItems((IEnumerable<int>)null, ValueEquals));
+            }
+
+            [Test]
+            public void PredicateIsNull_ThrowsArgumentNullException()
+            {
+                AssertArgumentNullException("predicate", () => new Equatable[0].ShouldContainItems(new int[0], (Func<Equatable, int, bool>)null));
+            }
+
+            [Test]
+            public void CorrectlyRegistersAssertion()
+            {
+                Equatable[] actualExpression = { Equatable(1), Equatable(2), Equatable(3) };
+                int[] expectedExpression = { 1, 4 };
+                Error.DoesNotContainItems(Arg.Any<IEnumerable<int>>(), Arg.Any<IEnumerable<Equatable>>(), ValueEquals).Returns(ExpectedException);
+
+                Assert.Throws<Exception>(() => actualExpression.ShouldContainItems(expectedExpression, ValueEquals));
 
                 Assert.AreEqual(nameof(actualExpression), TestExpression.GetActual());
                 Assert.AreEqual(nameof(expectedExpression), TestExpression.GetExpected());
@@ -1079,17 +1427,17 @@ namespace EasyAssertions.UnitTests
             [Test]
             public void ExpectedContainsAllItems_ReturnsActualValue()
             {
-                int[] actual = { 1, 2 };
+                Equatable[] actual = { Equatable(1), Equatable(2) };
 
-                AssertReturnsActual(actual, () => actual.ItemsShouldBeIn(new[] { 3, 2, 1 }));
+                AssertReturnsActual(actual, () => actual.ItemsShouldBeIn(new[] { Equatable(3), Equatable(2), Equatable(1) }));
             }
 
             [Test]
             public void ContainsExtraItem_FailsWithCollectionContainsExtraItemMessage()
             {
-                int[] actual = { 1, 2 };
-                int[] expected = { 1 };
-                Error.ContainsExtraItem(Matches(expected), Matches(actual), "foo").Returns(ExpectedException);
+                Equatable[] actual = { Equatable(1), Equatable(2) };
+                Equatable[] expected = { Equatable(1) };
+                Error.ContainsExtraItem(Matches<Equatable>(expected), Matches<Equatable>(actual), StandardTests.Instance.ObjectsAreEqual, "foo").Returns(ExpectedException);
 
                 AssertThrowsExpectedError(() => actual.ItemsShouldBeIn(expected, "foo"));
             }
@@ -1097,9 +1445,9 @@ namespace EasyAssertions.UnitTests
             [Test]
             public void ContainsExtraItem_OnlyEnumeratesOnce()
             {
-                TestEnumerable<int> actual = MakeEnumerable(1);
-                TestEnumerable<int> expected = MakeEnumerable(2);
-                Error.ContainsExtraItem(Arg.Any<IEnumerable>(), Arg.Any<IEnumerable>(), Arg.Any<string>()).Returns(EnumerateArgs);
+                TestEnumerable<Equatable> actual = MakeEnumerable(Equatable(1));
+                TestEnumerable<Equatable> expected = MakeEnumerable(Equatable(2));
+                Error.ContainsExtraItem(Arg.Any<IEnumerable<Equatable>>(), Arg.Any<IEnumerable<Equatable>>(), StandardTests.Instance.ObjectsAreEqual, Arg.Any<string>()).Returns(EnumerateArgs);
 
                 AssertThrowsExpectedError(() => actual.ItemsShouldBeIn(expected));
 
@@ -1110,24 +1458,90 @@ namespace EasyAssertions.UnitTests
             [Test]
             public void ActualIsNull_FailsWithTypesNotEqualMessage()
             {
-                IEnumerable<int> actual = null;
-                AssertFailsWithTypesNotEqualMessage(typeof(IEnumerable<int>), null, msg => actual.ItemsShouldBeIn(new[] { 1 }, msg));
+                IEnumerable<Equatable> actual = null;
+                AssertFailsWithTypesNotEqualMessage(typeof(IEnumerable<Equatable>), null, msg => actual.ItemsShouldBeIn(new[] { Equatable(1) }, msg));
             }
 
             [Test]
             public void ExpectedIsNull_ThrowsArgumentNullException()
             {
-                AssertArgumentNullException("expectedSuperset", () => new int[0].ItemsShouldBeIn((IEnumerable<int>)null));
+                AssertArgumentNullException("expectedSuperset", () => new Equatable[0].ItemsShouldBeIn((IEnumerable<Equatable>)null));
             }
 
             [Test]
             public void CorrectlyRegistersAssertion()
             {
-                int[] actualExpression = { 1, 2 };
-                int[] expectedExpression = { 1 };
-                Error.ContainsExtraItem(Arg.Any<IEnumerable>(), Arg.Any<IEnumerable>()).Returns(ExpectedException);
+                Equatable[] actualExpression = { Equatable(1), Equatable(2) };
+                Equatable[] expectedExpression = { Equatable(1) };
+                Error.ContainsExtraItem(Arg.Any<IEnumerable<Equatable>>(), Arg.Any<IEnumerable<Equatable>>(), StandardTests.Instance.ObjectsAreEqual).Returns(ExpectedException);
 
                 Assert.Throws<Exception>(() => actualExpression.ItemsShouldBeIn(expectedExpression));
+
+                Assert.AreEqual(nameof(actualExpression), TestExpression.GetActual());
+                Assert.AreEqual(nameof(expectedExpression), TestExpression.GetExpected());
+            }
+        }
+
+        class ItemsShouldBeIn_CustomEquality : CollectionAssertionTests
+        {
+            [Test]
+            public void ExpectedContainsAllItems_ReturnsActualValue()
+            {
+                Equatable[] actual = { Equatable(1), Equatable(2) };
+
+                AssertReturnsActual(actual, () => actual.ItemsShouldBeIn(new[] { 3, 2, 1 }, ValueEquals));
+            }
+
+            [Test]
+            public void ContainsExtraItem_FailsWithCollectionContainsExtraItemMessage()
+            {
+                Equatable[] actual = { Equatable(1), Equatable(2) };
+                int[] expected = { 1 };
+                Error.ContainsExtraItem(Matches<int>(expected), Matches<Equatable>(actual), ValueEquals, "foo").Returns(ExpectedException);
+
+                AssertThrowsExpectedError(() => actual.ItemsShouldBeIn(expected, ValueEquals, "foo"));
+            }
+
+            [Test]
+            public void ContainsExtraItem_OnlyEnumeratesOnce()
+            {
+                TestEnumerable<Equatable> actual = MakeEnumerable(Equatable(1));
+                TestEnumerable<int> expected = MakeEnumerable(2);
+                Error.ContainsExtraItem(Arg.Any<IEnumerable<int>>(), Arg.Any<IEnumerable<Equatable>>(), Arg.Any<Func<Equatable, int, bool>>(), Arg.Any<string>()).Returns(EnumerateArgs);
+
+                AssertThrowsExpectedError(() => actual.ItemsShouldBeIn(expected, ValueEquals));
+
+                Assert.AreEqual(1, actual.EnumerationCount);
+                Assert.AreEqual(1, expected.EnumerationCount);
+            }
+
+            [Test]
+            public void ActualIsNull_FailsWithTypesNotEqualMessage()
+            {
+                IEnumerable<Equatable> actual = null;
+                AssertFailsWithTypesNotEqualMessage(typeof(IEnumerable<Equatable>), null, msg => actual.ItemsShouldBeIn(new[] { 1 }, ValueEquals, msg));
+            }
+
+            [Test]
+            public void ExpectedIsNull_ThrowsArgumentNullException()
+            {
+                AssertArgumentNullException("expectedSuperset", () => new Equatable[0].ItemsShouldBeIn((IEnumerable<int>)null, ValueEquals));
+            }
+
+            [Test]
+            public void PredicateIsNull_ThrowsArgumentNullException()
+            {
+                AssertArgumentNullException("predicate", () => new Equatable[0].ItemsShouldBeIn(new int[0], (Func<Equatable, int, bool>)null));
+            }
+
+            [Test]
+            public void CorrectlyRegistersAssertion()
+            {
+                Equatable[] actualExpression = { Equatable(1), Equatable(2) };
+                int[] expectedExpression = { 1 };
+                Error.ContainsExtraItem(Arg.Any<IEnumerable<int>>(), Arg.Any<IEnumerable<Equatable>>(), ValueEquals).Returns(ExpectedException);
+
+                Assert.Throws<Exception>(() => actualExpression.ItemsShouldBeIn(expectedExpression, ValueEquals));
 
                 Assert.AreEqual(nameof(actualExpression), TestExpression.GetActual());
                 Assert.AreEqual(nameof(expectedExpression), TestExpression.GetExpected());
@@ -1139,16 +1553,16 @@ namespace EasyAssertions.UnitTests
             [Test]
             public void CollectionDoesNotContainAnyOfTheItems_ReturnsActualValue()
             {
-                int[] actual = { 1, 2 };
+                Equatable[] actual = { Equatable(1), Equatable(2) };
 
-                AssertReturnsActual(actual, () => actual.ShouldNotContainItems(new[] { 3, 4 }));
+                AssertReturnsActual(actual, () => actual.ShouldNotContainItems(new[] { Equatable(3), Equatable(4) }));
             }
 
             [Test]
             public void CollectionContainsOneOfTheItems_FailsWithSequenceContainsItemMessage()
             {
-                int[] actual = { 1, 2 };
-                int[] expectedToNotContain = { 3, 2 };
+                Equatable[] actual = { Equatable(1), Equatable(2) };
+                Equatable[] expectedToNotContain = { Equatable(3), Equatable(2) };
                 Error.Contains(Matches(expectedToNotContain), Matches(actual), "foo").Returns(ExpectedException);
 
                 AssertThrowsExpectedError(() => actual.ShouldNotContainItems(expectedToNotContain, "foo"));
@@ -1157,8 +1571,8 @@ namespace EasyAssertions.UnitTests
             [Test]
             public void CollectionContainsOneOfTheItems_OnlyEnumeratesOnce()
             {
-                TestEnumerable<int> actual = MakeEnumerable(1);
-                TestEnumerable<int> expectedToNotContain = MakeEnumerable(1);
+                TestEnumerable<Equatable> actual = MakeEnumerable(Equatable(1));
+                TestEnumerable<Equatable> expectedToNotContain = MakeEnumerable(Equatable(1));
                 Error.Contains(Arg.Any<IEnumerable>(), Arg.Any<IEnumerable>(), Arg.Any<string>()).Returns(EnumerateArgs);
 
                 AssertThrowsExpectedError(() => actual.ShouldNotContainItems(expectedToNotContain));
@@ -1170,18 +1584,84 @@ namespace EasyAssertions.UnitTests
             [Test]
             public void ActualIsNull_FailsWithTypesNotEqualMessage()
             {
-                IEnumerable<int> actual = null;
-                AssertFailsWithTypesNotEqualMessage(typeof(IEnumerable<int>), null, msg => actual.ShouldNotContainItems(new[] { 1 }, msg));
+                IEnumerable<Equatable> actual = null;
+                AssertFailsWithTypesNotEqualMessage(typeof(IEnumerable<Equatable>), null, msg => actual.ShouldNotContainItems(new[] { Equatable(1) }, msg));
+            }
+
+            [Test]
+            public void ExpectedIsNull_ThrowsArgumentNullException()
+            {
+                AssertArgumentNullException("expectedToNotContain", () => new Equatable[0].ShouldNotContainItems((IEnumerable<Equatable>)null));
             }
 
             [Test]
             public void CorrectlyRegistersAssertion()
             {
-                int[] actualExpression = { 1, 2 };
-                int[] expectedExpression = { 3, 2 };
+                Equatable[] actualExpression = { Equatable(1), Equatable(2) };
+                Equatable[] expectedExpression = { Equatable(3), Equatable(2) };
                 Error.Contains(Arg.Any<IEnumerable>(), Arg.Any<IEnumerable>()).Returns(ExpectedException);
 
                 Assert.Throws<Exception>(() => actualExpression.ShouldNotContainItems(expectedExpression));
+
+                Assert.AreEqual(nameof(actualExpression), TestExpression.GetActual());
+                Assert.AreEqual(nameof(expectedExpression), TestExpression.GetExpected());
+            }
+        }
+
+        class ShouldNotContainItems_CustomEquality : CollectionAssertionTests
+        {
+            [Test]
+            public void CollectionDoesNotContainAnyOfTheItems_ReturnsActualValue()
+            {
+                Equatable[] actual = { Equatable(1), Equatable(2) };
+
+                AssertReturnsActual(actual, () => actual.ShouldNotContainItems(new[] { 3, 4 }, ValueEquals));
+            }
+
+            [Test]
+            public void CollectionContainsOneOfTheItems_FailsWithSequenceContainsItemMessage()
+            {
+                Equatable[] actual = { Equatable(1), Equatable(2) };
+                int[] expectedToNotContain = { 3, 2 };
+                Error.Contains(Matches(expectedToNotContain), Matches(actual), "foo").Returns(ExpectedException);
+
+                AssertThrowsExpectedError(() => actual.ShouldNotContainItems(expectedToNotContain, ValueEquals, "foo"));
+            }
+
+            [Test]
+            public void CollectionContainsOneOfTheItems_OnlyEnumeratesOnce()
+            {
+                TestEnumerable<Equatable> actual = MakeEnumerable(Equatable(1));
+                TestEnumerable<int> expectedToNotContain = MakeEnumerable(1);
+                Error.Contains(Arg.Any<IEnumerable>(), Arg.Any<IEnumerable>(), Arg.Any<string>()).Returns(EnumerateArgs);
+
+                AssertThrowsExpectedError(() => actual.ShouldNotContainItems(expectedToNotContain, ValueEquals));
+
+                Assert.AreEqual(1, actual.EnumerationCount);
+                Assert.AreEqual(1, expectedToNotContain.EnumerationCount);
+            }
+
+            [Test]
+            public void ActualIsNull_FailsWithTypesNotEqualMessage()
+            {
+                IEnumerable<Equatable> actual = null;
+                AssertFailsWithTypesNotEqualMessage(typeof(IEnumerable<Equatable>), null, msg => actual.ShouldNotContainItems(new[] { 1 }, ValueEquals, msg));
+            }
+
+            [Test]
+            public void ExpectedIsNull_ThrowsArgumentNullException()
+            {
+                AssertArgumentNullException("expectedToNotContain", () => new Equatable[0].ShouldNotContainItems((IEnumerable<int>)null, ValueEquals));
+            }
+
+            [Test]
+            public void CorrectlyRegistersAssertion()
+            {
+                Equatable[] actualExpression = { Equatable(1), Equatable(2) };
+                int[] expectedExpression = { 3, 2 };
+                Error.Contains(Arg.Any<IEnumerable>(), Arg.Any<IEnumerable>()).Returns(ExpectedException);
+
+                Assert.Throws<Exception>(() => actualExpression.ShouldNotContainItems(expectedExpression, ValueEquals));
 
                 Assert.AreEqual(nameof(actualExpression), TestExpression.GetActual());
                 Assert.AreEqual(nameof(expectedExpression), TestExpression.GetExpected());
@@ -1193,17 +1673,17 @@ namespace EasyAssertions.UnitTests
             [Test]
             public void CollectionsHaveSameItems_ReturnsActualValue()
             {
-                int[] actual = { 1, 2 };
+                Equatable[] actual = { Equatable(1), Equatable(2) };
 
-                AssertReturnsActual(actual, () => actual.ShouldOnlyContain(new[] { 2, 1 }));
+                AssertReturnsActual(actual, () => actual.ShouldOnlyContain(new[] { Equatable(2), Equatable(1) }));
             }
 
             [Test]
             public void MissingItem_FailsWithCollectionDoesNotOnlyContainMessage()
             {
-                int[] actual = { 1, 2 };
-                int[] expected = { 1, 3 };
-                Error.DoesNotOnlyContain(Matches(expected), Matches(actual), "foo").Returns(ExpectedException);
+                Equatable[] actual = { Equatable(1), Equatable(2) };
+                Equatable[] expected = { Equatable(1), Equatable(3) };
+                Error.DoesNotOnlyContain(Matches<Equatable>(expected), Matches<Equatable>(actual), StandardTests.Instance.ObjectsAreEqual, "foo").Returns(ExpectedException);
 
                 AssertThrowsExpectedError(() => actual.ShouldOnlyContain(expected, "foo"));
             }
@@ -1211,9 +1691,9 @@ namespace EasyAssertions.UnitTests
             [Test]
             public void ExtraItem_FailsWithCollectionDoesNotOnlyContainMessage()
             {
-                int[] actual = { 1, 2 };
-                int[] expected = { 1 };
-                Error.DoesNotOnlyContain(Matches(expected), Matches(actual), "foo").Returns(ExpectedException);
+                Equatable[] actual = { Equatable(1), Equatable(2) };
+                Equatable[] expected = { Equatable(1) };
+                Error.DoesNotOnlyContain(Matches<Equatable>(expected), Matches<Equatable>(actual), StandardTests.Instance.ObjectsAreEqual, "foo").Returns(ExpectedException);
 
                 AssertThrowsExpectedError(() => actual.ShouldOnlyContain(expected, "foo"));
             }
@@ -1221,9 +1701,9 @@ namespace EasyAssertions.UnitTests
             [Test]
             public void DifferentItems_OnlyEnumeratesOnce()
             {
-                TestEnumerable<int> actual = MakeEnumerable(1);
-                TestEnumerable<int> expected = MakeEnumerable(2);
-                Error.DoesNotOnlyContain(Arg.Any<IEnumerable>(), Arg.Any<IEnumerable>(), Arg.Any<string>()).Returns(EnumerateArgs);
+                TestEnumerable<Equatable> actual = MakeEnumerable(Equatable(1));
+                TestEnumerable<Equatable> expected = MakeEnumerable(Equatable(2));
+                Error.DoesNotOnlyContain(Arg.Any<IEnumerable<Equatable>>(), Arg.Any<IEnumerable<Equatable>>(), Arg.Any<Func<Equatable, Equatable, bool>>(), Arg.Any<string>()).Returns(EnumerateArgs);
 
                 AssertThrowsExpectedError(() => actual.ShouldOnlyContain(expected));
 
@@ -1232,20 +1712,21 @@ namespace EasyAssertions.UnitTests
             }
 
             [Test]
-            public void HasDuplicate_FailsWithContainsDuplicateMessage()
+            public void HasDuplicate_FailsWithCollectionDoesNotOnlyContainMessage()
             {
-                int[] actual = { 1, 1 };
-                Error.ContainsDuplicate(Matches(actual), "foo").Returns(ExpectedException);
+                Equatable[] actual = { Equatable(1), Equatable(1) };
+                Equatable[] expected = { Equatable(1) };
+                Error.DoesNotOnlyContain(Matches<Equatable>(expected), Matches<Equatable>(actual), StandardTests.Instance.ObjectsAreEqual, "foo").Returns(ExpectedException);
 
-                AssertThrowsExpectedError(() => actual.ShouldOnlyContain(new[] { 1 }, "foo"));
+                AssertThrowsExpectedError(() => actual.ShouldOnlyContain(expected, "foo"));
             }
 
             [Test]
             public void HasDuplicate_OnlyEnumeratesOnce()
             {
-                TestEnumerable<int> actual = MakeEnumerable(1, 1);
-                TestEnumerable<int> expected = MakeEnumerable(1);
-                Error.ContainsDuplicate(Arg.Any<IEnumerable>(), Arg.Any<string>()).Returns(EnumerateArgs);
+                TestEnumerable<Equatable> actual = MakeEnumerable(Equatable(1), Equatable(1));
+                TestEnumerable<Equatable> expected = MakeEnumerable(Equatable(1));
+                Error.DoesNotOnlyContain(Arg.Any<IEnumerable<Equatable>>(), Arg.Any<IEnumerable<Equatable>>(), Arg.Any<Func<Equatable, Equatable, bool>>()).Returns(ExpectedException);
 
                 AssertThrowsExpectedError(() => actual.ShouldOnlyContain(expected));
 
@@ -1256,18 +1737,124 @@ namespace EasyAssertions.UnitTests
             [Test]
             public void ActualIsNull_FailsWithTypesNotEqualMessage()
             {
-                IEnumerable<int> actual = null;
-                AssertFailsWithTypesNotEqualMessage(typeof(IEnumerable<int>), null, msg => actual.ShouldOnlyContain(new[] { 1 }, msg));
+                IEnumerable<Equatable> actual = null;
+                AssertFailsWithTypesNotEqualMessage(typeof(IEnumerable<Equatable>), null, msg => actual.ShouldOnlyContain(new[] { Equatable(1) }, msg));
+            }
+
+            [Test]
+            public void ExpectedIsNull_ThrowsArgumentNullException()
+            {
+                AssertArgumentNullException("expected", () => new Equatable[0].ShouldOnlyContain((IEnumerable<Equatable>)null));
             }
 
             [Test]
             public void CorrectlyRegistersAssertion()
             {
-                int[] actualExpression = { 1, 2 };
-                int[] expectedExpression = { 1 };
-                Error.DoesNotOnlyContain(Arg.Any<IEnumerable>(), Arg.Any<IEnumerable>()).Returns(ExpectedException);
+                Equatable[] actualExpression = { Equatable(1), Equatable(2) };
+                Equatable[] expectedExpression = { Equatable(1) };
+                Error.DoesNotOnlyContain(Arg.Any<IEnumerable<Equatable>>(), Arg.Any<IEnumerable<Equatable>>(), Arg.Any<Func<Equatable, Equatable, bool>>()).Returns(ExpectedException);
 
                 Assert.Throws<Exception>(() => actualExpression.ShouldOnlyContain(expectedExpression));
+
+                Assert.AreEqual(nameof(actualExpression), TestExpression.GetActual());
+                Assert.AreEqual(nameof(expectedExpression), TestExpression.GetExpected());
+            }
+        }
+
+        class ShouldOnlyContain_CustomEquality : CollectionAssertionTests
+        {
+            [Test]
+            public void CollectionsHaveSameItems_ReturnsActualValue()
+            {
+                Equatable[] actual = { Equatable(1), Equatable(2) };
+
+                AssertReturnsActual(actual, () => actual.ShouldOnlyContain(new[] { 2, 1 }, ValueEquals));
+            }
+
+            [Test]
+            public void MissingItem_FailsWithCollectionDoesNotOnlyContainMessage()
+            {
+                Equatable[] actual = { Equatable(1), Equatable(2) };
+                int[] expected = { 1, 3 };
+                Error.DoesNotOnlyContain(Matches<int>(expected), Matches<Equatable>(actual), ValueEquals, "foo").Returns(ExpectedException);
+
+                AssertThrowsExpectedError(() => actual.ShouldOnlyContain(expected, ValueEquals, "foo"));
+            }
+
+            [Test]
+            public void ExtraItem_FailsWithCollectionDoesNotOnlyContainMessage()
+            {
+                Equatable[] actual = { Equatable(1), Equatable(2) };
+                int[] expected = { 1 };
+                Error.DoesNotOnlyContain(Matches<int>(expected), Matches<Equatable>(actual), ValueEquals, "foo").Returns(ExpectedException);
+
+                AssertThrowsExpectedError(() => actual.ShouldOnlyContain(expected, ValueEquals, "foo"));
+            }
+
+            [Test]
+            public void DifferentItems_OnlyEnumeratesOnce()
+            {
+                TestEnumerable<Equatable> actual = MakeEnumerable(Equatable(1));
+                TestEnumerable<int> expected = MakeEnumerable(2);
+                Error.DoesNotOnlyContain(Arg.Any<IEnumerable<int>>(), Arg.Any<IEnumerable<Equatable>>(), Arg.Any<Func<Equatable, int, bool>>(), Arg.Any<string>()).Returns(EnumerateArgs);
+
+                AssertThrowsExpectedError(() => actual.ShouldOnlyContain(expected, ValueEquals));
+
+                Assert.AreEqual(1, actual.EnumerationCount);
+                Assert.AreEqual(1, expected.EnumerationCount);
+            }
+
+            [Test]
+            public void HasDuplicate_FailsWithCollectionDoesNotOnlyContainMessage()
+            {
+                Equatable[] actual = { Equatable(1), Equatable(1) };
+                int[] expected = { 1 };
+                Error.DoesNotOnlyContain(Matches<int>(expected), Matches<Equatable>(actual), ValueEquals, "foo").Returns(ExpectedException);
+
+                AssertThrowsExpectedError(() => actual.ShouldOnlyContain(expected, ValueEquals, "foo"));
+            }
+
+            [Test]
+            public void HasDuplicate_OnlyEnumeratesOnce()
+            {
+                TestEnumerable<Equatable> actual = MakeEnumerable(Equatable(1), Equatable(1));
+                TestEnumerable<int> expected = MakeEnumerable(1);
+                Error.DoesNotOnlyContain(Arg.Any<IEnumerable<int>>(), Arg.Any<IEnumerable<Equatable>>(), Arg.Any<Func<Equatable, int, bool>>()).Returns(ExpectedException);
+
+                AssertThrowsExpectedError(() => actual.ShouldOnlyContain(expected, ValueEquals));
+
+                Assert.AreEqual(1, actual.EnumerationCount);
+                Assert.AreEqual(1, expected.EnumerationCount);
+            }
+
+            [Test]
+            public void ActualIsNull_FailsWithTypesNotEqualMessage()
+            {
+                IEnumerable<Equatable> actual = null;
+                AssertFailsWithTypesNotEqualMessage(typeof(IEnumerable<Equatable>), null, msg => actual.ShouldOnlyContain(new[] { 1 }, ValueEquals, msg));
+            }
+
+            [Test]
+            public void ExpectedIsNull_ThrowsArgumentNullException()
+            {
+                AssertArgumentNullException("expected", () => new Equatable[0].ShouldOnlyContain((IEnumerable<int>)null, ValueEquals));
+            }
+
+
+            [Test]
+            public void PredicateIsNull_ThrowsArgumentNullException()
+            {
+                AssertArgumentNullException("predicate", () => new Equatable[0].ShouldOnlyContain(new int[0], (Func<Equatable, int, bool>)null));
+            }
+
+            [Test]
+            public void CorrectlyRegistersAssertion()
+            {
+                Equatable[] actualExpression = { Equatable(1), Equatable(2) };
+                int[] expectedExpression = { 1 };
+                Error.DoesNotOnlyContain(Arg.Any<IEnumerable<int>>(), Arg.Any<IEnumerable<Equatable>>(), Arg.Any<Func<Equatable, int, bool>>()).Returns(ExpectedException);
+
+                Assert.Throws<Exception>(() => actualExpression.ShouldOnlyContain(expectedExpression, ValueEquals));
 
                 Assert.AreEqual(nameof(actualExpression), TestExpression.GetActual());
                 Assert.AreEqual(nameof(expectedExpression), TestExpression.GetExpected());
@@ -1279,16 +1866,16 @@ namespace EasyAssertions.UnitTests
             [Test]
             public void ActualHasExpectedPlusMore_ReturnsActualValue()
             {
-                int[] actual = { 1, 2 };
+                Equatable[] actual = { Equatable(1), Equatable(2) };
 
-                AssertReturnsActual(actual, () => actual.ShouldNotOnlyContain(new[] { 2 }));
+                AssertReturnsActual(actual, () => actual.ShouldNotOnlyContain(new[] { Equatable(2) }));
             }
 
             [Test]
             public void ActualOnlyHasItemsInExpected_FailsWithCollectionOnlyContainsMessage()
             {
-                int[] actual = { 1, 2 };
-                int[] expected = { 2, 1, 3 };
+                Equatable[] actual = { Equatable(1), Equatable(2) };
+                Equatable[] expected = { Equatable(2), Equatable(1), Equatable(3) };
                 Error.OnlyContains(Matches(expected), Matches(actual), "foo").Returns(ExpectedException);
 
                 AssertThrowsExpectedError(() => actual.ShouldNotOnlyContain(expected, "foo"));
@@ -1297,8 +1884,8 @@ namespace EasyAssertions.UnitTests
             [Test]
             public void ActualOnlyhasItemsInExpected_OnlyEnumeratesOnce()
             {
-                TestEnumerable<int> actual = MakeEnumerable(1);
-                TestEnumerable<int> expected = MakeEnumerable(1);
+                TestEnumerable<Equatable> actual = MakeEnumerable(Equatable(1));
+                TestEnumerable<Equatable> expected = MakeEnumerable(Equatable(1));
                 Error.OnlyContains(Arg.Any<IEnumerable>(), Arg.Any<IEnumerable>(), Arg.Any<string>()).Returns(EnumerateArgs);
 
                 AssertThrowsExpectedError(() => actual.ShouldNotOnlyContain(expected));
@@ -1310,24 +1897,90 @@ namespace EasyAssertions.UnitTests
             [Test]
             public void ActualIsNull_FailsWithTypesNotEqualMessage()
             {
-                IEnumerable<int> actual = null;
-                AssertFailsWithTypesNotEqualMessage(typeof(IEnumerable<int>), null, msg => actual.ShouldNotOnlyContain(new[] { 1 }, msg));
+                IEnumerable<Equatable> actual = null;
+                AssertFailsWithTypesNotEqualMessage(typeof(IEnumerable<Equatable>), null, msg => actual.ShouldNotOnlyContain(new[] { Equatable(1) }, msg));
             }
 
             [Test]
             public void ExpectedIsNull_ThrowsArgumentNullException()
             {
-                AssertArgumentNullException("expected", () => new[] { 1 }.ShouldNotOnlyContain((int[])null));
+                AssertArgumentNullException("expected", () => new[] { Equatable(1) }.ShouldNotOnlyContain((Equatable[])null));
             }
 
             [Test]
             public void CorrectlyRegistersAssertion()
             {
-                int[] actualExpression = { 1, 2 };
-                int[] expectedExpression = { 2, 1, 3 };
+                Equatable[] actualExpression = { Equatable(1), Equatable(2) };
+                Equatable[] expectedExpression = { Equatable(2), Equatable(1), Equatable(3) };
                 Error.OnlyContains(Arg.Any<IEnumerable>(), Arg.Any<IEnumerable>()).Returns(ExpectedException);
 
                 Assert.Throws<Exception>(() => actualExpression.ShouldNotOnlyContain(expectedExpression));
+
+                Assert.AreEqual(nameof(actualExpression), TestExpression.GetActual());
+                Assert.AreEqual(nameof(expectedExpression), TestExpression.GetExpected());
+            }
+        }
+
+        class ShouldNotOnlyContain_CustomEquality : CollectionAssertionTests
+        {
+            [Test]
+            public void ActualHasExpectedPlusMore_ReturnsActualValue()
+            {
+                Equatable[] actual = { Equatable(1), Equatable(2) };
+
+                AssertReturnsActual(actual, () => actual.ShouldNotOnlyContain(new[] { 2 }, ValueEquals));
+            }
+
+            [Test]
+            public void ActualOnlyHasItemsInExpected_FailsWithCollectionOnlyContainsMessage()
+            {
+                Equatable[] actual = { Equatable(1), Equatable(2) };
+                int[] expected = { 2, 1, 3 };
+                Error.OnlyContains(Matches(expected), Matches(actual), "foo").Returns(ExpectedException);
+
+                AssertThrowsExpectedError(() => actual.ShouldNotOnlyContain(expected, ValueEquals, "foo"));
+            }
+
+            [Test]
+            public void ActualOnlyhasItemsInExpected_OnlyEnumeratesOnce()
+            {
+                TestEnumerable<Equatable> actual = MakeEnumerable(Equatable(1));
+                TestEnumerable<int> expected = MakeEnumerable(1);
+                Error.OnlyContains(Arg.Any<IEnumerable>(), Arg.Any<IEnumerable>(), Arg.Any<string>()).Returns(EnumerateArgs);
+
+                AssertThrowsExpectedError(() => actual.ShouldNotOnlyContain(expected, ValueEquals));
+
+                Assert.AreEqual(1, actual.EnumerationCount);
+                Assert.AreEqual(1, expected.EnumerationCount);
+            }
+
+            [Test]
+            public void ActualIsNull_FailsWithTypesNotEqualMessage()
+            {
+                IEnumerable<Equatable> actual = null;
+                AssertFailsWithTypesNotEqualMessage(typeof(IEnumerable<Equatable>), null, msg => actual.ShouldNotOnlyContain(new[] { 1 }, ValueEquals, msg));
+            }
+
+            [Test]
+            public void ExpectedIsNull_ThrowsArgumentNullException()
+            {
+                AssertArgumentNullException("expected", () => new[] { Equatable(1) }.ShouldNotOnlyContain((int[])null, ValueEquals));
+            }
+
+            [Test]
+            public void PredicateIsNull_ThrowsArgumentNullException()
+            {
+                AssertArgumentNullException("predicate", () => new Equatable[0].ShouldNotOnlyContain(new int[0], (Func<Equatable, int, bool>)null));
+            }
+
+            [Test]
+            public void CorrectlyRegistersAssertion()
+            {
+                Equatable[] actualExpression = { Equatable(1), Equatable(2) };
+                int[] expectedExpression = { 2, 1, 3 };
+                Error.OnlyContains(Arg.Any<IEnumerable>(), Arg.Any<IEnumerable>()).Returns(ExpectedException);
+
+                Assert.Throws<Exception>(() => actualExpression.ShouldNotOnlyContain(expectedExpression, ValueEquals));
 
                 Assert.AreEqual(nameof(actualExpression), TestExpression.GetActual());
                 Assert.AreEqual(nameof(expectedExpression), TestExpression.GetExpected());
@@ -1339,7 +1992,7 @@ namespace EasyAssertions.UnitTests
             [Test]
             public void NoDuplicates_ReturnsActual()
             {
-                int[] actual = { 1, 2, 3 };
+                Equatable[] actual = { Equatable(1), Equatable(2), Equatable(3) };
 
                 AssertReturnsActual(actual, () => actual.ShouldBeDistinct());
             }
@@ -1347,15 +2000,15 @@ namespace EasyAssertions.UnitTests
             [Test]
             public void ActualIsNull_FailsWithTypesNotEqualMessage()
             {
-                IEnumerable<int> actual = null;
+                IEnumerable<Equatable> actual = null;
 
-                AssertFailsWithTypesNotEqualMessage(typeof(IEnumerable<int>), null, msg => actual.ShouldBeDistinct(msg));
+                AssertFailsWithTypesNotEqualMessage(typeof(IEnumerable<Equatable>), null, msg => actual.ShouldBeDistinct(msg));
             }
 
             [Test]
             public void ContainsDuplicate_FailsWithContainsDuplicateMessage()
             {
-                int[] actual = { 1, 2, 1 };
+                Equatable[] actual = { Equatable(1), Equatable(2), Equatable(1) };
                 Error.ContainsDuplicate(Matches(actual), "foo").Returns(ExpectedException);
 
                 AssertThrowsExpectedError(() => actual.ShouldBeDistinct("foo"));
@@ -1364,7 +2017,7 @@ namespace EasyAssertions.UnitTests
             [Test]
             public void ContainsDuplicate_OnlyEnumeratesOnce()
             {
-                TestEnumerable<int> actual = MakeEnumerable(1, 1);
+                TestEnumerable<Equatable> actual = MakeEnumerable(Equatable(1), Equatable(1));
                 Error.ContainsDuplicate(Arg.Any<IEnumerable>(), Arg.Any<string>()).Returns(EnumerateArgs);
 
                 AssertThrowsExpectedError(() => actual.ShouldBeDistinct());
@@ -1375,9 +2028,59 @@ namespace EasyAssertions.UnitTests
             [Test]
             public void CorrectlyRegistersAssertion()
             {
-                int[] actualExpression = { 1 };
+                Equatable[] actualExpression = { Equatable(1) };
 
                 actualExpression.ShouldBeDistinct();
+
+                Assert.AreEqual(nameof(actualExpression), TestExpression.GetActual());
+            }
+        }
+
+        class ShouldBeDistinct_CustomEquality : CollectionAssertionTests
+        {
+            [Test]
+            public void NoDuplicates_ReturnsActual()
+            {
+                Equatable[] actual = { Equatable(1), Equatable(1) };
+
+                AssertReturnsActual(actual, () => actual.ShouldBeDistinct(ReferenceEquals));
+            }
+
+            [Test]
+            public void ActualIsNull_FailsWithTypesNotEqualMessage()
+            {
+                IEnumerable<Equatable> actual = null;
+
+                AssertFailsWithTypesNotEqualMessage(typeof(IEnumerable<Equatable>), null, msg => actual.ShouldBeDistinct(Equals, msg));
+            }
+
+            [Test]
+            public void ContainsDuplicate_FailsWithContainsDuplicateMessage()
+            {
+                int[] actual = { 1, 2, 3 };
+                Error.ContainsDuplicate(Matches(actual), "foo").Returns(ExpectedException);
+
+                AssertThrowsExpectedError(() => actual.ShouldBeDistinct((a, b) => a % 2 == b % 2, "foo"));
+            }
+
+            [Test]
+            public void ContainsDuplicate_OnlyEnumeratesOnce()
+            {
+                TestEnumerable<int> actual = MakeEnumerable(1, 2, 3);
+                Error.ContainsDuplicate(Arg.Any<IEnumerable>(), Arg.Any<string>()).Returns(EnumerateArgs);
+
+                AssertThrowsExpectedError(() => actual.ShouldBeDistinct((a, b) => a % 2 == b % 2));
+
+                Assert.AreEqual(1, actual.EnumerationCount);
+            }
+
+            [Test]
+            public void CorrectlyRegistersAssertion()
+            {
+                int[] actualExpression = { 1, 2, 3 };
+                Error.ContainsDuplicate(Arg.Any<IEnumerable>()).Returns(ExpectedException);
+
+                AssertThrowsExpectedError(() => actualExpression.ShouldBeDistinct((a, b) => a % 2 == b % 2));
 
                 Assert.AreEqual(nameof(actualExpression), TestExpression.GetActual());
             }
@@ -1447,6 +2150,12 @@ namespace EasyAssertions.UnitTests
             {
                 IEnumerable<object> actual = null;
                 AssertFailsWithTypesNotEqualMessage(typeof(IEnumerable<object>), null, msg => actual.ShouldMatchReferences(new[] { new object() }, msg));
+            }
+
+            [Test]
+            public void ExpectedIsNull_ThrowsArgumentNullException()
+            {
+                AssertArgumentNullException("expected", () => new Equatable[0].ShouldMatchReferences((IEnumerable<Equatable>)null));
             }
 
             [Test]
@@ -1618,6 +2327,19 @@ namespace EasyAssertions.UnitTests
             }
 
             [Test]
+            public void AssertionsArrayIsNull_ThrowsArgumentNullException()
+            {
+                AssertArgumentNullException("assertions", () => new int[0].ItemsSatisfy((Action<int>[])null));
+            }
+
+            [Test]
+            public void AssertionIsNull_ThrowsArgumentException()
+            {
+                ArgumentException result = Assert.Throws<ArgumentException>(() => new int[0].ItemsSatisfy(i => { }, null));
+                Assert.AreEqual("assertions", result.ParamName);
+            }
+
+            [Test]
             public void CorrectlyRegistersAssertion()
             {
                 int[] actualExpression = { 1 };
@@ -1662,7 +2384,7 @@ namespace EasyAssertions.UnitTests
             }
 
             [Test]
-            public void AssertionIsNull_FailsWithArgumentNullException()
+            public void AssertionIsNull_ThrowsArgumentNullException()
             {
                 ArgumentNullException result = Assert.Throws<ArgumentNullException>(() => new int[0].AllItemsSatisfy(null));
 
@@ -1684,6 +2406,10 @@ namespace EasyAssertions.UnitTests
         }
 
         private static TestEnumerable<T> MakeEnumerable<T>(params T[] items) => new TestEnumerable<T>(items);
+
+        private static Equatable Equatable(int value) => new Equatable(value);
+
+        private static bool ValueEquals(Equatable actual, int expected) => actual.Value == expected;
 
         private Exception EnumerateArgs(CallInfo call)
         {

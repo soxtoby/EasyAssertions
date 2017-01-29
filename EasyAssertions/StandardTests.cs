@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 
 namespace EasyAssertions
@@ -129,7 +130,7 @@ namespace EasyAssertions
         }
 
         /// <summary>
-        /// Determines whether a sequence contains all of the items in another sequence.
+        /// Determines whether a sequence contains all of the items in another sequence, using the default equality comparer.
         /// </summary>
         public bool ContainsAllItems(IEnumerable superset, IEnumerable subset)
         {
@@ -138,7 +139,18 @@ namespace EasyAssertions
         }
 
         /// <summary>
-        /// Determines whether a sequence contains any of the items in another sequence.
+        /// Determines whether a sequence contains all of the items in another sequence, using a custom equality function.
+        /// </summary>
+        public bool ContainsAllItems<TSuper, TSub>(IEnumerable<TSuper> superset, IEnumerable<TSub> subset, Func<TSuper, TSub, bool> predicate)
+        {
+            using (IBuffer<TSuper> superItems = superset.Buffer())
+            {
+                return subset.All(sub => superItems.Any(super => predicate(super, sub)));
+            }
+        }
+
+        /// <summary>
+        /// Determines whether a sequence contains any of the items in another sequence, using the default equality comparer.
         /// </summary>
         public bool ContainsAny(IEnumerable actual, IEnumerable itemsToLookFor)
         {
@@ -153,7 +165,22 @@ namespace EasyAssertions
         }
 
         /// <summary>
-        /// Determines whether a sequence contains all of the items in another sequence, and no other items.
+        /// Determines whether a sequence contains any of the items in another sequence, using a custom equality function.
+        /// </summary>
+        public bool ContainsAny<TActual, TExpected>(IEnumerable<TActual> actual, IEnumerable<TExpected> itemsToLookFor, Func<TActual, TExpected, bool> predicate)
+        {
+            using (IBuffer<TActual> bufferedActual = actual.Buffer())
+            using (IBuffer<TExpected> bufferedItemsToLookFor = itemsToLookFor.Buffer())
+            {
+                if (IsEmpty(bufferedItemsToLookFor))
+                    return true;
+
+                return bufferedItemsToLookFor.Any(e => bufferedActual.Any(a => predicate(a, e)));
+            }
+        }
+
+        /// <summary>
+        /// Determines whether a sequence contains all of the items in another sequence, and no other items, using the default equality comparer.
         /// </summary>
         public bool ContainsOnlyExpectedItems(IEnumerable actual, IEnumerable expected)
         {
@@ -161,6 +188,40 @@ namespace EasyAssertions
             HashSet<object> expectedItems = new HashSet<object>(expected.Cast<object>());
             return expectedItems.All(actualItems.Contains)
                 && actualItems.All(expectedItems.Contains);
+        }
+
+        /// <summary>
+        /// Determines whether a sequence contains all of the items in another sequence, and no other items, using a custom equality function.
+        /// </summary>
+        public bool ContainsOnlyExpectedItems<TActual, TExpected>(IEnumerable<TActual> actual, IEnumerable<TExpected> expected, Func<TActual, TExpected, bool> predicate)
+        {
+            List<TExpected> remainingExpected = expected.ToList();
+
+            foreach (TActual actualItem in actual)
+            {
+                if (remainingExpected.RemoveAll(e => predicate(actualItem, e)) == 0)
+                    return false;
+            }
+
+            return remainingExpected.Count == 0;
+        }
+
+        /// <summary>
+        /// Determines whether a sequence contains any items that are equivalent, using a custom equality function.
+        /// </summary>
+        public bool ContainsDuplicate<T>(IEnumerable<T> items, Func<T, T, bool> predicate)
+        {
+            List<T> itemList = items.ToList();
+            while (itemList.Any())
+            {
+                T firstItem = itemList[0];
+                int equivalentItems = itemList.RemoveAll(i => predicate(firstItem, i));
+                if (equivalentItems == 0)
+                    itemList.RemoveAt(0);
+                else if (equivalentItems > 1)
+                    return true;
+            }
+            return false;
         }
 
         /// <summary>

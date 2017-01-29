@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using System;
+using NUnit.Framework;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -203,6 +204,132 @@ namespace EasyAssertions.UnitTests
 
             Assert.AreEqual(1, actual.EnumerationCount);
             Assert.AreEqual(1, expected.EnumerationCount);
+        }
+
+        [Test]
+        public void ContainsAny_CustomEquality_EmptySequence_DoesNotContainItems()
+        {
+            Assert.IsFalse(sut.ContainsAny(Enumerable.Empty<int>(), new[] { 1 }, (a, e) => a == e));
+        }
+
+        [Test]
+        public void ContainsAny_CustomEquality_NothingToLookFor_DoesNotContainItems()
+        {
+            Assert.IsTrue(sut.ContainsAny(new[] { 1 }, Enumerable.Empty<int>(), (a, e) => a == e));
+        }
+
+        [Test]
+        public void ContainsAny_CustomEquality_ContainsItem()
+        {
+            Assert.IsTrue(sut.ContainsAny(new[] { 1, 2 }, new[] { 3, 2 }, (a, e) => a == e));
+        }
+
+        [Test]
+        public void ContainsAny_CustomEquality_OnlyEnumeratesOnce()
+        {
+            TestEnumerable<int> actual = MakeEnumerable(1);
+            TestEnumerable<int> expected = MakeEnumerable(1);
+
+            sut.ContainsAny(actual, expected, (a, e) => a == e);
+
+            Assert.AreEqual(1, actual.EnumerationCount);
+            Assert.AreEqual(1, expected.EnumerationCount);
+        }
+
+        [Test]
+        public void ContainsOnlyExpectedItems_BothEmpty_ReturnsTrue()
+        {
+            Assert.IsTrue(sut.ContainsOnlyExpectedItems(Enumerable.Empty<Equatable>(), Enumerable.Empty<Equatable>()));
+        }
+
+        [Test]
+        public void ContainsOnlyExpectedItems_ActualIsEmptyButExpectedIsNot_ReturnsFalse()
+        {
+            Assert.IsFalse(sut.ContainsOnlyExpectedItems(Enumerable.Empty<Equatable>(), new[] { new Equatable(1) }));
+        }
+
+        [Test]
+        public void ContainsOnlyExpectedItems_ExpectedIsEmptyButActualIsNot_ReturnsFalse()
+        {
+            Assert.IsFalse(sut.ContainsOnlyExpectedItems(new[] { new Equatable(1) }, Enumerable.Empty<Equatable>()));
+        }
+
+        [Test]
+        public void ContainsOnlyExpectedItems_ContainsSameItemsInDifferentOrder_ReturnsTrue()
+        {
+            Assert.IsTrue(sut.ContainsOnlyExpectedItems(new[] { new Equatable(1), new Equatable(2) }, new[] { new Equatable(2), new Equatable(1) }));
+        }
+
+        [Test]
+        public void ContainsOnlyExpectedItems_OnlyEnumeratesOnce()
+        {
+            TestEnumerable<Equatable> actual = MakeEnumerable(new Equatable(1), new Equatable(2));
+            TestEnumerable<Equatable> expected = MakeEnumerable(new Equatable(2), new Equatable(1));
+
+            sut.ContainsOnlyExpectedItems(actual, expected);
+
+            Assert.AreEqual(1, actual.EnumerationCount);
+            Assert.AreEqual(1, expected.EnumerationCount);
+        }
+
+        [Test]
+        public void ContainsOnlyExpectedItems_CustomEquality_BothEmpty_ReturnsTrue()
+        {
+            Assert.IsTrue(sut.ContainsOnlyExpectedItems(Enumerable.Empty<Equatable>(), Enumerable.Empty<int>(), (a, e) => a.Value == e));
+        }
+
+        [Test]
+        public void ContainsOnlyExpectedItems_CustomEquality_ActualIsEmptyButExpectedIsNot_ReturnsFalse()
+        {
+            Assert.IsFalse(sut.ContainsOnlyExpectedItems(Enumerable.Empty<Equatable>(), new[] { 1 }, (a, e) => a.Value == e));
+        }
+
+        [Test]
+        public void ContainsOnlyExpectedItems_CustomEquality_ExpectedIsEmptyButActualIsNot_ReturnsFalse()
+        {
+            Assert.IsFalse(sut.ContainsOnlyExpectedItems(new[] { new Equatable(1) }, Enumerable.Empty<int>(), (a, e) => a.Value == e));
+        }
+
+        [Test]
+        public void ContainsOnlyExpectedItems_CustomEquality_ContainsSameItemsInDifferentOrder_ReturnsTrue()
+        {
+            Assert.IsTrue(sut.ContainsOnlyExpectedItems(new[] { new Equatable(1), new Equatable(2) }, new[] { 2, 1 }, (a, e) => a.Value == e));
+        }
+
+        [Test]
+        public void ContainsOnlyExpectedItems_CustomEquality_ActualContainsEquivalentItems_ReturnsFalse()
+        {
+            Assert.IsFalse(sut.ContainsOnlyExpectedItems(new[] { 1, 2, 3 }, new[] { 0, 1 }, (a, e) => a % 2 == e));
+        }
+
+        [Test]
+        public void ContainsOnlyExpectedItems_CustomEquality_OnlyEnumeratesOnce()
+        {
+            TestEnumerable<Equatable> actual = MakeEnumerable(new Equatable(1), new Equatable(2));
+            TestEnumerable<int> expected = MakeEnumerable(2, 1);
+
+            sut.ContainsOnlyExpectedItems(actual, expected, (a, e) => a.Value == e);
+
+            Assert.AreEqual(1, actual.EnumerationCount);
+            Assert.AreEqual(1, expected.EnumerationCount);
+        }
+
+        [Test]
+        public void ContainsDuplicate_TwoItemsAreEquivalent_ReturnsTrue()
+        {
+            Assert.IsTrue(sut.ContainsDuplicate(new[] { 2, 3, 4 }, (a, b) => a % 2 == b % 2));
+        }
+
+        [Test]
+        public void ContainsDuplicate_NoTwoItemsAreEquivalent_ReturnsFalse()
+        {
+            Assert.IsFalse(sut.ContainsDuplicate(new[] { new Equatable(1), new Equatable(1) }, ReferenceEquals));
+        }
+
+        [Test]
+        public void ContainsDuplicate_ItemsDoNotMatchAnything_ReturnsFalse()
+        {
+            Assert.IsFalse(sut.ContainsDuplicate(new[] { 1, 2 }, (a, b) => false));
         }
 
         [Test]

@@ -139,13 +139,13 @@ but was {Count(actualList,
                 + message.OnNewLine());
         }
 
-        public Exception DoesNotContainItems(IEnumerable expected, IEnumerable actual, string message = null)
+        public Exception DoesNotContainItems<TActual, TExpected>(IEnumerable<TExpected> expected, IEnumerable<TActual> actual, Func<TActual, TExpected, bool> predicate, string message = null)
         {
-            HashSet<object> actualItems = new HashSet<object>(actual.Cast<object>());
-            List<object> expectedItems = expected.Cast<object>().ToList();
+            List<TActual> actualItems = actual.ToList();
+            List<TExpected> expectedItems = expected.ToList();
             int missingItemIndex;
             object missingItem;
-            FindMissingItem(expectedItems, actualItems, out missingItemIndex, out missingItem);
+            FindMissingItem(expectedItems, actualItems, predicate, out missingItemIndex, out missingItem);
 
             string expectedSource = ExpectedSourceIfDifferentToValue(expected);
             return error.Custom(expectedSource == null
@@ -193,7 +193,7 @@ Match at index {itemIndexInActual}." + message.OnNewLine());
         public Exception OnlyContains(IEnumerable expected, IEnumerable actual, string message = null)
         {
             List<object> actualItems = new List<object>(actual.Cast<object>());
-            HashSet<object> expectedItems = new HashSet<object>(expected.Cast<object>());
+            List<object> expectedItems = expected.Cast<object>().ToList();
 
             string expectedSource = ExpectedSourceIfDifferentToValue(expected);
             return error.Custom(expectedSource != null
@@ -205,24 +205,35 @@ should contain more than just {Sample(expectedItems)}
 but was {Sample(actualItems)}" + message.OnNewLine());
         }
 
-        public Exception DoesNotOnlyContain(IEnumerable expected, IEnumerable actual, string message = null)
+        public Exception DoesNotOnlyContain<TActual, TExpected>(IEnumerable<TExpected> expected, IEnumerable<TActual> actual, Func<TActual, TExpected, bool> predicate, string message = null)
         {
-            List<object> expectedItems = expected.Cast<object>().ToList();
-            List<object> actualItems = actual.Cast<object>().ToList();
+            List<TExpected> expectedItems = expected.ToList();
+            List<TActual> actualItems = actual.ToList();
 
             if (expectedItems.None())
                 return NotEmpty(actualItems, message);
 
-            if (!test.ContainsAllItems(actualItems, expectedItems))
-                return DoesNotContainItems(expectedItems, actualItems, message);
+            if (!test.ContainsAllItems(actualItems, expectedItems, predicate))
+                return DoesNotContainItems(expectedItems, actualItems, predicate, message);
 
-            return ContainsExtraItem(expectedItems, actualItems, message);
+            if (test.ContainsDuplicate(actualItems, (a, b) => ActualItemsMatchTheSameExpectedItems(a, b, expectedItems, predicate)))
+                return ContainsDuplicate(actualItems, message);
+
+            return ContainsExtraItem(expectedItems, actualItems, predicate, message);
         }
 
-        public Exception ContainsExtraItem(IEnumerable expectedSuperset, IEnumerable actual, string message = null)
+        private bool ActualItemsMatchTheSameExpectedItems<TActual, TExpected>(TActual actual1, TActual actual2, List<TExpected> expectedItems, Func<TActual, TExpected, bool> predicate)
         {
-            HashSet<object> expectedItems = new HashSet<object>(expectedSuperset.Cast<object>());
-            List<object> extraItems = actual.Cast<object>().Where(a => !expectedItems.Contains(a)).ToList();
+            return test.CollectionsMatch(
+                expectedItems.Where(e => predicate(actual1, e)), 
+                expectedItems.Where(e => predicate(actual2, e)), 
+                test.ObjectsAreEqual);
+        }
+
+        public Exception ContainsExtraItem<TActual, TExpected>(IEnumerable<TExpected> expectedSuperset, IEnumerable<TActual> actual, Func<TActual, TExpected, bool> predicate, string message = null)
+        {
+            List<TExpected> expectedItems = expectedSuperset.ToList();
+            List<TActual> extraItems = actual.Where(a => !expectedItems.Any(e => predicate(a, e))).ToList();
 
             string expectedSource = ExpectedSourceIfDifferentToValue(expectedItems);
             return error.Custom(expectedSource != null
@@ -249,13 +260,13 @@ was found at indices {duplicateIndices.Take(duplicateIndices.Count - 1).Join(", 
                 + message.OnNewLine());
         }
 
-        private static void FindMissingItem(IEnumerable expected, ICollection<object> actualItems, out int missingItemIndex, out object missingItem)
+        private static void FindMissingItem<TActual, TExpected>(IEnumerable<TExpected> expected, ICollection<TActual> actualItems, Func<TActual, TExpected, bool> predicate, out int missingItemIndex, out object missingItem)
         {
             missingItemIndex = 0;
             missingItem = null;
-            foreach (object expectedItem in expected)
+            foreach (TExpected expectedItem in expected)
             {
-                if (!actualItems.Contains(expectedItem))
+                if (!actualItems.Any(a => predicate(a, expectedItem)))
                 {
                     missingItem = expectedItem;
                     break;
@@ -299,7 +310,7 @@ should be instance {Value(expectedItem)}
 but was            {Value(actualItem)}" + message.OnNewLine());
         }
 
-        public Exception DoesNotStartWith(IEnumerable expected, IEnumerable actual, Func<object, object, bool> predicate, string message = null)
+        public Exception DoesNotStartWith<TActual, TExpected>(IEnumerable<TExpected> expected, IEnumerable<TActual> actual, Func<TActual, TExpected, bool> predicate, string message = null)
         {
             List<object> expectedItems = expected.Cast<object>().ToList();
             List<object> actualItems = actual.Cast<object>().ToList();
@@ -308,12 +319,12 @@ but was            {Value(actualItem)}" + message.OnNewLine());
                 return NotLongEnough(expectedItems, actualItems, message);
 
             object expectedValue, actualValue;
-            int differenceIndex = FindDifference(expectedItems, actualItems, predicate, out expectedValue, out actualValue);
+            int differenceIndex = FindDifference(expectedItems, actualItems, (a, e) => predicate((TActual)a, (TExpected)e), out expectedValue, out actualValue);
 
             return DiffersAtIndex(differenceIndex, expectedValue, actualValue, message);
         }
 
-        public Exception DoesNotEndWith(IEnumerable expected, IEnumerable actual, Func<object, object, bool> predicate, string message = null)
+        public Exception DoesNotEndWith<TActual, TExpected>(IEnumerable<TExpected> expected, IEnumerable<TActual> actual, Func<TActual, TExpected, bool> predicate, string message = null)
         {
             List<object> expectedItems = expected.Cast<object>().ToList();
             List<object> actualItems = actual.Cast<object>().ToList();
@@ -323,7 +334,7 @@ but was            {Value(actualItem)}" + message.OnNewLine());
 
             object expectedValue, actualValue;
             int differenceInLength = actualItems.Count - expectedItems.Count;
-            int differenceIndex = FindDifference(expectedItems, actualItems.Skip(differenceInLength), predicate, out expectedValue, out actualValue)
+            int differenceIndex = FindDifference(expectedItems, actualItems.Skip(differenceInLength), (a, e) => predicate((TActual)a, (TExpected)e), out expectedValue, out actualValue)
                 + differenceInLength;
 
             return DiffersAtIndex(differenceIndex, expectedValue, actualValue, message);

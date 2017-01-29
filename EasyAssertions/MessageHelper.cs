@@ -150,7 +150,7 @@ namespace EasyAssertions
         /// Returns a sample of the first ten items in the given collection,
         /// or "empty." if there are no items in the collection.
         /// </summary>
-        public static string Sample(ICollection<object> items)
+        public static string Sample<T>(ICollection<T> items)
         {
             if (items.None())
                 return "empty.";

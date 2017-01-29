@@ -54,7 +54,7 @@ namespace EasyAssertions
         /// <summary>
         /// Sequence should contain all the items in another sequence, but didn't.
         /// </summary>
-        Exception DoesNotContainItems(IEnumerable expected, IEnumerable actual, string message = null);
+        Exception DoesNotContainItems<TActual, TExpected>(IEnumerable<TExpected> expected, IEnumerable<TActual> actual, Func<TActual, TExpected, bool> predicate, string message = null);
 
         /// <summary>
         /// Sequence should not contain a particular item, but did.
@@ -75,12 +75,12 @@ namespace EasyAssertions
         /// Sequence should only contain the items in another sequence,
         /// but was missing at least one item, or had extra items.
         /// </summary>
-        Exception DoesNotOnlyContain(IEnumerable expected, IEnumerable actual, string message = null);
+        Exception DoesNotOnlyContain<TActual, TExpected>(IEnumerable<TExpected> expected, IEnumerable<TActual> actual, Func<TActual, TExpected, bool> predicate, string message = null);
 
         /// <summary>
         /// Sequence should be a subset of another sequence, but wasn't.
         /// </summary>
-        Exception ContainsExtraItem(IEnumerable expectedSuperset, IEnumerable actual, string message = null);
+        Exception ContainsExtraItem<TActual, TExpected>(IEnumerable<TExpected> expectedSuperset, IEnumerable<TActual> actual, Func<TActual, TExpected, bool> predicate, string message = null);
 
         /// <summary>
         /// Sequence should have had a distinct set of items, but it had duplicates.
@@ -95,12 +95,12 @@ namespace EasyAssertions
         /// <summary>
         /// Sequence should start with a particular sub-sequence, but didn't.
         /// </summary>
-        Exception DoesNotStartWith(IEnumerable expected, IEnumerable actual, Func<object, object, bool> predicate, string message = null);
+        Exception DoesNotStartWith<TActual, TExpected>(IEnumerable<TExpected> expected, IEnumerable<TActual> actual, Func<TActual, TExpected, bool> predicate, string message = null);
 
         /// <summary>
         /// Sequence should end with a particular sub-sequence, but didn't.
         /// </summary>
-        Exception DoesNotEndWith(IEnumerable expected, IEnumerable actual, Func<object, object, bool> predicate, string message = null);
+        Exception DoesNotEndWith<TActual, TExpected>(IEnumerable<TExpected> expected, IEnumerable<TActual> actual, Func<TActual, TExpected, bool> predicate, string message = null);
 
         /// <summary>
         /// Trees should match, but didn't.

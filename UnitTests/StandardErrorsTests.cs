@@ -470,7 +470,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void CollectionDoesNotContainItems()
         {
-            string result = sut.DoesNotContainItems(new[] { 1, 2 }, new[] { 1 }).Message;
+            string result = sut.DoesNotContainItems(new[] { 1, 2 }, new[] { 1 }, (a, e) => a == e).Message;
 
             Assert.AreEqual(ActualExpression + NewLine
                 + "should contain " + ExpectedExpression + NewLine
@@ -483,7 +483,7 @@ namespace EasyAssertions.UnitTests
         {
             expressionProvider.GetExpectedExpression().Returns("new[] { 1 }");
 
-            string result = sut.DoesNotContainItems(new[] { 1 }, Enumerable.Empty<int>()).Message;
+            string result = sut.DoesNotContainItems(new[] { 1 }, Enumerable.Empty<int>(), (a, e) => a == e).Message;
 
             Assert.AreEqual(ActualExpression + NewLine
                 + "should contain expected item 0 <1>" + NewLine
@@ -493,7 +493,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void CollectionDoesNotContainItems_IncludesMessage()
         {
-            string result = sut.DoesNotContainItems(new[] { 1 }, Enumerable.Empty<int>(), "foo").Message;
+            string result = sut.DoesNotContainItems(new[] { 1 }, Enumerable.Empty<int>(), (a, e) => a == e, "foo").Message;
 
             StringAssert.EndsWith(NewLine + "foo", result);
         }
@@ -504,7 +504,7 @@ namespace EasyAssertions.UnitTests
             TestEnumerable<int> expected = MakeEnumerable(1);
             TestEnumerable<int> actual = MakeEnumerable(2);
 
-            sut.DoesNotContainItems(expected, actual);
+            sut.DoesNotContainItems(expected, actual, (a, e) => a == e);
 
             Assert.AreEqual(1, actual.EnumerationCount);
             Assert.AreEqual(1, expected.EnumerationCount);
@@ -634,7 +634,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void DoesNotOnlyContain_MissingItem()
         {
-            string result = sut.DoesNotOnlyContain(new[] { 1 }, new[] { 2 }).Message;
+            string result = sut.DoesNotOnlyContain(new[] { 1 }, new[] { 2 }, (a, e) => a == e).Message;
 
             Assert.AreEqual(ActualExpression + NewLine
                 + "should contain " + ExpectedExpression + NewLine
@@ -647,7 +647,7 @@ namespace EasyAssertions.UnitTests
         {
             FakeObject[] enumerable = { new FakeObject("foo") };
 
-            string result = sut.DoesNotOnlyContain(Enumerable.Empty<object>(), enumerable).Message;
+            string result = sut.DoesNotOnlyContain(Enumerable.Empty<object>(), enumerable, (a, e) => a == e).Message;
 
             Assert.AreEqual(ActualExpression + NewLine
                 + "should be empty" + NewLine
@@ -657,7 +657,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void DoesNotOnlyContain_ExtraItem_ContainsExtraItemMessage()
         {
-            string result = sut.DoesNotOnlyContain(new[] { 1 }, new[] { 1, 2 }).Message;
+            string result = sut.DoesNotOnlyContain(new[] { 1 }, new[] { 1, 2 }, (a, e) => a == e).Message;
 
             Assert.AreEqual(ActualExpression + NewLine
                 + "should only contain " + ExpectedExpression + NewLine
@@ -670,7 +670,7 @@ namespace EasyAssertions.UnitTests
             TestEnumerable<int> actual = MakeEnumerable(1, 2);
             TestEnumerable<int> expected = MakeEnumerable(1);
 
-            sut.DoesNotOnlyContain(expected, actual);
+            sut.DoesNotOnlyContain(expected, actual, (a, e) => a == e);
 
             Assert.AreEqual(1, actual.EnumerationCount);
             Assert.AreEqual(1, expected.EnumerationCount);
@@ -679,7 +679,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ContainsExtraItem()
         {
-            string result = sut.ContainsExtraItem(new[] { 1 }, new[] { 1, 2 }).Message;
+            string result = sut.ContainsExtraItem(new[] { 1 }, new[] { 1, 2 }, (a, e) => a == e).Message;
 
             Assert.AreEqual(ActualExpression + NewLine
                 + "should only contain " + ExpectedExpression + NewLine
@@ -691,7 +691,7 @@ namespace EasyAssertions.UnitTests
         {
             expressionProvider.GetExpectedExpression().Returns("new[] { 1 }");
 
-            string result = sut.ContainsExtraItem(new[] { 1 }, new[] { 1, 2 }).Message;
+            string result = sut.ContainsExtraItem(new[] { 1 }, new[] { 1, 2 }, (a, e) => a == e).Message;
 
             Assert.AreEqual(ActualExpression + NewLine
                 + "should only contain [ <1> ]" + NewLine
@@ -704,7 +704,7 @@ namespace EasyAssertions.UnitTests
             TestEnumerable<int> expected = MakeEnumerable(1);
             TestEnumerable<int> actual = MakeEnumerable(2);
 
-            sut.ContainsExtraItem(expected, actual);
+            sut.ContainsExtraItem(expected, actual, (a, e) => a == e);
 
             Assert.AreEqual(1, actual.EnumerationCount);
             Assert.AreEqual(1, expected.EnumerationCount);
@@ -713,7 +713,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ContainsExtraItem_IncludesMessage()
         {
-            string result = sut.DoesNotOnlyContain(new[] { 1 }, new[] { 1, 2 }, "foo").Message;
+            string result = sut.DoesNotOnlyContain(new[] { 1 }, new[] { 1, 2 }, (a, e) => a == e, "foo").Message;
 
             StringAssert.EndsWith(NewLine + "foo", result);
         }
@@ -843,7 +843,7 @@ foo", result);
         [Test]
         public void CollectionDoesNotStartWith_ActualIsShorterThanExpectedStart()
         {
-            string result = sut.DoesNotStartWith(new[] { 1, 2 }, new[] { 1 }, Equals, "foo").Message;
+            string result = sut.DoesNotStartWith(new[] { 1, 2 }, new[] { 1 }, StandardTests.Instance.ObjectsAreEqual, "foo").Message;
 
             Assert.AreEqual(ActualExpression + NewLine
                 + "should have at least 2 elements" + NewLine
@@ -854,7 +854,7 @@ foo", result);
         [Test]
         public void CollectionDoesNotStartWith_ActualIsLongerThanExpectedStart()
         {
-            string result = sut.DoesNotStartWith(new[] { 1, 2 }, new[] { 1, 3, 2 }, Equals, "foo").Message;
+            string result = sut.DoesNotStartWith(new[] { 1, 2 }, new[] { 1, 3, 2 }, StandardTests.Instance.ObjectsAreEqual, "foo").Message;
 
             Assert.AreEqual(ActualExpression + NewLine
                 + "differs at index 1." + NewLine
@@ -878,7 +878,7 @@ foo", result);
         [Test]
         public void CollectionDoesNotEndWith_ActualIsShorterThanExpectedEnd()
         {
-            string result = sut.DoesNotEndWith(new[] { 1, 2 }, new[] { 1 }, Equals, "foo").Message;
+            string result = sut.DoesNotEndWith(new[] { 1, 2 }, new[] { 1 }, StandardTests.Instance.ObjectsAreEqual, "foo").Message;
 
             Assert.AreEqual($@"{ActualExpression}
 should have at least 2 elements
@@ -889,7 +889,7 @@ foo", result);
         [Test]
         public void CollectionDoesNotEndWith_ActualIsLongerThanExpectedEnd()
         {
-            string result = sut.DoesNotEndWith(new[] { 1, 2 }, new[] { 1, 3, 2 }, Equals, "foo").Message;
+            string result = sut.DoesNotEndWith(new[] { 1, 2 }, new[] { 1, 3, 2 }, StandardTests.Instance.ObjectsAreEqual, "foo").Message;
 
             Assert.AreEqual($@"{ActualExpression}
 differs at index 1.

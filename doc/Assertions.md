@@ -63,7 +63,6 @@ collection.ShouldContainItems(new[] { 2, 1 });
 collection.ShouldNotContainItems(new[] { 4, 5 });
 collection.ShouldOnlyContain(new[] { 3, 2, 1 });
 collection.ShouldMatch(new[] { 1, 2, 3 });
-collection.ShouldMatch(1, 2, 3);
 collection.ShouldNotMatch(new[] { 2, 1, 3 });
 collection.ItemsShouldBeIn(new[] { 4, 2, 1, 3, 5 });
 collection.ShouldNotOnlyContain(new[] { 3, 2 });
@@ -83,7 +82,6 @@ new[] { 1.2, 2.1 }.ShouldMatch(new[]{ 1, 2 }, 0.2);
 var a = new object(), b = new object();
 var objects = new[] { a, b };
 objects.ShouldMatchReferences(new[] { a, b });
-objects.ShouldMatchReferences(a, b);
     
 // Assert on each item
 collection.AllItemsSatisfy(i => i.ShouldNotBe(3));

@@ -174,6 +174,9 @@ namespace EasyAssertions
                 });
         }
 
+        /// <summary>
+        /// Asserts that a sequence ends with another sub-sequence, using the default equality comparer.
+        /// </summary>
         public static Actual<IEnumerable<TActual>> ShouldEndWith<TActual, TExpected>(this IEnumerable<TActual> actual, IEnumerable<TExpected> expectedEnd, string message = null)
             where TExpected : TActual
         {

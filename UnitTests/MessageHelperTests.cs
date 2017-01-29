@@ -2,12 +2,12 @@
 
 namespace EasyAssertions.UnitTests
 {
-    public class FailureMessageTests
+    public class MessageHelperTests
     {
         [Test]
         public void Sample_LimitsTo10Items()
         {
-            string result = FailureMessage.Sample(new object[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 });
+            string result = MessageHelper.Sample(new object[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 });
             
             Assert.AreEqual(@"[
     <1>,
@@ -27,7 +27,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void Sample_NestedEnumerableWithSingleItem_OutputsOnOneLine()
         {
-            string result = FailureMessage.Sample(new object[] { new object[] { new object[] { 1 } } });
+            string result = MessageHelper.Sample(new object[] { new object[] { new object[] { 1 } } });
 
             Assert.AreEqual("[ [ [ <1> ] ] ]", result);
         }
@@ -35,7 +35,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void Sample_NestedEnumerables_OutputsInnerItems()
         {
-            string result = FailureMessage.Sample(new object[]
+            string result = MessageHelper.Sample(new object[]
                 {
                     new object[] { 1, 2, 3, 4 },
                     new object[] { 5, 6, 7, 8 }
@@ -60,7 +60,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void Sample_NestedEnumerable_LimitsTo10Items()
         {
-            string result = FailureMessage.Sample(new object[]
+            string result = MessageHelper.Sample(new object[]
                 {
                     new object[] { 1, 2, 3, 4, 5, 6 },
                     new object[] { 7, 8, 9, 10, 11 }
@@ -88,7 +88,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void Sample_NestedEnumerables_MoreEnumerablesAfterLimit()
         {
-            string result = FailureMessage.Sample(new object[]
+            string result = MessageHelper.Sample(new object[]
                 {
                     new object[] { 1, 2, 3, 4, 5, 6 },
                     new object[] { 7, 8, 9, 10, 11 },
@@ -118,7 +118,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void Sample_EmptyEnumerables_EmptyEnumerableCountsAsItem()
         {
-            string result = FailureMessage.Sample(new object[]
+            string result = MessageHelper.Sample(new object[]
                 {
                     new object[0],
                     new object[0],
@@ -151,7 +151,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void Sample_NestedSingleItemEnumerables()
         {
-            string result = FailureMessage.Sample(new object[]
+            string result = MessageHelper.Sample(new object[]
                 {
                     new object[] { 1 },
                     new object[] { 2 },

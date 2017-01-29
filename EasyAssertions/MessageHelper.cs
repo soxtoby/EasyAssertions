@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Security.Policy;
 using System.Text.RegularExpressions;
 
 namespace EasyAssertions
@@ -12,7 +11,7 @@ namespace EasyAssertions
     /// <summary>
     /// A helper class for building assertion failure messages in a consistent format.
     /// </summary>
-    public static class FailureMessage
+    public static class MessageHelper
     {
         private const int SampleSize = 10;
         private const int MaxStringWidth = 60;

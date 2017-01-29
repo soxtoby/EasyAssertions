@@ -61,7 +61,7 @@
     <Compile Include="Assertions\EasyAssertion.cs" />
     <Compile Include="Assertions\ObjectAssertions.cs" />
     <Compile Include="EasyAssertionException.cs" />
-    <Compile Include="FailureMessage.cs" />
+    <Compile Include="MessageHelper.cs" />
     <Compile Include="Assertions\NumberAssertions.cs" />
     <Compile Include="TestNode.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

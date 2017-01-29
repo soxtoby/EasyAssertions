@@ -25,12 +25,12 @@ namespace EasyAssertions
         
         public Exception WithActualExpression(string message)
         {
-            return Failure(FailureMessage.ActualExpression + Environment.NewLine + message.TrimStart('\r', '\n'));
+            return Failure(MessageHelper.ActualExpression + Environment.NewLine + message.TrimStart('\r', '\n'));
         }
         
         public Exception WithActualExpression(string message, Exception innerException)
         {
-            return Failure(FailureMessage.ActualExpression + Environment.NewLine + message, innerException);
+            return Failure(MessageHelper.ActualExpression + Environment.NewLine + message, innerException);
         }
         
         public Exception Custom(string message)

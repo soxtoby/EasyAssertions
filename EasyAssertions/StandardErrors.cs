@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text.RegularExpressions;
-using static EasyAssertions.FailureMessage;
+using static EasyAssertions.MessageHelper;
 
 namespace EasyAssertions
 {

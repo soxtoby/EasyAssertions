@@ -25,7 +25,7 @@ namespace EasyAssertions
         
         public Exception WithActualExpression(string message)
         {
-            return Failure(FailureMessage.ActualExpression + Environment.NewLine + message);
+            return Failure(FailureMessage.ActualExpression + Environment.NewLine + message.TrimStart('\r', '\n'));
         }
         
         public Exception WithActualExpression(string message, Exception innerException)

@@ -34,7 +34,8 @@ namespace EasyAssertions
 
         public Exception NotEqual(object expected, object actual, string message = null)
         {
-            return error.WithActualExpression($@"should be {Expected(expected, @"
+            return error.WithActualExpression($@"
+should be {Expected(expected, @"
           ")}
 but was   {Value(actual)}" + message.OnNewLine());
         }
@@ -44,7 +45,8 @@ but was   {Value(actual)}" + message.OnNewLine());
             int differenceIndex = Enumerable.Range(0, Math.Max(expected.Length, actual.Length))
                 .FirstOrDefault(i => i == actual.Length || i == expected.Length || !CharactersMatch(expected, actual, i, caseSensitivity));
 
-            return error.WithActualExpression($@"should be {Expected(expected, actual, differenceIndex, @"
+            return error.WithActualExpression($@"
+should be {Expected(expected, actual, differenceIndex, @"
           ")}
 but was   {Value(actual, expected, differenceIndex)}
           {Arrow(actual, expected, differenceIndex)}
@@ -63,26 +65,30 @@ Difference at index {differenceIndex}." + message.OnNewLine());
 
         public Exception AreEqual(object notExpected, object actual, string message = null)
         {
-            return error.WithActualExpression($@"should not be {Expected(notExpected, @"
+            return error.WithActualExpression($@"
+should not be {Expected(notExpected, @"
               ")}
 but was       {Value(actual)}" + message.OnNewLine());
         }
 
         public Exception IsNull(string message = null)
         {
-            return error.WithActualExpression($@"should not be null, but was." + message.OnNewLine());
+            return error.WithActualExpression($@"
+should not be null, but was." + message.OnNewLine());
         }
 
         public Exception NotSame(object expected, object actual, string message = null)
         {
-            return error.WithActualExpression($@"should be instance {Expected(expected, @"
+            return error.WithActualExpression($@"
+should be instance {Expected(expected, @"
                    ")}
 but was            {Value(actual)}" + message.OnNewLine());
         }
 
         public Exception AreSame(object actual, string message = null)
         {
-            return error.WithActualExpression($@"shouldn't be instance {Expected(actual, @"
+            return error.WithActualExpression($@"
+shouldn't be instance {Expected(actual, @"
                       ")}" + message.OnNewLine());
         }
 
@@ -90,7 +96,8 @@ but was            {Value(actual)}" + message.OnNewLine());
         public Exception NotEmpty(IEnumerable actual, string message = null)
         {
             List<object> actualList = actual.Cast<object>().ToList();
-            return error.WithActualExpression($@"should be empty
+            return error.WithActualExpression($@"
+should be empty
 but {Count(actualList,
                 $"had 1 element: {Single(actualList)}",
                 $"had {actualList.Count} elements: {Sample(actualList)}")}" + message.OnNewLine());
@@ -98,7 +105,8 @@ but {Count(actualList,
 
         public Exception NotEmpty(string actual, string message = null)
         {
-            return error.WithActualExpression($@"should be empty
+            return error.WithActualExpression($@"
+should be empty
 but was {Value(actual)}" + message.OnNewLine());
         }
 
@@ -110,7 +118,8 @@ but was {Value(actual)}" + message.OnNewLine());
         public Exception LengthMismatch(int expectedLength, IEnumerable actual, string message = null)
         {
             List<object> actualItems = actual.Cast<object>().ToList();
-            return error.WithActualExpression($@"should have {expectedLength} {Count(expectedLength, "element", "elements")}
+            return error.WithActualExpression($@"
+should have {expectedLength} {Count(expectedLength, "element", "elements")}
 but {Count(actualItems,
                     "was empty.",
                     $"had 1 element: {Single(actualItems)}",
@@ -121,7 +130,8 @@ but {Count(actualItems,
         public Exception DoesNotContain(object expected, IEnumerable actual, string itemType = null, string message = null)
         {
             List<object> actualList = actual.Cast<object>().ToList();
-            return error.WithActualExpression($@"should contain {itemType.WithSpace()}{Expected(expected, @"
+            return error.WithActualExpression($@"
+should contain {itemType.WithSpace()}{Expected(expected, @"
                " + SpaceFor(itemType.WithSpace()))}
 but was {Count(actualList,
                     "empty.",
@@ -151,7 +161,8 @@ and was {Sample(actualItems)}" + message.OnNewLine());
         public Exception Contains(object expectedToNotContain, IEnumerable actual, string itemType = null, string message = null)
         {
             List<object> actualList = actual.Cast<object>().ToList();
-            return error.WithActualExpression($@"shouldn't contain {itemType.WithSpace()}{Expected(expectedToNotContain, @"
+            return error.WithActualExpression($@"
+shouldn't contain {itemType.WithSpace()}{Expected(expectedToNotContain, @"
                   " + SpaceFor(itemType.WithSpace()))}
 but was {Sample(actualList)}" + message.OnNewLine());
         }
@@ -231,7 +242,8 @@ but also contains {Sample(extraItems)}" + message.OnNewLine());
             for (int i = 0; i < actualItems.Count; i++)
                 if (test.ObjectsAreEqual(actualItems[i], duplicateItem))
                     duplicateIndices.Add(i);
-            return error.WithActualExpression($@"should not contain duplicates
+            return error.WithActualExpression($@"
+should not contain duplicates
 but {Value(duplicateItem)}
 was found at indices {duplicateIndices.Take(duplicateIndices.Count - 1).Join(", ")} and {duplicateIndices.Last()}."
                 + message.OnNewLine());
@@ -271,7 +283,8 @@ but {Count(actualList,
             object expectedItem, actualItem;
             int differenceIndex = FindDifference(expectedList, actualList, (a, e) => predicate((TActual)a, (TExpected)e), out expectedItem, out actualItem);
 
-            return error.WithActualExpression($@"{(expectedSource != null ? $"doesn't match {expectedSource}. Differs" : "differs")} at index {differenceIndex}.
+            return error.WithActualExpression($@"
+{(expectedSource != null ? $"doesn't match {expectedSource}. Differs" : "differs")} at index {differenceIndex}.
 should match {Value(expectedItem)}
 but was      {Value(actualItem)}" + message.OnNewLine());
         }
@@ -280,7 +293,8 @@ but was      {Value(actualItem)}" + message.OnNewLine());
         {
             object expectedItem, actualItem;
             int differenceIndex = FindDifference(expected, actual, ReferenceEquals, out expectedItem, out actualItem);
-            return error.WithActualExpression($@"differs at index {differenceIndex}.
+            return error.WithActualExpression($@"
+differs at index {differenceIndex}.
 should be instance {Value(expectedItem)}
 but was            {Value(actualItem)}" + message.OnNewLine());
         }
@@ -317,7 +331,8 @@ but was            {Value(actualItem)}" + message.OnNewLine());
 
         private Exception NotLongEnough(List<object> expectedItems, List<object> actualItems, string message)
         {
-            return error.WithActualExpression($@"should have at least {expectedItems.Count} {Count(expectedItems, "element", "elements")}
+            return error.WithActualExpression($@"
+should have at least {expectedItems.Count} {Count(expectedItems, "element", "elements")}
 but {Count(actualItems,
                 "was empty.",
                 $"had 1 element: {Single(actualItems)}",
@@ -326,7 +341,8 @@ but {Count(actualItems,
 
         private Exception DiffersAtIndex(int differenceIndex, object expectedValue, object actualValue, string message)
         {
-            return error.WithActualExpression($@"differs at index {differenceIndex}.
+            return error.WithActualExpression($@"
+differs at index {differenceIndex}.
 should be {Value(expectedValue)}
 but was   {Value(actualValue)}" + message.OnNewLine());
         }
@@ -417,7 +433,8 @@ but threw    {Value(actualException.GetType())}" + message.OnNewLine(), actualEx
 
         public Exception DoesNotContain(string expectedSubstring, string actual, string message = null)
         {
-            return error.WithActualExpression($@"should contain {Expected(expectedSubstring, @"
+            return error.WithActualExpression($@"
+should contain {Expected(expectedSubstring, @"
                ")}
 but was        {Value(actual)}" + message.OnNewLine());
         }
@@ -426,7 +443,8 @@ but was        {Value(actual)}" + message.OnNewLine());
         {
             int matchIndex = actual.IndexOf(expectedToNotContain, StringComparison.Ordinal);
 
-            return error.WithActualExpression($@"shouldn't contain {Expected(expectedToNotContain, @"
+            return error.WithActualExpression($@"
+shouldn't contain {Expected(expectedToNotContain, @"
                   ")}
 but was           {Value(actual, expectedToNotContain, matchIndex)}
                   {Arrow(actual, expectedToNotContain, matchIndex)}
@@ -435,42 +453,48 @@ Match at index {matchIndex}." + message.OnNewLine());
 
         public Exception DoesNotStartWith(string expectedStart, string actual, string message = null)
         {
-            return error.WithActualExpression($@"should start with {Expected(expectedStart, @"
+            return error.WithActualExpression($@"
+should start with {Expected(expectedStart, @"
                   ")}
 but starts with   {Value(actual)}" + message.OnNewLine());
         }
 
         public Exception DoesNotEndWith(string expectedEnd, string actual, string message = null)
         {
-            return error.WithActualExpression($@"should end with {Expected(expectedEnd, actual, expectedEnd.Length - 1, @"
+            return error.WithActualExpression($@"
+should end with {Expected(expectedEnd, actual, expectedEnd.Length - 1, @"
                 ")}
 but ends with   {Value(actual, expectedEnd, actual.Length - 1)}" + message.OnNewLine());
         }
 
         public Exception NotGreaterThan(object expected, object actual, string message = null)
         {
-            return error.WithActualExpression($@"should be greater than {Expected(expected, @"
+            return error.WithActualExpression($@"
+should be greater than {Expected(expected, @"
                        ")}
 but was                {Value(actual)}" + message.OnNewLine());
         }
 
         public Exception NotLessThan(object expected, object actual, string message = null)
         {
-            return error.WithActualExpression($@"should be less than {Expected(expected, @"
+            return error.WithActualExpression($@"
+should be less than {Expected(expected, @"
                     ")}
 but was             {Value(actual)}" + message.OnNewLine());
         }
 
         public Exception DoesNotMatch(Regex regex, string actual, string message = null)
         {
-            return error.WithActualExpression($@"should match {Expected(regex, @"
+            return error.WithActualExpression($@"
+should match {Expected(regex, @"
              ")}
 but was {Value(actual)}" + message.OnNewLine());
         }
 
         public Exception Matches(Regex regex, string actual, string message = null)
         {
-            return error.WithActualExpression($@"shouldn't match {Expected(regex, @"
+            return error.WithActualExpression($@"
+shouldn't match {Expected(regex, @"
                 ")}
 but was {Value(actual)}" + message.OnNewLine());
         }

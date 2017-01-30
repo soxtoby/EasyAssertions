@@ -68,7 +68,7 @@ namespace EasyAssertions
         public static Actual<TActual> ShouldBeSingular<TActual>(this TActual actual, string message = null)
             where TActual : IEnumerable
         {
-            return actual.RegisterAssertion(c => actual.ShouldBeLength(1, message));
+            return actual.RegisterAssertion(c => AssertLength(actual, 1, message, c));
         }
 
         /// <summary>
@@ -114,16 +114,18 @@ namespace EasyAssertions
         public static Actual<TActual> ShouldBeLength<TActual>(this TActual actual, int expectedLength, string message = null)
             where TActual : IEnumerable
         {
-            return actual.RegisterAssertion(c =>
-                {
-                    actual.ShouldBeA<TActual>(message);
+            return actual.RegisterAssertion(c => AssertLength(actual, expectedLength, message, c));
+        }
 
-                    using (IBuffer<object> bufferedActual = actual.Buffer())
-                    {
-                        if (bufferedActual.Count != expectedLength)
-                            throw c.StandardError.LengthMismatch(expectedLength, bufferedActual, message);
-                    }
-                });
+        private static void AssertLength<TActual>(TActual actual, int expectedLength, string message, IAssertionContext c) where TActual : IEnumerable
+        {
+            actual.ShouldBeA<TActual>(message);
+
+            using (IBuffer<object> bufferedActual = actual.Buffer())
+            {
+                if (bufferedActual.Count != expectedLength)
+                    throw c.StandardError.LengthMismatch(expectedLength, bufferedActual, message);
+            }
         }
 
         /// <summary>
@@ -136,7 +138,7 @@ namespace EasyAssertions
         {
             if (expected == null) throw new ArgumentNullException(nameof(expected));
 
-            return actual.RegisterAssertion(c => actual.ShouldMatch(expected, c.Test.ObjectsMatch, message));
+            return actual.RegisterAssertion(c => AssertMatch(actual, expected, c.Test.ObjectsMatch, message, c));
         }
 
         /// <summary>
@@ -144,7 +146,9 @@ namespace EasyAssertions
         /// </summary>
         public static Actual<IEnumerable<float>> ShouldMatch(this IEnumerable<float> actual, IEnumerable<float> expected, double tolerance, string message = null)
         {
-            return actual.RegisterAssertion(c => actual.ShouldMatch(expected, (a, e) => c.Test.AreWithinTolerance(a, e, tolerance), message));
+            if (expected == null) throw new ArgumentNullException(nameof(expected));
+
+            return actual.RegisterAssertion(c => AssertMatch(actual, expected, (a, e) => c.Test.AreWithinTolerance(a, e, tolerance), message, c));
         }
 
         /// <summary>
@@ -152,7 +156,9 @@ namespace EasyAssertions
         /// </summary>
         public static Actual<IEnumerable<double>> ShouldMatch(this IEnumerable<double> actual, IEnumerable<double> expected, double tolerance, string message = null)
         {
-            return actual.RegisterAssertion(c => actual.ShouldMatch(expected, (a, e) => c.Test.AreWithinTolerance(a, e, tolerance), message));
+            if (expected == null) throw new ArgumentNullException(nameof(expected));
+
+            return actual.RegisterAssertion(c => AssertMatch(actual, expected, (a, e) => c.Test.AreWithinTolerance(a, e, tolerance), message, c));
         }
 
         /// <summary>
@@ -163,17 +169,19 @@ namespace EasyAssertions
             if (expected == null) throw new ArgumentNullException(nameof(expected));
             if (predicate == null) throw new ArgumentNullException(nameof(predicate));
 
-            return actual.RegisterAssertion(c =>
-                {
-                    actual.ShouldBeA<IEnumerable<TActual>>(message);
+            return actual.RegisterAssertion(c => AssertMatch(actual, expected, predicate, message, c));
+        }
 
-                    using (IBuffer<TActual> bufferedActual = actual.Buffer())
-                    using (IBuffer<TExpected> bufferedExpected = expected.Buffer())
-                    {
-                        if (!c.Test.CollectionsMatch(bufferedActual, bufferedExpected, (a, e) => predicate((TActual)a, (TExpected)e)))
-                            throw c.StandardError.DoNotMatch(bufferedExpected, bufferedActual, predicate, message);
-                    }
-                });
+        private static void AssertMatch<TActual, TExpected>(IEnumerable<TActual> actual, IEnumerable<TExpected> expected, Func<TActual, TExpected, bool> predicate, string message, IAssertionContext c)
+        {
+            actual.ShouldBeA<IEnumerable<TActual>>(message);
+
+            using (IBuffer<TActual> bufferedActual = actual.Buffer())
+            using (IBuffer<TExpected> bufferedExpected = expected.Buffer())
+            {
+                if (!c.Test.CollectionsMatch(bufferedActual, bufferedExpected, (a, e) => predicate((TActual)a, (TExpected)e)))
+                    throw c.StandardError.DoNotMatch(bufferedExpected, bufferedActual, predicate, message);
+            }
         }
 
         /// <summary>
@@ -186,7 +194,7 @@ namespace EasyAssertions
         {
             if (notExpected == null) throw new ArgumentNullException(nameof(notExpected));
 
-            return actual.RegisterAssertion(c => actual.ShouldNotMatch(notExpected, c.Test.ObjectsMatch, message));
+            return actual.RegisterAssertion(c => AssertNotMatch(actual, notExpected, c.Test.ObjectsMatch, message, c));
         }
 
         /// <summary>
@@ -196,7 +204,7 @@ namespace EasyAssertions
         {
             if (notExpected == null) throw new ArgumentNullException(nameof(notExpected));
 
-            return actual.RegisterAssertion(c => actual.ShouldNotMatch(notExpected, (a, e) => c.Test.AreWithinTolerance(a, e, tolerance), message));
+            return actual.RegisterAssertion(c => AssertNotMatch(actual, notExpected, (a, e) => c.Test.AreWithinTolerance(a, e, tolerance), message, c));
         }
 
         /// <summary>
@@ -206,7 +214,7 @@ namespace EasyAssertions
         {
             if (notExpected == null) throw new ArgumentNullException(nameof(notExpected));
 
-            return actual.RegisterAssertion(c => actual.ShouldNotMatch(notExpected, (a, e) => c.Test.AreWithinTolerance(a, e, tolerance), message));
+            return actual.RegisterAssertion(c => AssertNotMatch(actual, notExpected, (a, e) => c.Test.AreWithinTolerance(a, e, tolerance), message, c));
         }
 
         /// <summary>
@@ -217,17 +225,19 @@ namespace EasyAssertions
             if (notExpected == null) throw new ArgumentNullException(nameof(notExpected));
             if (predicate == null) throw new ArgumentNullException(nameof(predicate));
 
-            return actual.RegisterAssertion(c =>
-                {
-                    actual.ShouldBeA<IEnumerable<TActual>>(message);
+            return actual.RegisterAssertion(c => AssertNotMatch(actual, notExpected, predicate, message, c));
+        }
 
-                    using (IBuffer<TActual> bufferedActual = actual.Buffer())
-                    using (IBuffer<TExpected> bufferedExpected = notExpected.Buffer())
-                    {
-                        if (c.Test.CollectionsMatch(bufferedActual, bufferedExpected, (a, e) => predicate((TActual)a, (TExpected)e)))
-                            throw c.StandardError.Matches(bufferedExpected, bufferedActual, message);
-                    }
-                });
+        private static void AssertNotMatch<TActual, TExpected>(IEnumerable<TActual> actual, IEnumerable<TExpected> notExpected, Func<TActual, TExpected, bool> predicate, string message, IAssertionContext c)
+        {
+            actual.ShouldBeA<IEnumerable<TActual>>(message);
+
+            using (IBuffer<TActual> bufferedActual = actual.Buffer())
+            using (IBuffer<TExpected> bufferedExpected = notExpected.Buffer())
+            {
+                if (c.Test.CollectionsMatch(bufferedActual, bufferedExpected, (a, e) => predicate((TActual)a, (TExpected)e)))
+                    throw c.StandardError.Matches(bufferedExpected, bufferedActual, message);
+            }
         }
 
         /// <summary>
@@ -238,7 +248,7 @@ namespace EasyAssertions
         {
             if (expectedStart == null) throw new ArgumentNullException(nameof(expectedStart));
 
-            return actual.RegisterAssertion(c => actual.ShouldStartWith(expectedStart, c.Test.ObjectsAreEqual, message));
+            return actual.RegisterAssertion(c => AssertStartsWith(actual, expectedStart, c.Test.ObjectsAreEqual, message, c));
         }
 
         /// <summary>
@@ -249,17 +259,19 @@ namespace EasyAssertions
             if (expectedStart == null) throw new ArgumentNullException(nameof(expectedStart));
             if (predicate == null) throw new ArgumentNullException(nameof(predicate));
 
-            return actual.RegisterAssertion(c =>
-                {
-                    actual.ShouldBeA<IEnumerable<TActual>>(message);
+            return actual.RegisterAssertion(c => AssertStartsWith(actual, expectedStart, predicate, message, c));
+        }
 
-                    using (IBuffer<TActual> bufferedActual = actual.Buffer())
-                    using (IBuffer<TExpected> bufferedExpected = expectedStart.Buffer())
-                    {
-                        if (!c.Test.CollectionStartsWith(bufferedActual, bufferedExpected, (a, e) => predicate((TActual)a, (TExpected)e)))
-                            throw c.StandardError.DoesNotStartWith(bufferedExpected, bufferedActual, predicate, message);
-                    }
-                });
+        private static void AssertStartsWith<TActual, TExpected>(IEnumerable<TActual> actual, IEnumerable<TExpected> expectedStart, Func<TActual, TExpected, bool> predicate, string message, IAssertionContext c)
+        {
+            actual.ShouldBeA<IEnumerable<TActual>>(message);
+
+            using (IBuffer<TActual> bufferedActual = actual.Buffer())
+            using (IBuffer<TExpected> bufferedExpected = expectedStart.Buffer())
+            {
+                if (!c.Test.CollectionStartsWith(bufferedActual, bufferedExpected, (a, e) => predicate((TActual)a, (TExpected)e)))
+                    throw c.StandardError.DoesNotStartWith(bufferedExpected, bufferedActual, predicate, message);
+            }
         }
 
         /// <summary>
@@ -270,7 +282,7 @@ namespace EasyAssertions
         {
             if (expectedEnd == null) throw new ArgumentNullException(nameof(expectedEnd));
 
-            return actual.RegisterAssertion(c => actual.ShouldEndWith(expectedEnd, c.Test.ObjectsAreEqual, message));
+            return actual.RegisterAssertion(c => AssertEndsWith(actual, expectedEnd, c.Test.ObjectsAreEqual, message, c));
         }
 
         /// <summary>
@@ -281,17 +293,19 @@ namespace EasyAssertions
             if (expectedEnd == null) throw new ArgumentNullException(nameof(expectedEnd));
             if (predicate == null) throw new ArgumentNullException(nameof(predicate));
 
-            return actual.RegisterAssertion(c =>
-                {
-                    actual.ShouldBeA<IEnumerable<TActual>>(message);
+            return actual.RegisterAssertion(c => AssertEndsWith(actual, expectedEnd, predicate, message, c));
+        }
 
-                    using (IBuffer<TActual> bufferedActual = actual.Buffer())
-                    using (IBuffer<TExpected> bufferedExpected = expectedEnd.Buffer())
-                    {
-                        if (!c.Test.CollectionEndsWith(bufferedActual, bufferedExpected, (a, e) => predicate((TActual)a, (TExpected)e)))
-                            throw c.StandardError.DoesNotEndWith(bufferedExpected, bufferedActual, predicate, message);
-                    }
-                });
+        private static void AssertEndsWith<TActual, TExpected>(IEnumerable<TActual> actual, IEnumerable<TExpected> expectedEnd, Func<TActual, TExpected, bool> predicate, string message, IAssertionContext c)
+        {
+            actual.ShouldBeA<IEnumerable<TActual>>(message);
+
+            using (IBuffer<TActual> bufferedActual = actual.Buffer())
+            using (IBuffer<TExpected> bufferedExpected = expectedEnd.Buffer())
+            {
+                if (!c.Test.CollectionEndsWith(bufferedActual, bufferedExpected, (a, e) => predicate((TActual)a, (TExpected)e)))
+                    throw c.StandardError.DoesNotEndWith(bufferedExpected, bufferedActual, predicate, message);
+            }
         }
 
         /// <summary>
@@ -300,7 +314,7 @@ namespace EasyAssertions
         public static Actual<IEnumerable<TActual>> ShouldContain<TActual, TExpected>(this IEnumerable<TActual> actual, TExpected expected, string message = null)
             where TExpected : TActual
         {
-            return actual.RegisterAssertion(c => actual.ShouldContain(expected, c.Test.ObjectsAreEqual, message));
+            return actual.RegisterAssertion(c => AssertContains(actual, expected, c.Test.ObjectsAreEqual, message, c));
         }
 
         /// <summary>
@@ -310,16 +324,18 @@ namespace EasyAssertions
         {
             if (predicate == null) throw new ArgumentNullException(nameof(predicate));
 
-            return actual.RegisterAssertion(c =>
-                {
-                    actual.ShouldBeA<IEnumerable<TActual>>(message);
+            return actual.RegisterAssertion(c => AssertContains(actual, expected, predicate, message, c));
+        }
 
-                    using (IBuffer<TActual> bufferedActual = actual.Buffer())
-                    {
-                        if (!c.Test.ContainsAllItems(bufferedActual, new[] { expected }, predicate))
-                            throw c.StandardError.DoesNotContain(expected, bufferedActual, message: message);
-                    }
-                });
+        private static void AssertContains<TActual, TExpected>(IEnumerable<TActual> actual, TExpected expected, Func<TActual, TExpected, bool> predicate, string message, IAssertionContext c)
+        {
+            actual.ShouldBeA<IEnumerable<TActual>>(message);
+
+            using (IBuffer<TActual> bufferedActual = actual.Buffer())
+            {
+                if (!c.Test.ContainsAllItems(bufferedActual, new[] { expected }, predicate))
+                    throw c.StandardError.DoesNotContain(expected, bufferedActual, message: message);
+            }
         }
 
         /// <summary>
@@ -412,7 +428,7 @@ namespace EasyAssertions
         public static Actual<IEnumerable<TActual>> ShouldNotContain<TActual, TExpected>(this IEnumerable<TActual> actual, TExpected expectedToNotContain, string message = null)
             where TExpected : TActual
         {
-            return actual.RegisterAssertion(c => actual.ShouldNotContain(expectedToNotContain, c.Test.ObjectsAreEqual, message));
+            return actual.RegisterAssertion(c => AssertDoesNotContain(actual, expectedToNotContain, c.Test.ObjectsAreEqual, message, c));
         }
 
         /// <summary>
@@ -422,16 +438,18 @@ namespace EasyAssertions
         {
             if (predicate == null) throw new ArgumentNullException(nameof(predicate));
 
-            return actual.RegisterAssertion(c =>
-                {
-                    actual.ShouldBeA<IEnumerable<TActual>>(message);
+            return actual.RegisterAssertion(c => AssertDoesNotContain(actual, expectedToNotContain, predicate, message, c));
+        }
 
-                    using (IBuffer<TActual> bufferedActual = actual.Buffer())
-                    {
-                        if (c.Test.ContainsAllItems(bufferedActual, new[] { expectedToNotContain }, predicate))
-                            throw c.StandardError.Contains(expectedToNotContain, bufferedActual, message: message);
-                    }
-                });
+        private static void AssertDoesNotContain<TActual, TExpected>(IEnumerable<TActual> actual, TExpected expectedToNotContain, Func<TActual, TExpected, bool> predicate, string message, IAssertionContext c)
+        {
+            actual.ShouldBeA<IEnumerable<TActual>>(message);
+
+            using (IBuffer<TActual> bufferedActual = actual.Buffer())
+            {
+                if (c.Test.ContainsAllItems(bufferedActual, new[] { expectedToNotContain }, predicate))
+                    throw c.StandardError.Contains(expectedToNotContain, bufferedActual, message: message);
+            }
         }
 
         /// <summary>
@@ -484,7 +502,7 @@ namespace EasyAssertions
         {
             if (expected == null) throw new ArgumentNullException(nameof(expected));
 
-            return actual.RegisterAssertion(c => actual.ShouldOnlyContain(expected, c.Test.ObjectsAreEqual, message));
+            return actual.RegisterAssertion(c => AssertOnlyContains(actual, expected, c.Test.ObjectsAreEqual, message, c));
         }
 
         /// <summary>
@@ -495,19 +513,19 @@ namespace EasyAssertions
             if (expected == null) throw new ArgumentNullException(nameof(expected));
             if (predicate == null) throw new ArgumentNullException(nameof(predicate));
 
-            return actual.RegisterAssertion(c =>
-                {
-                    actual.ShouldBeA<IEnumerable<TActual>>(message);
+            return actual.RegisterAssertion(c => AssertOnlyContains(actual, expected, predicate, message, c));
+        }
 
-                    using (IBuffer<TActual> bufferedActual = actual.Buffer())
-                    using (IBuffer<TExpected> bufferedExpected = expected.Buffer())
-                    {
-                        if (!c.Test.ContainsOnlyExpectedItems(bufferedActual, bufferedExpected, predicate))
-                            throw c.StandardError.DoesNotOnlyContain(bufferedExpected, bufferedActual, predicate, message);
+        private static void AssertOnlyContains<TActual, TExpected>(IEnumerable<TActual> actual, IEnumerable<TExpected> expected, Func<TActual, TExpected, bool> predicate, string message, IAssertionContext c)
+        {
+            actual.ShouldBeA<IEnumerable<TActual>>(message);
 
-                        bufferedActual.ShouldBeDistinct(message);
-                    }
-                });
+            using (IBuffer<TActual> bufferedActual = actual.Buffer())
+            using (IBuffer<TExpected> bufferedExpected = expected.Buffer())
+            {
+                if (!c.Test.ContainsOnlyExpectedItems(bufferedActual, bufferedExpected, predicate))
+                    throw c.StandardError.DoesNotOnlyContain(bufferedExpected, bufferedActual, predicate, message);
+            }
         }
 
         /// <summary>
@@ -557,7 +575,7 @@ namespace EasyAssertions
         /// </summary>
         public static Actual<IEnumerable<TActual>> ShouldBeDistinct<TActual>(this IEnumerable<TActual> actual, string message = null)
         {
-            return actual.RegisterAssertion(c => actual.ShouldBeDistinct(c.Test.ObjectsAreEqual, message));
+            return actual.RegisterAssertion(c => AssertDistinct(actual, c.Test.ObjectsAreEqual, message, c));
         }
 
         /// <summary>
@@ -565,16 +583,18 @@ namespace EasyAssertions
         /// </summary>
         public static Actual<IEnumerable<TActual>> ShouldBeDistinct<TActual>(this IEnumerable<TActual> actual, Func<TActual, TActual, bool> predicate, string message = null)
         {
-            return actual.RegisterAssertion(c =>
-                {
-                    actual.ShouldBeA<IEnumerable<TActual>>(message);
+            return actual.RegisterAssertion(c => AssertDistinct(actual, predicate, message, c));
+        }
 
-                    using (IBuffer<TActual> bufferedActual = actual.Buffer())
-                    {
-                        if (c.Test.ContainsDuplicate(bufferedActual, predicate))
-                            throw c.StandardError.ContainsDuplicate(bufferedActual, message);
-                    }
-                });
+        private static void AssertDistinct<TActual>(IEnumerable<TActual> actual, Func<TActual, TActual, bool> predicate, string message, IAssertionContext c)
+        {
+            actual.ShouldBeA<IEnumerable<TActual>>(message);
+
+            using (IBuffer<TActual> bufferedActual = actual.Buffer())
+            {
+                if (c.Test.ContainsDuplicate(bufferedActual, predicate))
+                    throw c.StandardError.ContainsDuplicate(bufferedActual, message);
+            }
         }
 
         /// <summary>

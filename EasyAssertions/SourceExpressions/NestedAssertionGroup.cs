@@ -30,9 +30,7 @@ namespace EasyAssertions
         public override string GetExpectedExpression(string actualExpression, string parentExpression)
         {
             string expectedExpression = base.GetExpectedExpression(actualExpression, parentExpression);
-            return string.IsNullOrEmpty(expectedExpression) 
-                ? parentExpression 
-                : ReplaceAliasWithExpression(ReplaceAliasWithExpression(expectedExpression, actualAlias, actualExpression), expectedAlias, parentExpression);
+            return ReplaceAliasWithExpression(ReplaceAliasWithExpression(expectedExpression, actualAlias, actualExpression), expectedAlias, parentExpression);
         }
 
         private static string ReplaceAliasWithExpression(string expressionWithAlias, string alias, string parentExpression)

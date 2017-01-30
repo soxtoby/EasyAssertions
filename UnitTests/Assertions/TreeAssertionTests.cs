@@ -54,14 +54,14 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ShouldMatchTree_CorrectlyRegistersAssertion()
         {
-            int[] actual = { 1 };
-            TestNode<int>[] expected = { 2 };
+            int[] actualExpression = { 1 };
+            TestNode<int>[] expectedExpression = { 2 };
             Error.TreesDoNotMatch(Arg.Any<IEnumerable<TestNode<int>>>(), Arg.Any<IEnumerable<int>>(), Arg.Any<Func<int, IEnumerable<int>>>(), Arg.Any<Func<object, object, bool>>()).Returns(ExpectedException);
 
-            AssertThrowsExpectedError(() => actual.ShouldMatch(expected, NoChildren));
+            AssertThrowsExpectedError(() => actualExpression.ShouldMatch(expectedExpression, NoChildren));
 
-            Assert.AreEqual(nameof(actual), TestExpression.GetActual());
-            Assert.AreEqual(nameof(expected), TestExpression.GetExpected());
+            Assert.AreEqual(nameof(actualExpression), TestExpression.GetActual());
+            Assert.AreEqual(nameof(expectedExpression), TestExpression.GetExpected());
         }
 
         [Test]
@@ -120,15 +120,15 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ShouldMatchTree_CustomEquality_CorrectlyRegistersAssertion()
         {
-            int[] actual = { 1 };
-            TestNode<int>[] expected = { 1 };
+            int[] actualExpression = { 1 };
+            TestNode<int>[] expectedExpression = { 1 };
             Func<int, int, bool> equality = Substitute.For<Func<int, int, bool>>();
             Error.TreesDoNotMatch(Arg.Any<IEnumerable<TestNode<int>>>(), Arg.Any<IEnumerable<int>>(), Arg.Any<Func<int, IEnumerable<int>>>(), Arg.Any<Func<object, object, bool>>()).Returns(ExpectedException);
 
-            AssertThrowsExpectedError(() => actual.ShouldMatch(expected, NoChildren, equality));
+            AssertThrowsExpectedError(() => actualExpression.ShouldMatch(expectedExpression, NoChildren, equality));
 
-            Assert.AreEqual(nameof(actual), TestExpression.GetActual());
-            Assert.AreEqual(nameof(expected), TestExpression.GetExpected());
+            Assert.AreEqual(nameof(actualExpression), TestExpression.GetActual());
+            Assert.AreEqual(nameof(expectedExpression), TestExpression.GetExpected());
         }
 
         private static IEnumerable<T> NoChildren<T>(T node)

@@ -55,14 +55,14 @@ namespace EasyAssertions.UnitTests
             [Test]
             public void CorrectlyRegistersAssertion()
             {
-                const float expected = 10f;
-                const float actual = 1f;
+                const float expectedExpression = 10f;
+                const float actualExpression = 1f;
                 Error.NotEqual(Arg.Any<object>(), Arg.Any<object>()).Returns(ExpectedException);
 
-                AssertThrowsExpectedError(() => actual.ShouldBe(expected, 1f));
+                AssertThrowsExpectedError(() => actualExpression.ShouldBe(expectedExpression, 1f));
 
-                Assert.AreEqual(nameof(actual), TestExpression.GetActual());
-                Assert.AreEqual(nameof(expected), TestExpression.GetExpected());
+                Assert.AreEqual(nameof(actualExpression), TestExpression.GetActual());
+                Assert.AreEqual(nameof(expectedExpression), TestExpression.GetExpected());
             }
 
             private static Actual<float> ShouldBe(float actual, float expected, double tolerance, string message = null)
@@ -96,14 +96,14 @@ namespace EasyAssertions.UnitTests
             [Test]
             public void CorrectlyRegistersAssertion()
             {
-                const float actual = 1;
-                const double expected = 2;
+                const float actualExpression = 1;
+                const double expectedExpression = 2;
                 Error.NotEqual(Arg.Any<object>(), Arg.Any<object>()).Returns(ExpectedException);
 
-                AssertThrowsExpectedError(() => actual.ShouldBe(expected, double.Epsilon));
+                AssertThrowsExpectedError(() => actualExpression.ShouldBe(expectedExpression, double.Epsilon));
 
-                Assert.AreEqual(nameof(actual), TestExpression.GetActual());
-                Assert.AreEqual(nameof(expected), TestExpression.GetExpected());
+                Assert.AreEqual(nameof(actualExpression), TestExpression.GetActual());
+                Assert.AreEqual(nameof(expectedExpression), TestExpression.GetExpected());
             }
 
             private static Actual<float> ShouldBe(float actual, double expected, double tolerance, string message = null)
@@ -137,14 +137,14 @@ namespace EasyAssertions.UnitTests
             [Test]
             public void CorrectlyRegistersAssertion()
             {
-                const double actual = 1;
-                const double expected = 2;
+                const double actualExpression = 1;
+                const double expectedExpression = 2;
                 Error.NotEqual(Arg.Any<object>(), Arg.Any<object>()).Returns(ExpectedException);
 
-                AssertThrowsExpectedError(() => actual.ShouldBe(expected, double.Epsilon));
+                AssertThrowsExpectedError(() => actualExpression.ShouldBe(expectedExpression, double.Epsilon));
 
-                Assert.AreEqual(nameof(actual), TestExpression.GetActual());
-                Assert.AreEqual(nameof(expected), TestExpression.GetExpected());
+                Assert.AreEqual(nameof(actualExpression), TestExpression.GetActual());
+                Assert.AreEqual(nameof(expectedExpression), TestExpression.GetExpected());
             }
 
             private static Actual<double> ShouldBe(double actual, double expected, double tolerance, string message = null)
@@ -178,14 +178,14 @@ namespace EasyAssertions.UnitTests
             [Test]
             public void CorrectlyRegistersAssertion()
             {
-                const double actual = 1;
-                const float expected = 2;
+                const double actualExpression = 1;
+                const float expectedExpression = 2;
                 Error.NotEqual(Arg.Any<object>(), Arg.Any<object>()).Returns(ExpectedException);
 
-                AssertThrowsExpectedError(() => actual.ShouldBe(expected, double.Epsilon));
+                AssertThrowsExpectedError(() => actualExpression.ShouldBe(expectedExpression, double.Epsilon));
 
-                Assert.AreEqual(nameof(actual), TestExpression.GetActual());
-                Assert.AreEqual(nameof(expected), TestExpression.GetExpected());
+                Assert.AreEqual(nameof(actualExpression), TestExpression.GetActual());
+                Assert.AreEqual(nameof(expectedExpression), TestExpression.GetExpected());
             }
 
             private static Actual<double> ShouldBe(double actual, float expected, double tolerance, string message = null)
@@ -219,14 +219,14 @@ namespace EasyAssertions.UnitTests
             [Test]
             public void CorrectlyRegistersAssertion()
             {
-                const float actual = 1;
-                const float notExpected = 1;
+                const float actualExpression = 1;
+                const float expectedExpression = 1;
                 Error.AreEqual(Arg.Any<object>(), Arg.Any<object>()).Returns(ExpectedException);
 
-                AssertThrowsExpectedError(() => actual.ShouldNotBe(notExpected, float.Epsilon));
+                AssertThrowsExpectedError(() => actualExpression.ShouldNotBe(expectedExpression, float.Epsilon));
 
-                Assert.AreEqual(nameof(actual), TestExpression.GetActual());
-                Assert.AreEqual(nameof(notExpected), TestExpression.GetExpected());
+                Assert.AreEqual(nameof(actualExpression), TestExpression.GetActual());
+                Assert.AreEqual(nameof(expectedExpression), TestExpression.GetExpected());
             }
         }
 
@@ -255,14 +255,14 @@ namespace EasyAssertions.UnitTests
             [Test]
             public void CorrectlyRegistersAssertion()
             {
-                const double actual = 1;
-                const double notExpected = 1;
+                const double actualExpression = 1;
+                const double expectedExpression = 1;
                 Error.AreEqual(Arg.Any<object>(), Arg.Any<object>()).Returns(ExpectedException);
 
-                AssertThrowsExpectedError(() => actual.ShouldNotBe(notExpected, double.Epsilon));
+                AssertThrowsExpectedError(() => actualExpression.ShouldNotBe(expectedExpression, double.Epsilon));
 
-                Assert.AreEqual(nameof(actual), TestExpression.GetActual());
-                Assert.AreEqual(nameof(notExpected), TestExpression.GetExpected());
+                Assert.AreEqual(nameof(actualExpression), TestExpression.GetActual());
+                Assert.AreEqual(nameof(expectedExpression), TestExpression.GetExpected());
             }
         }
 
@@ -291,14 +291,14 @@ namespace EasyAssertions.UnitTests
             [Test]
             public void CorrectlyRegistersAssertion()
             {
-                const int actual = 1;
-                const int expected = 2;
+                const int actualExpression = 1;
+                const int expectedExpression = 2;
                 Error.NotGreaterThan(Arg.Any<object>(), Arg.Any<object>()).Returns(ExpectedException);
 
-                AssertThrowsExpectedError(() => actual.ShouldBeGreaterThan(expected));
+                AssertThrowsExpectedError(() => actualExpression.ShouldBeGreaterThan(expectedExpression));
 
-                Assert.AreEqual(nameof(actual), TestExpression.GetActual());
-                Assert.AreEqual(nameof(expected), TestExpression.GetExpected());
+                Assert.AreEqual(nameof(actualExpression), TestExpression.GetActual());
+                Assert.AreEqual(nameof(expectedExpression), TestExpression.GetExpected());
             }
         }
 
@@ -327,14 +327,14 @@ namespace EasyAssertions.UnitTests
             [Test]
             public void CorrectlyRegistersAssertion()
             {
-                const int actual = 1;
-                const int expected = 0;
+                const int actualExpression = 1;
+                const int expectedExpression = 0;
                 Error.NotLessThan(Arg.Any<object>(), Arg.Any<object>()).Returns(ExpectedException);
 
-                AssertThrowsExpectedError(() => actual.ShouldBeLessThan(expected));
+                AssertThrowsExpectedError(() => actualExpression.ShouldBeLessThan(expectedExpression));
 
-                Assert.AreEqual(nameof(actual), TestExpression.GetActual());
-                Assert.AreEqual(nameof(expected), TestExpression.GetExpected());
+                Assert.AreEqual(nameof(actualExpression), TestExpression.GetActual());
+                Assert.AreEqual(nameof(expectedExpression), TestExpression.GetExpected());
             }
         }
 
@@ -360,11 +360,11 @@ namespace EasyAssertions.UnitTests
             [Test]
             public void CorrectlyRegistersAssertion()
             {
-                const float actual = float.NaN;
+                const float actualExpression = float.NaN;
 
-                actual.ShouldBeNaN();
+                actualExpression.ShouldBeNaN();
 
-                Assert.AreEqual(nameof(actual), TestExpression.GetActual());
+                Assert.AreEqual(nameof(actualExpression), TestExpression.GetActual());
             }
         }
 
@@ -392,11 +392,11 @@ namespace EasyAssertions.UnitTests
             [Test]
             public void CorrectlyRegistersAssertion()
             {
-                const float actual = 1;
+                const float actualExpression = 1;
 
-                actual.ShouldNotBeNaN();
+                actualExpression.ShouldNotBeNaN();
 
-                Assert.AreEqual(nameof(actual), TestExpression.GetActual());
+                Assert.AreEqual(nameof(actualExpression), TestExpression.GetActual());
             }
         }
 
@@ -422,11 +422,11 @@ namespace EasyAssertions.UnitTests
             [Test]
             public void CorrectlyRegistersAssertion()
             {
-                const double actual = double.NaN;
+                const double actualExpression = double.NaN;
 
-                actual.ShouldBeNaN();
+                actualExpression.ShouldBeNaN();
 
-                Assert.AreEqual(nameof(actual), TestExpression.GetActual());
+                Assert.AreEqual(nameof(actualExpression), TestExpression.GetActual());
             }
         }
 
@@ -454,11 +454,11 @@ namespace EasyAssertions.UnitTests
             [Test]
             public void CorrectlyRegistersAssertion()
             {
-                const double actual = 1;
+                const double actualExpression = 1;
 
-                actual.ShouldNotBeNaN();
+                actualExpression.ShouldNotBeNaN();
 
-                Assert.AreEqual(nameof(actual), TestExpression.GetActual());
+                Assert.AreEqual(nameof(actualExpression), TestExpression.GetActual());
             }
         }
     }

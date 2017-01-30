@@ -4,8 +4,8 @@ namespace EasyAssertions
     {
         private readonly int index;
 
-        public IndexedAssertionGroup(SourceAddress callAddress, string expressionAlias, int index)
-            : base(callAddress, expressionAlias)
+        public IndexedAssertionGroup(SourceAddress callAddress, string actualAlias, string expectedAlias, int index)
+            : base(callAddress, actualAlias, expectedAlias)
         {
             this.index = index;
         }

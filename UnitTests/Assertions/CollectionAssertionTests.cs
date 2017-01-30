@@ -74,11 +74,11 @@ namespace EasyAssertions.UnitTests
             [Test]
             public void CorrectlyRegistersAssertion()
             {
-                IEnumerable<string> actual = Enumerable.Empty<string>();
+                IEnumerable<string> actualExpression = Enumerable.Empty<string>();
 
-                actual.ShouldBeEmpty();
+                actualExpression.ShouldBeEmpty();
 
-                Assert.AreEqual(nameof(actual), TestExpression.GetActual());
+                Assert.AreEqual(nameof(actualExpression), TestExpression.GetActual());
             }
         }
 
@@ -111,11 +111,11 @@ namespace EasyAssertions.UnitTests
             [Test]
             public void CorrectlyRegistersAssertion()
             {
-                int[] actual = { 1 };
+                int[] actualExpression = { 1 };
 
-                actual.ShouldNotBeEmpty();
+                actualExpression.ShouldNotBeEmpty();
 
-                Assert.AreEqual(nameof(actual), TestExpression.GetActual());
+                Assert.AreEqual(nameof(actualExpression), TestExpression.GetActual());
             }
         }
 
@@ -159,11 +159,11 @@ namespace EasyAssertions.UnitTests
             [Test]
             public void CorrectlyRegistersAssertion()
             {
-                int[] actual = { 1 };
+                int[] actualExpression = { 1 };
 
-                actual.ShouldBeSingular();
+                actualExpression.ShouldBeSingular();
 
-                Assert.AreEqual(nameof(actual), TestExpression.GetActual());
+                Assert.AreEqual(nameof(actualExpression), TestExpression.GetActual());
             }
         }
 
@@ -204,12 +204,12 @@ namespace EasyAssertions.UnitTests
             [Test]
             public void CorrectlyRegistersAssertion()
             {
-                IEnumerable actual = new[] { 1, 2 };
+                IEnumerable actualExpression = new[] { 1, 2 };
                 Error.LengthMismatch(Arg.Any<int>(), Arg.Any<IEnumerable>()).Returns(ExpectedException);
 
-                AssertThrowsExpectedError(() => actual.ShouldBeASingular<int>());
+                AssertThrowsExpectedError(() => actualExpression.ShouldBeASingular<int>());
 
-                Assert.AreEqual(nameof(actual), TestExpression.GetActual());
+                Assert.AreEqual(nameof(actualExpression), TestExpression.GetActual());
             }
         }
 
@@ -244,11 +244,11 @@ namespace EasyAssertions.UnitTests
             [Test]
             public void CorrectlyRegistersAssertion()
             {
-                IEnumerable actual = new[] { new Equatable(1), new object() };
+                IEnumerable actualExpression = new[] { new Equatable(1), new object() };
 
-                AssertFailsWithTypesNotEqualMessage(typeof(Equatable), typeof(object), msg => actual.ShouldAllBeA<Equatable>(msg));
+                AssertFailsWithTypesNotEqualMessage(typeof(Equatable), typeof(object), msg => actualExpression.ShouldAllBeA<Equatable>(msg));
 
-                Assert.AreEqual($"{nameof(actual)}[1]", TestExpression.GetActual());
+                Assert.AreEqual($"{nameof(actualExpression)}[1]", TestExpression.GetActual());
             }
         }
 
@@ -292,14 +292,14 @@ namespace EasyAssertions.UnitTests
             [Test]
             public void CorrectlyRegistersAssertion()
             {
-                int[] actual = { 1, 2, 3 };
-                int expected = 2;
+                int[] actualExpression = { 1, 2, 3 };
+                int expectedExpression = 2;
                 Error.LengthMismatch(Arg.Any<int>(), Arg.Any<IEnumerable>()).Returns(ExpectedException);
 
-                Assert.Throws<Exception>(() => actual.ShouldBeLength(expected));
+                Assert.Throws<Exception>(() => actualExpression.ShouldBeLength(expectedExpression));
 
-                Assert.AreEqual(nameof(actual), TestExpression.GetActual());
-                Assert.AreEqual(nameof(expected), TestExpression.GetExpected());
+                Assert.AreEqual(nameof(actualExpression), TestExpression.GetActual());
+                Assert.AreEqual(nameof(expectedExpression), TestExpression.GetExpected());
             }
         }
 
@@ -356,14 +356,14 @@ namespace EasyAssertions.UnitTests
             [Test]
             public void CorrectlyRegistersAssertion()
             {
-                int[] expected = { 3, 4 };
-                int[] actual = { 1, 2 };
+                int[] expectedExpression = { 3, 4 };
+                int[] actualExpression = { 1, 2 };
                 Error.DoNotMatch(Arg.Any<IEnumerable<int>>(), Arg.Any<IEnumerable<int>>(), Arg.Any<Func<int, int, bool>>()).Returns(ExpectedException);
 
-                Assert.Throws<Exception>(() => actual.ShouldMatch(expected));
+                Assert.Throws<Exception>(() => actualExpression.ShouldMatch(expectedExpression));
 
-                Assert.AreEqual(nameof(actual), TestExpression.GetActual());
-                Assert.AreEqual(nameof(expected), TestExpression.GetExpected());
+                Assert.AreEqual(nameof(actualExpression), TestExpression.GetActual());
+                Assert.AreEqual(nameof(expectedExpression), TestExpression.GetExpected());
             }
         }
 
@@ -413,15 +413,15 @@ namespace EasyAssertions.UnitTests
             [Test]
             public void CorrectlyRegistersAssertion()
             {
-                int[] actual = { 1, 2, 4 };
-                int[] expected = { 2, 4, 6 };
+                int[] actualExpression = { 1, 2, 4 };
+                int[] expectedExpression = { 2, 4, 6 };
                 Func<int, int, bool> predicate = (a, e) => a == e / 2;
                 Error.DoNotMatch(Arg.Any<IEnumerable<int>>(), Arg.Any<IEnumerable<int>>(), Arg.Any<Func<int, int, bool>>()).Returns(ExpectedException);
 
-                Assert.Throws<Exception>(() => actual.ShouldMatch(expected, predicate));
+                Assert.Throws<Exception>(() => actualExpression.ShouldMatch(expectedExpression, predicate));
 
-                Assert.AreEqual(nameof(actual), TestExpression.GetActual());
-                Assert.AreEqual(nameof(expected), TestExpression.GetExpected());
+                Assert.AreEqual(nameof(actualExpression), TestExpression.GetActual());
+                Assert.AreEqual(nameof(expectedExpression), TestExpression.GetExpected());
             }
         }
 
@@ -472,14 +472,14 @@ namespace EasyAssertions.UnitTests
             [Test]
             public void CorrectlyRegistersAssertion()
             {
-                float[] actual = { 10f, 20f };
-                float[] expected = { 11f, 21f };
+                float[] actualExpression = { 10f, 20f };
+                float[] expectedExpression = { 11f, 21f };
                 Error.DoNotMatch(Arg.Any<IEnumerable<float>>(), Arg.Any<IEnumerable<float>>(), Arg.Any<Func<float, float, bool>>()).Returns(ExpectedException);
 
-                Assert.Throws<Exception>(() => actual.ShouldMatch(expected, 0.9f));
+                Assert.Throws<Exception>(() => actualExpression.ShouldMatch(expectedExpression, 0.9f));
 
-                Assert.AreEqual(nameof(actual), TestExpression.GetActual());
-                Assert.AreEqual(nameof(expected), TestExpression.GetExpected());
+                Assert.AreEqual(nameof(actualExpression), TestExpression.GetActual());
+                Assert.AreEqual(nameof(expectedExpression), TestExpression.GetExpected());
             }
         }
 
@@ -530,14 +530,14 @@ namespace EasyAssertions.UnitTests
             [Test]
             public void CorrectlyRegistersAssertion()
             {
-                double[] actual = { 10d, 20d };
-                double[] expected = { 11d, 21d };
+                double[] actualExpression = { 10d, 20d };
+                double[] expectedExpression = { 11d, 21d };
                 Error.DoNotMatch(Arg.Any<IEnumerable<double>>(), Arg.Any<IEnumerable<double>>(), Arg.Any<Func<double, double, bool>>()).Returns(ExpectedException);
 
-                Assert.Throws<Exception>(() => actual.ShouldMatch(expected, 0.9d));
+                Assert.Throws<Exception>(() => actualExpression.ShouldMatch(expectedExpression, 0.9d));
 
-                Assert.AreEqual(nameof(actual), TestExpression.GetActual());
-                Assert.AreEqual(nameof(expected), TestExpression.GetExpected());
+                Assert.AreEqual(nameof(actualExpression), TestExpression.GetActual());
+                Assert.AreEqual(nameof(expectedExpression), TestExpression.GetExpected());
             }
         }
 
@@ -594,14 +594,14 @@ namespace EasyAssertions.UnitTests
             [Test]
             public void CorrectlyRegistersAssertion()
             {
-                IEnumerable<int> actual = new[] { 1, 2, 3 };
-                IEnumerable<int> notExpected = actual;
+                IEnumerable<int> actualExpression = new[] { 1, 2, 3 };
+                IEnumerable<int> expectedExpression = actualExpression;
                 Error.Matches(Arg.Any<IEnumerable>(), Arg.Any<IEnumerable>()).Returns(ExpectedException);
 
-                AssertThrowsExpectedError(() => actual.ShouldNotMatch(notExpected));
+                AssertThrowsExpectedError(() => actualExpression.ShouldNotMatch(expectedExpression));
 
-                Assert.AreEqual(nameof(actual), TestExpression.GetActual());
-                Assert.AreEqual(nameof(notExpected), TestExpression.GetExpected());
+                Assert.AreEqual(nameof(actualExpression), TestExpression.GetActual());
+                Assert.AreEqual(nameof(expectedExpression), TestExpression.GetExpected());
             }
         }
 
@@ -658,14 +658,14 @@ namespace EasyAssertions.UnitTests
             [Test]
             public void CorrectlyRegistersAssertion()
             {
-                IEnumerable<float> actual = new[] { 1f };
-                IEnumerable<float> notExpected = actual;
+                IEnumerable<float> actualExpression = new[] { 1f };
+                IEnumerable<float> expectedExpression = actualExpression;
                 Error.Matches(Arg.Any<IEnumerable>(), Arg.Any<IEnumerable>()).Returns(ExpectedException);
 
-                AssertThrowsExpectedError(() => actual.ShouldNotMatch(notExpected, 1));
+                AssertThrowsExpectedError(() => actualExpression.ShouldNotMatch(expectedExpression, 1));
 
-                Assert.AreEqual(nameof(actual), TestExpression.GetActual());
-                Assert.AreEqual(nameof(notExpected), TestExpression.GetExpected());
+                Assert.AreEqual(nameof(actualExpression), TestExpression.GetActual());
+                Assert.AreEqual(nameof(expectedExpression), TestExpression.GetExpected());
             }
         }
 
@@ -722,14 +722,14 @@ namespace EasyAssertions.UnitTests
             [Test]
             public void CorrectlyRegistersAssertion()
             {
-                IEnumerable<double> actual = new[] { 1d };
-                IEnumerable<double> notExpected = actual;
+                IEnumerable<double> actualExpression = new[] { 1d };
+                IEnumerable<double> expectedExpression = actualExpression;
                 Error.Matches(Arg.Any<IEnumerable>(), Arg.Any<IEnumerable>()).Returns(ExpectedException);
 
-                AssertThrowsExpectedError(() => actual.ShouldNotMatch(notExpected, 1));
+                AssertThrowsExpectedError(() => actualExpression.ShouldNotMatch(expectedExpression, 1));
 
-                Assert.AreEqual(nameof(actual), TestExpression.GetActual());
-                Assert.AreEqual(nameof(notExpected), TestExpression.GetExpected());
+                Assert.AreEqual(nameof(actualExpression), TestExpression.GetActual());
+                Assert.AreEqual(nameof(expectedExpression), TestExpression.GetExpected());
             }
         }
 
@@ -786,14 +786,14 @@ namespace EasyAssertions.UnitTests
             [Test]
             public void CorrectlyRegistersAssertion()
             {
-                IEnumerable<int> actual = new[] { 1, 2, 3 };
-                IEnumerable<int> notExpected = actual;
+                IEnumerable<int> actualExpression = new[] { 1, 2, 3 };
+                IEnumerable<int> expectedExpression = actualExpression;
                 Error.Matches(Arg.Any<IEnumerable>(), Arg.Any<IEnumerable>()).Returns(ExpectedException);
 
-                AssertThrowsExpectedError(() => actual.ShouldNotMatch(notExpected, (a, e) => a == e));
+                AssertThrowsExpectedError(() => actualExpression.ShouldNotMatch(expectedExpression, (a, e) => a == e));
 
-                Assert.AreEqual(nameof(actual), TestExpression.GetActual());
-                Assert.AreEqual(nameof(notExpected), TestExpression.GetExpected());
+                Assert.AreEqual(nameof(actualExpression), TestExpression.GetActual());
+                Assert.AreEqual(nameof(expectedExpression), TestExpression.GetExpected());
             }
         }
 
@@ -846,14 +846,14 @@ namespace EasyAssertions.UnitTests
             [Test]
             public void CorrectlyRegistersAssertion()
             {
-                int[] actual = { 1 };
-                int[] expected = { 2 };
+                int[] actualExpression = { 1 };
+                int[] expectedExpression = { 2 };
                 Error.DoesNotStartWith(Arg.Any<IEnumerable>(), Arg.Any<IEnumerable>(), Arg.Any<Func<object, object, bool>>()).Returns(ExpectedException);
 
-                Assert.Throws<Exception>(() => actual.ShouldStartWith(expected));
+                Assert.Throws<Exception>(() => actualExpression.ShouldStartWith(expectedExpression));
 
-                Assert.AreEqual(nameof(actual), TestExpression.GetActual());
-                Assert.AreEqual(nameof(expected), TestExpression.GetExpected());
+                Assert.AreEqual(nameof(actualExpression), TestExpression.GetActual());
+                Assert.AreEqual(nameof(expectedExpression), TestExpression.GetExpected());
             }
         }
 
@@ -906,14 +906,14 @@ namespace EasyAssertions.UnitTests
             [Test]
             public void CorrectlyRegistersAssertion()
             {
-                int[] actual = { 1 };
-                int[] expected = { 2 };
+                int[] actualExpression = { 1 };
+                int[] expectedExpression = { 2 };
                 Error.DoesNotEndWith(Arg.Any<IEnumerable>(), Arg.Any<IEnumerable>(), Arg.Any<Func<object, object, bool>>()).Returns(ExpectedException);
 
-                Assert.Throws<Exception>(() => actual.ShouldEndWith(expected));
+                Assert.Throws<Exception>(() => actualExpression.ShouldEndWith(expectedExpression));
 
-                Assert.AreEqual(nameof(actual), TestExpression.GetActual());
-                Assert.AreEqual(nameof(expected), TestExpression.GetExpected());
+                Assert.AreEqual(nameof(actualExpression), TestExpression.GetActual());
+                Assert.AreEqual(nameof(expectedExpression), TestExpression.GetExpected());
             }
         }
 
@@ -958,14 +958,14 @@ namespace EasyAssertions.UnitTests
             [Test]
             public void CorrectlyRegistersAssertion()
             {
-                int[] actual = { 1, 2 };
-                const int expected = 3;
+                int[] actualExpression = { 1, 2 };
+                const int expectedExpression = 3;
                 Error.DoesNotContain(Arg.Any<object>(), Arg.Any<IEnumerable>()).Returns(ExpectedException);
 
-                Assert.Throws<Exception>(() => actual.ShouldContain(expected));
+                Assert.Throws<Exception>(() => actualExpression.ShouldContain(expectedExpression));
 
-                Assert.AreEqual(nameof(actual), TestExpression.GetActual());
-                Assert.AreEqual(nameof(expected), TestExpression.GetExpected());
+                Assert.AreEqual(nameof(actualExpression), TestExpression.GetActual());
+                Assert.AreEqual(nameof(expectedExpression), TestExpression.GetExpected());
             }
         }
 
@@ -1009,14 +1009,14 @@ namespace EasyAssertions.UnitTests
             [Test]
             public void CorrectlyRegistersAssertion()
             {
-                int[] actual = { 1 };
-                int notExpected = 1;
+                int[] actualExpression = { 1 };
+                int expectedExpression = 1;
                 Error.Contains(Arg.Any<object>(), Arg.Any<IEnumerable>()).Returns(ExpectedException);
 
-                Assert.Throws<Exception>(() => actual.ShouldNotContain(notExpected));
+                Assert.Throws<Exception>(() => actualExpression.ShouldNotContain(expectedExpression));
 
-                Assert.AreEqual(nameof(actual), TestExpression.GetActual());
-                Assert.AreEqual(nameof(notExpected), TestExpression.GetExpected());
+                Assert.AreEqual(nameof(actualExpression), TestExpression.GetActual());
+                Assert.AreEqual(nameof(expectedExpression), TestExpression.GetExpected());
             }
         }
 
@@ -1063,14 +1063,14 @@ namespace EasyAssertions.UnitTests
             [Test]
             public void CorrectlyRegistersAssertion()
             {
-                int[] actual = { 1, 2, 3 };
-                int[] expected = { 1, 4 };
+                int[] actualExpression = { 1, 2, 3 };
+                int[] expectedExpression = { 1, 4 };
                 Error.DoesNotContainItems(Arg.Any<IEnumerable>(), Arg.Any<IEnumerable>()).Returns(ExpectedException);
 
-                Assert.Throws<Exception>(() => actual.ShouldContainItems(expected));
+                Assert.Throws<Exception>(() => actualExpression.ShouldContainItems(expectedExpression));
 
-                Assert.AreEqual(nameof(actual), TestExpression.GetActual());
-                Assert.AreEqual(nameof(expected), TestExpression.GetExpected());
+                Assert.AreEqual(nameof(actualExpression), TestExpression.GetActual());
+                Assert.AreEqual(nameof(expectedExpression), TestExpression.GetExpected());
             }
         }
 
@@ -1123,14 +1123,14 @@ namespace EasyAssertions.UnitTests
             [Test]
             public void CorrectlyRegistersAssertion()
             {
-                int[] actual = { 1, 2 };
-                int[] expected = { 1 };
+                int[] actualExpression = { 1, 2 };
+                int[] expectedExpression = { 1 };
                 Error.ContainsExtraItem(Arg.Any<IEnumerable>(), Arg.Any<IEnumerable>()).Returns(ExpectedException);
 
-                Assert.Throws<Exception>(() => actual.ItemsShouldBeIn(expected));
+                Assert.Throws<Exception>(() => actualExpression.ItemsShouldBeIn(expectedExpression));
 
-                Assert.AreEqual(nameof(actual), TestExpression.GetActual());
-                Assert.AreEqual(nameof(expected), TestExpression.GetExpected());
+                Assert.AreEqual(nameof(actualExpression), TestExpression.GetActual());
+                Assert.AreEqual(nameof(expectedExpression), TestExpression.GetExpected());
             }
         }
 
@@ -1177,14 +1177,14 @@ namespace EasyAssertions.UnitTests
             [Test]
             public void CorrectlyRegistersAssertion()
             {
-                int[] actual = { 1, 2 };
-                int[] expectedToNotContain = { 3, 2 };
+                int[] actualExpression = { 1, 2 };
+                int[] expectedExpression = { 3, 2 };
                 Error.Contains(Arg.Any<IEnumerable>(), Arg.Any<IEnumerable>()).Returns(ExpectedException);
 
-                Assert.Throws<Exception>(() => actual.ShouldNotContainItems(expectedToNotContain));
+                Assert.Throws<Exception>(() => actualExpression.ShouldNotContainItems(expectedExpression));
 
-                Assert.AreEqual(nameof(actual), TestExpression.GetActual());
-                Assert.AreEqual(nameof(expectedToNotContain), TestExpression.GetExpected());
+                Assert.AreEqual(nameof(actualExpression), TestExpression.GetActual());
+                Assert.AreEqual(nameof(expectedExpression), TestExpression.GetExpected());
             }
         }
 
@@ -1263,14 +1263,14 @@ namespace EasyAssertions.UnitTests
             [Test]
             public void CorrectlyRegistersAssertion()
             {
-                int[] actual = { 1, 2 };
-                int[] expected = { 1 };
+                int[] actualExpression = { 1, 2 };
+                int[] expectedExpression = { 1 };
                 Error.DoesNotOnlyContain(Arg.Any<IEnumerable>(), Arg.Any<IEnumerable>()).Returns(ExpectedException);
 
-                Assert.Throws<Exception>(() => actual.ShouldOnlyContain(expected));
+                Assert.Throws<Exception>(() => actualExpression.ShouldOnlyContain(expectedExpression));
 
-                Assert.AreEqual(nameof(actual), TestExpression.GetActual());
-                Assert.AreEqual(nameof(expected), TestExpression.GetExpected());
+                Assert.AreEqual(nameof(actualExpression), TestExpression.GetActual());
+                Assert.AreEqual(nameof(expectedExpression), TestExpression.GetExpected());
             }
         }
 
@@ -1323,14 +1323,14 @@ namespace EasyAssertions.UnitTests
             [Test]
             public void CorrectlyRegistersAssertion()
             {
-                int[] actual = { 1, 2 };
-                int[] expected = { 2, 1, 3 };
+                int[] actualExpression = { 1, 2 };
+                int[] expectedExpression = { 2, 1, 3 };
                 Error.OnlyContains(Arg.Any<IEnumerable>(), Arg.Any<IEnumerable>()).Returns(ExpectedException);
 
-                Assert.Throws<Exception>(() => actual.ShouldNotOnlyContain(expected));
+                Assert.Throws<Exception>(() => actualExpression.ShouldNotOnlyContain(expectedExpression));
 
-                Assert.AreEqual(nameof(actual), TestExpression.GetActual());
-                Assert.AreEqual(nameof(expected), TestExpression.GetExpected());
+                Assert.AreEqual(nameof(actualExpression), TestExpression.GetActual());
+                Assert.AreEqual(nameof(expectedExpression), TestExpression.GetExpected());
             }
         }
 
@@ -1375,11 +1375,11 @@ namespace EasyAssertions.UnitTests
             [Test]
             public void CorrectlyRegistersAssertion()
             {
-                int[] actual = { 1 };
+                int[] actualExpression = { 1 };
 
-                actual.ShouldBeDistinct();
+                actualExpression.ShouldBeDistinct();
 
-                Assert.AreEqual(nameof(actual), TestExpression.GetActual());
+                Assert.AreEqual(nameof(actualExpression), TestExpression.GetActual());
             }
         }
 
@@ -1452,14 +1452,14 @@ namespace EasyAssertions.UnitTests
             [Test]
             public void CorrectlyRegistersAssertion()
             {
-                int[] expected = { 3, 4 };
-                int[] actual = { 1, 2 };
+                int[] expectedExpression = { 3, 4 };
+                int[] actualExpression = { 1, 2 };
                 Error.DoNotMatch(Arg.Any<IEnumerable<int>>(), Arg.Any<IEnumerable<int>>(), Arg.Any<Func<int, int, bool>>()).Returns(ExpectedException);
 
-                Assert.Throws<Exception>(() => actual.ShouldMatch(expected));
+                Assert.Throws<Exception>(() => actualExpression.ShouldMatch(expectedExpression));
 
-                Assert.AreEqual(nameof(actual), TestExpression.GetActual());
-                Assert.AreEqual(nameof(expected), TestExpression.GetExpected());
+                Assert.AreEqual(nameof(actualExpression), TestExpression.GetActual());
+                Assert.AreEqual(nameof(expectedExpression), TestExpression.GetExpected());
             }
         }
 
@@ -1492,14 +1492,14 @@ namespace EasyAssertions.UnitTests
             [Test]
             public void CorrectlyRegistersAssertion()
             {
-                TestKeyedCollection actual = new TestKeyedCollection();
-                char expected = 'a';
+                TestKeyedCollection actualExpression = new TestKeyedCollection();
+                char expectedExpression = 'a';
                 Error.DoesNotContain(Arg.Any<object>(), Arg.Any<IEnumerable>(), Arg.Any<string>()).Returns(ExpectedException);
 
-                Assert.Throws<Exception>(() => actual.ShouldContainKey(expected));
+                Assert.Throws<Exception>(() => actualExpression.ShouldContainKey(expectedExpression));
 
-                Assert.AreEqual(nameof(actual), TestExpression.GetActual());
-                Assert.AreEqual(nameof(expected), TestExpression.GetExpected());
+                Assert.AreEqual(nameof(actualExpression), TestExpression.GetActual());
+                Assert.AreEqual(nameof(expectedExpression), TestExpression.GetExpected());
             }
         }
 
@@ -1532,14 +1532,14 @@ namespace EasyAssertions.UnitTests
             [Test]
             public void CorrectlyRegistersAssertion()
             {
-                TestKeyedCollection actual = new TestKeyedCollection { "foo" };
-                char notExpected = 'f';
+                TestKeyedCollection actualExpression = new TestKeyedCollection { "foo" };
+                char expectedExpression = 'f';
                 Error.Contains(Arg.Any<object>(), Arg.Any<IEnumerable>(), Arg.Any<string>()).Returns(ExpectedException);
 
-                Assert.Throws<Exception>(() => actual.ShouldNotContainKey(notExpected));
+                Assert.Throws<Exception>(() => actualExpression.ShouldNotContainKey(expectedExpression));
 
-                Assert.AreEqual(nameof(actual), TestExpression.GetActual());
-                Assert.AreEqual(nameof(notExpected), TestExpression.GetExpected());
+                Assert.AreEqual(nameof(actualExpression), TestExpression.GetActual());
+                Assert.AreEqual(nameof(expectedExpression), TestExpression.GetExpected());
             }
         }
 
@@ -1620,14 +1620,14 @@ namespace EasyAssertions.UnitTests
             [Test]
             public void CorrectlyRegistersAssertion()
             {
-                int[] actual = { 1 };
-                int expected = 2;
+                int[] actualExpression = { 1 };
+                int expectedExpression = 2;
                 Error.NotEqual(Arg.Any<object>(), Arg.Any<object>(), Arg.Any<string>()).Returns(ExpectedException);
 
-                Assert.Throws<Exception>(() => actual.ItemsSatisfy(item => item.ShouldBe(expected)));
+                Assert.Throws<Exception>(() => actualExpression.ItemsSatisfy(item => item.ShouldBe(expectedExpression)));
 
-                Assert.AreEqual($"{nameof(actual)}[0]", TestExpression.GetActual());
-                Assert.AreEqual(nameof(expected), TestExpression.GetExpected());
+                Assert.AreEqual($"{nameof(actualExpression)}[0]", TestExpression.GetActual());
+                Assert.AreEqual(nameof(expectedExpression), TestExpression.GetExpected());
             }
         }
 
@@ -1672,14 +1672,14 @@ namespace EasyAssertions.UnitTests
             [Test]
             public void CorrectlyRegistersAssertion()
             {
-                int[] actual = { 1 };
-                int expected = 2;
+                int[] actualExpression = { 1 };
+                int expectedExpression = 2;
                 Error.NotEqual(Arg.Any<object>(), Arg.Any<object>(), Arg.Any<string>()).Returns(ExpectedException);
 
-                Assert.Throws<Exception>(() => actual.AllItemsSatisfy(item => item.ShouldBe(expected)));
+                Assert.Throws<Exception>(() => actualExpression.AllItemsSatisfy(item => item.ShouldBe(expectedExpression)));
 
-                Assert.AreEqual($"{nameof(actual)}[0]", TestExpression.GetActual());
-                Assert.AreEqual(nameof(expected), TestExpression.GetExpected());
+                Assert.AreEqual($"{nameof(actualExpression)}[0]", TestExpression.GetActual());
+                Assert.AreEqual(nameof(expectedExpression), TestExpression.GetExpected());
             }
         }
 

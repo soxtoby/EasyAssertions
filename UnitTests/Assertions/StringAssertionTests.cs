@@ -36,11 +36,11 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ShouldBeEmpty_CorrectlyRegistersAssertion()
         {
-            string actual = string.Empty;
+            string actualExpression = string.Empty;
 
-            actual.ShouldBeEmpty();
+            actualExpression.ShouldBeEmpty();
 
-            Assert.AreEqual(nameof(actual), TestExpression.GetActual());
+            Assert.AreEqual(nameof(actualExpression), TestExpression.GetActual());
         }
 
         [Test]
@@ -75,14 +75,14 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ShouldContain_CorrectlyRegistersAssertion()
         {
-            const string actual = "foo";
-            const string expected = "bar";
+            const string actualExpression = "foo";
+            const string expectedExpression = "bar";
             Error.DoesNotContain(Arg.Any<string>(), Arg.Any<string>()).Returns(ExpectedException);
 
-            AssertThrowsExpectedError(() => actual.ShouldContain(expected));
+            AssertThrowsExpectedError(() => actualExpression.ShouldContain(expectedExpression));
 
-            Assert.AreEqual(nameof(actual), TestExpression.GetActual());
-            Assert.AreEqual(nameof(expected), TestExpression.GetExpected());
+            Assert.AreEqual(nameof(actualExpression), TestExpression.GetActual());
+            Assert.AreEqual(nameof(expectedExpression), TestExpression.GetExpected());
         }
 
         [Test]
@@ -118,14 +118,14 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ShouldNotContain_CorrectlyRegistersAssertion()
         {
-            const string actual = "foo";
-            const string expectedToNotContain = "foo";
+            const string actualExpression = "foo";
+            const string expectedExpression = "foo";
             Error.Contains(Arg.Any<string>(), Arg.Any<string>()).Returns(ExpectedException);
 
-            AssertThrowsExpectedError(() => actual.ShouldNotContain(expectedToNotContain));
+            AssertThrowsExpectedError(() => actualExpression.ShouldNotContain(expectedExpression));
 
-            Assert.AreEqual(nameof(actual), TestExpression.GetActual());
-            Assert.AreEqual(nameof(expectedToNotContain), TestExpression.GetExpected());
+            Assert.AreEqual(nameof(actualExpression), TestExpression.GetActual());
+            Assert.AreEqual(nameof(expectedExpression), TestExpression.GetExpected());
         }
 
         [Test]
@@ -165,14 +165,14 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ShouldStartWith_CorrectlyRegistersAssertion()
         {
-            const string actual = "foo";
-            const string expected = "bar";
+            const string actualExpression = "foo";
+            const string expectedExpression = "bar";
             Error.DoesNotStartWith(Arg.Any<string>(), Arg.Any<string>()).Returns(ExpectedException);
 
-            AssertThrowsExpectedError(() => actual.ShouldStartWith(expected));
+            AssertThrowsExpectedError(() => actualExpression.ShouldStartWith(expectedExpression));
 
-            Assert.AreEqual(nameof(actual), TestExpression.GetActual());
-            Assert.AreEqual(nameof(expected), TestExpression.GetExpected());
+            Assert.AreEqual(nameof(actualExpression), TestExpression.GetActual());
+            Assert.AreEqual(nameof(expectedExpression), TestExpression.GetExpected());
         }
 
         [Test]
@@ -213,14 +213,14 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ShouldEndWith_CorrectlyRegistersAssertion()
         {
-            const string actual = "foo";
-            const string expected = "bar";
+            const string actualExpression = "foo";
+            const string expectedExpression = "bar";
             Error.DoesNotEndWith(Arg.Any<string>(), Arg.Any<string>()).Returns(ExpectedException);
 
-            AssertThrowsExpectedError(() => actual.ShouldEndWith(expected));
+            AssertThrowsExpectedError(() => actualExpression.ShouldEndWith(expectedExpression));
 
-            Assert.AreEqual(nameof(actual), TestExpression.GetActual());
-            Assert.AreEqual(nameof(expected), TestExpression.GetExpected());
+            Assert.AreEqual(nameof(actualExpression), TestExpression.GetActual());
+            Assert.AreEqual(nameof(expectedExpression), TestExpression.GetExpected());
         }
 
         [Test]
@@ -272,14 +272,14 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ShouldBe_CustomCaseSensitivity_CorrectlyRegistersAssertion()
         {
-            const string actual = "foo";
-            const string expected = "bar";
+            const string actualExpression = "foo";
+            const string expectedExpression = "bar";
             Error.NotEqual(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<Case>()).Returns(ExpectedException);
 
-            AssertThrowsExpectedError(() => actual.ShouldBe(expected, Case.Insensitive));
+            AssertThrowsExpectedError(() => actualExpression.ShouldBe(expectedExpression, Case.Insensitive));
 
-            Assert.AreEqual(nameof(actual), TestExpression.GetActual());
-            Assert.AreEqual(nameof(expected), TestExpression.GetExpected());
+            Assert.AreEqual(nameof(actualExpression), TestExpression.GetActual());
+            Assert.AreEqual(nameof(expectedExpression), TestExpression.GetExpected());
         }
 
         [Test]
@@ -315,14 +315,14 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ShouldMatchPattern_CorrectlyRegistersAssertion()
         {
-            const string actual = "foo";
-            const string expected = "bar";
+            const string actualExpression = "foo";
+            const string expectedExpression = "bar";
             Error.DoesNotMatch(Arg.Any<Regex>(), Arg.Any<string>()).Returns(ExpectedException);
 
-            AssertThrowsExpectedError(() => actual.ShouldMatch(expected));
+            AssertThrowsExpectedError(() => actualExpression.ShouldMatch(expectedExpression));
 
-            Assert.AreEqual(nameof(actual), TestExpression.GetActual());
-            Assert.AreEqual(nameof(expected), TestExpression.GetExpected());
+            Assert.AreEqual(nameof(actualExpression), TestExpression.GetActual());
+            Assert.AreEqual(nameof(expectedExpression), TestExpression.GetExpected());
         }
 
         [Test]
@@ -350,14 +350,14 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ShouldMatchPattern_WithRegexOptions_CorrectlyRegistersAssertion()
         {
-            const string actual = "foo";
-            const string expected = "bar";
+            const string actualExpression = "foo";
+            const string expectedExpression = "bar";
             Error.DoesNotMatch(Arg.Any<Regex>(), Arg.Any<string>()).Returns(ExpectedException);
 
-            AssertThrowsExpectedError(() => actual.ShouldMatch(expected, RegexOptions.None));
+            AssertThrowsExpectedError(() => actualExpression.ShouldMatch(expectedExpression, RegexOptions.None));
 
-            Assert.AreEqual(nameof(actual), TestExpression.GetActual());
-            Assert.AreEqual(nameof(expected), TestExpression.GetExpected());
+            Assert.AreEqual(nameof(actualExpression), TestExpression.GetActual());
+            Assert.AreEqual(nameof(expectedExpression), TestExpression.GetExpected());
         }
 
         [Test]
@@ -386,14 +386,14 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ShouldMatchRegex_CorrectlyRegistersAssertion()
         {
-            const string actual = "foo";
-            Regex expected = new Regex("bar");
+            const string actualExpression = "foo";
+            Regex expectedExpression = new Regex("bar");
             Error.DoesNotMatch(Arg.Any<Regex>(), Arg.Any<string>()).Returns(ExpectedException);
 
-            AssertThrowsExpectedError(() => actual.ShouldMatch(expected));
+            AssertThrowsExpectedError(() => actualExpression.ShouldMatch(expectedExpression));
 
-            Assert.AreEqual(nameof(actual), TestExpression.GetActual());
-            Assert.AreEqual(nameof(expected), TestExpression.GetExpected());
+            Assert.AreEqual(nameof(actualExpression), TestExpression.GetActual());
+            Assert.AreEqual(nameof(expectedExpression), TestExpression.GetExpected());
         }
 
         [Test]
@@ -429,14 +429,14 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ShouldNotMatchPattern_CorrectlyRegistersAssertion()
         {
-            const string actual = "foo";
-            const string notExpected = "foo";
+            const string actualExpression = "foo";
+            const string expectedExpression = "foo";
             Error.Matches(Arg.Any<Regex>(), Arg.Any<string>()).Returns(ExpectedException);
 
-            AssertThrowsExpectedError(() => actual.ShouldNotMatch(notExpected));
+            AssertThrowsExpectedError(() => actualExpression.ShouldNotMatch(expectedExpression));
 
-            Assert.AreEqual(nameof(actual), TestExpression.GetActual());
-            Assert.AreEqual(nameof(notExpected), TestExpression.GetExpected());
+            Assert.AreEqual(nameof(actualExpression), TestExpression.GetActual());
+            Assert.AreEqual(nameof(expectedExpression), TestExpression.GetExpected());
         }
 
         [Test]
@@ -464,14 +464,14 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ShouldNotMatchPattern_WithRegexOptions_CorrectlyRegistersAssertion()
         {
-            const string actual = "foo";
-            const string notExpected = "foo";
+            const string actualExpression = "foo";
+            const string expectedExpression = "foo";
             Error.Matches(Arg.Any<Regex>(), Arg.Any<string>()).Returns(ExpectedException);
 
-            AssertThrowsExpectedError(() => actual.ShouldNotMatch(notExpected, RegexOptions.None));
+            AssertThrowsExpectedError(() => actualExpression.ShouldNotMatch(expectedExpression, RegexOptions.None));
 
-            Assert.AreEqual(nameof(actual), TestExpression.GetActual());
-            Assert.AreEqual(nameof(notExpected), TestExpression.GetExpected());
+            Assert.AreEqual(nameof(actualExpression), TestExpression.GetActual());
+            Assert.AreEqual(nameof(expectedExpression), TestExpression.GetExpected());
         }
 
         [Test]
@@ -500,14 +500,14 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ShouldNotMatchRegex_CorrectlyRegistersAssertion()
         {
-            const string actual = "foo";
-            Regex notExpected = new Regex(".");
+            const string actualExpression = "foo";
+            Regex expectedExpression = new Regex(".");
             Error.Matches(Arg.Any<Regex>(), Arg.Any<string>()).Returns(ExpectedException);
 
-            AssertThrowsExpectedError(() => actual.ShouldNotMatch(notExpected));
+            AssertThrowsExpectedError(() => actualExpression.ShouldNotMatch(expectedExpression));
 
-            Assert.AreEqual(nameof(actual), TestExpression.GetActual());
-            Assert.AreEqual(nameof(notExpected), TestExpression.GetExpected());
+            Assert.AreEqual(nameof(actualExpression), TestExpression.GetActual());
+            Assert.AreEqual(nameof(expectedExpression), TestExpression.GetExpected());
         }
     }
 }

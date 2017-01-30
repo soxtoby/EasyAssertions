@@ -38,14 +38,14 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ShouldBe_CorrectlyRegistersAssertion()
         {
-            Equatable actual = new Equatable(1);
-            Equatable expected = new Equatable(2);
+            Equatable actualExpression = new Equatable(1);
+            Equatable expectedExpression = new Equatable(2);
             Error.NotEqual(Arg.Any<object>(), Arg.Any<object>()).Returns(ExpectedException);
 
-            AssertThrowsExpectedError(() => actual.ShouldBe(expected));
+            AssertThrowsExpectedError(() => actualExpression.ShouldBe(expectedExpression));
 
-            Assert.AreEqual(nameof(actual), TestExpression.GetActual());
-            Assert.AreEqual(nameof(expected), TestExpression.GetExpected());
+            Assert.AreEqual(nameof(actualExpression), TestExpression.GetActual());
+            Assert.AreEqual(nameof(expectedExpression), TestExpression.GetExpected());
         }
 
         [Test]
@@ -81,14 +81,14 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void NullableShouldBe_CorrectlyRegistersAssertion()
         {
-            int? actual = 1;
-            const int expected = 2;
+            int? actualExpression = 1;
+            const int expectedExpression = 2;
             Error.NotEqual(Arg.Any<object>(), Arg.Any<object>()).Returns(ExpectedException);
 
-            Assert.Throws<Exception>(() => actual.ShouldBe(expected));
+            Assert.Throws<Exception>(() => actualExpression.ShouldBe(expectedExpression));
 
-            Assert.AreEqual(nameof(actual), TestExpression.GetActual());
-            Assert.AreEqual(nameof(expected), TestExpression.GetExpected());
+            Assert.AreEqual(nameof(actualExpression), TestExpression.GetActual());
+            Assert.AreEqual(nameof(expectedExpression), TestExpression.GetExpected());
         }
 
         [Test]
@@ -114,14 +114,14 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ShouldNotBe_CorrectlyRegistersAssertion()
         {
-            Equatable actual = new Equatable(1);
-            Equatable notExpected = new Equatable(1);
+            Equatable actualExpression = new Equatable(1);
+            Equatable expectedExpression = new Equatable(1);
             Error.AreEqual(Arg.Any<object>(), Arg.Any<object>()).Returns(ExpectedException);
 
-            AssertThrowsExpectedError(() => actual.ShouldNotBe(notExpected));
+            AssertThrowsExpectedError(() => actualExpression.ShouldNotBe(expectedExpression));
 
-            Assert.AreEqual(nameof(actual), TestExpression.GetActual());
-            Assert.AreEqual(nameof(notExpected), TestExpression.GetExpected());
+            Assert.AreEqual(nameof(actualExpression), TestExpression.GetActual());
+            Assert.AreEqual(nameof(expectedExpression), TestExpression.GetExpected());
         }
 
         [Test]
@@ -142,11 +142,11 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ShouldBeNull_CorrectlyRegistersAssertion()
         {
-            object actual = null;
+            object actualExpression = null;
 
-            actual.ShouldBeNull();
+            actualExpression.ShouldBeNull();
 
-            Assert.AreEqual(nameof(actual), TestExpression.GetActual());
+            Assert.AreEqual(nameof(actualExpression), TestExpression.GetActual());
         }
 
         [Test]
@@ -170,11 +170,11 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ShouldNotBeNull_CorrectlyRegistersAssertion()
         {
-            object actual = new object();
+            object actualExpression = new object();
 
-            actual.ShouldNotBeNull();
+            actualExpression.ShouldNotBeNull();
 
-            Assert.AreEqual(nameof(actual), TestExpression.GetActual());
+            Assert.AreEqual(nameof(actualExpression), TestExpression.GetActual());
         }
 
         [Test]
@@ -199,14 +199,14 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ShouldReferTo_CorrectlyRegistersAssertion()
         {
-            object actual = new object();
-            object expected = new object();
+            object actualExpression = new object();
+            object expectedExpression = new object();
             Error.NotSame(Arg.Any<object>(), Arg.Any<object>()).Returns(ExpectedException);
 
-            AssertThrowsExpectedError(() => actual.ShouldReferTo(expected));
+            AssertThrowsExpectedError(() => actualExpression.ShouldReferTo(expectedExpression));
 
-            Assert.AreEqual(nameof(actual), TestExpression.GetActual());
-            Assert.AreEqual(nameof(expected), TestExpression.GetExpected());
+            Assert.AreEqual(nameof(actualExpression), TestExpression.GetActual());
+            Assert.AreEqual(nameof(expectedExpression), TestExpression.GetExpected());
         }
 
         [Test]
@@ -231,14 +231,14 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ShouldNotReferTo_CorrectlyRegistersAssertion()
         {
-            object actual = new object();
-            object notExpected = actual;
+            object actualExpression = new object();
+            object expectedExpression = actualExpression;
             Error.AreSame(Arg.Any<object>(), Arg.Any<string>()).Returns(ExpectedException);
 
-            AssertThrowsExpectedError(() => actual.ShouldNotReferTo(notExpected));
+            AssertThrowsExpectedError(() => actualExpression.ShouldNotReferTo(expectedExpression));
 
-            Assert.AreEqual(nameof(actual), TestExpression.GetActual());
-            Assert.AreEqual(nameof(notExpected), TestExpression.GetExpected());
+            Assert.AreEqual(nameof(actualExpression), TestExpression.GetActual());
+            Assert.AreEqual(nameof(expectedExpression), TestExpression.GetExpected());
         }
 
         [Test]
@@ -262,11 +262,11 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ShouldBeA_CorrectlyRegistersAssertion()
         {
-            object actual = new SubEquatable(1);
+            object actualExpression = new SubEquatable(1);
 
-            actual.ShouldBeA<Equatable>();
+            actualExpression.ShouldBeA<Equatable>();
 
-            Assert.AreEqual(nameof(actual), TestExpression.GetActual());
+            Assert.AreEqual(nameof(actualExpression), TestExpression.GetActual());
         }
     }
 }

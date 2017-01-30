@@ -34,12 +34,12 @@ namespace EasyAssertions
                 return string.Empty;
 
             // The last group will be _inside_ the component that has the expected parameter
-            AssertionComponentGroup assertionGroupEntryPoint = assertionGroupChain.SkipLast(1).Last();
+            IEnumerable<AssertionComponentGroup> groupsUpToAssertion = assertionGroupChain.SkipLast(1);
 
             // In case the expected expression references the actual value, get the actual expression from outside the component
             string actualExpression = GetActualExpression(assertionGroupChain.SkipLast(2));
 
-            return NormalizeIndentation(assertionGroupEntryPoint.GetExpectedExpression(actualExpression));
+            return NormalizeIndentation(groupsUpToAssertion.Aggregate(string.Empty, (expression, group) => group.GetExpectedExpression(actualExpression, expression)));
         }
 
         private static string NormalizeIndentation(string input)
@@ -84,8 +84,8 @@ namespace EasyAssertions
 
         private void EnterNestedAssertion(MethodBase innerAssertionMethod, int assertionFrameIndex, StackAnalyser analyser)
         {
-            AddGroup(innerAssertionMethod, assertionFrameIndex, (callAddress, expressionAlias) =>
-                new NestedAssertionGroup(callAddress, expressionAlias), analyser);
+            AddGroup(innerAssertionMethod, assertionFrameIndex, (callAddress, actualAlias, expectedAlias) =>
+                new NestedAssertionGroup(callAddress, actualAlias, expectedAlias), analyser);
         }
 
         public void EnterIndexedAssertion(int index, int assertionFrameIndex)
@@ -96,15 +96,16 @@ namespace EasyAssertions
 
             RegisterComponent((address, methodName) => new AssertionMethod(address, methodName), assertionFrameIndex, analyser);
 
-            AddGroup(analyser.GetMethod(assertionFrameIndex), assertionFrameIndex, (callAddress, expressionAlias) =>
-                new IndexedAssertionGroup(callAddress, expressionAlias, index), analyser);
+            AddGroup(analyser.GetMethod(assertionFrameIndex), assertionFrameIndex, (callAddress, actualAlias, expectedAlias) =>
+                new IndexedAssertionGroup(callAddress, actualAlias, expectedAlias, index), analyser);
         }
 
-        private void AddGroup(MethodBase innerAssertionMethod, int callFrameIndex, Func<SourceAddress, string, AssertionComponentGroup> createGroup, StackAnalyser analyser)
+        private void AddGroup(MethodBase innerAssertionMethod, int callFrameIndex, Func<SourceAddress, string, string, AssertionComponentGroup> createGroup, StackAnalyser analyser)
         {
             SourceAddress callerAddress = analyser.GetCallAddress(callFrameIndex);
-            string expressionAlias = GetExpressionAlias(innerAssertionMethod);
-            assertionGroupChain.Add(createGroup(callerAddress, expressionAlias));
+            string actualAlias = GetExpressionAlias(innerAssertionMethod, 0);
+            string expectedAlias = GetExpressionAlias(innerAssertionMethod, 1);
+            assertionGroupChain.Add(createGroup(callerAddress, actualAlias, expectedAlias));
         }
 
         public void RegisterContinuation(int continuationFrameIndex)
@@ -132,9 +133,9 @@ namespace EasyAssertions
                 assertionGroupChain.Add(new BaseGroup());
         }
 
-        private static string GetExpressionAlias(MethodBase innerAssertion)
+        private static string GetExpressionAlias(MethodBase innerAssertion, int parameterIndex)
         {
-            return innerAssertion.GetParameters().FirstOrDefault()?.Name ?? string.Empty;
+            return innerAssertion.GetParameters().ElementAtOrDefault(parameterIndex)?.Name ?? string.Empty;
         }
 
         public void ExitAssertion()

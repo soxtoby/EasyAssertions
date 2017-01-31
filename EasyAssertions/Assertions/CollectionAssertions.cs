@@ -495,7 +495,8 @@ namespace EasyAssertions
         }
 
         /// <summary>
-        /// Asserts thats a sequence only contains the specified elements, and nothing else, in any order, with no duplicates, using the default equality comparer.
+        /// Asserts thats a sequence only contains the specified elements, and nothing else, in any order, using the default equality comparer.
+        /// If the expected sequence has duplicates, the actual sequence must have the same amount.
         /// </summary>
         public static Actual<IEnumerable<TActual>> ShouldOnlyContain<TActual, TExpected>(this IEnumerable<TActual> actual, IEnumerable<TExpected> expected, string message = null)
             where TExpected : TActual
@@ -506,7 +507,8 @@ namespace EasyAssertions
         }
 
         /// <summary>
-        /// Asserts thats a sequence only contains the specified elements, and nothing else, in any order, with no duplicates, using a custom equality function.
+        /// Asserts thats a sequence only contains the specified elements, and nothing else, in any order, using a custom equality function.
+        /// If the expected sequence has duplicates, the actual sequence must have the same amount.
         /// </summary>
         public static Actual<IEnumerable<TActual>> ShouldOnlyContain<TActual, TExpected>(this IEnumerable<TActual> actual, IEnumerable<TExpected> expected, Func<TActual, TExpected, bool> predicate, string message = null)
         {

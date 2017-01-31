@@ -180,30 +180,22 @@ namespace EasyAssertions
         }
 
         /// <summary>
-        /// Determines whether a sequence contains all of the items in another sequence, and no other items, using the default equality comparer.
-        /// </summary>
-        public bool ContainsOnlyExpectedItems(IEnumerable actual, IEnumerable expected)
-        {
-            HashSet<object> actualItems = new HashSet<object>(actual.Cast<object>());
-            HashSet<object> expectedItems = new HashSet<object>(expected.Cast<object>());
-            return expectedItems.All(actualItems.Contains)
-                && actualItems.All(expectedItems.Contains);
-        }
-
-        /// <summary>
         /// Determines whether a sequence contains all of the items in another sequence, and no other items, using a custom equality function.
+        /// If the expected sequence has duplicates, the actual sequence must have the same amount.
         /// </summary>
         public bool ContainsOnlyExpectedItems<TActual, TExpected>(IEnumerable<TActual> actual, IEnumerable<TExpected> expected, Func<TActual, TExpected, bool> predicate)
         {
-            List<TExpected> remainingExpected = expected.ToList();
+            List<TActual> remainingActual = actual.ToList();
 
-            foreach (TActual actualItem in actual)
+            foreach (TExpected expectedItem in expected)
             {
-                if (remainingExpected.RemoveAll(e => predicate(actualItem, e)) == 0)
+                int matchingIndex = remainingActual.FindIndex(a => predicate(a, expectedItem));
+                if (matchingIndex == -1)
                     return false;
+                remainingActual.RemoveAt(matchingIndex);
             }
 
-            return remainingExpected.Count == 0;
+            return remainingActual.Count == 0;
         }
 
         /// <summary>

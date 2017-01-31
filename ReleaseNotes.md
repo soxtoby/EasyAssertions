@@ -68,7 +68,7 @@ You can no longer compare _any_ `object` with a `float` or `double`. If you have
 - `ShouldMatch` and `ShouldMatchReferences` no longer allow items to be specified as parameters. This was leading to ambiguous situations, particularly with `string`s, and the error messages did not work correctly.
 - `ShouldMatch` and `ShouldMatchReferences` are no longer allowed on `IDictionary` and `ISet`, since their order cannot be relied upon. If you have a custom implementation where order _is_ reliable, you can use the `AsEnumerable()` extension to get around this, or create a custom assertion specifically for your implementation.
 - `ShouldNotContain`'s generic parameters have been changed to match `ShouldContain`'s. This allows the non-expected items to be sub-types of the actual enumerable's item type, but the assertion will now return an `IEnumerable<>` instead of the same type as the original enumerable.
-- `ShouldOnlyContain` now fails if the collection contains duplicates.
+- `ShouldOnlyContain` no longer allows duplicates in the actual collection, unless the expected collection has the same duplicates.
 
 ## Other Changes and Fixes
 - Collections are no longer enumerated more than once per assertion. Multiple assertions will still enumerate the collection multiple times.

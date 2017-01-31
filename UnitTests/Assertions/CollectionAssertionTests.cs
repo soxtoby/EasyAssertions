@@ -1673,9 +1673,9 @@ namespace EasyAssertions.UnitTests
             [Test]
             public void CollectionsHaveSameItems_ReturnsActualValue()
             {
-                Equatable[] actual = { Equatable(1), Equatable(2) };
+                Equatable[] actual = { Equatable(1), Equatable(2), Equatable(1) };
 
-                AssertReturnsActual(actual, () => actual.ShouldOnlyContain(new[] { Equatable(2), Equatable(1) }));
+                AssertReturnsActual(actual, () => actual.ShouldOnlyContain(new[] { Equatable(2), Equatable(1), Equatable(1) }));
             }
 
             [Test]
@@ -1699,34 +1699,21 @@ namespace EasyAssertions.UnitTests
             }
 
             [Test]
-            public void DifferentItems_OnlyEnumeratesOnce()
+            public void ExtraCopyOfItem_FailsWithCollectionDoesNotOnlyContainMessage()
             {
-                TestEnumerable<Equatable> actual = MakeEnumerable(Equatable(1));
-                TestEnumerable<Equatable> expected = MakeEnumerable(Equatable(2));
-                Error.DoesNotOnlyContain(Arg.Any<IEnumerable<Equatable>>(), Arg.Any<IEnumerable<Equatable>>(), Arg.Any<Func<Equatable, Equatable, bool>>(), Arg.Any<string>()).Returns(EnumerateArgs);
-
-                AssertThrowsExpectedError(() => actual.ShouldOnlyContain(expected));
-
-                Assert.AreEqual(1, actual.EnumerationCount);
-                Assert.AreEqual(1, expected.EnumerationCount);
-            }
-
-            [Test]
-            public void HasDuplicate_FailsWithCollectionDoesNotOnlyContainMessage()
-            {
-                Equatable[] actual = { Equatable(1), Equatable(1) };
-                Equatable[] expected = { Equatable(1) };
+                Equatable[] actual = { Equatable(1), Equatable(1), Equatable(1) };
+                Equatable[] expected = { Equatable(1), Equatable(1) };
                 Error.DoesNotOnlyContain(Matches<Equatable>(expected), Matches<Equatable>(actual), StandardTests.Instance.ObjectsAreEqual, "foo").Returns(ExpectedException);
 
                 AssertThrowsExpectedError(() => actual.ShouldOnlyContain(expected, "foo"));
             }
 
             [Test]
-            public void HasDuplicate_OnlyEnumeratesOnce()
+            public void DifferentItems_OnlyEnumeratesOnce()
             {
-                TestEnumerable<Equatable> actual = MakeEnumerable(Equatable(1), Equatable(1));
-                TestEnumerable<Equatable> expected = MakeEnumerable(Equatable(1));
-                Error.DoesNotOnlyContain(Arg.Any<IEnumerable<Equatable>>(), Arg.Any<IEnumerable<Equatable>>(), Arg.Any<Func<Equatable, Equatable, bool>>()).Returns(ExpectedException);
+                TestEnumerable<Equatable> actual = MakeEnumerable(Equatable(1));
+                TestEnumerable<Equatable> expected = MakeEnumerable(Equatable(2));
+                Error.DoesNotOnlyContain(Arg.Any<IEnumerable<Equatable>>(), Arg.Any<IEnumerable<Equatable>>(), Arg.Any<Func<Equatable, Equatable, bool>>(), Arg.Any<string>()).Returns(EnumerateArgs);
 
                 AssertThrowsExpectedError(() => actual.ShouldOnlyContain(expected));
 

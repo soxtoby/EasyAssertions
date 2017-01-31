@@ -54,7 +54,7 @@ public static Actual<int> ShouldBeZero(int actual) {
 Addtionally, `EasyAssertion.RegisterIndexedAssert` has been changed to the extension method `RegisterIndexedAssertion` with a similar format as `RegisterAssertion`. `EasyAssertion.RegisterInnerAssert` has been changed to the extension method `RegisterUserAssert` which has much clearer semantics.
 
 ### Assertion failure messages
-The dependency on SmartFormat has been removed, and all `FailureMessage` types have been replaced with a single static helper class called `MessageHelper`, which makes it easy to build useful error messages with plain C# interpolated strings. See (creating a custom assertion)[doc/CustomAssertions] for more information.
+The dependency on SmartFormat has been removed, and all `FailureMessage` types have been replaced with a single static helper class called `MessageHelper`, which makes it easy to build useful error messages with plain C# interpolated strings. See [Creating Custom Assertions](doc/CustomAssertions.md]) for more information.
 
 ### Number assertions
 Number assertion signatures were previously a bit of a mess, in an attempt to stop anyone from asserting on `float`s and `double`s without specifying a tolerance. `float`s and `double`s can now be compared like-for-like with `ShouldBe`, and only mixing types is prohibited. So `(0.1f).ShouldBe(0.1f)` is now OK, but `(0.1f).ShouldBe(0.1)` is not allowed, since comparing a `float` and a `double` requires a tolerance value.

@@ -1,3 +1,4 @@
+# Creating Custom Assertions
 Creating custom assertions has been made as easy as possible, but you _do_ need to follow a few guidelines in order for EasyAssertions to be able to show the correct source code when an assertion fails.
 
 # Anatomy of an Assertion Method

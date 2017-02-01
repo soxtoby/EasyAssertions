@@ -1,7 +1,7 @@
 # v2.0.0
 ## New Features
  - `ShouldComplete`, for asserting that a Task completes within a particular time span.
- - `ShouldFail`, for asserting that a Task fails within a particular time span.
+ - `ShouldFail` & `ShouldFailWith`, for asserting that a Task fails within a particular time span.
  - `ShouldStartWith`, for asserting that a collection starts with the items of another collection.
  - `ShouldEndWith`, for asserting that a collection ends with the items of another collection.
  - `ShouldBeDistinct`, for asserting that a collection does not contain any duplicates.

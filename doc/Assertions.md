@@ -109,9 +109,9 @@ completedTask.ShouldComplete(100); // ms
 completedTask.ShouldComplete(TimeSpan.FromMilliseconds(100));
 
 var failingTask = Task.Run(() => { throw new NotImplementedException(); });
-failingTask.ShoulFail<NotImplementedException>();     // Default timeout of 1s
-failingTask.ShouldFail<NotImplementedException>(100); // ms
-failingTask.ShouldFail<NotImplementedException>(TimeSpan.FromMilliseconds(100));
+failingTask.ShouldFailWith<NotImplementedException>();     // Default timeout of 1s
+failingTask.ShouldFailWith<NotImplementedException>(100); // ms
+failingTask.ShouldFailWith<NotImplementedException>(TimeSpan.FromMilliseconds(100));
 failingTask.ShouldFail()
     .AndShouldNotBeA<ArgumentNullException>();
 ```

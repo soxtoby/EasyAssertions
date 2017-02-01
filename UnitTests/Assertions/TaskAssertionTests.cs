@@ -223,31 +223,31 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ShouldFailWithType_FailsWithCorrectType_ReturnsException()
         {
-            AssertReturnsException(new InvalidOperationException(), TimeSpan.FromSeconds(1), () => task.ShouldFail<InvalidOperationException>());
+            AssertReturnsException(new InvalidOperationException(), TimeSpan.FromSeconds(1), () => task.ShouldFailWith<InvalidOperationException>());
         }
 
         [Test]
         public void ShouldFailWithType_FailsWithWrongType_FailsWithWrongExceptionMessage()
         {
-            AssertFailsWithWrongExceptionMessage(typeof(InvalidOperationException), new Exception(), TimeSpan.FromSeconds(1), msg => task.ShouldFail<InvalidOperationException>(msg));
+            AssertFailsWithWrongExceptionMessage(typeof(InvalidOperationException), new Exception(), TimeSpan.FromSeconds(1), msg => task.ShouldFailWith<InvalidOperationException>(msg));
         }
 
         [Test]
         public void ShouldFailWithType_TimesOut_FailsWithTimeoutMessage()
         {
-            AssertTimesOut(TimeSpan.FromSeconds(1), msg => task.ShouldFail<InvalidOperationException>(msg));
+            AssertTimesOut(TimeSpan.FromSeconds(1), msg => task.ShouldFailWith<InvalidOperationException>(msg));
         }
 
         [Test]
         public void ShouldFailWithType_DoesNotFail_FailsWithNoExceptionMessage()
         {
-            AssertFailsWithNoExceptionMessage(msg => task.ShouldFail<InvalidOperationException>(msg));
+            AssertFailsWithNoExceptionMessage(msg => task.ShouldFailWith<InvalidOperationException>(msg));
         }
 
         [Test]
         public void ShouldFailWithType_ActualIsNull_FailsWithWrongTypeMessage()
         {
-            AssertFailsWithTypesNotEqualMessage(typeof(Task), null, msg => ((Task)null).ShouldFail<Exception>(msg));
+            AssertFailsWithTypesNotEqualMessage(typeof(Task), null, msg => ((Task)null).ShouldFailWith<Exception>(msg));
         }
 
         [Test]
@@ -256,7 +256,7 @@ namespace EasyAssertions.UnitTests
             TaskFails(new Exception(), TimeSpan.FromSeconds(1));
             Task<int> actualExpression = task;
 
-            actualExpression.ShouldFail<Exception>();
+            actualExpression.ShouldFailWith<Exception>();
 
             Assert.AreEqual(nameof(actualExpression), TestExpression.GetActual());
         }
@@ -264,31 +264,31 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ShouldFailWithinMillisecondsWithType_FailsWithCorrectType_ReturnsException()
         {
-            AssertReturnsException(new InvalidOperationException(), TimeSpan.FromMilliseconds(1), () => task.ShouldFail<InvalidOperationException>(1));
+            AssertReturnsException(new InvalidOperationException(), TimeSpan.FromMilliseconds(1), () => task.ShouldFailWith<InvalidOperationException>(1));
         }
 
         [Test]
         public void ShouldFailWithinMillisecondsWithType_FailsWithWrongType_FailsWithWrongExceptionMessage()
         {
-            AssertFailsWithWrongExceptionMessage(typeof(InvalidOperationException), new Exception(), TimeSpan.FromMilliseconds(1), msg => task.ShouldFail<InvalidOperationException>(1, msg));
+            AssertFailsWithWrongExceptionMessage(typeof(InvalidOperationException), new Exception(), TimeSpan.FromMilliseconds(1), msg => task.ShouldFailWith<InvalidOperationException>(1, msg));
         }
 
         [Test]
         public void ShouldFailWithinMillisecondsWithType_TimesOut_FailsWithTimeoutMessage()
         {
-            AssertTimesOut(TimeSpan.FromMilliseconds(1), msg => task.ShouldFail<InvalidOperationException>(1, msg));
+            AssertTimesOut(TimeSpan.FromMilliseconds(1), msg => task.ShouldFailWith<InvalidOperationException>(1, msg));
         }
 
         [Test]
         public void ShouldFailWithinMillisecondsWithType_DoesNotFail_FailsWithNoExceptionMessage()
         {
-            AssertFailsWithNoExceptionMessage(msg => task.ShouldFail<InvalidOperationException>(1, msg));
+            AssertFailsWithNoExceptionMessage(msg => task.ShouldFailWith<InvalidOperationException>(1, msg));
         }
 
         [Test]
         public void ShouldFailWithinMillisecondsWithType_ActualIsNull_FailsWithWrongTypeMessage()
         {
-            AssertFailsWithTypesNotEqualMessage(typeof(Task), null, msg => ((Task)null).ShouldFail<Exception>(1, msg));
+            AssertFailsWithTypesNotEqualMessage(typeof(Task), null, msg => ((Task)null).ShouldFailWith<Exception>(1, msg));
         }
 
         [Test]
@@ -296,7 +296,7 @@ namespace EasyAssertions.UnitTests
         {
             Task<int> actualExpression = task;
 
-            AssertFailsWithNoExceptionMessage(msg => actualExpression.ShouldFail<InvalidOperationException>(1, msg));
+            AssertFailsWithNoExceptionMessage(msg => actualExpression.ShouldFailWith<InvalidOperationException>(1, msg));
 
             Assert.AreEqual(nameof(actualExpression), TestExpression.GetActual());
         }
@@ -304,13 +304,13 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ShouldFailWithinTimeSpanWithType_FailsWithCorrectType_ReturnsException()
         {
-            AssertReturnsException(new InvalidOperationException(), TimeSpan.FromMilliseconds(1), () => task.ShouldFail<InvalidOperationException>(TimeSpan.FromMilliseconds(1)));
+            AssertReturnsException(new InvalidOperationException(), TimeSpan.FromMilliseconds(1), () => task.ShouldFailWith<InvalidOperationException>(TimeSpan.FromMilliseconds(1)));
         }
 
         [Test]
         public void ShouldFailWithinTimeSpanWithType_NegativeTimeSpan_ThrowsArgumentOutOfRangeException()
         {
-            ArgumentOutOfRangeException result = Assert.Throws<ArgumentOutOfRangeException>(() => task.ShouldFail<Exception>(TimeSpan.FromTicks(-1)));
+            ArgumentOutOfRangeException result = Assert.Throws<ArgumentOutOfRangeException>(() => task.ShouldFailWith<Exception>(TimeSpan.FromTicks(-1)));
 
             Assert.AreEqual("timeout", result.ParamName);
         }
@@ -318,25 +318,25 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ShouldFailWithinTimeSpanWithType_FailsWithWrongType_FailsWithWrongExceptionMessage()
         {
-            AssertFailsWithWrongExceptionMessage(typeof(InvalidOperationException), new Exception(), TimeSpan.FromMilliseconds(1), msg => task.ShouldFail<InvalidOperationException>(TimeSpan.FromMilliseconds(1), msg));
+            AssertFailsWithWrongExceptionMessage(typeof(InvalidOperationException), new Exception(), TimeSpan.FromMilliseconds(1), msg => task.ShouldFailWith<InvalidOperationException>(TimeSpan.FromMilliseconds(1), msg));
         }
 
         [Test]
         public void ShouldFailWithinTimeSpanWithType_TimesOut_FailsWithTimeoutMessage()
         {
-            AssertTimesOut(TimeSpan.FromMilliseconds(1), msg => task.ShouldFail<InvalidOperationException>(TimeSpan.FromMilliseconds(1), msg));
+            AssertTimesOut(TimeSpan.FromMilliseconds(1), msg => task.ShouldFailWith<InvalidOperationException>(TimeSpan.FromMilliseconds(1), msg));
         }
 
         [Test]
         public void ShouldFailWithinTimeSpanWithType_DoesNotFail_FailsWithNoExceptionMessage()
         {
-            AssertFailsWithNoExceptionMessage(msg => task.ShouldFail<InvalidOperationException>(TimeSpan.FromMilliseconds(1), msg));
+            AssertFailsWithNoExceptionMessage(msg => task.ShouldFailWith<InvalidOperationException>(TimeSpan.FromMilliseconds(1), msg));
         }
 
         [Test]
         public void ShouldFailWithinTimeSpanWithType_ActualIsNull_FailsWithWrongTypeMessage()
         {
-            AssertFailsWithTypesNotEqualMessage(typeof(Task), null, msg => ((Task)null).ShouldFail<Exception>(TimeSpan.FromMilliseconds(1), msg));
+            AssertFailsWithTypesNotEqualMessage(typeof(Task), null, msg => ((Task)null).ShouldFailWith<Exception>(TimeSpan.FromMilliseconds(1), msg));
         }
 
         [Test]
@@ -344,7 +344,7 @@ namespace EasyAssertions.UnitTests
         {
             Task<int> actualExpression = task;
 
-            AssertFailsWithNoExceptionMessage(msg => actualExpression.ShouldFail<InvalidOperationException>(TimeSpan.FromMilliseconds(1), msg));
+            AssertFailsWithNoExceptionMessage(msg => actualExpression.ShouldFailWith<InvalidOperationException>(TimeSpan.FromMilliseconds(1), msg));
 
             Assert.AreEqual(nameof(actualExpression), TestExpression.GetActual());
         }

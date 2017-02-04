@@ -65,7 +65,6 @@ collection.ShouldOnlyContain(new[] { 3, 2, 1 });
 collection.ShouldMatch(new[] { 1, 2, 3 });
 collection.ShouldNotMatch(new[] { 2, 1, 3 });
 collection.ItemsShouldBeIn(new[] { 4, 2, 1, 3, 5 });
-collection.ShouldNotOnlyContain(new[] { 3, 2 });
 collection.ShouldStartWith(new[] { 1, 2 });
 collection.ShouldEndWith(new[] { 2, 3 });
 collection.ShouldBeDistinct();

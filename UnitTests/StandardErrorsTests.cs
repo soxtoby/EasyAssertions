@@ -177,7 +177,7 @@ namespace EasyAssertions.UnitTests
                  + "                                                                      ^" + NewLine
                 + "Difference at index 71.", result);
         }
-        
+
         [Test]
         public void StringsNotEqual_CaseInsensitive_DifferenceIgnoresCase()
         {
@@ -499,6 +499,18 @@ namespace EasyAssertions.UnitTests
         }
 
         [Test]
+        public void CollectionDoesNotContainItems_ExpectedDuplicates_ActualIsMissingDuplicate()
+        {
+            string result = sut.DoesNotContainItems(new[] { 1, 1 }, new[] { 1 }, (a, e) => a == e, "foo").Message;
+
+            Assert.AreEqual($@"{ActualExpression}
+should contain {ExpectedExpression}
+but was missing item 1 <1>
+and was [ <1> ]
+foo", result);
+        }
+
+        [Test]
         public void CollectionDoesNotContainItems_OnlyEnumeratesOnce()
         {
             TestEnumerable<int> expected = MakeEnumerable(1);
@@ -665,6 +677,32 @@ namespace EasyAssertions.UnitTests
         }
 
         [Test]
+        public void DoesNotOnlyContain_ExpectedContainsDuplicates_ActualIsMissingDuplicate()
+        {
+            string result = sut.DoesNotOnlyContain(new[] { 1, 1, 1 }, new[] { 1, 1 }, (a, e) => a == e, "foo").Message;
+
+            Assert.AreEqual($@"{ActualExpression}
+should contain {ExpectedExpression}
+but was missing item 2 <1>
+and was [
+    <1>,
+    <1>
+]
+foo", result);
+        }
+
+        [Test]
+        public void DoesNotOnlyContain_ExpectedContainsDuplicates_ActualHasExtraDuplicate()
+        {
+            string result = sut.DoesNotOnlyContain(new[] { 1, 1 }, new[] { 1, 1, 1 }, (a, e) => a == e, "foo").Message;
+
+            Assert.AreEqual($@"{ActualExpression}
+should only contain {ExpectedExpression}
+but also contains [ <1> ]
+foo", result);
+        }
+
+        [Test]
         public void DoesNotOnlyContain_OnlyEnumeratesOnce()
         {
             TestEnumerable<int> actual = MakeEnumerable(1, 2);
@@ -684,6 +722,16 @@ namespace EasyAssertions.UnitTests
             Assert.AreEqual(ActualExpression + NewLine
                 + "should only contain " + ExpectedExpression + NewLine
                 + "but also contains [ <2> ]", result);
+        }
+
+        [Test]
+        public void ContainsExtraItem_ExtraDuplicate()
+        {
+            string result = sut.ContainsExtraItem(new[] { 1, 1 }, new[] { new Equatable(1), new Equatable(1), new Equatable(1) }, (a, e) => a.Value == e).Message;
+
+            Assert.AreEqual($@"{ActualExpression}
+should only contain {ExpectedExpression}
+but also contains [ <Eq(1)> ]", result);
         }
 
         [Test]

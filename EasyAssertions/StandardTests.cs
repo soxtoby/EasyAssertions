@@ -128,25 +128,23 @@ namespace EasyAssertions
             }
             return empty;
         }
-
-        /// <summary>
-        /// Determines whether a sequence contains all of the items in another sequence, using the default equality comparer.
-        /// </summary>
-        public bool ContainsAllItems(IEnumerable superset, IEnumerable subset)
-        {
-            HashSet<object> actualSet = new HashSet<object>(superset.Cast<object>());
-            return subset.Cast<object>().All(actualSet.Contains);
-        }
-
+        
         /// <summary>
         /// Determines whether a sequence contains all of the items in another sequence, using a custom equality function.
         /// </summary>
         public bool ContainsAllItems<TSuper, TSub>(IEnumerable<TSuper> superset, IEnumerable<TSub> subset, Func<TSuper, TSub, bool> predicate)
         {
-            using (IBuffer<TSuper> superItems = superset.Buffer())
+            List<TSuper> remainingInSuperset = superset.ToList();
+
+            foreach (TSub expectedItem in subset)
             {
-                return subset.All(sub => superItems.Any(super => predicate(super, sub)));
+                int matchingIndex = remainingInSuperset.FindIndex(a => predicate(a, expectedItem));
+                if (matchingIndex == -1)
+                    return false;
+                remainingInSuperset.RemoveAt(matchingIndex);
             }
+
+            return true;
         }
 
         /// <summary>

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.Eventing.Reader;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text.RegularExpressions;
@@ -141,20 +142,26 @@ but was {Count(actualList,
 
         public Exception DoesNotContainItems<TActual, TExpected>(IEnumerable<TExpected> expected, IEnumerable<TActual> actual, Func<TActual, TExpected, bool> predicate, string message = null)
         {
-            List<TActual> actualItems = actual.ToList();
             List<TExpected> expectedItems = expected.ToList();
-            int missingItemIndex;
-            object missingItem;
-            FindMissingItem(expectedItems, actualItems, predicate, out missingItemIndex, out missingItem);
+            List<TActual> actualItems = actual.ToList();
+            List<TExpected> missingExpected;
+            List<TActual> extraActual;
+            List<int> missingIndices;
+            FindDifferences(expectedItems, actualItems, predicate, out missingExpected, out extraActual, out missingIndices);
 
-            string expectedSource = ExpectedSourceIfDifferentToValue(expected);
+            return DoesNotContainItems(expectedItems, actualItems, missingExpected, missingIndices, message);
+        }
+
+        private Exception DoesNotContainItems<TActual, TExpected>(List<TExpected> expectedItems, List<TActual> actualItems, List<TExpected> missingExpected, List<int> missingIndices, string message)
+        {
+            string expectedSource = ExpectedSourceIfDifferentToValue(expectedItems);
             return error.Custom(expectedSource == null
                 ? $@"{ActualExpression}
-should contain expected item {missingItemIndex} {Value(missingItem)}
+should contain expected item {missingIndices[0]} {Value(missingExpected[0])}
 but was {Sample(actualItems)}" + message.OnNewLine()
                 : $@"{ActualExpression}
 should contain {expectedSource}
-but was missing item {missingItemIndex} {Value(missingItem)}
+but was missing item {missingIndices[0]} {Value(missingExpected[0])}
 and was {Sample(actualItems)}" + message.OnNewLine());
         }
 
@@ -213,36 +220,60 @@ but was {Sample(actualItems)}" + message.OnNewLine());
             if (expectedItems.None())
                 return NotEmpty(actualItems, message);
 
-            if (!test.ContainsAllItems(actualItems, expectedItems, predicate))
-                return DoesNotContainItems(expectedItems, actualItems, predicate, message);
+            List<TExpected> missingExpected;
+            List<TActual> extraActual;
+            List<int> missingIndices;
+            FindDifferences(expectedItems, actualItems, predicate, out missingExpected, out extraActual, out missingIndices);
 
-            if (test.ContainsDuplicate(actualItems, (a, b) => ActualItemsMatchTheSameExpectedItems(a, b, expectedItems, predicate)))
-                return ContainsDuplicate(actualItems, message);
-
-            return ContainsExtraItem(expectedItems, actualItems, predicate, message);
-        }
-
-        private bool ActualItemsMatchTheSameExpectedItems<TActual, TExpected>(TActual actual1, TActual actual2, List<TExpected> expectedItems, Func<TActual, TExpected, bool> predicate)
-        {
-            return test.CollectionsMatch(
-                expectedItems.Where(e => predicate(actual1, e)), 
-                expectedItems.Where(e => predicate(actual2, e)), 
-                test.ObjectsAreEqual);
+            if (missingExpected.Any())
+                return DoesNotContainItems(expectedItems, actualItems, missingExpected, missingIndices, message);
+            return ContainsExtraItem(expectedItems, extraActual, message);
         }
 
         public Exception ContainsExtraItem<TActual, TExpected>(IEnumerable<TExpected> expectedSuperset, IEnumerable<TActual> actual, Func<TActual, TExpected, bool> predicate, string message = null)
         {
             List<TExpected> expectedItems = expectedSuperset.ToList();
-            List<TActual> extraItems = actual.Where(a => !expectedItems.Any(e => predicate(a, e))).ToList();
+            List<TExpected> missingExpected;
+            List<TActual> extraActual;
+            List<int> missingIndices;
+            FindDifferences(expectedItems, actual, predicate, out missingExpected, out extraActual, out missingIndices);
 
+            return ContainsExtraItem(expectedItems, extraActual, message);
+        }
+
+        private Exception ContainsExtraItem<TActual, TExpected>(List<TExpected> expectedItems, List<TActual> extraActual, string message)
+        {
             string expectedSource = ExpectedSourceIfDifferentToValue(expectedItems);
             return error.Custom(expectedSource != null
                 ? $@"{ActualExpression}
 should only contain {expectedSource}
-but also contains {Sample(extraItems)}" + message.OnNewLine()
+but also contains {Sample(extraActual)}" + message.OnNewLine()
                 : $@"{ActualExpression}
 should only contain {Sample(expectedItems)}
-but also contains {Sample(extraItems)}" + message.OnNewLine());
+but also contains {Sample(extraActual)}" + message.OnNewLine());
+        }
+
+        private static void FindDifferences<TActual, TExpected>(IEnumerable<TExpected> expected, IEnumerable<TActual> actual, Func<TActual, TExpected, bool> predicate, out List<TExpected> missingExpected, out List<TActual> extraActual, out List<int> missingIndices)
+        {
+            missingExpected = new List<TExpected>();
+            extraActual = actual.ToList();
+            missingIndices = new List<int>();
+
+            int expectedIndex = 0;
+            foreach (TExpected expectedItem in expected)
+            {
+                int matchingIndex = extraActual.FindIndex(a => predicate(a, expectedItem));
+                if (matchingIndex == -1)
+                {
+                    missingIndices.Add(expectedIndex);
+                    missingExpected.Add(expectedItem);
+                }
+                else
+                {
+                    extraActual.RemoveAt(matchingIndex);
+                }
+                expectedIndex++;
+            }
         }
 
         public Exception ContainsDuplicate(IEnumerable actual, string message = null)
@@ -258,21 +289,6 @@ should not contain duplicates
 but {Value(duplicateItem)}
 was found at indices {duplicateIndices.Take(duplicateIndices.Count - 1).Join(", ")} and {duplicateIndices.Last()}."
                 + message.OnNewLine());
-        }
-
-        private static void FindMissingItem<TActual, TExpected>(IEnumerable<TExpected> expected, ICollection<TActual> actualItems, Func<TActual, TExpected, bool> predicate, out int missingItemIndex, out object missingItem)
-        {
-            missingItemIndex = 0;
-            missingItem = null;
-            foreach (TExpected expectedItem in expected)
-            {
-                if (!actualItems.Any(a => predicate(a, expectedItem)))
-                {
-                    missingItem = expectedItem;
-                    break;
-                }
-                missingItemIndex++;
-            }
         }
 
         public Exception DoNotMatch<TActual, TExpected>(IEnumerable<TExpected> expected, IEnumerable<TActual> actual, Func<TActual, TExpected, bool> predicate, string message = null)

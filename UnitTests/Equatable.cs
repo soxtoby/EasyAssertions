@@ -20,6 +20,11 @@ namespace EasyAssertions.UnitTests
         {
             return Value;
         }
+
+        public override string ToString()
+        {
+            return $"Eq({Value})";
+        }
     }
 
     class SubEquatable : Equatable

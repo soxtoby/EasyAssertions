@@ -177,6 +177,36 @@ namespace EasyAssertions.UnitTests
         }
 
         [Test]
+        public void ContainsAllItems_SubsetIsEmpty_ReturnsTrue()
+        {
+            Assert.IsTrue(sut.ContainsAllItems(Enumerable.Empty<object>(), Enumerable.Empty<object>(), Equals));
+        }
+
+        [Test]
+        public void ContainsAllItems_SupersetHasAllItems_ReturnsTrue()
+        {
+            Assert.IsTrue(sut.ContainsAllItems(new[] { new Equatable(1), new Equatable(2), new Equatable(3) }, new[] { 3, 1 }, ValueEquals));
+        }
+
+        [Test]
+        public void ContainsAllItems_SupersetIsMissingItems_ReturnsFalse()
+        {
+            Assert.IsFalse(sut.ContainsAllItems(new[] { new Equatable(1) }, new[] { 1, 2 }, ValueEquals));
+        }
+
+        [Test]
+        public void ContainsAllItems_SubsetHasDuplicates_SupersetHasEnoughOfDuplicate_ReturnsTrue()
+        {
+            Assert.IsTrue(sut.ContainsAllItems(new[] { new Equatable(1), new Equatable(1), new Equatable(1) }, new[] { 1, 1 }, ValueEquals));
+        }
+
+        [Test]
+        public void ContainsAllItems_SubsetHasDuplicates_SupersetIsMissingDuplicate_ReturnsFalse()
+        {
+            Assert.IsFalse(sut.ContainsAllItems(new[] { new Equatable(1), new Equatable(1), new Equatable(2) }, new[] { 1, 1, 1 }, ValueEquals));
+        }
+
+        [Test]
         public void ContainsAny_EmptySequence_DoesNotContainItems()
         {
             Assert.IsFalse(sut.ContainsAny(Enumerable.Empty<int>(), new[] { 1 }));
@@ -235,7 +265,7 @@ namespace EasyAssertions.UnitTests
             Assert.AreEqual(1, actual.EnumerationCount);
             Assert.AreEqual(1, expected.EnumerationCount);
         }
-        
+
         [Test]
         public void ContainsOnlyExpectedItems_BothEmpty_ReturnsTrue()
         {
@@ -263,14 +293,14 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ContainsOnlyExpectedItems_ExpectedDuplicates_ContainsSameNumberOfDuplicate_ReturnsTrue()
         {
-            Assert.IsTrue(sut.ContainsOnlyExpectedItems(new[] { new Equatable(1), new Equatable(1) }, new [] { 1, 1 }, (a, e) => a.Value == e));
+            Assert.IsTrue(sut.ContainsOnlyExpectedItems(new[] { new Equatable(1), new Equatable(1) }, new[] { 1, 1 }, (a, e) => a.Value == e));
         }
 
         [Test]
         public void ContainsOnlyExpectedItems_ExpectedDuplicates_ContainsDifferentNumberOfDuplicate_ReturnsFalse()
         {
-            Assert.IsFalse(sut.ContainsOnlyExpectedItems(new[] { new Equatable(1) }, new [] { 1, 1 }, (a, e) => a.Value == e));
-            Assert.IsFalse(sut.ContainsOnlyExpectedItems(new[] { new Equatable(1), new Equatable(1), new Equatable(1) }, new [] { 1, 1 }, (a, e) => a.Value == e));
+            Assert.IsFalse(sut.ContainsOnlyExpectedItems(new[] { new Equatable(1) }, new[] { 1, 1 }, (a, e) => a.Value == e));
+            Assert.IsFalse(sut.ContainsOnlyExpectedItems(new[] { new Equatable(1), new Equatable(1), new Equatable(1) }, new[] { 1, 1 }, (a, e) => a.Value == e));
         }
 
         [Test]
@@ -442,6 +472,11 @@ namespace EasyAssertions.UnitTests
                     },
                 n => n.Children,
                 (a, e) => a.Value == e));
+        }
+
+        private static bool ValueEquals(Equatable a, int e)
+        {
+            return a.Value == e;
         }
 
         private static TestEnumerable<T> MakeEnumerable<T>(params T[] items) => new TestEnumerable<T>(items);

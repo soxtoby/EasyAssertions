@@ -340,6 +340,7 @@ namespace EasyAssertions
 
         /// <summary>
         /// Asserts that a sequence contains all specified elements, in any order, using the default equality comparer.
+        /// If the expected sequence has duplicates, the actual sequence must have at least as many.
         /// </summary>
         public static Actual<IEnumerable<TActual>> ShouldContainItems<TActual, TExpected>(this IEnumerable<TActual> actual, IEnumerable<TExpected> expected, string message = null)
             where TExpected : TActual
@@ -353,7 +354,7 @@ namespace EasyAssertions
                     using (IBuffer<TActual> bufferedActual = actual.Buffer())
                     using (IBuffer<TExpected> bufferedExpected = expected.Buffer())
                     {
-                        if (!c.Test.ContainsAllItems(bufferedActual, bufferedExpected))
+                        if (!c.Test.ContainsAllItems(bufferedActual, bufferedExpected, c.Test.ObjectsAreEqual))
                             throw c.StandardError.DoesNotContainItems(bufferedExpected, bufferedActual, c.Test.ObjectsAreEqual, message);
                     }
                 });
@@ -361,6 +362,7 @@ namespace EasyAssertions
 
         /// <summary>
         /// Asserts that a sequence contains all specified elements, in any order, using a custom equality function.
+        /// If the expected sequence has duplicates, the actual sequence must have at least as many.
         /// </summary>
         public static Actual<IEnumerable<TActual>> ShouldContainItems<TActual, TExpected>(this IEnumerable<TActual> actual, IEnumerable<TExpected> expected, Func<TActual, TExpected, bool> predicate, string message = null)
         {
@@ -382,6 +384,7 @@ namespace EasyAssertions
 
         /// <summary>
         /// Asserts that all elements in a sequence are contained within another sequence, in any order, using the default equality comparer.
+        /// If the actual sequence has duplicates, the expected sequence must have at least as many.
         /// </summary>
         public static Actual<IEnumerable<TActual>> ItemsShouldBeIn<TActual, TExpected>(this IEnumerable<TActual> actual, IEnumerable<TExpected> expectedSuperset, string message = null)
             where TExpected : TActual
@@ -395,7 +398,7 @@ namespace EasyAssertions
                     using (IBuffer<TActual> bufferedActual = actual.Buffer())
                     using (IBuffer<TExpected> bufferedExpected = expectedSuperset.Buffer())
                     {
-                        if (!c.Test.ContainsAllItems(bufferedExpected, bufferedActual))
+                        if (!c.Test.ContainsAllItems(bufferedExpected, bufferedActual, (e, a) => c.Test.ObjectsAreEqual(a, e)))
                             throw c.StandardError.ContainsExtraItem(bufferedExpected, bufferedActual, c.Test.ObjectsAreEqual, message);
                     }
                 });
@@ -403,6 +406,7 @@ namespace EasyAssertions
 
         /// <summary>
         /// Asserts that all elements in a sequence are contained within another sequence, in any order, using a custom equality function.
+        /// If the actual sequence has duplicates, the expected sequence must have at least as many.
         /// </summary>
         public static Actual<IEnumerable<TActual>> ItemsShouldBeIn<TActual, TExpected>(this IEnumerable<TActual> actual, IEnumerable<TExpected> expectedSuperset, Func<TActual, TExpected, bool> predicate, string message = null)
         {
@@ -528,48 +532,6 @@ namespace EasyAssertions
                 if (!c.Test.ContainsOnlyExpectedItems(bufferedActual, bufferedExpected, predicate))
                     throw c.StandardError.DoesNotOnlyContain(bufferedExpected, bufferedActual, predicate, message);
             }
-        }
-
-        /// <summary>
-        /// Asserts that a sequence contains at least one item that does appear in another specified sequence, using the default equality comparer.
-        /// </summary>
-        public static Actual<IEnumerable<TActual>> ShouldNotOnlyContain<TActual, TExpected>(this IEnumerable<TActual> actual, IEnumerable<TExpected> expected, string message = null)
-            where TExpected : TActual
-        {
-            if (expected == null) throw new ArgumentNullException(nameof(expected));
-
-            return actual.RegisterAssertion(c =>
-                {
-                    actual.ShouldBeA<IEnumerable<TActual>>(message);
-
-                    using (IBuffer<TActual> bufferedActual = actual.Buffer())
-                    using (IBuffer<TExpected> bufferedExpected = expected.Buffer())
-                    {
-                        if (c.Test.ContainsAllItems(bufferedExpected, bufferedActual))
-                            throw c.StandardError.OnlyContains(bufferedExpected, bufferedActual, message);
-                    }
-                });
-        }
-
-        /// <summary>
-        /// Asserts that a sequence contains at least one item that does appear in another specified sequence, using a custom equality function.
-        /// </summary>
-        public static Actual<IEnumerable<TActual>> ShouldNotOnlyContain<TActual, TExpected>(this IEnumerable<TActual> actual, IEnumerable<TExpected> expected, Func<TActual, TExpected, bool> predicate, string message = null)
-        {
-            if (expected == null) throw new ArgumentNullException(nameof(expected));
-            if (predicate == null) throw new ArgumentNullException(nameof(predicate));
-
-            return actual.RegisterAssertion(c =>
-                {
-                    actual.ShouldBeA<IEnumerable<TActual>>(message);
-
-                    using (IBuffer<TActual> bufferedActual = actual.Buffer())
-                    using (IBuffer<TExpected> bufferedExpected = expected.Buffer())
-                    {
-                        if (c.Test.ContainsAllItems(bufferedExpected, bufferedActual, (e, a) => predicate(a, e)))
-                            throw c.StandardError.OnlyContains(bufferedExpected, bufferedActual, message);
-                    }
-                });
         }
 
         /// <summary>

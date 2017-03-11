@@ -227,6 +227,12 @@ namespace EasyAssertions.UnitTests
         }
 
         [Test]
+        public void ShouldFailWithType_ExpectedTaskCanceledException_TaskCancelled_ReturnsException()
+        {
+            AssertReturnsTaskCanceledException(TimeSpan.FromSeconds(1), () => task.ShouldFailWith<TaskCanceledException>());
+        }
+
+        [Test]
         public void ShouldFailWithType_FailsWithWrongType_FailsWithWrongExceptionMessage()
         {
             AssertFailsWithWrongExceptionMessage(typeof(InvalidOperationException), new Exception(), TimeSpan.FromSeconds(1), msg => task.ShouldFailWith<InvalidOperationException>(msg));
@@ -268,6 +274,12 @@ namespace EasyAssertions.UnitTests
         }
 
         [Test]
+        public void ShouldFailWithinMillisecondsWithType_ExpectedTaskCanceledExcepton_TaskCancelled_ReturnsException()
+        {
+            AssertReturnsTaskCanceledException(TimeSpan.FromMilliseconds(1), () => task.ShouldFailWith<TaskCanceledException>(1));
+        }
+
+        [Test]
         public void ShouldFailWithinMillisecondsWithType_FailsWithWrongType_FailsWithWrongExceptionMessage()
         {
             AssertFailsWithWrongExceptionMessage(typeof(InvalidOperationException), new Exception(), TimeSpan.FromMilliseconds(1), msg => task.ShouldFailWith<InvalidOperationException>(1, msg));
@@ -305,6 +317,12 @@ namespace EasyAssertions.UnitTests
         public void ShouldFailWithinTimeSpanWithType_FailsWithCorrectType_ReturnsException()
         {
             AssertReturnsException(new InvalidOperationException(), TimeSpan.FromMilliseconds(1), () => task.ShouldFailWith<InvalidOperationException>(TimeSpan.FromMilliseconds(1)));
+        }
+
+        [Test]
+        public void ShouldFailWithinTimeSpanWithType_ExpectedTaskCanceledException_TaskCancelled_ReturnsException()
+        {
+            AssertReturnsTaskCanceledException(TimeSpan.FromMilliseconds(1), () => task.ShouldFailWith<TaskCanceledException>(TimeSpan.FromMilliseconds(1)));
         }
 
         [Test]
@@ -356,6 +374,12 @@ namespace EasyAssertions.UnitTests
         }
 
         [Test]
+        public void ShouldFail_TaskCancelled_ReturnsException()
+        {
+            AssertReturnsTaskCanceledException(TimeSpan.FromSeconds(1), () => task.ShouldFail());
+        }
+
+        [Test]
         public void ShouldFail_TimesOut_FailsWithTimeoutMessage()
         {
             AssertTimesOut(TimeSpan.FromSeconds(1), msg => task.ShouldFail(msg));
@@ -391,6 +415,12 @@ namespace EasyAssertions.UnitTests
         }
 
         [Test]
+        public void ShouldFailWithinMilliseconds_TaskCancelled_ReturnsException()
+        {
+            AssertReturnsTaskCanceledException(TimeSpan.FromMilliseconds(1), () => task.ShouldFail(1));
+        }
+
+        [Test]
         public void ShouldFailWithinMilliseconds_TimesOut_FailsWithTimeoutMessage()
         {
             AssertTimesOut(TimeSpan.FromMilliseconds(1), msg => task.ShouldFail(1, msg));
@@ -422,6 +452,12 @@ namespace EasyAssertions.UnitTests
         public void ShouldFailWithinTimeSpan_Fails_ReturnsException()
         {
             AssertReturnsException(new Exception(), TimeSpan.FromMilliseconds(1), () => task.ShouldFail(TimeSpan.FromMilliseconds(1)));
+        }
+
+        [Test]
+        public void ShouldFailWithinTimeSpan_TaskCancelled_ReturnsException()
+        {
+            AssertReturnsTaskCanceledException(TimeSpan.FromMilliseconds(1), () => task.ShouldFail(TimeSpan.FromMilliseconds(1)));
         }
 
         [Test]
@@ -476,6 +512,17 @@ namespace EasyAssertions.UnitTests
             ActualException<TException> result = callAssertion();
 
             Assert.AreSame(expectedException, result.And);
+        }
+
+        private void AssertReturnsTaskCanceledException<TException>(TimeSpan timeout, Func<ActualException<TException>> callAssertion)
+            where TException : Exception
+        {
+            wait(task, timeout).Returns(c => task.Wait(timeout));
+            taskSource.SetCanceled();
+
+            ActualException<TException> result = callAssertion();
+
+            Assert.IsInstanceOf<TaskCanceledException>(result.And);
         }
 
         private void AssertTimesOut(TimeSpan timeout, Action<string> callAssertion)

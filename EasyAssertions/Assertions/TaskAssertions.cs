@@ -78,8 +78,8 @@ namespace EasyAssertions
         /// </summary>
         public static ActualException<Exception> ShouldFail(this Task actualTask, string message = null)
         {
-            actualTask.RegisterAssertion(c => actualTask.ShouldFailWith<Exception>(DefaultTimeout, message));
-            return new ActualException<Exception>(actualTask.Exception.InnerException);
+            Actual<Exception> result = actualTask.RegisterAssertion(c => actualTask.ShouldFailWith<Exception>(DefaultTimeout, message));
+            return new ActualException<Exception>(result.Value);
         }
 
         /// <summary>
@@ -87,8 +87,8 @@ namespace EasyAssertions
         /// </summary>
         public static ActualException<Exception> ShouldFail(this Task actualTask, uint millisecondsTimeout, string message = null)
         {
-            actualTask.RegisterAssertion(c => actualTask.ShouldFailWith<Exception>(TimeSpan.FromMilliseconds(millisecondsTimeout), message));
-            return new ActualException<Exception>(actualTask.Exception.InnerException);
+            Actual<Exception> result = actualTask.RegisterAssertion(c => actualTask.ShouldFailWith<Exception>(TimeSpan.FromMilliseconds(millisecondsTimeout), message));
+            return new ActualException<Exception>(result.Value);
         }
 
         /// <summary>
@@ -96,8 +96,8 @@ namespace EasyAssertions
         /// </summary>
         public static ActualException<Exception> ShouldFail(this Task actualTask, TimeSpan timeout, string message = null)
         {
-            actualTask.RegisterAssertion(c => actualTask.ShouldFailWith<Exception>(timeout, message));
-            return new ActualException<Exception>(actualTask.Exception.InnerException);
+            Actual<Exception> result = actualTask.RegisterAssertion(c => actualTask.ShouldFailWith<Exception>(timeout, message));
+            return new ActualException<Exception>(result.Value);
         }
 
         /// <summary>
@@ -107,8 +107,8 @@ namespace EasyAssertions
         public static ActualException<TException> ShouldFailWith<TException>(this Task actualTask, string message = null) 
             where TException : Exception
         {
-            actualTask.RegisterAssertion(c => actualTask.ShouldFailWith<TException>(DefaultTimeout, message));
-            return new ActualException<TException>((TException)actualTask.Exception.InnerException);
+            Actual<TException> result = actualTask.RegisterAssertion(c => actualTask.ShouldFailWith<TException>(DefaultTimeout, message));
+            return new ActualException<TException>(result.Value);
         }
 
         /// <summary>
@@ -117,8 +117,8 @@ namespace EasyAssertions
         public static ActualException<TException> ShouldFailWith<TException>(this Task actualTask, uint millisecondsTimeout, string message = null) 
             where TException : Exception
         {
-            actualTask.RegisterAssertion(c => actualTask.ShouldFailWith<TException>(TimeSpan.FromMilliseconds(millisecondsTimeout), message));
-            return new ActualException<TException>((TException)actualTask.Exception.InnerException);
+            Actual<TException> result = actualTask.RegisterAssertion(c => actualTask.ShouldFailWith<TException>(TimeSpan.FromMilliseconds(millisecondsTimeout), message));
+            return new ActualException<TException>(result.Value);
         }
 
         /// <summary>
@@ -141,8 +141,9 @@ namespace EasyAssertions
                     }
                     catch (AggregateException e)
                     {
-                        if (e.InnerException is TException)
-                            return new ActualException<TException>((TException)actualTask.Exception.InnerException);
+                        TException expectedException = e.InnerException as TException;
+                        if (expectedException != null)
+                            return new ActualException<TException>(expectedException);
 
                         throw StandardErrors.Current.WrongException(typeof(TException), e.InnerException, message: message);
                     }

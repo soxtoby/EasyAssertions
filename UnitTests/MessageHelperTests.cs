@@ -58,6 +58,17 @@ namespace EasyAssertions.UnitTests
         }
 
         [Test]
+        public void Sample_Strings_OutputsWholeStrings()
+        {
+            string result = MessageHelper.Sample(new[] { "foo", "bar" });
+
+            Assert.AreEqual(@"[
+    ""foo"",
+    ""bar""
+]", result);
+        }
+
+        [Test]
         public void Sample_NestedEnumerable_LimitsTo10Items()
         {
             string result = MessageHelper.Sample(new object[]

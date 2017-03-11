@@ -156,56 +156,55 @@ namespace EasyAssertions
                 return "empty.";
 
             int remainingItems = SampleSize;
-            List<string> sample = InnerSample(items, ref remainingItems);
+            List<string> sample = BuildSample(items);
 
             return sample.Count == 1
                 ? $"[ {sample[0]} ]"
                 : "[" + sample.Select(i => Environment.NewLine + "    " + i).Join("") + Environment.NewLine + "]";
-        }
 
-        private static List<string> InnerSample(IEnumerable items, ref int remainingItems)
-        {
-            List<string> sample = new List<string>();
-
-            foreach (object item in items)
+            List<string> BuildSample(IEnumerable innerItems)
             {
-                if (sample.Any())
-                    sample[sample.Count - 1] += ",";
+                List<string> innerSample = new List<string>();
 
-                if (remainingItems == 0)
+                foreach (object item in innerItems)
                 {
-                    sample.Add("...");
-                    break;
-                }
+                    if (innerSample.Any())
+                        innerSample[innerSample.Count - 1] += ",";
 
-                IEnumerable enumerable = item as IEnumerable;
-                if (enumerable != null)
-                {
-                    List<string> innerSample = InnerSample(enumerable, ref remainingItems);
-                    switch (innerSample.Count)
+                    if (remainingItems == 0)
                     {
-                        case 0:
-                            sample.Add("[]");
-                            remainingItems--;
-                            break;
-                        case 1:
-                            sample.Add($"[ {innerSample[0]} ]");
-                            break;
-                        default:
-                            sample.Add("[");
-                            sample.AddRange(innerSample.Select(s => "    " + s));
-                            sample.Add("]");
-                            break;
+                        innerSample.Add("...");
+                        break;
+                    }
+
+                    if (item is IEnumerable enumerableItem && !(item is string))
+                    {
+                        List<string> itemSample = BuildSample(enumerableItem);
+                        switch (itemSample.Count)
+                        {
+                            case 0:
+                                innerSample.Add("[]");
+                                remainingItems--;
+                                break;
+                            case 1:
+                                innerSample.Add($"[ {itemSample[0]} ]");
+                                break;
+                            default:
+                                innerSample.Add("[");
+                                innerSample.AddRange(itemSample.Select(s => "    " + s));
+                                innerSample.Add("]");
+                                break;
+                        }
+                    }
+                    else
+                    {
+                        innerSample.Add(Value(item));
+                        remainingItems--;
                     }
                 }
-                else
-                {
-                    sample.Add(Value(item));
-                    remainingItems--;
-                }
-            }
 
-            return sample;
+                return innerSample;
+            }
         }
 
         /// <summary>

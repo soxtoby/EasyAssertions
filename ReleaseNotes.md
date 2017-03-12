@@ -1,3 +1,8 @@
+# v2.0.1
+## Bug Fixes
+ - Fixed null-ref in `ShouldFail` and `ShouldFailWith` when task is cancelled ([9e907db](https://github.com/soxtoby/EasyAssertions/commit/9e907db5ffed6d298b7c791dd3b6f9dbb0b12447), [#4](https://github.com/soxtoby/EasyAssertions/issues/4)).
+ - `IEnumerable<string>`s no longer represented as `IEnumerable<IEnumerable<char>>` in error messages ([f0e1fa2](https://github.com/soxtoby/EasyAssertions/commit/f0e1fa20bfb2a203cc57baa995a26375cb48e6e1), [#2](https://github.com/soxtoby/EasyAssertions/issues/2)).
+
 # v2.0.0
 ## New Features
  - `ShouldComplete`, for asserting that a Task completes within a particular time span.

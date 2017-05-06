@@ -14,7 +14,4 @@
     <tags>testing assertion unittesting</tags>
     <projectUrl>https://github.com/soxtoby/EasyAssertions</projectUrl>
   </metadata>
-  <files>
-    <file src="bin\Release\EasyAssertions.xml" target="lib\net40\EasyAssertions.xml" />
-  </files>
 </package>

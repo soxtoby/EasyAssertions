@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
   <metadata>
-    <version>2.0.1</version>
+    <version>2.0.2</version>
     <authors>$author$</authors>
     <owners>soxtoby</owners>
     <licenseUrl>http://www.opensource.org/licenses/mit-license.php</licenseUrl>
@@ -14,4 +14,7 @@
     <tags>testing assertion unittesting</tags>
     <projectUrl>https://github.com/soxtoby/EasyAssertions</projectUrl>
   </metadata>
+  <files>
+    <file src="bin\Release\EasyAssertions.xml" target="lib\net40\EasyAssertions.xml" />
+  </files>
 </package>

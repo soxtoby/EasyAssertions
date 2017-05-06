@@ -13,6 +13,9 @@ Almost all assertions take in an optional message as their last parameter.
 (1.2).ShouldNotBe(1, 0.1); // not 1, with a tolerance of 0.1
 double.NaN.ShouldBeNaN();  // also works for float.NaN
 (1.2).ShouldNotBeNaN();
+
+// enums
+MyEnum.Value.ShouldBeValue(MyEnum.Value);
 ```
 
 # Reference Equality
@@ -38,6 +41,11 @@ new object().ShouldNotBeNull();
 "".Empty.ShouldBeEmpty();
 "foo".ShouldMatch("f.+");
 "foo".ShouldMatch("f.+", RegexOptions.IgnoreCase);
+```
+
+# Enums
+```c#
+(MyFlagsEnum.Flag1 | MyFlagsEnum.Flag2).ShouldHaveFlag(MyFlagsEnum.Flag1);
 ```
 
 # Comparables

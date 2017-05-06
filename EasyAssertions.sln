@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.26228.4
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyAssertions", "EasyAssertions\EasyAssertions.csproj", "{520003AC-48A4-40B6-AC33-DF5666AD6DFF}"
 EndProject
@@ -12,6 +12,14 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		EasyAssertions\EasyAssertions.nuspec = EasyAssertions\EasyAssertions.nuspec
 		License.txt = License.txt
 		Readme.md = Readme.md
+		ReleaseNotes.md = ReleaseNotes.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "doc", "doc", "{6BE88110-6797-4C3B-8910-3E47DA86F3F7}"
+	ProjectSection(SolutionItems) = preProject
+		doc\Assertions.md = doc\Assertions.md
+		doc\CustomAssertions.md = doc\CustomAssertions.md
+		doc\Readme.md = doc\Readme.md
 	EndProjectSection
 EndProject
 Global

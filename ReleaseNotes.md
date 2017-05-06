@@ -1,3 +1,12 @@
+# v2.1.0
+## New Features
+ - Enum assertions ([981787b](https://github.com/soxtoby/EasyAssertions/commit/981787b5b9f337ea471c4c42753221a9c4e38d67), [#5](https://github.com/soxtoby/EasyAssertions/issues/5)).
+   -  `ShouldBeValue`, for asserting that value types are equal (mostly useful for enum IntelliSense)
+   - `ShouldHaveFlag`, for asserting that a flags enum has a particular flag.
+
+## Bug Fixes
+ - NuGet package includes XML documentation ([86d3b28](https://github.com/soxtoby/EasyAssertions/commit/86d3b28625be4c1b6f7b88021e290e806f2e7813), [#6](https://github.com/soxtoby/EasyAssertions/issues/6)).
+
 # v2.0.1
 ## Bug Fixes
  - Fixed null-ref in `ShouldFail` and `ShouldFailWith` when task is cancelled ([9e907db](https://github.com/soxtoby/EasyAssertions/commit/9e907db5ffed6d298b7c791dd3b6f9dbb0b12447), [#4](https://github.com/soxtoby/EasyAssertions/issues/4)).

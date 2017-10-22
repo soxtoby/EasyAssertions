@@ -1,95 +1,21 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>8.0.30703</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{520003AC-48A4-40B6-AC33-DF5666AD6DFF}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>EasyAssertions</RootNamespace>
-    <AssemblyName>EasyAssertions</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <SccProjectName>
-    </SccProjectName>
-    <SccLocalPath>
-    </SccLocalPath>
-    <SccAuxPath>
-    </SccAuxPath>
-    <SccProvider>
-    </SccProvider>
-    <TargetFrameworkProfile />
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <Version>3.0.0-prerelease</Version>
+    <Authors>Simon Oxtoby</Authors>
+    <Company />
+    <Product />
+    <Description>Easy-to-use fluent assertions with actually useful failure messages.</Description>
+    <Copyright>Simon Oxtoby 2017</Copyright>
+    <PackageProjectUrl>https://github.com/soxtoby/EasyAssertions</PackageProjectUrl>
+    <PackageLicenseUrl>http://www.opensource.org/licenses/mit-license.php</PackageLicenseUrl>
+    <PackageTags>testing assertion unittesting</PackageTags>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Debug\EasyAssertions.xml</DocumentationFile>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DocumentationFile>bin\Debug\netstandard2.0\EasyAssertions.xml</DocumentationFile>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Release\EasyAssertions.xml</DocumentationFile>
-  </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Actual.cs" />
-    <Compile Include="ActualException.cs" />
-    <Compile Include="AssertionContext.cs" />
-    <Compile Include="Assertions\Case.cs" />
-    <Compile Include="Assertions\CollectionAssertions.cs" />
-    <Compile Include="Assertions\EnumAssertions.cs" />
-    <Compile Include="Assertions\TaskAssertions.cs" />
-    <Compile Include="Assertions\TreeAssertions.cs" />
-    <Compile Include="Buffer.cs" />
-    <Compile Include="ErrorFactory.cs" />
-    <Compile Include="IErrorFactory.cs" />
-    <Compile Include="IStandardErrors.cs" />
-    <Compile Include="StandardErrors.cs" />
-    <Compile Include="StandardTests.cs" />
-    <Compile Include="Assertions\EasyAssertion.cs" />
-    <Compile Include="Assertions\ObjectAssertions.cs" />
-    <Compile Include="EasyAssertionException.cs" />
-    <Compile Include="MessageHelper.cs" />
-    <Compile Include="Assertions\NumberAssertions.cs" />
-    <Compile Include="TestNode.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Assertions\FunctionAssertions.cs" />
-    <Compile Include="SourceExpressions\AssertionMethod.cs" />
-    <Compile Include="SourceExpressions\AssertionComponent.cs" />
-    <Compile Include="SourceExpressions\AssertionComponentGroup.cs" />
-    <Compile Include="SourceExpressions\BaseGroup.cs" />
-    <Compile Include="SourceExpressions\BraceMatcher.cs" />
-    <Compile Include="SourceExpressions\Continuation.cs" />
-    <Compile Include="SourceExpressions\NestedAssertionGroup.cs" />
-    <Compile Include="SourceExpressions\ExpressionSegment.cs" />
-    <Compile Include="SourceExpressions\IndexedAssertionGroup.cs" />
-    <Compile Include="SourceExpressions\SourceAddress.cs" />
-    <Compile Include="SourceExpressions\StackAnalyser.cs" />
-    <Compile Include="Assertions\StringAssertions.cs" />
-    <Compile Include="TestExpression.cs" />
-    <Compile Include="SourceExpressions\SourceExpressionProvider.cs" />
-    <Compile Include="Utils.cs" />
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
+
 </Project>

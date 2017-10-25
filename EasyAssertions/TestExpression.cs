@@ -50,7 +50,13 @@
     /// </summary>
     public interface TestExpressionProvider
     {
+        /// <summary>
+        /// Builds the source representation of the value being asserted on.
+        /// </summary>
         string GetActualExpression();
+        /// <summary>
+        /// Builds the source representation of the value being compared against the actual value.
+        /// </summary>
         string GetExpectedExpression();
     }
 }

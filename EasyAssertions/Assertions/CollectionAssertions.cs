@@ -13,20 +13,28 @@ namespace EasyAssertions
     {
         private const string UnorderedCollectionComparisonError = "Do not compare unordered collections with ordered sequences. Use an assertion that does not test ordering instead.";
 
+        /// <summary>Disallowed comparison.</summary>
         [Obsolete(UnorderedCollectionComparisonError, true)]
         public static void ShouldMatch<TActualKey, TActualValue, TExpectedKey, TExpectedValue>(this IDictionary<TActualKey, TActualValue> actual, IEnumerable<KeyValuePair<TExpectedKey, TExpectedValue>> expected, string message = null) { }
+        /// <summary>Disallowed comparison.</summary>
         [Obsolete(UnorderedCollectionComparisonError, true)]
         public static void ShouldMatch<TActualKey, TActualValue, TExpectedKey, TExpectedValue>(this IEnumerable<KeyValuePair<TActualKey, TActualValue>> actual, IDictionary<TExpectedKey, TExpectedValue> expected, string message = null) { }
+        /// <summary>Disallowed comparison.</summary>
         [Obsolete(UnorderedCollectionComparisonError, true)]
         public static void ShouldMatch<TActual, TExpected>(this ISet<TActual> actual, IEnumerable<TExpected> expected, string message = null) { }
+        /// <summary>Disallowed comparison.</summary>
         [Obsolete(UnorderedCollectionComparisonError, true)]
         public static void ShouldMatch<TActual, TExpected>(this IEnumerable<TActual> actual, ISet<TExpected> expected, string message = null) { }
+        /// <summary>Disallowed comparison.</summary>
         [Obsolete(UnorderedCollectionComparisonError, true)]
         public static void ShouldMatchReferences<TActualKey, TActualValue, TExpectedKey, TExpectedValue>(this IDictionary<TActualKey, TActualValue> actual, IEnumerable<KeyValuePair<TExpectedKey, TExpectedValue>> expected, string message = null) { }
+        /// <summary>Disallowed comparison.</summary>
         [Obsolete(UnorderedCollectionComparisonError, true)]
         public static void ShouldMatchReferences<TActualKey, TActualValue, TExpectedKey, TExpectedValue>(this IEnumerable<KeyValuePair<TActualKey, TActualValue>> actual, IDictionary<TExpectedKey, TExpectedValue> expected, string message = null) { }
+        /// <summary>Disallowed comparison.</summary>
         [Obsolete(UnorderedCollectionComparisonError, true)]
         public static void ShouldMatchReferences<TActual, TExpected>(this ISet<TActual> actual, IEnumerable<TExpected> expected, string message = null) { }
+        /// <summary>Disallowed comparison.</summary>
         [Obsolete(UnorderedCollectionComparisonError, true)]
         public static void ShouldMatchReferences<TActual, TExpected>(this IEnumerable<TActual> actual, ISet<TExpected> expected, string message = null) { }
 

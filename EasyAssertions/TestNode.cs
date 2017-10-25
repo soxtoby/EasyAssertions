@@ -25,6 +25,9 @@ namespace EasyAssertions
     /// </example>
     public class TestNode<T> : IEnumerable<TestNode<T>>
     {
+        /// <summary>
+        /// The value to be compared against the actual node.
+        /// </summary>
         public readonly T Value;
 
         private readonly List<TestNode<T>> children = new List<TestNode<T>>();
@@ -87,6 +90,9 @@ namespace EasyAssertions
             return string.Empty + Value;
         }
 
+        /// <summary>
+        /// Constructs a node with a value.
+        /// </summary>
         public static implicit operator TestNode<T>(T value)
         {
             return new TestNode<T>(value);

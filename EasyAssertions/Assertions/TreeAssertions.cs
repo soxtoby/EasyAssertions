@@ -3,6 +3,9 @@ using System.Collections.Generic;
 
 namespace EasyAssertions
 {
+    /// <summary>
+    /// Experimental assertions for asserting on tree structures.
+    /// </summary>
     public static class TreeAssertions
     {
         /// <summary>

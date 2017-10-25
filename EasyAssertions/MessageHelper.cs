@@ -101,8 +101,8 @@ namespace EasyAssertions
         }
 
         /// <summary>
-        /// Returns <see cref="singleMessage"/> or <see cref="multipleMessage"/>, depending on whether
-        /// <see cref="collection"/> has 1 element or more.
+        /// Returns <paramref name="singleMessage"/> or <paramref name="multipleMessage"/>, depending on whether
+        /// <paramref name="collection"/> has 1 element or more.
         /// </summary>
         public static string Count(ICollection<object> collection, string singleMessage, string multipleMessage)
         {
@@ -110,8 +110,8 @@ namespace EasyAssertions
         }
 
         /// <summary>
-        /// Returns <see cref="singleMessage"/> or <see cref="multipleMessage"/>, depending on whether
-        /// <see cref="count"/> is 1 or higher.
+        /// Returns <paramref name="singleMessage"/> or <paramref name="multipleMessage"/>, depending on whether
+        /// <paramref name="count"/> is 1 or higher.
         /// </summary>
         public static string Count(int count, string singleMessage, string multipleMessage)
         {
@@ -119,8 +119,8 @@ namespace EasyAssertions
         }
 
         /// <summary>
-        /// Returns <see cref="emptyMessage"/>, <see cref="singleMessage"/> or <see cref="multipleMessage"/>, depending on
-        /// whether <see cref="collection"/> has no elements, a single element, or more elements.
+        /// Returns <paramref name="emptyMessage"/>, <paramref name="singleMessage"/> or <paramref name="multipleMessage"/>, depending on
+        /// whether <paramref name="collection"/> has no elements, a single element, or more elements.
         /// </summary>
         public static string Count(ICollection<object> collection, string emptyMessage, string singleMessage, string multipleMessage)
         {
@@ -128,8 +128,8 @@ namespace EasyAssertions
         }
 
         /// <summary>
-        /// Returns <see cref="emptyMessage"/>, <see cref="singleMessage"/> or <see cref="multipleMessage"/>, depending on
-        /// whether <see cref="count"/> is 0, 1 or higher.
+        /// Returns <paramref name="emptyMessage"/>, <paramref name="singleMessage"/> or <paramref name="multipleMessage"/>, depending on
+        /// whether <paramref name="count"/> is 0, 1 or higher.
         /// </summary>
         public static string Count(int count, string emptyMessage, string singleMessage, string multipleMessage)
         {
@@ -139,7 +139,7 @@ namespace EasyAssertions
         }
 
         /// <summary>
-        /// Returns a string representation of the first item in <see cref="collection"/>.
+        /// Returns a string representation of the first item in <paramref name="collection"/>.
         /// </summary>
         public static string Single(ICollection<object> collection)
         {
@@ -275,8 +275,8 @@ namespace EasyAssertions
         }
 
         /// <summary>
-        /// Renders a string value as a snippet around the <see cref="differenceIndex"/>,
-        /// with the goal of lining up with a snippet of <see cref="otherValue"/>.
+        /// Renders a string value as a snippet around the <paramref name="differenceIndex"/>,
+        /// with the goal of lining up with a snippet of <paramref name="otherValue"/>.
         /// </summary>
         public static string Value(string value, string otherValue, int differenceIndex)
         {
@@ -284,7 +284,7 @@ namespace EasyAssertions
         }
 
         /// <summary>
-        /// Returns whitespace with the same length as <see cref="text"/>.
+        /// Returns whitespace with the same length as <paramref name="text"/>.
         /// </summary>
         public static string SpaceFor(string text)
         {
@@ -304,7 +304,7 @@ namespace EasyAssertions
         }
 
         /// <summary>
-        /// Returns the source representation of <see cref="function"/>.
+        /// Returns the source representation of <paramref name="function"/>.
         /// </summary>
         public static string Value(LambdaExpression function)
         {
@@ -315,7 +315,7 @@ namespace EasyAssertions
         }
 
         /// <summary>
-        /// Returns a string representation of <see cref="type"/>.
+        /// Returns a string representation of <paramref name="type"/>.
         /// </summary>
         public static string Value(Type type)
         {
@@ -323,7 +323,7 @@ namespace EasyAssertions
         }
 
         /// <summary>
-        /// Returns a string representation of <see cref="regex"/>.
+        /// Returns a string representation of <paramref name="regex"/>.
         /// </summary>
         public static string Value(Regex regex)
         {
@@ -336,7 +336,7 @@ namespace EasyAssertions
         }
 
         /// <summary>
-        /// Returns a string representation of <see cref="timespan"/>.
+        /// Returns a string representation of <paramref name="timespan"/>.
         /// </summary>
         public static string Value(TimeSpan timespan)
         {
@@ -359,7 +359,7 @@ namespace EasyAssertions
         }
 
         /// <summary>
-        /// Returns <see cref="value"/> on a new line if it has anything in it.
+        /// Returns <paramref name="value"/> on a new line if it has anything in it.
         /// </summary>
         public static string OnNewLine(this string value)
         {
@@ -369,7 +369,7 @@ namespace EasyAssertions
         }
 
         /// <summary>
-        /// Returns <see cref="value"/> with a trailing space, if it has anything in it.
+        /// Returns <paramref name="value"/> with a trailing space, if it has anything in it.
         /// </summary>
         public static string WithSpace(this string value)
         {

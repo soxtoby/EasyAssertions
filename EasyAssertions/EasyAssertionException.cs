@@ -8,6 +8,7 @@ namespace EasyAssertions
     /// </summary>
     public class EasyAssertionException : Exception
     {
+        /// <inheritdoc />
         public override string ToString()
         {
             return Message + Environment.NewLine + Environment.NewLine + StackTrace;

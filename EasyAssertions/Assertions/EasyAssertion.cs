@@ -65,6 +65,7 @@ namespace EasyAssertions
         /// <summary>
         /// Registers a user assertion, for purposes of following the assertion expression into the user's assertion function.
         /// </summary>
+        /// <param name="actual">The value being asserted on.</param>
         /// <param name="userAssertion">A reference to the user's assertion delegate. The first parameter is assumed to be the actual value.</param>
         /// <param name="runUserAssertion">An <see cref="Action"/> that executes the user's assertion delegate.</param>
         public static Actual<TActual> RegisterUserAssertion<TActual>(this TActual actual, Delegate userAssertion, Action runUserAssertion)

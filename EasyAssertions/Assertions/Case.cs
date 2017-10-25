@@ -5,7 +5,13 @@
     /// </summary>
     public enum Case
     {
+        /// <summary>
+        /// Strings must have the same casing.
+        /// </summary>
         Sensitive,
+        /// <summary>
+        /// Ignore string casing.
+        /// </summary>
         Insensitive
     }
 }

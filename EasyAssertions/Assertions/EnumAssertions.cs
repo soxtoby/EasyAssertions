@@ -21,6 +21,9 @@ namespace EasyAssertions
                 });
         }
 
+        /// <summary>
+        /// Asserts that a <code>[Flags]</code> enum has the specified flag set.
+        /// </summary>
         public static Actual<T> ShouldHaveFlag<T>(this T actual, T expectedFlag, string message = null) where T : struct
         {
             return actual.RegisterAssertion(c =>

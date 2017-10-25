@@ -9,15 +9,19 @@ namespace EasyAssertions
     {
         private const string EqualityComparisonError = "Do not compare floating point numbers directly with other types. Please specify a tolerance instead.";
 
+        /// <summary>Disallowed comparison.</summary>
         [Obsolete(EqualityComparisonError, true)]
         public static void ShouldBe(this object actual, float expected, string message = null) { }
 
+        /// <summary>Disallowed comparison.</summary>
         [Obsolete(EqualityComparisonError, true)]
         public static void ShouldBe(this object actual, double expected, string message = null) { }
 
+        /// <summary>Disallowed comparison.</summary>
         [Obsolete(EqualityComparisonError, true)]
         public static void ShouldNotBe(this object actual, float expected, string message = null) { }
 
+        /// <summary>Disallowed comparison.</summary>
         [Obsolete(EqualityComparisonError, true)]
         public static void ShouldNotBe(this object actual, double expected, string message = null) { }
 

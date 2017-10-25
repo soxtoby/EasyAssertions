@@ -7,6 +7,7 @@ namespace EasyAssertions
     /// </summary>
     public class ActualException<T> : Actual<T> where T : Exception
     {
+        /// <inheritdoc />
         public ActualException(T actual)
             : base(actual)
         {

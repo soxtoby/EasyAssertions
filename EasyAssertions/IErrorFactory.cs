@@ -2,6 +2,9 @@ using System;
 
 namespace EasyAssertions
 {
+    /// <summary>
+    /// Provides factory methods for creating custom assertion failure messages.
+    /// </summary>
     public interface IErrorFactory
     {
         /// <summary>

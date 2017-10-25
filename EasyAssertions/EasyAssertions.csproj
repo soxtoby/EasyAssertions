@@ -9,7 +9,7 @@
     <Description>Easy-to-use fluent assertions with actually useful failure messages.</Description>
     <Copyright>Simon Oxtoby 2017</Copyright>
     <PackageProjectUrl>https://github.com/soxtoby/EasyAssertions</PackageProjectUrl>
-    <PackageLicenseUrl>http://www.opensource.org/licenses/mit-license.php</PackageLicenseUrl>
+    <PackageLicenseUrl>https://github.com/soxtoby/EasyAssertions/blob/master/License.txt</PackageLicenseUrl>
     <PackageTags>testing assertion unittesting</PackageTags>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>

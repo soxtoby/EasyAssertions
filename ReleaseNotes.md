@@ -1,3 +1,7 @@
+# v2.2.0
+## New Features
+ - .NET Standard 2.0 support
+
 # v2.1.0
 ## New Features
  - Enum assertions ([981787b](https://github.com/soxtoby/EasyAssertions/commit/981787b5b9f337ea471c4c42753221a9c4e38d67), [#5](https://github.com/soxtoby/EasyAssertions/issues/5)).

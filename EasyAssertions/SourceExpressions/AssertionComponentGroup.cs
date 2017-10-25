@@ -41,8 +41,7 @@ namespace EasyAssertions
 
             SourceAddress assertionsAddress = calls.First().SourceAddress;
 
-            string[] sourceLines;
-            if (!Utils.TryReadAllLines(assertionsAddress, out sourceLines))
+            if (!Utils.TryReadAllLines(assertionsAddress, out string[] sourceLines))
                 return string.Empty;
 
             string expressionSource = sourceLines.Skip(assertionsAddress.LineIndex).Join(Environment.NewLine);

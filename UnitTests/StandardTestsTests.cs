@@ -79,12 +79,12 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void CollectionsMatch_MatchingNestedEnumerables_AreEqual()
         {
-            var actual = new List<List<int>>
+            List<List<int>> actual = new List<List<int>>
                 {
                     new List<int> { 1, 2, 3 },
                     new List<int> { 4, 5, 6 }
                 };
-            var expected = new[]
+            int[][] expected = new[]
                 {
                     new[] { 1, 2, 3 },
                     new[] { 4, 5, 6 }

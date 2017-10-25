@@ -215,7 +215,7 @@ namespace EasyAssertions
         public static string Arrow(string actualValue, string expectedValue, int failureIndex)
         {
             int arrowIndex = failureIndex - SnippetStart(actualValue, expectedValue, failureIndex);
-            arrowIndex += ((string)actualValue)
+            arrowIndex += actualValue
                 .Substring(0, arrowIndex)
                 .Count(Escapes.ContainsKey);
 

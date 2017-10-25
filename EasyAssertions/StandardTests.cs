@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 
 namespace EasyAssertions
@@ -103,9 +102,7 @@ namespace EasyAssertions
 
         internal bool ObjectsMatch(object actual, object expected)
         {
-            IEnumerable actualEnumerable = actual as IEnumerable;
-            IEnumerable expectedEnumerable = expected as IEnumerable;
-            if (actualEnumerable != null && expectedEnumerable != null)
+            if (actual is IEnumerable actualEnumerable && expected is IEnumerable expectedEnumerable)
                 return CollectionsMatch(actualEnumerable, expectedEnumerable, ObjectsMatch);
 
             return ObjectsAreEqual(actual, expected);

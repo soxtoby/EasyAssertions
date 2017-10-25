@@ -73,7 +73,7 @@ but was       {Value(actual)}" + message.OnNewLine());
 
         public Exception IsNull(string message = null)
         {
-            return error.WithActualExpression($@"
+            return error.WithActualExpression(@"
 should not be null, but was." + message.OnNewLine());
         }
 
@@ -112,7 +112,7 @@ but was {Value(actual)}" + message.OnNewLine());
 
         public Exception IsEmpty(string message = null)
         {
-            return error.WithActualExpression($@"should not be empty, but was." + message.OnNewLine());
+            return error.WithActualExpression(@"should not be empty, but was." + message.OnNewLine());
         }
 
         public Exception LengthMismatch(int expectedLength, IEnumerable actual, string message = null)
@@ -143,10 +143,7 @@ but was {Count(actualList,
         {
             List<TExpected> expectedItems = expected.ToList();
             List<TActual> actualItems = actual.ToList();
-            List<TExpected> missingExpected;
-            List<TActual> extraActual;
-            List<int> missingIndices;
-            FindDifferences(expectedItems, actualItems, predicate, out missingExpected, out extraActual, out missingIndices);
+            FindDifferences(expectedItems, actualItems, predicate, out List<TExpected> missingExpected, out _, out List<int> missingIndices);
 
             return DoesNotContainItems(expectedItems, actualItems, missingExpected, missingIndices, message);
         }
@@ -219,10 +216,7 @@ but was {Sample(actualItems)}" + message.OnNewLine());
             if (expectedItems.None())
                 return NotEmpty(actualItems, message);
 
-            List<TExpected> missingExpected;
-            List<TActual> extraActual;
-            List<int> missingIndices;
-            FindDifferences(expectedItems, actualItems, predicate, out missingExpected, out extraActual, out missingIndices);
+            FindDifferences(expectedItems, actualItems, predicate, out List<TExpected> missingExpected, out List<TActual> extraActual, out List<int> missingIndices);
 
             if (missingExpected.Any())
                 return DoesNotContainItems(expectedItems, actualItems, missingExpected, missingIndices, message);
@@ -232,10 +226,7 @@ but was {Sample(actualItems)}" + message.OnNewLine());
         public Exception ContainsExtraItem<TActual, TExpected>(IEnumerable<TExpected> expectedSuperset, IEnumerable<TActual> actual, Func<TActual, TExpected, bool> predicate, string message = null)
         {
             List<TExpected> expectedItems = expectedSuperset.ToList();
-            List<TExpected> missingExpected;
-            List<TActual> extraActual;
-            List<int> missingIndices;
-            FindDifferences(expectedItems, actual, predicate, out missingExpected, out extraActual, out missingIndices);
+            FindDifferences(expectedItems, actual, predicate, out _, out List<TActual> extraActual, out _);
 
             return ContainsExtraItem(expectedItems, extraActual, message);
         }
@@ -306,8 +297,7 @@ but {Count(actualList,
                         $"had {actualList.Count} elements: {Sample(actualList)}")}"
                     + message.OnNewLine());
 
-            object expectedItem, actualItem;
-            int differenceIndex = FindDifference(expectedList, actualList, (a, e) => predicate((TActual)a, (TExpected)e), out expectedItem, out actualItem);
+            int differenceIndex = FindDifference(expectedList, actualList, (a, e) => predicate((TActual)a, (TExpected)e), out object expectedItem, out object actualItem);
 
             return error.WithActualExpression($@"
 {(expectedSource != null ? $"doesn't match {expectedSource}. Differs" : "differs")} at index {differenceIndex}.
@@ -317,8 +307,7 @@ but was      {Value(actualItem)}" + message.OnNewLine());
 
         public Exception ItemsNotSame(IEnumerable expected, IEnumerable actual, string message = null)
         {
-            object expectedItem, actualItem;
-            int differenceIndex = FindDifference(expected, actual, ReferenceEquals, out expectedItem, out actualItem);
+            int differenceIndex = FindDifference(expected, actual, ReferenceEquals, out object expectedItem, out object actualItem);
             return error.WithActualExpression($@"
 differs at index {differenceIndex}.
 should be instance {Value(expectedItem)}
@@ -333,8 +322,7 @@ but was            {Value(actualItem)}" + message.OnNewLine());
             if (actualItems.Count < expectedItems.Count)
                 return NotLongEnough(expectedItems, actualItems, message);
 
-            object expectedValue, actualValue;
-            int differenceIndex = FindDifference(expectedItems, actualItems, (a, e) => predicate((TActual)a, (TExpected)e), out expectedValue, out actualValue);
+            int differenceIndex = FindDifference(expectedItems, actualItems, (a, e) => predicate((TActual)a, (TExpected)e), out object expectedValue, out object actualValue);
 
             return DiffersAtIndex(differenceIndex, expectedValue, actualValue, message);
         }
@@ -347,9 +335,8 @@ but was            {Value(actualItem)}" + message.OnNewLine());
             if (actualItems.Count < expectedItems.Count)
                 return NotLongEnough(expectedItems, actualItems, message);
 
-            object expectedValue, actualValue;
             int differenceInLength = actualItems.Count - expectedItems.Count;
-            int differenceIndex = FindDifference(expectedItems, actualItems.Skip(differenceInLength), (a, e) => predicate((TActual)a, (TExpected)e), out expectedValue, out actualValue)
+            int differenceIndex = FindDifference(expectedItems, actualItems.Skip(differenceInLength), (a, e) => predicate((TActual)a, (TExpected)e), out object expectedValue, out object actualValue)
                 + differenceInLength;
 
             return DiffersAtIndex(differenceIndex, expectedValue, actualValue, message);
@@ -396,7 +383,7 @@ but was   {Value(actualValue)}" + message.OnNewLine());
             List<object> pathItems = path.Cast<object>().ToList();
             string expectedSource = ExpectedSourceIfDifferentToValue(expectedItems);
 
-            return $@"{ActualExpression}{(expectedItems == null ? null : $"doesn't match {expectedSource}.").OnNewLine()}
+            return $@"{ActualExpression}{$"doesn't match {expectedSource}.".OnNewLine()}
 {Path(pathItems)} node should have {Count(expectedItems, "1 child", $"{expectedItems.Count} children")}
 but {Count(actualItems,
                 "was empty.",
@@ -406,9 +393,7 @@ but {Count(actualItems,
 
         private static string TreeNodeValueDoesNotMatch<TActual>(IList<object> expectedItems, IList<object> actualItems, Func<object, object, bool> predicate, string message, IEnumerable<TActual> path)
         {
-            object expectedItem;
-            object actualItem;
-            int differenceIndex = FindDifference(expectedItems, actualItems, predicate, out expectedItem, out actualItem);
+            int differenceIndex = FindDifference(expectedItems, actualItems, predicate, out object expectedItem, out object actualItem);
             List<object> pathItems = path.Cast<object>().ToList();
             string expectedSource = ExpectedSourceIfDifferentToValue(expectedItem);
 

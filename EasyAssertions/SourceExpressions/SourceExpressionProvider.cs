@@ -25,7 +25,7 @@ namespace EasyAssertions
 
         private static string GetActualExpression(IEnumerable<AssertionComponentGroup> assertionComponentGroups)
         {
-            return NormalizeIndentation(assertionComponentGroups.Aggregate(string.Empty, (expression, group) => @group.GetActualExpression(expression)));
+            return NormalizeIndentation(assertionComponentGroups.Aggregate(string.Empty, (expression, group) => group.GetActualExpression(expression)));
         }
 
         public string GetExpectedExpression()

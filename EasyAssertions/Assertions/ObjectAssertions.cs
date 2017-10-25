@@ -1,5 +1,4 @@
-﻿
-namespace EasyAssertions
+﻿namespace EasyAssertions
 {
     /// <summary>
     /// Generic assertions.

@@ -141,8 +141,7 @@ namespace EasyAssertions
                     }
                     catch (AggregateException e)
                     {
-                        TException expectedException = e.InnerException as TException;
-                        if (expectedException != null)
+                        if (e.InnerException is TException expectedException)
                             return new ActualException<TException>(expectedException);
 
                         throw StandardErrors.Current.WrongException(typeof(TException), e.InnerException, message: message);

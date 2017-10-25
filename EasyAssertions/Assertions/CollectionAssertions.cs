@@ -629,7 +629,7 @@ namespace EasyAssertions
 
             return actual.RegisterAssertion(c =>
                 {
-                    actual.ShouldBeA<IEnumerable<TItem>>(null);
+                    actual.ShouldBeA<IEnumerable<TItem>>();
 
                     using (IBuffer<TItem> bufferedActual = actual.Buffer())
                     {

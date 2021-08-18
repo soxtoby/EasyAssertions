@@ -97,7 +97,7 @@ Also, you'll often want to provide some extra context for an assertion via an op
 ```c#
 public static class CustomAssertions
 {
-    public static Actual<List<int>> ShouldTotal(this List<int> actual, int expectedTotal, string message = null)
+    public static Actual<List<int>> ShouldTotal(this List<int> actual, int expectedTotal, string? message = null)
     {
         return actual.RegisterAssertion(assertionContext =>
             {

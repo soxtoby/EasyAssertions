@@ -5,7 +5,7 @@ namespace EasyAssertions.UnitTests
     [TestFixture]
     public class AssertionMethodTests
     {
-        private AssertionMethod sut;
+        private AssertionMethod sut = null!;
 
         [SetUp]
         public void SetUp()

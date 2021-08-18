@@ -3,6 +3,7 @@ using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using static EasyAssertions.UnitTests.EnumerableArg;
 
 namespace EasyAssertions.UnitTests
 {
@@ -25,7 +26,7 @@ namespace EasyAssertions.UnitTests
         {
             int[] actual = { 1 };
             TestNode<int>[] expected = { 2 };
-            Error.TreesDoNotMatch(expected, actual, NoChildren, StandardTests.Instance.ObjectsAreEqual, "foo").Returns(ExpectedException);
+            Error.TreesDoNotMatch(Matches<TestNode<int>>(expected), Matches<int>(actual), NoChildren, StandardTests.Instance.ObjectsAreEqual, "foo").Returns(ExpectedException);
 
             AssertThrowsExpectedError(() => actual.ShouldMatch(expected, NoChildren, "foo"));
         }
@@ -33,7 +34,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ShouldMatchTree_ActualIsNull_FailsWithTypedNotEqualMessage()
         {
-            IEnumerable<int> actual = null;
+            IEnumerable<int>? actual = null;
             Error.NotEqual(typeof(IEnumerable<int>), null, "foo").Returns(ExpectedException);
 
             AssertThrowsExpectedError(() => actual.ShouldMatch(1.Node(), NoChildren, "foo"));
@@ -42,13 +43,13 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ShouldMatchTree_ExpectedIsNull_ThrowsArgumentNullException()
         {
-            AssertArgumentNullException("expectedRootNodes", () => new int[0].ShouldMatch((IEnumerable<TestNode<int>>)null, NoChildren));
+            AssertArgumentNullException("expectedRootNodes", () => Array.Empty<int>().ShouldMatch((IEnumerable<TestNode<int>>)null!, NoChildren));
         }
 
         [Test]
         public void ShouldMatchTree_GetChildrenIsNull_ThrowsArgumentNullException()
         {
-            AssertArgumentNullException("getChildren", () => new int[0].ShouldMatch(1.Node(), (Func<int, IEnumerable<int>>)null));
+            AssertArgumentNullException("getChildren", () => Array.Empty<int>().ShouldMatch(1.Node(), (Func<int, IEnumerable<int>>)null!));
         }
 
         [Test]
@@ -81,8 +82,8 @@ namespace EasyAssertions.UnitTests
             int[] actual = { 1 };
             TestNode<int>[] expected = { 1 };
             Func<int, int, bool> equality = Substitute.For<Func<int, int, bool>>();
-            Func<object, object, bool> formatterEquality = null;
-            Error.TreesDoNotMatch(expected, actual, NoChildren, Arg.Do<Func<object, object, bool>>(func => formatterEquality = func), "foo").Returns(ExpectedException);
+            Func<object, object, bool> formatterEquality = null!;
+            Error.TreesDoNotMatch(Matches<TestNode<int>>(expected), Matches<int>(actual), NoChildren, Arg.Do<Func<object, object, bool>>(func => formatterEquality = func), "foo").Returns(ExpectedException);
 
             AssertThrowsExpectedError(() => actual.ShouldMatch(expected, NoChildren, equality, "foo"));
 
@@ -93,7 +94,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ShouldMatchTree_CustomEquality_ActualIsNull_FailsWithTypedNotEqualMessage()
         {
-            IEnumerable<int> actual = null;
+            IEnumerable<int>? actual = null;
             Error.NotEqual(typeof(IEnumerable<int>), null, "foo").Returns(ExpectedException);
 
             AssertThrowsExpectedError(() => actual.ShouldMatch(1.Node(), NoChildren, (a, e) => false, "foo"));
@@ -102,19 +103,19 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ShouldMatchTree_CustomEquality_ExpectedIsNull_ThrowsArgumentNullException()
         {
-            AssertArgumentNullException("expectedRootNodes", () => new int[0].ShouldMatch((IEnumerable<TestNode<int>>)null, NoChildren, (a, e) => false));
+            AssertArgumentNullException("expectedRootNodes", () => Array.Empty<int>().ShouldMatch((IEnumerable<TestNode<int>>)null!, NoChildren, (a, e) => false));
         }
 
         [Test]
         public void ShouldMatchTree_CustomEquality_GetChildrenIsNull_ThrowsArgumentNullException()
         {
-            AssertArgumentNullException("getChildren", () => new int[0].ShouldMatch(1.Node(), null, (a, e) => false));
+            AssertArgumentNullException("getChildren", () => Array.Empty<int>().ShouldMatch(1.Node(), null!, (a, e) => false));
         }
 
         [Test]
         public void ShouldMatchTree_CustomEquality_PredicateIsNull_ThrowsArgumentNullException()
         {
-            AssertArgumentNullException("predicate", () => new int[0].ShouldMatch(1.Node(), NoChildren, (Func<int, int, bool>)null));
+            AssertArgumentNullException("predicate", () => Array.Empty<int>().ShouldMatch(1.Node(), NoChildren, (Func<int, int, bool>)null!));
         }
 
         [Test]

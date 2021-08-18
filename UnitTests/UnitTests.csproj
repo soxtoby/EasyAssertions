@@ -8,6 +8,10 @@
     <AssemblyName>EasyAssertions.UnitTests</AssemblyName>
 
     <RootNamespace>EasyAssertions.UnitTests</RootNamespace>
+
+    <LangVersion>9</LangVersion>
+
+    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>

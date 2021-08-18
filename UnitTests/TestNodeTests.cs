@@ -51,7 +51,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void NodeValueIsNull_ToString_ReturnsEmptyString()
         {
-            Assert.AreEqual(string.Empty, new TestNode<object>(null));
+            Assert.AreEqual(string.Empty, new TestNode<object>());
         }
 
         [Test]

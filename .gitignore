@@ -30,3 +30,4 @@ packages
 *.ncrunchsolution
 *.ncrunchproject
 .vs
+.idea

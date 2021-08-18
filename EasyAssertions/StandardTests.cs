@@ -10,7 +10,7 @@ namespace EasyAssertions
     /// </summary>
     public class StandardTests
     {
-        internal static readonly StandardTests Instance = new StandardTests();
+        internal static readonly StandardTests Instance = new();
 
         /// <summary>
         /// Determines whether two objects are equal, using the default equality comparer.
@@ -41,12 +41,11 @@ namespace EasyAssertions
         /// </summary>
         public bool CollectionStartsWith(IEnumerable actual, IEnumerable expectedToStartWith, Func<object, object, bool> areEqual)
         {
-            using (IBuffer<object> bufferedActual = actual.Buffer())
-            using (IBuffer<object> bufferedExpected = expectedToStartWith.Buffer())
-            {
-                return bufferedActual.Count >= bufferedExpected.Count
-                       && CollectionsMatch(bufferedActual.Take(bufferedExpected.Count), bufferedExpected, areEqual);
-            }
+            using IBuffer<object> bufferedActual = actual.Buffer();
+            using IBuffer<object> bufferedExpected = expectedToStartWith.Buffer();
+
+            return bufferedActual.Count >= bufferedExpected.Count
+                && CollectionsMatch(bufferedActual.Take(bufferedExpected.Count), bufferedExpected, areEqual);
         }
 
         /// <summary>
@@ -54,12 +53,11 @@ namespace EasyAssertions
         /// </summary>
         public bool CollectionEndsWith(IEnumerable actual, IEnumerable expectedToEndWith, Func<object, object, bool> areEqual)
         {
-            using (IBuffer<object> bufferedActual = actual.Buffer())
-            using (IBuffer<object> bufferedExpected = expectedToEndWith.Buffer())
-            {
-                return bufferedActual.Count >= bufferedExpected.Count
-                       && CollectionsMatch(bufferedActual.Skip(bufferedActual.Count - bufferedExpected.Count), bufferedExpected, areEqual);
-            }
+            using IBuffer<object> bufferedActual = actual.Buffer();
+            using IBuffer<object> bufferedExpected = expectedToEndWith.Buffer();
+
+            return bufferedActual.Count >= bufferedExpected.Count
+                && CollectionsMatch(bufferedActual.Skip(bufferedActual.Count - bufferedExpected.Count), bufferedExpected, areEqual);
         }
 
         /// <summary>
@@ -97,10 +95,10 @@ namespace EasyAssertions
         /// </summary>
         public bool ObjectsMatch<TActual, TExpected>(TActual actual, TExpected expected)
         {
-            return ObjectsMatch((object)actual, (object)expected);
+            return ObjectsMatch((object?)actual, (object?)expected);
         }
 
-        internal bool ObjectsMatch(object actual, object expected)
+        internal bool ObjectsMatch(object? actual, object? expected)
         {
             if (actual is IEnumerable actualEnumerable && expected is IEnumerable expectedEnumerable)
                 return CollectionsMatch(actualEnumerable, expectedEnumerable, ObjectsMatch);
@@ -125,7 +123,7 @@ namespace EasyAssertions
             }
             return empty;
         }
-        
+
         /// <summary>
         /// Determines whether a sequence contains all of the items in another sequence, using a custom equality function.
         /// </summary>
@@ -149,14 +147,13 @@ namespace EasyAssertions
         /// </summary>
         public bool ContainsAny(IEnumerable actual, IEnumerable itemsToLookFor)
         {
-            using (IBuffer<object> bufferedItemsToLookFor = itemsToLookFor.Buffer())
-            {
-                if (IsEmpty(bufferedItemsToLookFor))
-                    return true;
+            using IBuffer<object> bufferedItemsToLookFor = itemsToLookFor.Buffer();
 
-                HashSet<object> actualSet = new HashSet<object>(actual.Cast<object>());
-                return bufferedItemsToLookFor.Any(actualSet.Contains);
-            }
+            if (IsEmpty(bufferedItemsToLookFor))
+                return true;
+
+            HashSet<object> actualSet = new HashSet<object>(actual.Cast<object>());
+            return bufferedItemsToLookFor.Any(actualSet.Contains);
         }
 
         /// <summary>
@@ -164,14 +161,13 @@ namespace EasyAssertions
         /// </summary>
         public bool ContainsAny<TActual, TExpected>(IEnumerable<TActual> actual, IEnumerable<TExpected> itemsToLookFor, Func<TActual, TExpected, bool> predicate)
         {
-            using (IBuffer<TActual> bufferedActual = actual.Buffer())
-            using (IBuffer<TExpected> bufferedItemsToLookFor = itemsToLookFor.Buffer())
-            {
-                if (IsEmpty(bufferedItemsToLookFor))
-                    return true;
+            using IBuffer<TActual> bufferedActual = actual.Buffer();
+            using IBuffer<TExpected> bufferedItemsToLookFor = itemsToLookFor.Buffer();
 
-                return bufferedItemsToLookFor.Any(e => bufferedActual.Any(a => predicate(a, e)));
-            }
+            if (IsEmpty(bufferedItemsToLookFor))
+                return true;
+
+            return bufferedItemsToLookFor.Any(e => bufferedActual.Any(a => predicate(a, e)));
         }
 
         /// <summary>

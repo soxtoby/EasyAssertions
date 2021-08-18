@@ -4,14 +4,14 @@ namespace EasyAssertions
 {
     class ErrorFactory : IErrorFactory
     {
-        public static readonly ErrorFactory Instance = new ErrorFactory();
+        public static readonly ErrorFactory Instance = new();
 
         private ErrorFactory() {}
 
-        private Func<string, Exception> createMessageException;
-        private Func<string, Exception, Exception> createInnerExceptionException;
-        
-        public void UseFrameworkExceptions(Func<string, Exception> messageExceptionFactory, Func<string, Exception, Exception> innerExceptionExceptionFactory)
+        private Func<string, Exception>? createMessageException;
+        private Func<string, Exception, Exception>? createInnerExceptionException;
+
+        public void UseFrameworkExceptions(Func<string, Exception>? messageExceptionFactory, Func<string, Exception, Exception>? innerExceptionExceptionFactory)
         {
             createMessageException = messageExceptionFactory;
             createInnerExceptionException = innerExceptionExceptionFactory;
@@ -22,22 +22,22 @@ namespace EasyAssertions
             createMessageException = null;
             createInnerExceptionException = null;
         }
-        
+
         public Exception WithActualExpression(string message)
         {
             return Failure(MessageHelper.ActualExpression + Environment.NewLine + message.TrimStart('\r', '\n'));
         }
-        
+
         public Exception WithActualExpression(string message, Exception innerException)
         {
             return Failure(MessageHelper.ActualExpression + Environment.NewLine + message, innerException);
         }
-        
+
         public Exception Custom(string message)
         {
             return Failure(message);
         }
-        
+
         public Exception Custom(string message, Exception innerException)
         {
             return Failure(message, innerException);

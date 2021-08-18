@@ -13,7 +13,7 @@ namespace EasyAssertions.UnitTests
     [TestFixture]
     public class StandardErrorsTests
     {
-        private TestExpressionProvider expressionProvider;
+        private ITestExpressionProvider expressionProvider = null!;
         private readonly IStandardErrors sut = StandardErrors.Current;
         private const string ActualExpression = "test expression";
         private const string ExpectedExpression = "expected expression";
@@ -21,7 +21,7 @@ namespace EasyAssertions.UnitTests
         [SetUp]
         public void SetUp()
         {
-            expressionProvider = Substitute.For<TestExpressionProvider>();
+            expressionProvider = Substitute.For<ITestExpressionProvider>();
             expressionProvider.GetActualExpression().Returns(ActualExpression);
             expressionProvider.GetExpectedExpression().Returns(ExpectedExpression);
             TestExpression.OverrideProvider(expressionProvider);
@@ -557,7 +557,7 @@ foo", result);
         [Test]
         public void CollectionContains_IncludesMessage()
         {
-            string result = sut.Contains((object)null, Enumerable.Empty<object>(), message: "foo").Message;
+            string result = sut.Contains((object?)null, Enumerable.Empty<object>(), message: "foo").Message;
 
             StringAssert.EndsWith(NewLine + "foo", result);
         }

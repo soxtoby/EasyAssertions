@@ -6,8 +6,8 @@ namespace EasyAssertions.UnitTests
 {
     public abstract class AssertionTests
     {
-        protected IStandardErrors Error;
-        protected Exception ExpectedException;
+        protected IStandardErrors Error = null!;
+        protected Exception ExpectedException = null!;
 
         [SetUp]
         public void BaseSetUp()
@@ -46,7 +46,7 @@ namespace EasyAssertions.UnitTests
             Assert.AreEqual(paramName, result.ParamName);
         }
 
-        protected void AssertFailsWithTypesNotEqualMessage(Type expectedType, Type actualType, Action<string> assertionCall)
+        protected void AssertFailsWithTypesNotEqualMessage(Type expectedType, Type? actualType, Action<string> assertionCall)
         {
             Error.NotEqual(expectedType, actualType, "foo").Returns(ExpectedException);
 

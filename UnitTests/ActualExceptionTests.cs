@@ -10,7 +10,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void CannotConstructWithNull()
         {
-            AssertArgumentNullException("actual", () => new ActualException<Exception>(null));
+            AssertArgumentNullException("actual", () => new ActualException<Exception>(null!));
         }
 
         [Test]

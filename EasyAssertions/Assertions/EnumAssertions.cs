@@ -12,7 +12,7 @@ namespace EasyAssertions
         /// <summary>
         /// Asserts that two value types are equal, using the default equality comparer.
         /// </summary>
-        public static Actual<T> ShouldBeValue<T>(this T actual, T expected, string message = null) where T : struct
+        public static Actual<T> ShouldBeValue<T>(this T actual, T expected, string? message = null) where T : struct
         {
             return actual.RegisterAssertion(c =>
                 {
@@ -24,7 +24,7 @@ namespace EasyAssertions
         /// <summary>
         /// Asserts that a <code>[Flags]</code> enum has the specified flag set.
         /// </summary>
-        public static Actual<T> ShouldHaveFlag<T>(this T actual, T expectedFlag, string message = null) where T : struct
+        public static Actual<T> ShouldHaveFlag<T>(this T actual, T expectedFlag, string? message = null) where T : struct
         {
             return actual.RegisterAssertion(c =>
                 {
@@ -34,8 +34,8 @@ namespace EasyAssertions
                     if (typeof(T).GetCustomAttributes(typeof(FlagsAttribute), false).None())
                         throw c.StandardError.DoesNotContain(new FlagsAttribute(), typeof(T).GetCustomAttributes(false), message);
 
-                    Enum actualEnum = actual as Enum;
-                    Enum expectedFlagEnum = expectedFlag as Enum;
+                    Enum actualEnum = (actual as Enum)!;
+                    Enum expectedFlagEnum = (expectedFlag as Enum)!;
                     if (!actualEnum.HasFlag(expectedFlagEnum))
                         throw c.StandardError.DoesNotContain(expectedFlag, Flags<T>(actualEnum), message);
                 });

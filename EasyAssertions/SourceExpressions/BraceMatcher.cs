@@ -13,7 +13,7 @@ namespace EasyAssertions
         private const char Backslash = '\\';
 
         private readonly string source;
-        protected readonly Stack<char> ExpectedClosingBraces = new Stack<char>();
+        protected readonly Stack<char> ExpectedClosingBraces = new();
         private bool inString;
         private bool escapeNextChar;
 

@@ -8,7 +8,7 @@ namespace EasyAssertions.UnitTests
     [TestFixture]
     public class SourceExpressionProviderTests
     {
-        private SourceExpressionProvider sut;
+        private SourceExpressionProvider sut = null!;
 
         [SetUp]
         public void SetUp()
@@ -145,7 +145,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ExpressionInsideIndexedAssertion_IncludesIndex()
         {
-            TestClass[] actualExpression = { null, new TestClass(12) };
+            TestClass?[] actualExpression = { null, new TestClass(12) };
             int expectedExpression = 2;
 
             Assert.Throws<EasyAssertionException>(() =>
@@ -194,7 +194,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void AssertionNestsAnotherAssertionInAction_TakesExpressionFromOuterAssertion()
         {
-            object actualExpression = null;
+            object? actualExpression = null;
 
             Assert.Throws<EasyAssertionException>(() => actualExpression.TestActionAssert());
 
@@ -204,7 +204,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void AssertionNestsAnotherAssertionInFunc_TakesExpressionFromOuterAssertion()
         {
-            object actualExpression = null;
+            object? actualExpression = null;
 
             Assert.Throws<EasyAssertionException>(() => actualExpression.TestFuncAssert());
 
@@ -271,8 +271,7 @@ namespace EasyAssertions.UnitTests
 
             public override bool Equals(object obj)
             {
-                TestClass other = obj as TestClass;
-                return other != null
+                return obj is TestClass other
                     && other.Value == Value;
             }
 
@@ -290,12 +289,12 @@ namespace EasyAssertions.UnitTests
 
     static class TestAssertions
     {
-        public static Actual<object> TestActionAssert(this object actual)
+        public static Actual<object> TestActionAssert(this object? actual)
         {
             return actual.RegisterAssertion(c => { actual.ShouldNotBeNull(); });
         }
 
-        public static Actual<object> TestFuncAssert(this object actual)
+        public static Actual<object> TestFuncAssert(this object? actual)
         {
             return actual.RegisterAssertion(c => actual.ShouldNotBeNull());
         }

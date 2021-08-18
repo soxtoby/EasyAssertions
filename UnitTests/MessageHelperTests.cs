@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using System;
+using NUnit.Framework;
 
 namespace EasyAssertions.UnitTests
 {
@@ -8,7 +9,7 @@ namespace EasyAssertions.UnitTests
         public void Sample_LimitsTo10Items()
         {
             string result = MessageHelper.Sample(new object[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 });
-            
+
             Assert.AreEqual(@"[
     <1>,
     <2>,
@@ -131,17 +132,17 @@ namespace EasyAssertions.UnitTests
         {
             string result = MessageHelper.Sample(new object[]
                 {
-                    new object[0],
-                    new object[0],
-                    new object[0],
-                    new object[0],
-                    new object[0],
-                    new object[0],
-                    new object[0],
-                    new object[0],
-                    new object[0],
-                    new object[0],
-                    new object[0]
+                    Array.Empty<object>(),
+                    Array.Empty<object>(),
+                    Array.Empty<object>(),
+                    Array.Empty<object>(),
+                    Array.Empty<object>(),
+                    Array.Empty<object>(),
+                    Array.Empty<object>(),
+                    Array.Empty<object>(),
+                    Array.Empty<object>(),
+                    Array.Empty<object>(),
+                    Array.Empty<object>()
                 });
 
             Assert.AreEqual(@"[

@@ -5,9 +5,9 @@
     /// </summary>
     public static class TestExpression
     {
-        static TestExpressionProvider currentProvider;
+        static ITestExpressionProvider? currentProvider;
 
-        private static TestExpressionProvider CurrentProvider => currentProvider ?? SourceExpressionProvider.ForCurrentThread;
+        private static ITestExpressionProvider CurrentProvider => currentProvider ?? SourceExpressionProvider.ForCurrentThread;
 
         /// <summary>
         /// Builds the source representation of the value being asserted on.
@@ -28,16 +28,16 @@
         }
 
         /// <summary>
-        /// Overrides the <see cref="TestExpressionProvider"/> used to provide source representations
+        /// Overrides the <see cref="ITestExpressionProvider"/> used to provide source representations
         /// of the current assertion's actual and expected values.
         /// </summary>
-        public static void OverrideProvider(TestExpressionProvider provider)
+        public static void OverrideProvider(ITestExpressionProvider provider)
         {
             currentProvider = provider;
         }
 
         /// <summary>
-        /// Resets the current <see cref="TestExpressionProvider"/> to the default provider.
+        /// Resets the current <see cref="ITestExpressionProvider"/> to the default provider.
         /// </summary>
         public static void DefaultProvider()
         {
@@ -48,7 +48,7 @@
     /// <summary>
     /// Provides source representations for the current assertion's actual and expected values.
     /// </summary>
-    public interface TestExpressionProvider
+    public interface ITestExpressionProvider
     {
         /// <summary>
         /// Builds the source representation of the value being asserted on.

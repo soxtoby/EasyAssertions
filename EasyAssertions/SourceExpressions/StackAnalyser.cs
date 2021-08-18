@@ -11,8 +11,8 @@ namespace EasyAssertions
 
         public static StackAnalyser ForCurrentStack()
         {
-            IEnumerable<StackFrame> curentStack = new StackTrace(true).GetFrames() ?? Enumerable.Empty<StackFrame>();
-            return new StackAnalyser(curentStack.Skip(1));  // Skip top frame so index arguments are relative to caller, not this method
+            IEnumerable<StackFrame> currentStack = new StackTrace(true).GetFrames() ?? Enumerable.Empty<StackFrame>();
+            return new StackAnalyser(currentStack.Skip(1));  // Skip top frame so index arguments are relative to caller, not this method
         }
 
         private StackAnalyser(IEnumerable<StackFrame> stackFrames)

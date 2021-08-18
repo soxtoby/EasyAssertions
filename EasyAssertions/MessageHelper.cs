@@ -16,9 +16,9 @@ namespace EasyAssertions
         private const int SampleSize = 10;
         private const int MaxStringWidth = 60;
         private const int IdealArrowIndex = 20;
-        private static readonly Regex NewCollectionPattern = new Regex(@"^new.*\{.*\}", RegexOptions.Compiled);
-        private static readonly Regex MemberPattern = new Regex(@"value\(.*?\)\.", RegexOptions.Compiled);
-        private static readonly Regex BoxingPattern = new Regex(@"^Convert\((.*)\)$", RegexOptions.Compiled);
+        private static readonly Regex NewCollectionPattern = new(@"^new.*\{.*\}", RegexOptions.Compiled);
+        private static readonly Regex MemberPattern = new(@"value\(.*?\)\.", RegexOptions.Compiled);
+        private static readonly Regex BoxingPattern = new(@"^Convert\((.*)\)$", RegexOptions.Compiled);
 
         /// <summary>
         /// Returns the source representation of the actual value.
@@ -38,9 +38,9 @@ namespace EasyAssertions
         /// Returns the source representation of the expected value, if available,
         /// and the expected value underneath it.
         /// </summary>
-        public static string Expected(object expectedValue, string indent)
+        public static string Expected(object? expectedValue, string indent)
         {
-            string sourceExpression = ExpectedSourceIfDifferentToValue(expectedValue);
+            string? sourceExpression = ExpectedSourceIfDifferentToValue(expectedValue);
             return sourceExpression == null
                 ? Value(expectedValue)
                 : sourceExpression + indent + Value(expectedValue);
@@ -51,9 +51,9 @@ namespace EasyAssertions
         /// Returns null if the source representation is the same as the value output
         /// (e.g. if the source was a literal value)
         /// </summary>
-        public static string ExpectedSourceIfDifferentToValue(object expectedValue)
+        public static string? ExpectedSourceIfDifferentToValue(object? expectedValue)
         {
-            string expectedExpression = TestExpression.GetExpected() ?? string.Empty;
+            string expectedExpression = TestExpression.GetExpected();
 
             return MatchesExpectedValueOutput(expectedExpression, expectedValue)
                    || IsStringLiteral(expectedExpression)
@@ -66,7 +66,7 @@ namespace EasyAssertions
                 : expectedExpression.NullIfEmpty();
         }
 
-        private static bool MatchesExpectedValueOutput(string expectedExpression, object expectedValue)
+        private static bool MatchesExpectedValueOutput(string expectedExpression, object? expectedValue)
         {
             string expectedValueOutput = string.Empty + expectedValue;
             return expectedExpression == expectedValueOutput;
@@ -84,7 +84,7 @@ namespace EasyAssertions
                    && firstChar <= 57;
         }
 
-        private static bool IsBooleanLiteral(string expectedExpression, object expectedValue)
+        private static bool IsBooleanLiteral(string expectedExpression, object? expectedValue)
         {
             return expectedValue is bool
                    && expectedExpression == expectedValue.ToString().ToLower();
@@ -104,7 +104,7 @@ namespace EasyAssertions
         /// Returns <paramref name="singleMessage"/> or <paramref name="multipleMessage"/>, depending on whether
         /// <paramref name="collection"/> has 1 element or more.
         /// </summary>
-        public static string Count(ICollection<object> collection, string singleMessage, string multipleMessage)
+        public static string Count(ICollection<object?> collection, string singleMessage, string multipleMessage)
         {
             return Count(collection.Count, singleMessage, multipleMessage);
         }
@@ -122,7 +122,7 @@ namespace EasyAssertions
         /// Returns <paramref name="emptyMessage"/>, <paramref name="singleMessage"/> or <paramref name="multipleMessage"/>, depending on
         /// whether <paramref name="collection"/> has no elements, a single element, or more elements.
         /// </summary>
-        public static string Count(ICollection<object> collection, string emptyMessage, string singleMessage, string multipleMessage)
+        public static string Count(ICollection<object?> collection, string emptyMessage, string singleMessage, string multipleMessage)
         {
             return Count(collection.Count, emptyMessage, singleMessage, multipleMessage);
         }
@@ -141,7 +141,7 @@ namespace EasyAssertions
         /// <summary>
         /// Returns a string representation of the first item in <paramref name="collection"/>.
         /// </summary>
-        public static string Single(ICollection<object> collection)
+        public static string Single(ICollection<object?> collection)
         {
             return Value(collection.FirstOrDefault());
         }
@@ -297,8 +297,7 @@ namespace EasyAssertions
         public static string Path(ICollection<object> path)
         {
             return new[] { "root" }
-                .Concat(
-                    (path ?? Enumerable.Empty<object>()))
+                .Concat(path)
                 .Select(v => v.ToString())
                 .Join(" -> ");
         }
@@ -348,20 +347,20 @@ namespace EasyAssertions
         /// <summary>
         /// Returns a string representation of an object.
         /// </summary>
-        public static string Value(object value)
+        public static string Value(object? value)
         {
-            string str = value as string;
-            Regex regex = value as Regex;
-
-            return str != null ? Value(str)
-                : regex != null ? Value(regex)
-                : "<" + (value ?? "null") + ">";
+            return value switch
+                {
+                    string str => Value(str),
+                    Regex regex => Value(regex),
+                    _ => "<" + (value ?? "null") + ">"
+                };
         }
 
         /// <summary>
         /// Returns <paramref name="value"/> on a new line if it has anything in it.
         /// </summary>
-        public static string OnNewLine(this string value)
+        public static string OnNewLine(this string? value)
         {
             return string.IsNullOrEmpty(value)
                 ? string.Empty
@@ -371,7 +370,7 @@ namespace EasyAssertions
         /// <summary>
         /// Returns <paramref name="value"/> with a trailing space, if it has anything in it.
         /// </summary>
-        public static string WithSpace(this string value)
+        public static string WithSpace(this string? value)
         {
             return string.IsNullOrEmpty(value)
                 ? string.Empty

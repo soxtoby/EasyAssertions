@@ -30,13 +30,14 @@ namespace EasyAssertions
         /// </summary>
         public readonly T Value;
 
-        private readonly List<TestNode<T>> children = new List<TestNode<T>>();
+        private readonly List<TestNode<T>> children = new();
 
         /// <summary>
         /// Constructs a root node with no value.
         /// </summary>
         public TestNode()
         {
+            Value = default!;
         }
 
         /// <summary>

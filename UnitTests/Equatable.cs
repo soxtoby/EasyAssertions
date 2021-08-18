@@ -11,8 +11,7 @@ namespace EasyAssertions.UnitTests
 
         public override bool Equals(object obj)
         {
-            Equatable otherEquatable = obj as Equatable;
-            return otherEquatable != null
+            return obj is Equatable otherEquatable
                 && otherEquatable.Value == Value;
         }
 

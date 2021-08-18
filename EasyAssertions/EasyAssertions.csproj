@@ -9,9 +9,11 @@
     <Description>Easy-to-use fluent assertions with actually useful failure messages.</Description>
     <Copyright>Simon Oxtoby 2017</Copyright>
     <PackageProjectUrl>https://github.com/soxtoby/EasyAssertions</PackageProjectUrl>
-    <PackageLicenseUrl>https://github.com/soxtoby/EasyAssertions/blob/master/License.txt</PackageLicenseUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageTags>testing assertion unittesting</PackageTags>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <LangVersion>9</LangVersion>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

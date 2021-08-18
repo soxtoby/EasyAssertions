@@ -8,10 +8,10 @@ namespace EasyAssertions.UnitTests
 {
     public class TaskAssertionTests : AssertionTests
     {
-        private TaskCompletionSource<int> taskSource;
-        private Func<Task, TimeSpan, bool> defaultWaitForTask;
-        private Func<Task, TimeSpan, bool> wait;
-        private Task<int> task;
+        private TaskCompletionSource<int> taskSource = null!;
+        private Func<Task, TimeSpan, bool> defaultWaitForTask = null!;
+        private Func<Task, TimeSpan, bool> wait = null!;
+        private Task<int> task = null!;
 
         [SetUp]
         public void SetUp()
@@ -46,7 +46,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ShouldComplete_ActualIsNull_FailsWithWrongTypeMessage()
         {
-            AssertFailsWithTypesNotEqualMessage(typeof(Task), null, msg => ((Task)null).ShouldComplete(msg));
+            AssertFailsWithTypesNotEqualMessage(typeof(Task), null, msg => ((Task?)null).ShouldComplete(msg));
         }
 
         [Test]
@@ -77,7 +77,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ShouldCompleteWithinMilliseconds_ActualIsNull_FailsWithWrongTypeMessage()
         {
-            AssertFailsWithTypesNotEqualMessage(typeof(Task), null, msg => ((Task)null).ShouldComplete(1, msg));
+            AssertFailsWithTypesNotEqualMessage(typeof(Task), null, msg => ((Task?)null).ShouldComplete(1, msg));
         }
 
         [Test]
@@ -116,7 +116,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ShouldCompleteWithinTimeSpan_ActualIsNull_FailsWithWrongTypeMessage()
         {
-            AssertFailsWithTypesNotEqualMessage(typeof(Task), null, msg => ((Task)null).ShouldComplete(TimeSpan.FromMilliseconds(1), msg));
+            AssertFailsWithTypesNotEqualMessage(typeof(Task), null, msg => ((Task?)null).ShouldComplete(TimeSpan.FromMilliseconds(1), msg));
         }
 
         [Test]
@@ -144,7 +144,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ShouldCompleteWithValue_ActualIsNull_FailsWithWrongTypeMessage()
         {
-            AssertFailsWithTypesNotEqualMessage(typeof(Task<int>), null, msg => ((Task<int>)null).ShouldComplete(msg));
+            AssertFailsWithTypesNotEqualMessage(typeof(Task<int>), null, msg => ((Task<int>?)null).ShouldComplete(msg));
         }
 
         [Test]
@@ -181,7 +181,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ShouldCompleteWithinMillisecondsWithValue_ActualIsNull_FailsWithWrongTypeMessage()
         {
-            AssertFailsWithTypesNotEqualMessage(typeof(Task<int>), null, msg => ((Task<int>)null).ShouldComplete(1, msg));
+            AssertFailsWithTypesNotEqualMessage(typeof(Task<int>), null, msg => ((Task<int>?)null).ShouldComplete(1, msg));
         }
 
         [Test]
@@ -208,7 +208,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ShouldCompleteWithinTimeSpanWithValue_ActualIsNull_FailsWithWrongTypeMessage()
         {
-            AssertFailsWithTypesNotEqualMessage(typeof(Task<int>), null, msg => ((Task<int>)null).ShouldComplete(TimeSpan.FromMilliseconds(1), msg));
+            AssertFailsWithTypesNotEqualMessage(typeof(Task<int>), null, msg => ((Task<int>?)null).ShouldComplete(TimeSpan.FromMilliseconds(1), msg));
         }
 
         [Test]
@@ -253,7 +253,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ShouldFailWithType_ActualIsNull_FailsWithWrongTypeMessage()
         {
-            AssertFailsWithTypesNotEqualMessage(typeof(Task), null, msg => ((Task)null).ShouldFailWith<Exception>(msg));
+            AssertFailsWithTypesNotEqualMessage(typeof(Task), null, msg => ((Task?)null).ShouldFailWith<Exception>(msg));
         }
 
         [Test]
@@ -274,7 +274,7 @@ namespace EasyAssertions.UnitTests
         }
 
         [Test]
-        public void ShouldFailWithinMillisecondsWithType_ExpectedTaskCanceledExcepton_TaskCancelled_ReturnsException()
+        public void ShouldFailWithinMillisecondsWithType_ExpectedTaskCanceledException_TaskCancelled_ReturnsException()
         {
             AssertReturnsTaskCanceledException(TimeSpan.FromMilliseconds(1), () => task.ShouldFailWith<TaskCanceledException>(1));
         }
@@ -300,7 +300,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ShouldFailWithinMillisecondsWithType_ActualIsNull_FailsWithWrongTypeMessage()
         {
-            AssertFailsWithTypesNotEqualMessage(typeof(Task), null, msg => ((Task)null).ShouldFailWith<Exception>(1, msg));
+            AssertFailsWithTypesNotEqualMessage(typeof(Task), null, msg => ((Task?)null).ShouldFailWith<Exception>(1, msg));
         }
 
         [Test]
@@ -354,7 +354,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ShouldFailWithinTimeSpanWithType_ActualIsNull_FailsWithWrongTypeMessage()
         {
-            AssertFailsWithTypesNotEqualMessage(typeof(Task), null, msg => ((Task)null).ShouldFailWith<Exception>(TimeSpan.FromMilliseconds(1), msg));
+            AssertFailsWithTypesNotEqualMessage(typeof(Task), null, msg => ((Task?)null).ShouldFailWith<Exception>(TimeSpan.FromMilliseconds(1), msg));
         }
 
         [Test]
@@ -394,7 +394,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ShouldFail_ActualIsNull_FailsWithWrongTypeMessage()
         {
-            AssertFailsWithTypesNotEqualMessage(typeof(Task), null, msg => ((Task)null).ShouldFail(msg));
+            AssertFailsWithTypesNotEqualMessage(typeof(Task), null, msg => ((Task?)null).ShouldFail(msg));
         }
 
         [Test]
@@ -435,7 +435,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ShouldFailWithinMilliseconds_ActualIsNull_FailsWithWrongTypeMessage()
         {
-            AssertFailsWithTypesNotEqualMessage(typeof(Task), null, msg => ((Task)null).ShouldFail(1, msg));
+            AssertFailsWithTypesNotEqualMessage(typeof(Task), null, msg => ((Task?)null).ShouldFail(1, msg));
         }
 
         [Test]
@@ -483,7 +483,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ShouldFailWithinTimeSpan_ActualIsNull_FailsWithWrongTypeMessage()
         {
-            AssertFailsWithTypesNotEqualMessage(typeof(Task), null, msg => ((Task)null).ShouldFail(TimeSpan.FromMilliseconds(1), msg));
+            AssertFailsWithTypesNotEqualMessage(typeof(Task), null, msg => ((Task?)null).ShouldFail(TimeSpan.FromMilliseconds(1), msg));
         }
 
         [Test]

@@ -6,7 +6,7 @@ namespace EasyAssertions
 {
     internal abstract class AssertionComponentGroup
     {
-        private readonly List<AssertionComponent> calls = new List<AssertionComponent>();
+        private readonly List<AssertionComponent> calls = new();
 
         protected IEnumerable<AssertionComponent> MethodCalls => calls;
 
@@ -15,7 +15,7 @@ namespace EasyAssertions
         public virtual string GetActualExpression(string parentExpression)
         {
             return AggregateMethodCalls(
-                (method, source, nextSegment) => method.GetActualSegment(source, nextSegment), 
+                (method, source, nextSegment) => method.GetActualSegment(source, nextSegment),
                 (expression, segment) => expression + segment.Expression.Trim());
         }
 
@@ -29,7 +29,7 @@ namespace EasyAssertions
         public virtual string GetExpectedExpression(string actualExpression, string parentExpression)
         {
             return AggregateMethodCalls(
-                    (method, source, nextSegment) => method.GetExpectedSegment(source, nextSegment), 
+                    (method, source, nextSegment) => method.GetExpectedSegment(source, nextSegment),
                     (_, segment) => segment.Expression)
                 .Trim();
         }

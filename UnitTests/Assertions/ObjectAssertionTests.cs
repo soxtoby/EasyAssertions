@@ -7,6 +7,12 @@ namespace EasyAssertions.UnitTests
     [TestFixture]
     public class ObjectAssertionTests : AssertionTests
     {
+        /* // None of the lines in the following method should compile
+        public void ShouldNotCompile()
+        {
+            1.ShouldBeNull();
+        }/**/
+
         [Test]
         public void ShouldBe_SameValueReturnsActualValue()
         {
@@ -125,13 +131,13 @@ namespace EasyAssertions.UnitTests
         }
 
         [Test]
-        public void ShouldBeNull_IsNull_Passes()
+        public void ShouldBeNull_Class_IsNull_Passes()
         {
-            ((object)null).ShouldBeNull();
+            ((object?)null).ShouldBeNull();
         }
 
         [Test]
-        public void ShouldBeNull_NotNull_FailsWithNotEqualToNullMessage()
+        public void ShouldBeNull_Class_NotNull_FailsWithNotEqualToNullMessage()
         {
             object actual = new object();
             Error.NotEqual(null, actual, "foo").Returns(ExpectedException);
@@ -140,9 +146,34 @@ namespace EasyAssertions.UnitTests
         }
 
         [Test]
-        public void ShouldBeNull_CorrectlyRegistersAssertion()
+        public void ShouldBeNull_Class_CorrectlyRegistersAssertion()
         {
-            object actualExpression = null;
+            object? actualExpression = null;
+
+            actualExpression.ShouldBeNull();
+
+            Assert.AreEqual(nameof(actualExpression), TestExpression.GetActual());
+        }
+
+        [Test]
+        public void ShouldBeNull_Struct_IsNull_Passes()
+        {
+            ((int?)null).ShouldBeNull();
+        }
+
+        [Test]
+        public void ShouldBeNull_Struct_NotNull_FailsWithNotEqualToNullMessage()
+        {
+            int? actual = 1;
+            Error.NotEqual(null, actual, "foo").Returns(ExpectedException);
+
+            AssertThrowsExpectedError(() => actual.ShouldBeNull("foo"));
+        }
+
+        [Test]
+        public void ShouldBeNull_Struct_CorrectlyRegistersAssertion()
+        {
+            int? actualExpression = null;
 
             actualExpression.ShouldBeNull();
 
@@ -164,7 +195,7 @@ namespace EasyAssertions.UnitTests
         {
             Error.IsNull("foo").Returns(ExpectedException);
 
-            AssertThrowsExpectedError(() => ((object)null).ShouldNotBeNull("foo"));
+            AssertThrowsExpectedError(() => ((object?)null).ShouldNotBeNull("foo"));
         }
 
         [Test]

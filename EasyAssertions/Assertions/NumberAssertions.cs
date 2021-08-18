@@ -11,24 +11,24 @@ namespace EasyAssertions
 
         /// <summary>Disallowed comparison.</summary>
         [Obsolete(EqualityComparisonError, true)]
-        public static void ShouldBe(this object actual, float expected, string message = null) { }
+        public static void ShouldBe(this object actual, float expected, string? message = null) { }
 
         /// <summary>Disallowed comparison.</summary>
         [Obsolete(EqualityComparisonError, true)]
-        public static void ShouldBe(this object actual, double expected, string message = null) { }
+        public static void ShouldBe(this object actual, double expected, string? message = null) { }
 
         /// <summary>Disallowed comparison.</summary>
         [Obsolete(EqualityComparisonError, true)]
-        public static void ShouldNotBe(this object actual, float expected, string message = null) { }
+        public static void ShouldNotBe(this object actual, float expected, string? message = null) { }
 
         /// <summary>Disallowed comparison.</summary>
         [Obsolete(EqualityComparisonError, true)]
-        public static void ShouldNotBe(this object actual, double expected, string message = null) { }
+        public static void ShouldNotBe(this object actual, double expected, string? message = null) { }
 
         /// <summary>
-        /// Asserts that two <see cref="float"/> values are within a specified tolerance of eachother.
+        /// Asserts that two <see cref="float"/> values are within a specified tolerance of each other.
         /// </summary>
-        public static Actual<float> ShouldBe(this float actual, float expected, double tolerance, string message = null)
+        public static Actual<float> ShouldBe(this float actual, float expected, double tolerance, string? message = null)
         {
             return actual.RegisterAssertion(c =>
                 {
@@ -38,9 +38,9 @@ namespace EasyAssertions
         }
 
         /// <summary>
-        /// Asserts that a <see cref="float"/> and a <see cref="double"/> are within a specified tolerance of eachother.
+        /// Asserts that a <see cref="float"/> and a <see cref="double"/> are within a specified tolerance of each other.
         /// </summary>
-        public static Actual<float> ShouldBe(this float actual, double expected, double tolerance, string message = null)
+        public static Actual<float> ShouldBe(this float actual, double expected, double tolerance, string? message = null)
         {
             return actual.RegisterAssertion(c =>
                 {
@@ -50,9 +50,9 @@ namespace EasyAssertions
         }
 
         /// <summary>
-        /// Asserts that two <see cref="double"/> values are within a specified tolerance of eachother.
+        /// Asserts that two <see cref="double"/> values are within a specified tolerance of each other.
         /// </summary>
-        public static Actual<double> ShouldBe(this double actual, float expected, double tolerance, string message = null)
+        public static Actual<double> ShouldBe(this double actual, float expected, double tolerance, string? message = null)
         {
             return actual.RegisterAssertion(c =>
                 {
@@ -62,9 +62,9 @@ namespace EasyAssertions
         }
 
         /// <summary>
-        /// Asserts that a <see cref="double"/> and a <see cref="float"/> are within a specified tolerance of eachother.
+        /// Asserts that a <see cref="double"/> and a <see cref="float"/> are within a specified tolerance of each other.
         /// </summary>
-        public static Actual<double> ShouldBe(this double actual, double expected, double tolerance, string message = null)
+        public static Actual<double> ShouldBe(this double actual, double expected, double tolerance, string? message = null)
         {
             return actual.RegisterAssertion(c =>
                 {
@@ -74,9 +74,9 @@ namespace EasyAssertions
         }
 
         /// <summary>
-        /// Asserts that two <see cref="float"/> values are not within a specified tolerance of eachother.
+        /// Asserts that two <see cref="float"/> values are not within a specified tolerance of each other.
         /// </summary>
-        public static Actual<float> ShouldNotBe(this float actual, float notExpected, double tolerance, string message = null)
+        public static Actual<float> ShouldNotBe(this float actual, float notExpected, double tolerance, string? message = null)
         {
             return actual.RegisterAssertion(c =>
                 {
@@ -86,9 +86,9 @@ namespace EasyAssertions
         }
 
         /// <summary>
-        /// Asserts that two <see cref="double"/> values are not within a specified tolerance of eachother.
+        /// Asserts that two <see cref="double"/> values are not within a specified tolerance of each other.
         /// </summary>
-        public static Actual<double> ShouldNotBe(this double actual, double notExpected, double tolerance, string message = null)
+        public static Actual<double> ShouldNotBe(this double actual, double notExpected, double tolerance, string? message = null)
         {
             return actual.RegisterAssertion(c =>
                 {
@@ -100,7 +100,7 @@ namespace EasyAssertions
         /// <summary>
         /// Asserts that one value is greater than another.
         /// </summary>
-        public static Actual<TActual> ShouldBeGreaterThan<TActual, TExpected>(this TActual actual, TExpected expected, string message = null)
+        public static Actual<TActual> ShouldBeGreaterThan<TActual, TExpected>(this TActual actual, TExpected expected, string? message = null)
             where TActual : IComparable<TExpected>
         {
             return actual.RegisterAssertion(c =>
@@ -113,7 +113,7 @@ namespace EasyAssertions
         /// <summary>
         /// Asserts that one value is less than another.
         /// </summary>
-        public static Actual<TActual> ShouldBeLessThan<TActual, TExpected>(this TActual actual, TExpected expected, string message = null)
+        public static Actual<TActual> ShouldBeLessThan<TActual, TExpected>(this TActual actual, TExpected expected, string? message = null)
             where TActual : IComparable<TExpected>
         {
             return actual.RegisterAssertion(c =>
@@ -126,7 +126,7 @@ namespace EasyAssertions
         /// <summary>
         /// Asserts that a <see cref="float"/> value is NaN.
         /// </summary>
-        public static void ShouldBeNaN(this float actual, string message = null)
+        public static void ShouldBeNaN(this float actual, string? message = null)
         {
             actual.RegisterAssertion(c =>
                 {
@@ -138,7 +138,7 @@ namespace EasyAssertions
         /// <summary>
         /// Asserts that a <see cref="float"/> value is not NaN.
         /// </summary>
-        public static Actual<float> ShouldNotBeNaN(this float actual, string message = null)
+        public static Actual<float> ShouldNotBeNaN(this float actual, string? message = null)
         {
             return actual.RegisterAssertion(c =>
                 {
@@ -150,7 +150,7 @@ namespace EasyAssertions
         /// <summary>
         /// Asserts that a <see cref="double"/> value is NaN.
         /// </summary>
-        public static void ShouldBeNaN(this double actual, string message = null)
+        public static void ShouldBeNaN(this double actual, string? message = null)
         {
             actual.RegisterAssertion(c =>
                 {
@@ -162,7 +162,7 @@ namespace EasyAssertions
         /// <summary>
         /// Asserts that a <see cref="double"/> value is not NaN.
         /// </summary>
-        public static Actual<double> ShouldNotBeNaN(this double actual, string message = null)
+        public static Actual<double> ShouldNotBeNaN(this double actual, string? message = null)
         {
             return actual.RegisterAssertion(c =>
                 {

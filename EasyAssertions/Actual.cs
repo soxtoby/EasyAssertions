@@ -7,7 +7,7 @@
     {
         internal readonly T Value;
 
-        /// <inheritdoc />
+        /// <inheritdoc cref="Actual{T}" />
         public Actual(T actual)
         {
             Value = actual;

@@ -5,16 +5,16 @@ using System.Reflection;
 
 namespace EasyAssertions
 {
-    internal class SourceExpressionProvider : TestExpressionProvider
+    internal class SourceExpressionProvider : ITestExpressionProvider
     {
-        private readonly List<AssertionComponentGroup> assertionGroupChain = new List<AssertionComponentGroup>();
+        private readonly List<AssertionComponentGroup> assertionGroupChain = new();
 
-        private AssertionComponentGroup CurrentGroup => assertionGroupChain.LastOrDefault();
+        private AssertionComponentGroup CurrentGroup => assertionGroupChain.Last();
 
         [ThreadStatic]
-        private static SourceExpressionProvider threadInstance;
+        private static SourceExpressionProvider? threadInstance;
 
-        public static SourceExpressionProvider ForCurrentThread => threadInstance ?? (threadInstance = new SourceExpressionProvider());
+        public static SourceExpressionProvider ForCurrentThread => threadInstance ??= new SourceExpressionProvider();
 
         private SourceExpressionProvider() { }
 
@@ -52,7 +52,7 @@ namespace EasyAssertions
                 .Aggregate(int.MaxValue, Math.Min);
 
             return minIndent <= 4
-                ? input 
+                ? input
                 : lines.Take(1)
                     .Concat(lines
                         .Skip(1)

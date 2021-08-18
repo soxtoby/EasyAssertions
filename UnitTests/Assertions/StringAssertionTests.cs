@@ -1,5 +1,3 @@
-using System;
-using System.Collections;
 using NSubstitute;
 using NUnit.Framework;
 using System.Text.RegularExpressions;
@@ -30,7 +28,7 @@ namespace EasyAssertions.UnitTests
         {
             Error.NotEqual(typeof(string), null, "foo").Returns(ExpectedException);
 
-            AssertThrowsExpectedError(() => ((string)null).ShouldBeEmpty("foo"));
+            AssertThrowsExpectedError(() => ((string?)null).ShouldBeEmpty("foo"));
         }
 
         [Test]
@@ -63,13 +61,13 @@ namespace EasyAssertions.UnitTests
         {
             Error.NotEqual(typeof(string), null, "message").Returns(ExpectedException);
 
-            AssertThrowsExpectedError(() => ((string)null).ShouldContain("expected", "message"));
+            AssertThrowsExpectedError(() => ((string?)null).ShouldContain("expected", "message"));
         }
 
         [Test]
         public void ShouldContain_ExpectedIsNull_ThrowsArgumentNullException()
         {
-            AssertArgumentNullException("expectedToContain", () => "".ShouldContain(null));
+            AssertArgumentNullException("expectedToContain", () => "".ShouldContain(null!));
         }
 
         [Test]
@@ -106,13 +104,13 @@ namespace EasyAssertions.UnitTests
         {
             Error.NotEqual(typeof(string), null, "message").Returns(ExpectedException);
 
-            AssertThrowsExpectedError(() => ((string)null).ShouldNotContain("expected", "message"));
+            AssertThrowsExpectedError(() => ((string?)null).ShouldNotContain("expected", "message"));
         }
 
         [Test]
         public void ShouldNotContain_ExpectedIsNull_ThrowsArgumentNullException()
         {
-            AssertArgumentNullException("expectedToNotContain", () => "".ShouldNotContain(null));
+            AssertArgumentNullException("expectedToNotContain", () => "".ShouldNotContain(null!));
         }
 
         [Test]
@@ -153,13 +151,13 @@ namespace EasyAssertions.UnitTests
         {
             Error.NotEqual(typeof(string), null, "message").Returns(ExpectedException);
 
-            AssertThrowsExpectedError(() => ((string)null).ShouldStartWith("expected", "message"));
+            AssertThrowsExpectedError(() => ((string?)null).ShouldStartWith("expected", "message"));
         }
 
         [Test]
         public void ShouldStartWith_ExpectedIsNull_ThrowsArgumentNullException()
         {
-            AssertArgumentNullException("expectedStart", () => "".ShouldStartWith(null));
+            AssertArgumentNullException("expectedStart", () => "".ShouldStartWith(null!));
         }
 
         [Test]
@@ -200,14 +198,14 @@ namespace EasyAssertions.UnitTests
         {
             Error.NotEqual(typeof(string), null, "message").Returns(ExpectedException);
 
-            AssertThrowsExpectedError(() => ((string)null).ShouldEndWith("expected", "message"));
+            AssertThrowsExpectedError(() => ((string?)null).ShouldEndWith("expected", "message"));
 
         }
 
         [Test]
         public void ShouldEndWith_ExpectedIsNull_ThrowsArgumentNullException()
         {
-            AssertArgumentNullException("expectedEnd", () => "".ShouldEndWith(null));
+            AssertArgumentNullException("expectedEnd", () => "".ShouldEndWith(null!));
         }
 
         [Test]
@@ -260,13 +258,13 @@ namespace EasyAssertions.UnitTests
         {
             Error.NotEqual(typeof(string), null, "bar").Returns(ExpectedException);
 
-            AssertThrowsExpectedError(() => ((string)null).ShouldBe("foo", Case.Insensitive, "bar"));
+            AssertThrowsExpectedError(() => ((string?)null).ShouldBe("foo", Case.Insensitive, "bar"));
         }
 
         [Test]
         public void ShouldBe_CustomCaseSensitivity_ExpectedIsNull_ThrowsArgumentNullException()
         {
-            AssertArgumentNullException("expected", () => "foo".ShouldBe(null, Case.Insensitive));
+            AssertArgumentNullException("expected", () => "foo".ShouldBe(null!, Case.Insensitive));
         }
 
         [Test]
@@ -303,13 +301,13 @@ namespace EasyAssertions.UnitTests
         {
             Error.NotEqual(typeof(string), null, "foo").Returns(ExpectedException);
 
-            AssertThrowsExpectedError(() => ((string)null).ShouldMatch("", "foo"));
+            AssertThrowsExpectedError(() => ((string?)null).ShouldMatch("", "foo"));
         }
 
         [Test]
         public void ShouldMatchPattern_RegexPatternIsNull_ThrowsArgumentNullException()
         {
-            AssertArgumentNullException("regexPattern", () => "".ShouldMatch((string)null));
+            AssertArgumentNullException("regexPattern", () => "".ShouldMatch((string)null!));
         }
 
         [Test]
@@ -344,7 +342,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ShouldMatchPattern_WithRegexOptions_RegexPatternIsNull_ThrowsArgumentNullException()
         {
-            AssertArgumentNullException("regexPattern", () => "".ShouldMatch(null, RegexOptions.IgnoreCase));
+            AssertArgumentNullException("regexPattern", () => "".ShouldMatch(null!, RegexOptions.IgnoreCase));
         }
 
         [Test]
@@ -380,7 +378,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ShouldMatchRegex_RegexIsNull_ThrowsArgumentNullException()
         {
-            AssertArgumentNullException("regex", () => "".ShouldMatch((Regex)null));
+            AssertArgumentNullException("regex", () => "".ShouldMatch((Regex)null!));
         }
 
         [Test]
@@ -417,13 +415,13 @@ namespace EasyAssertions.UnitTests
         {
             Error.NotEqual(typeof(string), null, "foo").Returns(ExpectedException);
 
-            AssertThrowsExpectedError(() => ((string)null).ShouldNotMatch("", "foo"));
+            AssertThrowsExpectedError(() => ((string?)null).ShouldNotMatch("", "foo"));
         }
 
         [Test]
         public void ShouldNotMatchPattern_RegexPatternIsNull_ThrowsArgumentNullException()
         {
-            AssertArgumentNullException("regexPattern", () => "".ShouldNotMatch((string)null));
+            AssertArgumentNullException("regexPattern", () => "".ShouldNotMatch((string)null!));
         }
 
         [Test]
@@ -458,7 +456,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ShouldNotMatchPattern_WithRegexOptions_RegexPatternIsNull_ThrowsArgumentNullException()
         {
-            AssertArgumentNullException("regexPattern", () => "".ShouldNotMatch(null, RegexOptions.IgnoreCase));
+            AssertArgumentNullException("regexPattern", () => "".ShouldNotMatch(null!, RegexOptions.IgnoreCase));
         }
 
         [Test]
@@ -494,7 +492,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ShouldNotMatchRegex_RegexIsNull_ThrowsArgumentNullException()
         {
-            AssertArgumentNullException("regex", () => "".ShouldNotMatch((Regex)null));
+            AssertArgumentNullException("regex", () => "".ShouldNotMatch((Regex)null!));
         }
 
         [Test]

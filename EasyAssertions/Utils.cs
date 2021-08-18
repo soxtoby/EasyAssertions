@@ -30,7 +30,7 @@ namespace EasyAssertions
             return !enumerable.Any();
         }
 
-        public static string NullIfEmpty(this string value)
+        public static string? NullIfEmpty(this string value)
         {
             return value == string.Empty
                 ? null
@@ -51,9 +51,9 @@ namespace EasyAssertions
 
         public static bool TryReadAllLines(SourceAddress assertionsAddress, out string[] sourceLines)
         {
-            sourceLines = null;
+            sourceLines = new string[0];
 
-            string fileName = assertionsAddress.FileName;
+            string? fileName = assertionsAddress.FileName;
             if (fileName == null)
                 return false;
 
@@ -71,25 +71,23 @@ namespace EasyAssertions
         public static IEnumerable<T> SkipLast<T>(this IEnumerable<T> sequence, int count)
         {
             Queue<T> queue = new Queue<T>();
-            using (IEnumerator<T> enumerator = sequence.GetEnumerator())
+            using IEnumerator<T> enumerator = sequence.GetEnumerator();
+
+            while (enumerator.MoveNext())
             {
-                while (enumerator.MoveNext())
-                {
-                    queue.Enqueue(enumerator.Current);
-                    if (queue.Count > count)
-                        yield return queue.Dequeue();
-                }
+                queue.Enqueue(enumerator.Current);
+                if (queue.Count > count)
+                    yield return queue.Dequeue();
             }
         }
 
         public static IEnumerable<TOut> Zip<TLeft, TRight, TOut>(this IEnumerable<TLeft> left, IEnumerable<TRight> right, Func<TLeft, TRight, TOut> select)
         {
-            using (IEnumerator<TLeft> leftEnumerator = left.GetEnumerator())
-            using (IEnumerator<TRight> rightEnumerator = right.GetEnumerator())
-            {
-                while (leftEnumerator.MoveNext() && rightEnumerator.MoveNext())
-                    yield return select(leftEnumerator.Current, rightEnumerator.Current);
-            }
+            using IEnumerator<TLeft> leftEnumerator = left.GetEnumerator();
+            using IEnumerator<TRight> rightEnumerator = right.GetEnumerator();
+
+            while (leftEnumerator.MoveNext() && rightEnumerator.MoveNext())
+                yield return select(leftEnumerator.Current, rightEnumerator.Current);
         }
 
         public static IBuffer<object> Buffer(this IEnumerable source)

@@ -39,7 +39,7 @@ namespace EasyAssertions
 
     class Buffer<T> : IBuffer<T>
     {
-        private readonly List<T> buffer = new List<T>();
+        private readonly List<T> buffer = new();
         private readonly IEnumerator<T> sourceEnumerator;
 
         public Buffer(IEnumerable<T> source)

@@ -36,7 +36,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void NotEqual_Objects_ToStringed()
         {
-            string result = sut.NotEqual(new FakeObject("foo"), new FakeObject("bar")).Message;
+            var result = sut.NotEqual(new FakeObject("foo"), new FakeObject("bar")).Message;
             Assert.AreEqual(ActualExpression + NewLine
                 + "should be " + ExpectedExpression + NewLine
                 + "          <foo>" + NewLine
@@ -48,7 +48,7 @@ namespace EasyAssertions.UnitTests
         {
             expressionProvider.GetExpectedExpression().Returns("1");
 
-            string result = sut.NotEqual(1, 2).Message;
+            var result = sut.NotEqual(1, 2).Message;
 
             Assert.AreEqual(ActualExpression + NewLine
                 + "should be <1>" + NewLine
@@ -58,14 +58,14 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void NotEqual_Objects_IncludesMessage()
         {
-            string result = sut.NotEqual(new FakeObject("foo"), new FakeObject("bar"), "baz").Message;
+            var result = sut.NotEqual(new FakeObject("foo"), new FakeObject("bar"), "baz").Message;
             StringAssert.EndsWith(NewLine + "baz", result);
         }
 
         [Test]
         public void NotEqual_SingleLineStrings()
         {
-            string result = sut.NotEqual("acd", "abc").Message;
+            var result = sut.NotEqual("acd", "abc").Message;
             Assert.AreEqual(ActualExpression + NewLine
                 + "should be " + ExpectedExpression + NewLine
                 + "          \"acd\"" + NewLine
@@ -77,7 +77,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void StringsNotEqual_DifferenceOnLineTwo()
         {
-            string result = sut.NotEqual("abc\ndfe", "abc\ndef").Message;
+            var result = sut.NotEqual("abc\ndfe", "abc\ndef").Message;
             Assert.AreEqual(ActualExpression + NewLine
                 + "should be " + ExpectedExpression + NewLine
                 + "          \"abc\\ndfe\"" + NewLine
@@ -89,7 +89,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void StringsNotEqual_DifferenceFarAwayFromBeginning()
         {
-            string result = sut.NotEqual("0123456789abcdefghijklmnopqrstuvwxyz0123456789abcdefghijklmnopqrstuvwxyz",
+            var result = sut.NotEqual("0123456789abcdefghijklmnopqrstuvwxyz0123456789abcdefghijklmnopqrstuvwxyz",
                                                                              "0123456789abcdefghijklmnopqrstuvwxyz0123456789abcdefghijklmnpoqrstuvwxyz").Message;
             Assert.AreEqual(ActualExpression + NewLine
                 + "should be " + ExpectedExpression + NewLine
@@ -102,7 +102,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void StringsNotEqual_DifferenceFarAwayFromEnd()
         {
-            string result = sut.NotEqual("0123456789abcdefghijklmnopqrstuvwxyz0123456789abcdefghijklmnopqrstuvwxyz",
+            var result = sut.NotEqual("0123456789abcdefghijklmnopqrstuvwxyz0123456789abcdefghijklmnopqrstuvwxyz",
                                          "0123456789abdcefghijklmnopqrstuvwxyz0123456789abcdefghijklmnopqrstuvwxyz").Message;
             Assert.AreEqual(ActualExpression + NewLine
                 + "should be " + ExpectedExpression + NewLine
@@ -115,7 +115,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void StringsNotEqual_DifferenceFarAwayFromBothEnds()
         {
-            string result = sut.NotEqual("0123456789abcdefghijklmnopqrstuvwxyz0123456789abcdefghijklmnopqrstuvwxyz0123456789",
+            var result = sut.NotEqual("0123456789abcdefghijklmnopqrstuvwxyz0123456789abcdefghijklmnopqrstuvwxyz0123456789",
                                          "0123456789abcdefghijkmlnopqrstuvwxyz0123456789abcdefghijklmnopqrstuvwxyz0123456789").Message;
             Assert.AreEqual(ActualExpression + NewLine
                 + "should be " + ExpectedExpression + NewLine
@@ -130,7 +130,7 @@ namespace EasyAssertions.UnitTests
         {
             expressionProvider.GetExpectedExpression().Returns("@\"acd\"");
 
-            string result = sut.NotEqual("acd", "abc").Message;
+            var result = sut.NotEqual("acd", "abc").Message;
             Assert.AreEqual(ActualExpression + NewLine
                 + "should be \"acd\"" + NewLine
                 + "but was   \"abc\"" + NewLine
@@ -141,7 +141,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void StringsNotEqual_ActualShorterThanExpected()
         {
-            string result = sut.NotEqual("ab", "a").Message;
+            var result = sut.NotEqual("ab", "a").Message;
             Assert.AreEqual(ActualExpression + NewLine
                 + "should be " + ExpectedExpression + NewLine
                 + "          \"ab\"" + NewLine
@@ -153,7 +153,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void StringsNotEqual_ActualLongerThanExpected()
         {
-            string result = sut.NotEqual("a", "ab").Message;
+            var result = sut.NotEqual("a", "ab").Message;
             Assert.AreEqual(ActualExpression + NewLine
                 + "should be " + ExpectedExpression + NewLine
                 + "          \"a\"" + NewLine
@@ -165,10 +165,10 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void StringsNotEqual_LongActualShorterThanExpected()
         {
-            string expected = "0123456789abcdefghijklmnopqrstuvwxyz0123456789abcdefghijklmnopqrstuvwxyz";
-            string actual = "0123456789abcdefghijklmnopqrstuvwxyz0123456789abcdefghijklmnopqrstuvwxy";
+            var expected = "0123456789abcdefghijklmnopqrstuvwxyz0123456789abcdefghijklmnopqrstuvwxyz";
+            var actual = "0123456789abcdefghijklmnopqrstuvwxyz0123456789abcdefghijklmnopqrstuvwxy";
 
-            string result = sut.NotEqual(expected, actual).Message;
+            var result = sut.NotEqual(expected, actual).Message;
 
             Assert.AreEqual(ActualExpression + NewLine
                 + "should be " + ExpectedExpression + NewLine
@@ -181,7 +181,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void StringsNotEqual_CaseInsensitive_DifferenceIgnoresCase()
         {
-            string result = sut.NotEqual("abc", "Acb", Case.Insensitive).Message;
+            var result = sut.NotEqual("abc", "Acb", Case.Insensitive).Message;
             Assert.AreEqual(ActualExpression + NewLine
                 + "should be " + ExpectedExpression + NewLine
                 + "          \"abc\"" + NewLine
@@ -193,7 +193,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void StringsNotEqual_IncludesMessage()
         {
-            string result = sut.NotEqual("acd", "abc", message: "foo").Message;
+            var result = sut.NotEqual("acd", "abc", message: "foo").Message;
 
             StringAssert.EndsWith(NewLine + "foo", result);
         }
@@ -201,7 +201,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void AreEqual_ObjectsToStringed()
         {
-            string result = sut.AreEqual(new FakeObject("foo"), new FakeObject("bar")).Message;
+            var result = sut.AreEqual(new FakeObject("foo"), new FakeObject("bar")).Message;
 
             Assert.AreEqual(ActualExpression + NewLine
                 + "should not be " + ExpectedExpression + NewLine
@@ -212,7 +212,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void AreEqual_IncludesMessage()
         {
-            string result = sut.AreEqual(null, null, "foo").Message;
+            var result = sut.AreEqual(null, null, "foo").Message;
 
             StringAssert.EndsWith(NewLine + "foo", result);
         }
@@ -220,7 +220,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void IsNull()
         {
-            string result = sut.IsNull().Message;
+            var result = sut.IsNull().Message;
 
             Assert.AreEqual(ActualExpression + NewLine
                 + "should not be null, but was.", result);
@@ -229,7 +229,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void IsNull_IncludesMessage()
         {
-            string result = sut.IsNull("foo").Message;
+            var result = sut.IsNull("foo").Message;
 
             StringAssert.EndsWith(NewLine + "foo", result);
         }
@@ -237,10 +237,10 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void NotSame_ObjectsToStringed()
         {
-            FakeObject expected = new FakeObject("foo");
-            FakeObject actual = new FakeObject("bar");
+            var expected = new FakeObject("foo");
+            var actual = new FakeObject("bar");
 
-            string result = sut.NotSame(expected, actual).Message;
+            var result = sut.NotSame(expected, actual).Message;
 
             Assert.AreEqual(ActualExpression + NewLine
                  + "should be instance " + ExpectedExpression + NewLine
@@ -251,7 +251,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void NotSame_IncludesMessage()
         {
-            string result = sut.NotSame(new object(), new object(), "foo").Message;
+            var result = sut.NotSame(new object(), new object(), "foo").Message;
 
             StringAssert.EndsWith(NewLine + "foo", result);
         }
@@ -259,7 +259,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void AreSame_ObjectToStringed()
         {
-            string result = sut.AreSame(new FakeObject("foo")).Message;
+            var result = sut.AreSame(new FakeObject("foo")).Message;
 
             Assert.AreEqual(ActualExpression + NewLine
                 + "shouldn't be instance " + ExpectedExpression + NewLine
@@ -269,7 +269,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void AreSame_IncludesMessage()
         {
-            string result = sut.AreSame(null, "foo").Message;
+            var result = sut.AreSame(null, "foo").Message;
 
             StringAssert.EndsWith(NewLine + "foo", result);
         }
@@ -279,7 +279,7 @@ namespace EasyAssertions.UnitTests
         {
             FakeObject[] enumerable = { new FakeObject("foo") };
 
-            string result = sut.NotEmpty(enumerable).Message;
+            var result = sut.NotEmpty(enumerable).Message;
 
             Assert.AreEqual(ActualExpression + NewLine
                 + "should be empty" + NewLine
@@ -291,7 +291,7 @@ namespace EasyAssertions.UnitTests
         {
             FakeObject[] enumerable = { new FakeObject("foo"), new FakeObject("bar") };
 
-            string result = sut.NotEmpty(enumerable).Message;
+            var result = sut.NotEmpty(enumerable).Message;
 
             Assert.AreEqual(ActualExpression + NewLine
                 + "should be empty" + NewLine
@@ -304,9 +304,9 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void NotEmpty_ManyItems_OnlyFirstTenDisplayed()
         {
-            IEnumerable<FakeObject> enumerable = Enumerable.Range(1, 11).Select(i => new FakeObject(i.ToString()));
+            var enumerable = Enumerable.Range(1, 11).Select(i => new FakeObject(i.ToString()));
 
-            string result = sut.NotEmpty(enumerable).Message;
+            var result = sut.NotEmpty(enumerable).Message;
 
             Assert.AreEqual(ActualExpression + NewLine
                 + "should be empty" + NewLine
@@ -328,7 +328,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void NotEmpty_OnlyEnumeratesOnce()
         {
-            TestEnumerable<int> actual = MakeEnumerable(1);
+            var actual = MakeEnumerable(1);
 
             sut.NotEmpty(actual);
 
@@ -340,7 +340,7 @@ namespace EasyAssertions.UnitTests
         {
             FakeObject[] enumerable = { new FakeObject(string.Empty) };
 
-            string result = sut.NotEmpty(enumerable, "foo").Message;
+            var result = sut.NotEmpty(enumerable, "foo").Message;
 
             StringAssert.EndsWith(NewLine + "foo", result);
         }
@@ -348,7 +348,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void StringNotEmpty()
         {
-            string result = sut.NotEmpty("foo").Message;
+            var result = sut.NotEmpty("foo").Message;
 
             Assert.AreEqual(ActualExpression + NewLine
                 + "should be empty" + NewLine
@@ -358,7 +358,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void StringNotEmpty_IncludesMessage()
         {
-            string result = sut.NotEmpty("foo", "bar").Message;
+            var result = sut.NotEmpty("foo", "bar").Message;
 
             StringAssert.EndsWith(NewLine + "bar", result);
         }
@@ -366,7 +366,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void IsEmpty()
         {
-            string result = sut.IsEmpty().Message;
+            var result = sut.IsEmpty().Message;
 
             Assert.AreEqual(ActualExpression + NewLine + "should not be empty, but was.", result);
         }
@@ -374,7 +374,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void IsEmpty_IncludesMessage()
         {
-            string result = sut.IsEmpty("foo").Message;
+            var result = sut.IsEmpty("foo").Message;
 
             StringAssert.EndsWith(NewLine + "foo", result);
         }
@@ -382,7 +382,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void CollectionDoesNotContain_EmptyCollection()
         {
-            string result = sut.DoesNotContain(1, Enumerable.Empty<int>()).Message;
+            var result = sut.DoesNotContain(1, Enumerable.Empty<int>()).Message;
 
             Assert.AreEqual(ActualExpression + NewLine
                 + "should contain " + ExpectedExpression + NewLine
@@ -393,7 +393,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void CollectionDoesNotContain_SingleItem()
         {
-            string result = sut.DoesNotContain(1, new[] { 2 }).Message;
+            var result = sut.DoesNotContain(1, new[] { 2 }).Message;
 
             Assert.AreEqual(ActualExpression + NewLine
                 + "should contain " + ExpectedExpression + NewLine
@@ -404,7 +404,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void CollectionDoesNotContain_MultipleItems()
         {
-            string result = sut.DoesNotContain(1, new[] { 2, 3 }).Message;
+            var result = sut.DoesNotContain(1, new[] { 2, 3 }).Message;
 
             Assert.AreEqual(ActualExpression + NewLine
                 + "should contain " + ExpectedExpression + NewLine
@@ -418,7 +418,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void CollectionDoesNotContain_LongActual_OnlyFirst10Displayed()
         {
-            string result = sut.DoesNotContain(0, new[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 }).Message;
+            var result = sut.DoesNotContain(0, new[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 }).Message;
 
             Assert.AreEqual(ActualExpression + NewLine
                 + "should contain " + ExpectedExpression + NewLine
@@ -441,7 +441,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void CollectionDoesNotContain_IncludesItemType()
         {
-            string result = sut.DoesNotContain(1, Enumerable.Empty<int>(), "foo").Message;
+            var result = sut.DoesNotContain(1, Enumerable.Empty<int>(), "foo").Message;
 
             Assert.AreEqual(ActualExpression + NewLine
                 + "should contain foo " + ExpectedExpression + NewLine
@@ -452,7 +452,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void CollectionDoesNotContain_OnlyEnumeratesOnce()
         {
-            TestEnumerable<int> actual = MakeEnumerable(1);
+            var actual = MakeEnumerable(1);
 
             sut.DoesNotContain(2, actual);
 
@@ -462,7 +462,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void CollectionDoesNotContain_IncludesMessage()
         {
-            string result = sut.DoesNotContain(0, Enumerable.Empty<int>(), message: "foo").Message;
+            var result = sut.DoesNotContain(0, Enumerable.Empty<int>(), message: "foo").Message;
 
             StringAssert.EndsWith(NewLine + "foo", result);
         }
@@ -470,7 +470,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void CollectionDoesNotContainItems()
         {
-            string result = sut.DoesNotContainItems(new[] { 1, 2 }, new[] { 1 }, (a, e) => a == e).Message;
+            var result = sut.DoesNotContainItems(new[] { 1, 2 }, new[] { 1 }, (a, e) => a == e).Message;
 
             Assert.AreEqual(ActualExpression + NewLine
                 + "should contain " + ExpectedExpression + NewLine
@@ -483,7 +483,7 @@ namespace EasyAssertions.UnitTests
         {
             expressionProvider.GetExpectedExpression().Returns("new[] { 1 }");
 
-            string result = sut.DoesNotContainItems(new[] { 1 }, Enumerable.Empty<int>(), (a, e) => a == e).Message;
+            var result = sut.DoesNotContainItems(new[] { 1 }, Enumerable.Empty<int>(), (a, e) => a == e).Message;
 
             Assert.AreEqual(ActualExpression + NewLine
                 + "should contain expected item 0 <1>" + NewLine
@@ -493,7 +493,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void CollectionDoesNotContainItems_IncludesMessage()
         {
-            string result = sut.DoesNotContainItems(new[] { 1 }, Enumerable.Empty<int>(), (a, e) => a == e, "foo").Message;
+            var result = sut.DoesNotContainItems(new[] { 1 }, Enumerable.Empty<int>(), (a, e) => a == e, "foo").Message;
 
             StringAssert.EndsWith(NewLine + "foo", result);
         }
@@ -501,7 +501,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void CollectionDoesNotContainItems_ExpectedDuplicates_ActualIsMissingDuplicate()
         {
-            string result = sut.DoesNotContainItems(new[] { 1, 1 }, new[] { 1 }, (a, e) => a == e, "foo").Message;
+            var result = sut.DoesNotContainItems(new[] { 1, 1 }, new[] { 1 }, (a, e) => a == e, "foo").Message;
 
             Assert.AreEqual($@"{ActualExpression}
 should contain {ExpectedExpression}
@@ -513,8 +513,8 @@ foo", result);
         [Test]
         public void CollectionDoesNotContainItems_OnlyEnumeratesOnce()
         {
-            TestEnumerable<int> expected = MakeEnumerable(1);
-            TestEnumerable<int> actual = MakeEnumerable(2);
+            var expected = MakeEnumerable(1);
+            var actual = MakeEnumerable(2);
 
             sut.DoesNotContainItems(expected, actual, (a, e) => a == e);
 
@@ -525,7 +525,7 @@ foo", result);
         [Test]
         public void CollectionContains()
         {
-            string result = sut.Contains(new FakeObject("foo"), Enumerable.Empty<object>()).Message;
+            var result = sut.Contains(new FakeObject("foo"), Enumerable.Empty<object>()).Message;
 
             Assert.AreEqual(ActualExpression + NewLine
                 + "shouldn't contain " + ExpectedExpression + NewLine
@@ -536,7 +536,7 @@ foo", result);
         [Test]
         public void CollectionContains_IncludesItemType()
         {
-            string result = sut.Contains(new FakeObject("foo"), Enumerable.Empty<object>(), "bar").Message;
+            var result = sut.Contains(new FakeObject("foo"), Enumerable.Empty<object>(), "bar").Message;
 
             Assert.AreEqual(ActualExpression + NewLine
                 + "shouldn't contain bar " + ExpectedExpression + NewLine
@@ -547,7 +547,7 @@ foo", result);
         [Test]
         public void CollectionContains_OnlyEnumeratesOnce()
         {
-            TestEnumerable<int> actual = MakeEnumerable(2);
+            var actual = MakeEnumerable(2);
 
             sut.Contains(1, actual);
 
@@ -557,7 +557,7 @@ foo", result);
         [Test]
         public void CollectionContains_IncludesMessage()
         {
-            string result = sut.Contains((object?)null, Enumerable.Empty<object>(), message: "foo").Message;
+            var result = sut.Contains((object?)null, Enumerable.Empty<object>(), message: "foo").Message;
 
             StringAssert.EndsWith(NewLine + "foo", result);
         }
@@ -565,7 +565,7 @@ foo", result);
         [Test]
         public void CollectionOnlyContains()
         {
-            string result = sut.OnlyContains(new[] { new FakeObject("foo") }, Enumerable.Empty<object>()).Message;
+            var result = sut.OnlyContains(new[] { new FakeObject("foo") }, Enumerable.Empty<object>()).Message;
 
             Assert.AreEqual(ActualExpression + NewLine
                 + "should contain more than just " + ExpectedExpression + NewLine
@@ -575,8 +575,8 @@ foo", result);
         [Test]
         public void CollectionOnlyContains_OnlyEnumeratesOnce()
         {
-            TestEnumerable<int> expected = MakeEnumerable(1);
-            TestEnumerable<int> actual = MakeEnumerable(2);
+            var expected = MakeEnumerable(1);
+            var actual = MakeEnumerable(2);
 
             sut.OnlyContains(expected, actual);
 
@@ -587,7 +587,7 @@ foo", result);
         [Test]
         public void CollectionOnlyContains_IncludesMessage()
         {
-            string result = sut.OnlyContains(new object[0], new object[0], "foo").Message;
+            var result = sut.OnlyContains(new object[0], new object[0], "foo").Message;
 
             StringAssert.EndsWith(NewLine + "foo", result);
         }
@@ -595,7 +595,7 @@ foo", result);
         [Test]
         public void CollectionContainsItems()
         {
-            string result = sut.Contains(new[] { 1 }, new[] { 2, 1 }).Message;
+            var result = sut.Contains(new[] { 1 }, new[] { 2, 1 }).Message;
 
             Assert.AreEqual(ActualExpression + NewLine
                 + "shouldn't contain " + ExpectedExpression + NewLine
@@ -612,7 +612,7 @@ foo", result);
         {
             expressionProvider.GetExpectedExpression().Returns("new[] { 1 }");
 
-            string result = sut.Contains(new[] { 1 }, new[] { 2, 1 }).Message;
+            var result = sut.Contains(new[] { 1 }, new[] { 2, 1 }).Message;
 
             Assert.AreEqual(ActualExpression + NewLine
                 + "shouldn't contain <1>" + NewLine
@@ -626,8 +626,8 @@ foo", result);
         [Test]
         public void CollectionContainsItems_OnlyEnumeratesOnce()
         {
-            TestEnumerable<int> expectedToNotContain = MakeEnumerable(1);
-            TestEnumerable<int> actual = MakeEnumerable(2);
+            var expectedToNotContain = MakeEnumerable(1);
+            var actual = MakeEnumerable(2);
 
             sut.Contains(expectedToNotContain, actual);
 
@@ -638,7 +638,7 @@ foo", result);
         [Test]
         public void CollectionContainsItems_IncludesMessage()
         {
-            string result = sut.Contains(new[] { 1 }, new[] { 1 }, "foo").Message;
+            var result = sut.Contains(new[] { 1 }, new[] { 1 }, "foo").Message;
 
             StringAssert.EndsWith(NewLine + "foo", result);
         }
@@ -646,7 +646,7 @@ foo", result);
         [Test]
         public void DoesNotOnlyContain_MissingItem()
         {
-            string result = sut.DoesNotOnlyContain(new[] { 1 }, new[] { 2 }, (a, e) => a == e).Message;
+            var result = sut.DoesNotOnlyContain(new[] { 1 }, new[] { 2 }, (a, e) => a == e).Message;
 
             Assert.AreEqual(ActualExpression + NewLine
                 + "should contain " + ExpectedExpression + NewLine
@@ -659,7 +659,7 @@ foo", result);
         {
             FakeObject[] enumerable = { new FakeObject("foo") };
 
-            string result = sut.DoesNotOnlyContain(Enumerable.Empty<object>(), enumerable, (a, e) => a == e).Message;
+            var result = sut.DoesNotOnlyContain(Enumerable.Empty<object>(), enumerable, (a, e) => a == e).Message;
 
             Assert.AreEqual(ActualExpression + NewLine
                 + "should be empty" + NewLine
@@ -669,7 +669,7 @@ foo", result);
         [Test]
         public void DoesNotOnlyContain_ExtraItem_ContainsExtraItemMessage()
         {
-            string result = sut.DoesNotOnlyContain(new[] { 1 }, new[] { 1, 2 }, (a, e) => a == e).Message;
+            var result = sut.DoesNotOnlyContain(new[] { 1 }, new[] { 1, 2 }, (a, e) => a == e).Message;
 
             Assert.AreEqual(ActualExpression + NewLine
                 + "should only contain " + ExpectedExpression + NewLine
@@ -679,7 +679,7 @@ foo", result);
         [Test]
         public void DoesNotOnlyContain_ExpectedContainsDuplicates_ActualIsMissingDuplicate()
         {
-            string result = sut.DoesNotOnlyContain(new[] { 1, 1, 1 }, new[] { 1, 1 }, (a, e) => a == e, "foo").Message;
+            var result = sut.DoesNotOnlyContain(new[] { 1, 1, 1 }, new[] { 1, 1 }, (a, e) => a == e, "foo").Message;
 
             Assert.AreEqual($@"{ActualExpression}
 should contain {ExpectedExpression}
@@ -694,7 +694,7 @@ foo", result);
         [Test]
         public void DoesNotOnlyContain_ExpectedContainsDuplicates_ActualHasExtraDuplicate()
         {
-            string result = sut.DoesNotOnlyContain(new[] { 1, 1 }, new[] { 1, 1, 1 }, (a, e) => a == e, "foo").Message;
+            var result = sut.DoesNotOnlyContain(new[] { 1, 1 }, new[] { 1, 1, 1 }, (a, e) => a == e, "foo").Message;
 
             Assert.AreEqual($@"{ActualExpression}
 should only contain {ExpectedExpression}
@@ -705,8 +705,8 @@ foo", result);
         [Test]
         public void DoesNotOnlyContain_OnlyEnumeratesOnce()
         {
-            TestEnumerable<int> actual = MakeEnumerable(1, 2);
-            TestEnumerable<int> expected = MakeEnumerable(1);
+            var actual = MakeEnumerable(1, 2);
+            var expected = MakeEnumerable(1);
 
             sut.DoesNotOnlyContain(expected, actual, (a, e) => a == e);
 
@@ -717,7 +717,7 @@ foo", result);
         [Test]
         public void ContainsExtraItem()
         {
-            string result = sut.ContainsExtraItem(new[] { 1 }, new[] { 1, 2 }, (a, e) => a == e).Message;
+            var result = sut.ContainsExtraItem(new[] { 1 }, new[] { 1, 2 }, (a, e) => a == e).Message;
 
             Assert.AreEqual(ActualExpression + NewLine
                 + "should only contain " + ExpectedExpression + NewLine
@@ -727,7 +727,7 @@ foo", result);
         [Test]
         public void ContainsExtraItem_ExtraDuplicate()
         {
-            string result = sut.ContainsExtraItem(new[] { 1, 1 }, new[] { new Equatable(1), new Equatable(1), new Equatable(1) }, (a, e) => a.Value == e).Message;
+            var result = sut.ContainsExtraItem(new[] { 1, 1 }, new[] { new Equatable(1), new Equatable(1), new Equatable(1) }, (a, e) => a.Value == e).Message;
 
             Assert.AreEqual($@"{ActualExpression}
 should only contain {ExpectedExpression}
@@ -739,7 +739,7 @@ but also contains [ <Eq(1)> ]", result);
         {
             expressionProvider.GetExpectedExpression().Returns("new[] { 1 }");
 
-            string result = sut.ContainsExtraItem(new[] { 1 }, new[] { 1, 2 }, (a, e) => a == e).Message;
+            var result = sut.ContainsExtraItem(new[] { 1 }, new[] { 1, 2 }, (a, e) => a == e).Message;
 
             Assert.AreEqual(ActualExpression + NewLine
                 + "should only contain [ <1> ]" + NewLine
@@ -749,8 +749,8 @@ but also contains [ <Eq(1)> ]", result);
         [Test]
         public void ContainsExtraItem_OnlyEnumeratesOnce()
         {
-            TestEnumerable<int> expected = MakeEnumerable(1);
-            TestEnumerable<int> actual = MakeEnumerable(2);
+            var expected = MakeEnumerable(1);
+            var actual = MakeEnumerable(2);
 
             sut.ContainsExtraItem(expected, actual, (a, e) => a == e);
 
@@ -761,7 +761,7 @@ but also contains [ <Eq(1)> ]", result);
         [Test]
         public void ContainsExtraItem_IncludesMessage()
         {
-            string result = sut.DoesNotOnlyContain(new[] { 1 }, new[] { 1, 2 }, (a, e) => a == e, "foo").Message;
+            var result = sut.DoesNotOnlyContain(new[] { 1 }, new[] { 1, 2 }, (a, e) => a == e, "foo").Message;
 
             StringAssert.EndsWith(NewLine + "foo", result);
         }
@@ -769,7 +769,7 @@ but also contains [ <Eq(1)> ]", result);
         [Test]
         public void ContainsDuplicate()
         {
-            string result = sut.ContainsDuplicate(new[] { 1, 2, 1, 1 }, "foo").Message;
+            var result = sut.ContainsDuplicate(new[] { 1, 2, 1, 1 }, "foo").Message;
 
             Assert.AreEqual($@"{ActualExpression}
 should not contain duplicates
@@ -781,7 +781,7 @@ foo", result);
         [Test]
         public void ContainsDuplicate_OnlyEnumeratesOnce()
         {
-            TestEnumerable<int> actual = MakeEnumerable(1, 1);
+            var actual = MakeEnumerable(1, 1);
 
             sut.ContainsDuplicate(actual);
 
@@ -791,7 +791,7 @@ foo", result);
         [Test]
         public void DoNotMatch_NonMatchingCollections()
         {
-            string result = sut.DoNotMatch(new[] { 1, 2, 3 }, new[] { 1, 3, 2 }, StandardTests.Instance.ObjectsAreEqual).Message;
+            var result = sut.DoNotMatch(new[] { 1, 2, 3 }, new[] { 1, 3, 2 }, StandardTests.Instance.ObjectsAreEqual).Message;
 
             Assert.AreEqual(ActualExpression + NewLine
                 + "doesn't match " + ExpectedExpression + ". Differs at index 1." + NewLine
@@ -804,7 +804,7 @@ foo", result);
         {
             expressionProvider.GetExpectedExpression().Returns("new List<int>() { 1, 2, 3 }");
 
-            string result = sut.DoNotMatch(new[] { 1, 2, 3 }, new[] { 1, 3, 2 }, StandardTests.Instance.ObjectsAreEqual).Message;
+            var result = sut.DoNotMatch(new[] { 1, 2, 3 }, new[] { 1, 3, 2 }, StandardTests.Instance.ObjectsAreEqual).Message;
 
             Assert.AreEqual(ActualExpression + NewLine
                 + "differs at index 1." + NewLine
@@ -815,7 +815,7 @@ foo", result);
         [Test]
         public void DoNotMatch_LengthMismatch()
         {
-            string result = sut.DoNotMatch(new[] { 1, 2 }, Enumerable.Empty<int>(), StandardTests.Instance.ObjectsAreEqual).Message;
+            var result = sut.DoNotMatch(new[] { 1, 2 }, Enumerable.Empty<int>(), StandardTests.Instance.ObjectsAreEqual).Message;
 
             Assert.AreEqual(ActualExpression + NewLine
                 + "doesn't match " + ExpectedExpression + '.' + NewLine
@@ -826,7 +826,7 @@ foo", result);
         [Test]
         public void DoNotMatch_Predicate()
         {
-            string result = sut.DoNotMatch(new[] { 1, 2, 3 }, new[] { "1", "3", "2" }, (s, i) => s == i.ToString(CultureInfo.InvariantCulture)).Message;
+            var result = sut.DoNotMatch(new[] { 1, 2, 3 }, new[] { "1", "3", "2" }, (s, i) => s == i.ToString(CultureInfo.InvariantCulture)).Message;
 
             Assert.AreEqual(ActualExpression + NewLine
                 + "doesn't match " + ExpectedExpression + ". "
@@ -838,8 +838,8 @@ foo", result);
         [Test]
         public void DoNotMatch_OnlyEnumeratesOnce()
         {
-            TestEnumerable<int> expected = MakeEnumerable(1);
-            TestEnumerable<int> actual = MakeEnumerable(2);
+            var expected = MakeEnumerable(1);
+            var actual = MakeEnumerable(2);
 
             sut.DoNotMatch(expected, actual, StandardTests.Instance.ObjectsAreEqual);
 
@@ -850,7 +850,7 @@ foo", result);
         [Test]
         public void DoNotMatch_IncludesMessage()
         {
-            string result = sut.DoNotMatch(new[] { 1 }, new[] { 2 }, StandardTests.Instance.ObjectsAreEqual, "foo").Message;
+            var result = sut.DoNotMatch(new[] { 1 }, new[] { 2 }, StandardTests.Instance.ObjectsAreEqual, "foo").Message;
 
             StringAssert.EndsWith(NewLine + "foo", result);
         }
@@ -858,9 +858,9 @@ foo", result);
         [Test]
         public void ItemsNotSame_ToStringsItemsAtFirstDifference()
         {
-            FakeObject same = new FakeObject("foo");
+            var same = new FakeObject("foo");
 
-            string result = sut.ItemsNotSame(new[] { same, new FakeObject("bar") }, new[] { same, new FakeObject("baz") }).Message;
+            var result = sut.ItemsNotSame(new[] { same, new FakeObject("bar") }, new[] { same, new FakeObject("baz") }).Message;
 
             Assert.AreEqual(ActualExpression + NewLine
                 + "differs at index 1." + NewLine
@@ -871,8 +871,8 @@ foo", result);
         [Test]
         public void ItemsNotSame_OnlyEnumeratesOnce()
         {
-            TestEnumerable<int> expected = MakeEnumerable(1);
-            TestEnumerable<int> actual = MakeEnumerable(2);
+            var expected = MakeEnumerable(1);
+            var actual = MakeEnumerable(2);
 
             sut.ItemsNotSame(expected, actual);
 
@@ -883,7 +883,7 @@ foo", result);
         [Test]
         public void ItemsNotSame_IncludesMessage()
         {
-            string result = sut.ItemsNotSame(new[] { new object() }, new[] { new object() }, "foo").Message;
+            var result = sut.ItemsNotSame(new[] { new object() }, new[] { new object() }, "foo").Message;
 
             StringAssert.EndsWith(NewLine + "foo", result);
         }
@@ -891,7 +891,7 @@ foo", result);
         [Test]
         public void CollectionDoesNotStartWith_ActualIsShorterThanExpectedStart()
         {
-            string result = sut.DoesNotStartWith(new[] { 1, 2 }, new[] { 1 }, StandardTests.Instance.ObjectsAreEqual, "foo").Message;
+            var result = sut.DoesNotStartWith(new[] { 1, 2 }, new[] { 1 }, StandardTests.Instance.ObjectsAreEqual, "foo").Message;
 
             Assert.AreEqual(ActualExpression + NewLine
                 + "should have at least 2 elements" + NewLine
@@ -902,7 +902,7 @@ foo", result);
         [Test]
         public void CollectionDoesNotStartWith_ActualIsLongerThanExpectedStart()
         {
-            string result = sut.DoesNotStartWith(new[] { 1, 2 }, new[] { 1, 3, 2 }, StandardTests.Instance.ObjectsAreEqual, "foo").Message;
+            var result = sut.DoesNotStartWith(new[] { 1, 2 }, new[] { 1, 3, 2 }, StandardTests.Instance.ObjectsAreEqual, "foo").Message;
 
             Assert.AreEqual(ActualExpression + NewLine
                 + "differs at index 1." + NewLine
@@ -914,8 +914,8 @@ foo", result);
         [Test]
         public void CollectionDoesNotStartWith_OnlyEnumeratesOnce()
         {
-            TestEnumerable<int> actual = MakeEnumerable(1);
-            TestEnumerable<int> expected = MakeEnumerable(2);
+            var actual = MakeEnumerable(1);
+            var expected = MakeEnumerable(2);
 
             sut.DoesNotStartWith(expected, actual, StandardTests.Instance.ObjectsAreEqual);
 
@@ -926,7 +926,7 @@ foo", result);
         [Test]
         public void CollectionDoesNotEndWith_ActualIsShorterThanExpectedEnd()
         {
-            string result = sut.DoesNotEndWith(new[] { 1, 2 }, new[] { 1 }, StandardTests.Instance.ObjectsAreEqual, "foo").Message;
+            var result = sut.DoesNotEndWith(new[] { 1, 2 }, new[] { 1 }, StandardTests.Instance.ObjectsAreEqual, "foo").Message;
 
             Assert.AreEqual($@"{ActualExpression}
 should have at least 2 elements
@@ -937,7 +937,7 @@ foo", result);
         [Test]
         public void CollectionDoesNotEndWith_ActualIsLongerThanExpectedEnd()
         {
-            string result = sut.DoesNotEndWith(new[] { 1, 2 }, new[] { 1, 3, 2 }, StandardTests.Instance.ObjectsAreEqual, "foo").Message;
+            var result = sut.DoesNotEndWith(new[] { 1, 2 }, new[] { 1, 3, 2 }, StandardTests.Instance.ObjectsAreEqual, "foo").Message;
 
             Assert.AreEqual($@"{ActualExpression}
 differs at index 1.
@@ -949,8 +949,8 @@ foo", result);
         [Test]
         public void CollectionDoesNotEndWith_OnlyEnumeratesOnce()
         {
-            TestEnumerable<int> actual = MakeEnumerable(1);
-            TestEnumerable<int> expected = MakeEnumerable(2);
+            var actual = MakeEnumerable(1);
+            var expected = MakeEnumerable(2);
 
             sut.DoesNotEndWith(expected, actual, StandardTests.Instance.ObjectsAreEqual);
 
@@ -961,7 +961,7 @@ foo", result);
         [Test]
         public void TreesDoNotMatch_NonMatchingNodes()
         {
-            string result = sut.TreesDoNotMatch(new[] { 1, 2.Node(21, 22) }, new[] { 1, 2.Node(21, 23) }, n => n, TestNodesMatch).Message;
+            var result = sut.TreesDoNotMatch(new[] { 1, 2.Node(21, 22) }, new[] { 1, 2.Node(21, 23) }, n => n, TestNodesMatch).Message;
 
             Assert.AreEqual(ActualExpression + NewLine
                 + "doesn't match " + ExpectedExpression + "." + NewLine
@@ -973,7 +973,7 @@ foo", result);
         [Test]
         public void TreesDoNotMatch_EmptyActual()
         {
-            string result = sut.TreesDoNotMatch(new[] { 1.Node(11) }, new[] { 1.Node() }, n => n, TestNodesMatch).Message;
+            var result = sut.TreesDoNotMatch(new[] { 1.Node(11) }, new[] { 1.Node() }, n => n, TestNodesMatch).Message;
 
             Assert.AreEqual(ActualExpression + NewLine
                 + "doesn't match " + ExpectedExpression + "." + NewLine
@@ -984,7 +984,7 @@ foo", result);
         [Test]
         public void TreesDoNotMatch_SingleNodeActual()
         {
-            string result = sut.TreesDoNotMatch(new TestNode<int>[] { 1, 2 }, new[] { 3 }, i => Enumerable.Empty<int>(), StandardTests.Instance.ObjectsAreEqual).Message;
+            var result = sut.TreesDoNotMatch(new TestNode<int>[] { 1, 2 }, new[] { 3 }, i => Enumerable.Empty<int>(), StandardTests.Instance.ObjectsAreEqual).Message;
 
             Assert.AreEqual(ActualExpression + NewLine
                 + "doesn't match " + ExpectedExpression + "." + NewLine
@@ -995,7 +995,7 @@ foo", result);
         [Test]
         public void TreesDoNotMatch_MultipleNodeActual()
         {
-            string result = sut.TreesDoNotMatch(new TestNode<int>[] { 1 }, new[] { 2, 3 }, i => Enumerable.Empty<int>(), StandardTests.Instance.ObjectsAreEqual).Message;
+            var result = sut.TreesDoNotMatch(new TestNode<int>[] { 1 }, new[] { 2, 3 }, i => Enumerable.Empty<int>(), StandardTests.Instance.ObjectsAreEqual).Message;
 
             Assert.AreEqual(ActualExpression + NewLine
                 + "doesn't match " + ExpectedExpression + "." + NewLine
@@ -1009,7 +1009,7 @@ foo", result);
         [Test]
         public void TreesDoNotMatch_ChildLengthMismatch_IncludesMessage()
         {
-            string result = sut.TreesDoNotMatch(new TestNode<int>[] { 1 }, Enumerable.Empty<int>(), NoChildren, StandardTests.Instance.ObjectsAreEqual, "foo").Message;
+            var result = sut.TreesDoNotMatch(new TestNode<int>[] { 1 }, Enumerable.Empty<int>(), NoChildren, StandardTests.Instance.ObjectsAreEqual, "foo").Message;
 
             StringAssert.EndsWith(NewLine + "foo", result);
         }
@@ -1017,7 +1017,7 @@ foo", result);
         [Test]
         public void TreesDoNotMatch_NonMatchingNode_IncludesMessage()
         {
-            string result = sut.TreesDoNotMatch(new TestNode<int>[] { 1 }, new[] { 2 }, NoChildren, StandardTests.Instance.ObjectsAreEqual, "foo").Message;
+            var result = sut.TreesDoNotMatch(new TestNode<int>[] { 1 }, new[] { 2 }, NoChildren, StandardTests.Instance.ObjectsAreEqual, "foo").Message;
 
             StringAssert.EndsWith(NewLine + "foo", result);
         }
@@ -1035,7 +1035,7 @@ foo", result);
         [Test]
         public void LengthMismatch_EmptyEnumerable()
         {
-            string result = sut.LengthMismatch(2, Enumerable.Empty<object>()).Message;
+            var result = sut.LengthMismatch(2, Enumerable.Empty<object>()).Message;
 
             Assert.AreEqual(ActualExpression + NewLine
                 + "should have 2 elements" + NewLine
@@ -1045,7 +1045,7 @@ foo", result);
         [Test]
         public void LengthMismatch_SingleElementExpected()
         {
-            string result = sut.LengthMismatch(1, Enumerable.Empty<object>()).Message;
+            var result = sut.LengthMismatch(1, Enumerable.Empty<object>()).Message;
 
             Assert.AreEqual(ActualExpression + NewLine
                 + "should have 1 element" + NewLine
@@ -1055,7 +1055,7 @@ foo", result);
         [Test]
         public void LengthMismatch_SingleElement()
         {
-            string result = sut.LengthMismatch(2, new[] { new FakeObject("foo") }).Message;
+            var result = sut.LengthMismatch(2, new[] { new FakeObject("foo") }).Message;
 
             Assert.AreEqual(ActualExpression + NewLine
                 + "should have 2 elements" + NewLine
@@ -1065,7 +1065,7 @@ foo", result);
         [Test]
         public void LengthMismatch_OnlyEnumeratesOnce()
         {
-            TestEnumerable<int> actual = MakeEnumerable(1);
+            var actual = MakeEnumerable(1);
 
             sut.LengthMismatch(2, actual);
 
@@ -1075,7 +1075,7 @@ foo", result);
         [Test]
         public void LengthMismatch_IncludesMessage()
         {
-            string result = sut.LengthMismatch(1, Enumerable.Empty<object>(), "foo").Message;
+            var result = sut.LengthMismatch(1, Enumerable.Empty<object>(), "foo").Message;
 
             StringAssert.EndsWith(NewLine + "foo", result);
         }
@@ -1083,7 +1083,7 @@ foo", result);
         [Test]
         public void StringDoesNotContain()
         {
-            string result = sut.DoesNotContain("bar", "foo").Message;
+            var result = sut.DoesNotContain("bar", "foo").Message;
 
             Assert.AreEqual(ActualExpression + NewLine
                 + "should contain " + ExpectedExpression + NewLine
@@ -1094,7 +1094,7 @@ foo", result);
         [Test]
         public void StringDoesNotContain_ActualIsLong_EndOfActualClipped()
         {
-            string result = sut.DoesNotContain("foo",
+            var result = sut.DoesNotContain("foo",
                 "0123456789abcdefghijklmnopqrstuvwxyz0123456789abcdefghijklmnopqrstuvwxyz").Message;
 
             Assert.AreEqual(ActualExpression + NewLine
@@ -1106,7 +1106,7 @@ foo", result);
         [Test]
         public void StringDoesNotContain_IncludesMessage()
         {
-            string result = sut.DoesNotContain(string.Empty, string.Empty, "foo").Message;
+            var result = sut.DoesNotContain(string.Empty, string.Empty, "foo").Message;
 
             StringAssert.EndsWith(NewLine + "foo", result);
         }
@@ -1114,7 +1114,7 @@ foo", result);
         [Test]
         public void StringContains()
         {
-            string result = sut.Contains("bar", "foobarbaz").Message;
+            var result = sut.Contains("bar", "foobarbaz").Message;
 
             Assert.AreEqual(ActualExpression + NewLine
                 + "shouldn't contain " + ExpectedExpression + NewLine
@@ -1127,7 +1127,7 @@ foo", result);
         [Test]
         public void StringContains_IncludesMessage()
         {
-            string result = sut.Contains("bar", "foobarbaz", "qux").Message;
+            var result = sut.Contains("bar", "foobarbaz", "qux").Message;
 
             StringAssert.EndsWith(NewLine + "qux", result);
         }
@@ -1135,7 +1135,7 @@ foo", result);
         [Test]
         public void DoesNotStartWith()
         {
-            string result = sut.DoesNotStartWith("foo", "bar").Message;
+            var result = sut.DoesNotStartWith("foo", "bar").Message;
 
             Assert.AreEqual(ActualExpression + NewLine
                 + "should start with " + ExpectedExpression + NewLine
@@ -1146,7 +1146,7 @@ foo", result);
         [Test]
         public void DoesNotStartWith_ActualIsLong_EndOfActualClipped()
         {
-            string result = sut.DoesNotStartWith("foo",
+            var result = sut.DoesNotStartWith("foo",
                 "0123456789abcdefghijklmnopqrstuvwxyz0123456789abcdefghijklmnopqrstuvwxyz").Message;
 
             Assert.AreEqual(ActualExpression + NewLine
@@ -1158,7 +1158,7 @@ foo", result);
         [Test]
         public void DoesNotStartWith_IncludesMessage()
         {
-            string result = sut.DoesNotStartWith(string.Empty, string.Empty, "foo").Message;
+            var result = sut.DoesNotStartWith(string.Empty, string.Empty, "foo").Message;
 
             StringAssert.EndsWith(NewLine + "foo", result);
         }
@@ -1166,7 +1166,7 @@ foo", result);
         [Test]
         public void DoesNotEndWith()
         {
-            string result = sut.DoesNotEndWith("foo", "bar").Message;
+            var result = sut.DoesNotEndWith("foo", "bar").Message;
 
             Assert.AreEqual(ActualExpression + NewLine
                 + "should end with " + ExpectedExpression + NewLine
@@ -1177,7 +1177,7 @@ foo", result);
         [Test]
         public void DoesNotEndWith_ActualIsLong_StartOfActualClipped()
         {
-            string result = sut.DoesNotEndWith("foo",
+            var result = sut.DoesNotEndWith("foo",
                 "0123456789abcdefghijklmnopqrstuvwxyz0123456789abcdefghijklmnopqrstuvwxyz").Message;
 
             Assert.AreEqual(ActualExpression + NewLine
@@ -1189,7 +1189,7 @@ foo", result);
         [Test]
         public void DoesNotEndWith_IncludesMessage()
         {
-            string result = sut.DoesNotEndWith(string.Empty, string.Empty, "foo").Message;
+            var result = sut.DoesNotEndWith(string.Empty, string.Empty, "foo").Message;
 
             StringAssert.EndsWith(NewLine + "foo", result);
         }
@@ -1198,7 +1198,7 @@ foo", result);
         public void NoException_SimpleFunction()
         {
             Expression<Action> function = () => "".Trim();
-            string result = sut.NoException(typeof(InvalidOperationException), function).Message;
+            var result = sut.NoException(typeof(InvalidOperationException), function).Message;
             Assert.AreEqual("\"\".Trim()" + NewLine
                 + "should throw <InvalidOperationException>" + NewLine
                 + "but didn't throw at all.", result);
@@ -1207,9 +1207,9 @@ foo", result);
         [Test]
         public void NoException_ClosureObjectMethod()
         {
-            string str = "";
+            var str = "";
             Expression<Action> function = () => str.Trim();
-            string result = sut.NoException(typeof(InvalidOperationException), function).Message;
+            var result = sut.NoException(typeof(InvalidOperationException), function).Message;
             Assert.AreEqual("str.Trim()" + NewLine
                + "should throw <InvalidOperationException>" + NewLine
                + "but didn't throw at all.", result);
@@ -1218,7 +1218,7 @@ foo", result);
         [Test]
         public void NoException_NoFunctionExpression()
         {
-            string result = sut.NoException(typeof(InvalidOperationException)).Message;
+            var result = sut.NoException(typeof(InvalidOperationException)).Message;
 
             Assert.AreEqual($@"{ActualExpression}
 should throw <InvalidOperationException>
@@ -1229,7 +1229,7 @@ but didn't throw at all.", result);
         public void NoException_IncludesMessage()
         {
             Expression<Action> function = () => "".Trim();
-            string result = sut.NoException(typeof(InvalidOperationException), function, "foo").Message;
+            var result = sut.NoException(typeof(InvalidOperationException), function, "foo").Message;
 
             StringAssert.EndsWith(NewLine + "foo", result);
         }
@@ -1237,9 +1237,9 @@ but didn't throw at all.", result);
         [Test]
         public void WrongException_SimpleFunction()
         {
-            Exception actualException = new Exception();
+            var actualException = new Exception();
             Expression<Action> function = () => "".Trim();
-            Exception result = sut.WrongException(typeof(InvalidOperationException), actualException, function);
+            var result = sut.WrongException(typeof(InvalidOperationException), actualException, function);
             Assert.AreEqual("\"\".Trim()" + NewLine
                 + "should throw <InvalidOperationException>" + NewLine
                 + "but threw    <Exception>", result.Message);
@@ -1249,10 +1249,10 @@ but didn't throw at all.", result);
         [Test]
         public void WrongException_ClosureObjectMethod()
         {
-            Exception actualException = new Exception();
-            string str = "";
+            var actualException = new Exception();
+            var str = "";
             Expression<Action> function = () => str.Trim();
-            Exception result = sut.WrongException(typeof(InvalidOperationException), actualException, function);
+            var result = sut.WrongException(typeof(InvalidOperationException), actualException, function);
             Assert.AreEqual("str.Trim()" + NewLine
                 + "should throw <InvalidOperationException>" + NewLine
                 + "but threw    <Exception>", result.Message);
@@ -1261,8 +1261,8 @@ but didn't throw at all.", result);
         [Test]
         public void WrongException_NoFunctionExpression()
         {
-            Exception actualException = new Exception();
-            Exception result = sut.WrongException(typeof(InvalidOperationException), actualException);
+            var actualException = new Exception();
+            var result = sut.WrongException(typeof(InvalidOperationException), actualException);
 
             Assert.AreEqual($@"{ActualExpression}
 should throw <InvalidOperationException>
@@ -1272,9 +1272,9 @@ but threw    <Exception>", result.Message);
         [Test]
         public void WrongException_IncludesMessage()
         {
-            Exception actualException = new Exception();
+            var actualException = new Exception();
             Expression<Action> function = () => "".Trim();
-            Exception result = sut.WrongException(typeof(InvalidOperationException), actualException, function, "foo");
+            var result = sut.WrongException(typeof(InvalidOperationException), actualException, function, "foo");
 
             StringAssert.EndsWith(NewLine + "foo", result.Message);
         }
@@ -1282,7 +1282,7 @@ but threw    <Exception>", result.Message);
         [Test]
         public void NotGreaterThan()
         {
-            string result = sut.NotGreaterThan(2, 1).Message;
+            var result = sut.NotGreaterThan(2, 1).Message;
 
             Assert.AreEqual(ActualExpression + NewLine
                 + "should be greater than " + ExpectedExpression + NewLine
@@ -1293,7 +1293,7 @@ but threw    <Exception>", result.Message);
         [Test]
         public void NotGreaterThan_IncludesMessage()
         {
-            string result = sut.NotGreaterThan(2, 1, "foo").Message;
+            var result = sut.NotGreaterThan(2, 1, "foo").Message;
 
             StringAssert.EndsWith(NewLine + "foo", result);
         }
@@ -1301,7 +1301,7 @@ but threw    <Exception>", result.Message);
         [Test]
         public void NotLessThan()
         {
-            string result = sut.NotLessThan(1, 2).Message;
+            var result = sut.NotLessThan(1, 2).Message;
 
             Assert.AreEqual(ActualExpression + NewLine
                 + "should be less than " + ExpectedExpression + NewLine
@@ -1312,7 +1312,7 @@ but threw    <Exception>", result.Message);
         [Test]
         public void NotLessThan_IncludesMessage()
         {
-            string result = sut.NotLessThan(1, 2, "foo").Message;
+            var result = sut.NotLessThan(1, 2, "foo").Message;
 
             StringAssert.EndsWith(NewLine + "foo", result);
         }
@@ -1320,7 +1320,7 @@ but threw    <Exception>", result.Message);
         [Test]
         public void DoesNotMatch()
         {
-            string result = sut.DoesNotMatch(new Regex("foo"), "bar").Message;
+            var result = sut.DoesNotMatch(new Regex("foo"), "bar").Message;
 
             Assert.AreEqual(ActualExpression + NewLine
                 + "should match " + ExpectedExpression + NewLine
@@ -1331,7 +1331,7 @@ but threw    <Exception>", result.Message);
         [Test]
         public void DoesNotMatch_IncludesMessage()
         {
-            string result = sut.DoesNotMatch(new Regex(""), "", "foo").Message;
+            var result = sut.DoesNotMatch(new Regex(""), "", "foo").Message;
 
             StringAssert.EndsWith(NewLine + "foo", result);
         }
@@ -1339,7 +1339,7 @@ but threw    <Exception>", result.Message);
         [Test]
         public void Matches()
         {
-            string result = sut.Matches(new Regex("foo"), "bar").Message;
+            var result = sut.Matches(new Regex("foo"), "bar").Message;
 
             Assert.AreEqual(ActualExpression + NewLine
                 + "shouldn't match " + ExpectedExpression + NewLine
@@ -1350,7 +1350,7 @@ but threw    <Exception>", result.Message);
         [Test]
         public void Matches_IncludesMessage()
         {
-            string result = sut.Matches(new Regex(""), "", "foo").Message;
+            var result = sut.Matches(new Regex(""), "", "foo").Message;
 
             StringAssert.EndsWith(NewLine + "foo", result);
         }
@@ -1358,7 +1358,7 @@ but threw    <Exception>", result.Message);
         [Test]
         public void TimedOut()
         {
-            string result = sut.TaskTimedOut(TimeSpan.FromMilliseconds(1), "foo").Message;
+            var result = sut.TaskTimedOut(TimeSpan.FromMilliseconds(1), "foo").Message;
 
             Assert.AreEqual($@"{ActualExpression}
 timed out after 1ms.
@@ -1368,7 +1368,7 @@ foo", result);
         [Test]
         public void Matches_Collections()
         {
-            string result = sut.Matches(new[] { 1, 2 }, new[] { 1, 2 }, "foo").Message;
+            var result = sut.Matches(new[] { 1, 2 }, new[] { 1, 2 }, "foo").Message;
 
             Assert.AreEqual($@"{ActualExpression}
 should not match {ExpectedExpression}
@@ -1384,7 +1384,7 @@ foo", result);
         {
             expressionProvider.GetExpectedExpression().Returns("new[] { 1, 2 }");
 
-            string result = sut.Matches(new[] { 1, 2 }, new[] { 1, 2 }, "foo").Message;
+            var result = sut.Matches(new[] { 1, 2 }, new[] { 1, 2 }, "foo").Message;
 
             Assert.AreEqual($@"{ActualExpression}
 should not match [

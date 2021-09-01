@@ -64,7 +64,7 @@ namespace EasyAssertions
         public static Actual<TReturnActual> RegisterAssertion<TActual, TReturnActual>([NoEnumeration] this TActual actual, [InstantHandle] Func<IAssertionContext, Actual<TReturnActual>> assert)
         {
             SourceExpressionProvider.ForCurrentThread.EnterAssertion(1);
-            Actual<TReturnActual> ret = assert(new AssertionContext());
+            var ret = assert(new AssertionContext());
             SourceExpressionProvider.ForCurrentThread.ExitAssertion();
             return ret;
         }
@@ -80,7 +80,7 @@ namespace EasyAssertions
             where TActual : notnull
         {
             SourceExpressionProvider.ForCurrentThread.EnterAssertion(1);
-            Actual<TReturnActual> ret = assert(new AssertionContext());
+            var ret = assert(new AssertionContext());
             SourceExpressionProvider.ForCurrentThread.ExitAssertion();
 
             if (actual is null)

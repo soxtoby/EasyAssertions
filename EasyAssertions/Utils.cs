@@ -11,9 +11,9 @@ namespace EasyAssertions
     {
         public static string Join<T>(this IEnumerable<T> items, string delimiter)
         {
-            StringBuilder sb = new StringBuilder();
-            bool delimit = false;
-            foreach (T item in items)
+            var sb = new StringBuilder();
+            var delimit = false;
+            foreach (var item in items)
             {
                 if (delimit)
                     sb.Append(delimiter);
@@ -39,8 +39,8 @@ namespace EasyAssertions
 
         public static int IndexOfOrDefault<T>(this IEnumerable<T> sequence, Func<T, bool> predicate, int startIndex, int defaultValue)
         {
-            int i = startIndex;
-            foreach (T item in sequence.Skip(startIndex))
+            var i = startIndex;
+            foreach (var item in sequence.Skip(startIndex))
             {
                 if (predicate(item))
                     return i;
@@ -53,7 +53,7 @@ namespace EasyAssertions
         {
             sourceLines = new string[0];
 
-            string? fileName = assertionsAddress.FileName;
+            var fileName = assertionsAddress.FileName;
             if (fileName == null)
                 return false;
 
@@ -70,8 +70,8 @@ namespace EasyAssertions
 
         public static IEnumerable<T> SkipLast<T>(this IEnumerable<T> sequence, int count)
         {
-            Queue<T> queue = new Queue<T>();
-            using IEnumerator<T> enumerator = sequence.GetEnumerator();
+            var queue = new Queue<T>();
+            using var enumerator = sequence.GetEnumerator();
 
             while (enumerator.MoveNext())
             {
@@ -83,8 +83,8 @@ namespace EasyAssertions
 
         public static IEnumerable<TOut> Zip<TLeft, TRight, TOut>(this IEnumerable<TLeft> left, IEnumerable<TRight> right, Func<TLeft, TRight, TOut> select)
         {
-            using IEnumerator<TLeft> leftEnumerator = left.GetEnumerator();
-            using IEnumerator<TRight> rightEnumerator = right.GetEnumerator();
+            using var leftEnumerator = left.GetEnumerator();
+            using var rightEnumerator = right.GetEnumerator();
 
             while (leftEnumerator.MoveNext() && rightEnumerator.MoveNext())
                 yield return select(leftEnumerator.Current, rightEnumerator.Current);

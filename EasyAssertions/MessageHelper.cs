@@ -40,7 +40,7 @@ namespace EasyAssertions
         /// </summary>
         public static string Expected(object? expectedValue, string indent)
         {
-            string? sourceExpression = ExpectedSourceIfDifferentToValue(expectedValue);
+            var sourceExpression = ExpectedSourceIfDifferentToValue(expectedValue);
             return sourceExpression == null
                 ? Value(expectedValue)
                 : sourceExpression + indent + Value(expectedValue);
@@ -53,7 +53,7 @@ namespace EasyAssertions
         /// </summary>
         public static string? ExpectedSourceIfDifferentToValue(object? expectedValue)
         {
-            string expectedExpression = TestExpression.GetExpected();
+            var expectedExpression = TestExpression.GetExpected();
 
             return MatchesExpectedValueOutput(expectedExpression, expectedValue)
                    || IsStringLiteral(expectedExpression)
@@ -68,7 +68,7 @@ namespace EasyAssertions
 
         private static bool MatchesExpectedValueOutput(string expectedExpression, object? expectedValue)
         {
-            string expectedValueOutput = string.Empty + expectedValue;
+            var expectedValueOutput = string.Empty + expectedValue;
             return expectedExpression == expectedValueOutput;
         }
 
@@ -79,7 +79,7 @@ namespace EasyAssertions
 
         private static bool IsNumericLiteral(string expectedExpression)
         {
-            char firstChar = expectedExpression.FirstOrDefault();
+            var firstChar = expectedExpression.FirstOrDefault();
             return firstChar >= 48
                    && firstChar <= 57;
         }
@@ -155,8 +155,8 @@ namespace EasyAssertions
             if (items.None())
                 return "empty.";
 
-            int remainingItems = SampleSize;
-            List<string> sample = BuildSample(items);
+            var remainingItems = SampleSize;
+            var sample = BuildSample(items);
 
             return sample.Count == 1
                 ? $"[ {sample[0]} ]"
@@ -164,9 +164,9 @@ namespace EasyAssertions
 
             List<string> BuildSample(IEnumerable innerItems)
             {
-                List<string> innerSample = new List<string>();
+                var innerSample = new List<string>();
 
-                foreach (object item in innerItems)
+                foreach (var item in innerItems)
                 {
                     if (innerSample.Any())
                         innerSample[innerSample.Count - 1] += ",";
@@ -179,7 +179,7 @@ namespace EasyAssertions
 
                     if (item is IEnumerable enumerableItem && !(item is string))
                     {
-                        List<string> itemSample = BuildSample(enumerableItem);
+                        var itemSample = BuildSample(enumerableItem);
                         switch (itemSample.Count)
                         {
                             case 0:
@@ -214,7 +214,7 @@ namespace EasyAssertions
         /// </summary>
         public static string Arrow(string actualValue, string expectedValue, int failureIndex)
         {
-            int arrowIndex = failureIndex - SnippetStart(actualValue, expectedValue, failureIndex);
+            var arrowIndex = failureIndex - SnippetStart(actualValue, expectedValue, failureIndex);
             arrowIndex += actualValue
                 .Substring(0, arrowIndex)
                 .Count(Escapes.ContainsKey);
@@ -224,10 +224,10 @@ namespace EasyAssertions
 
         private static string Snippet(string wholeString, string otherString, int failureIndex)
         {
-            int fromIndex = SnippetStart(wholeString, otherString, failureIndex);
-            int snippetLength = MaxStringWidth;
-            string prefix = string.Empty;
-            string suffix = string.Empty;
+            var fromIndex = SnippetStart(wholeString, otherString, failureIndex);
+            var snippetLength = MaxStringWidth;
+            var prefix = string.Empty;
+            var suffix = string.Empty;
 
             if (fromIndex > 0)
             {
@@ -251,7 +251,7 @@ namespace EasyAssertions
 
         private static int SnippetStart(string wholeString, string otherString, int failureIndex)
         {
-            int maxLength = Math.Max(wholeString.Length, otherString.Length);
+            var maxLength = Math.Max(wholeString.Length, otherString.Length);
             return Math.Max(0, Math.Min(failureIndex - IdealArrowIndex, maxLength - MaxStringWidth));
         }
 
@@ -307,7 +307,7 @@ namespace EasyAssertions
         /// </summary>
         public static string Value(LambdaExpression function)
         {
-            string body = function.Body.ToString();
+            var body = function.Body.ToString();
             body = MemberPattern.Replace(body, string.Empty);
             body = BoxingPattern.Replace(body, "$1");
             return body;
@@ -326,7 +326,7 @@ namespace EasyAssertions
         /// </summary>
         public static string Value(Regex regex)
         {
-            string value = "/" + regex + "/";
+            var value = "/" + regex + "/";
 
             if (regex.Options != RegexOptions.None)
                 value += " {" + regex.Options + "}";

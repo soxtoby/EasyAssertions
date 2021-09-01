@@ -27,21 +27,21 @@ namespace EasyAssertions.UnitTests
 
         protected static void AssertReturnsActual<T>(T actual, Func<Actual<T>> assert)
         {
-            Actual<T> result = assert();
+            var result = assert();
 
             Assert.AreSame(actual, result.And);
         }
 
         protected void AssertThrowsExpectedError(Action assert)
         {
-            Exception result = Assert.Throws<Exception>(() => assert());
+            var result = Assert.Throws<Exception>(() => assert());
 
             Assert.AreSame(ExpectedException, result);
         }
 
         protected static void AssertArgumentNullException(string paramName, TestDelegate assertionCall)
         {
-            ArgumentNullException result = Assert.Throws<ArgumentNullException>(assertionCall);
+            var result = Assert.Throws<ArgumentNullException>(assertionCall);
 
             Assert.AreEqual(paramName, result.ParamName);
         }
@@ -50,7 +50,7 @@ namespace EasyAssertions.UnitTests
         {
             Error.NotEqual(expectedType, actualType, "foo").Returns(ExpectedException);
 
-            Exception result = Assert.Throws<Exception>(() => assertionCall("foo"));
+            var result = Assert.Throws<Exception>(() => assertionCall("foo"));
 
             Assert.AreSame(ExpectedException, result);
         }

@@ -18,7 +18,7 @@ namespace EasyAssertions.UnitTests
         public IEnumerator<T> GetEnumerator()
         {
             EnumerationCount++;
-            foreach (T item in items)
+            foreach (var item in items)
             {
                 yield return item;
             }

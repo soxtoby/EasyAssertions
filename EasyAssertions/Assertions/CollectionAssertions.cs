@@ -49,7 +49,7 @@ namespace EasyAssertions
                 {
                     actual.ShouldBeA<TActual>(message);
 
-                    using IBuffer<object> bufferedActual = actual.Buffer();
+                    using var bufferedActual = actual.Buffer();
 
                     if (!c.Test.IsEmpty(bufferedActual))
                         throw c.StandardError.NotEmpty(bufferedActual, message);
@@ -88,7 +88,7 @@ namespace EasyAssertions
             return actual.RegisterNotNullAssertion(c =>
                 {
                     actual.ShouldBeA<IEnumerable>(message);
-                    using IBuffer<object> bufferedActual = actual.Buffer();
+                    using var bufferedActual = actual.Buffer();
                     bufferedActual.ShouldBeSingular(message);
                     ObjectAssertions.AssertType<TExpected>(bufferedActual.Single(), message, c);
                     return new Actual<TExpected>((TExpected)bufferedActual.Single());
@@ -105,9 +105,9 @@ namespace EasyAssertions
                 {
                     actual.ShouldBeA<IEnumerable>(message);
 
-                    using IBuffer<object> bufferedActual = actual.Buffer();
-                    int i = 0;
-                    foreach (object item in bufferedActual)
+                    using var bufferedActual = actual.Buffer();
+                    var i = 0;
+                    foreach (var item in bufferedActual)
                         item.RegisterIndexedAssertion(i++, c2 => item.ShouldBeA<TExpected>(message));
 
                     return new Actual<IEnumerable<TExpected>>(actual.Cast<TExpected>());
@@ -127,7 +127,7 @@ namespace EasyAssertions
         {
             actual.ShouldBeA<TActual>(message);
 
-            using IBuffer<object> bufferedActual = actual.Buffer();
+            using var bufferedActual = actual.Buffer();
 
             if (bufferedActual.Count != expectedLength)
                 throw c.StandardError.LengthMismatch(expectedLength, bufferedActual, message);
@@ -181,8 +181,8 @@ namespace EasyAssertions
         {
             actual.ShouldBeA<IEnumerable<TActual>>(message);
 
-            using IBuffer<TActual> bufferedActual = actual.Buffer();
-            using IBuffer<TExpected> bufferedExpected = expected.Buffer();
+            using var bufferedActual = actual.Buffer();
+            using var bufferedExpected = expected.Buffer();
 
             if (!c.Test.CollectionsMatch(bufferedActual, bufferedExpected, (a, e) => predicate((TActual)a, (TExpected)e)))
                 throw c.StandardError.DoNotMatch(bufferedExpected, bufferedActual, predicate, message);
@@ -236,8 +236,8 @@ namespace EasyAssertions
         {
             actual.ShouldBeA<IEnumerable<TActual>>(message);
 
-            using IBuffer<TActual> bufferedActual = actual.Buffer();
-            using IBuffer<TExpected> bufferedExpected = notExpected.Buffer();
+            using var bufferedActual = actual.Buffer();
+            using var bufferedExpected = notExpected.Buffer();
 
             if (c.Test.CollectionsMatch(bufferedActual, bufferedExpected, (a, e) => predicate((TActual)a, (TExpected)e)))
                 throw c.StandardError.Matches(bufferedExpected, bufferedActual, message);
@@ -269,8 +269,8 @@ namespace EasyAssertions
         {
             actual.ShouldBeA<IEnumerable<TActual>>(message);
 
-            using IBuffer<TActual> bufferedActual = actual.Buffer();
-            using IBuffer<TExpected> bufferedExpected = expectedStart.Buffer();
+            using var bufferedActual = actual.Buffer();
+            using var bufferedExpected = expectedStart.Buffer();
 
             if (!c.Test.CollectionStartsWith(bufferedActual, bufferedExpected, (a, e) => predicate((TActual)a, (TExpected)e)))
                 throw c.StandardError.DoesNotStartWith(bufferedExpected, bufferedActual, predicate, message);
@@ -302,8 +302,8 @@ namespace EasyAssertions
         {
             actual.ShouldBeA<IEnumerable<TActual>>(message);
 
-            using IBuffer<TActual> bufferedActual = actual.Buffer();
-            using IBuffer<TExpected> bufferedExpected = expectedEnd.Buffer();
+            using var bufferedActual = actual.Buffer();
+            using var bufferedExpected = expectedEnd.Buffer();
 
             if (!c.Test.CollectionEndsWith(bufferedActual, bufferedExpected, (a, e) => predicate((TActual)a, (TExpected)e)))
                 throw c.StandardError.DoesNotEndWith(bufferedExpected, bufferedActual, predicate, message);
@@ -332,7 +332,7 @@ namespace EasyAssertions
         {
             actual.ShouldBeA<IEnumerable<TActual>>(message);
 
-            using IBuffer<TActual> bufferedActual = actual.Buffer();
+            using var bufferedActual = actual.Buffer();
 
             if (!c.Test.ContainsAllItems(bufferedActual, new[] { expected }, predicate))
                 throw c.StandardError.DoesNotContain(expected, bufferedActual, message: message);
@@ -351,8 +351,8 @@ namespace EasyAssertions
                 {
                     actual.ShouldBeA<IEnumerable<TActual>>(message);
 
-                    using IBuffer<TActual> bufferedActual = actual.Buffer();
-                    using IBuffer<TExpected> bufferedExpected = expected.Buffer();
+                    using var bufferedActual = actual.Buffer();
+                    using var bufferedExpected = expected.Buffer();
 
                     if (!c.Test.ContainsAllItems(bufferedActual, bufferedExpected, c.Test.ObjectsAreEqual))
                         throw c.StandardError.DoesNotContainItems(bufferedExpected, bufferedActual, c.Test.ObjectsAreEqual, message);
@@ -372,8 +372,8 @@ namespace EasyAssertions
                 {
                     actual.ShouldBeA<IEnumerable<TActual>>(message);
 
-                    using IBuffer<TActual> bufferedActual = actual.Buffer();
-                    using IBuffer<TExpected> bufferedExpected = expected.Buffer();
+                    using var bufferedActual = actual.Buffer();
+                    using var bufferedExpected = expected.Buffer();
 
                     if (!c.Test.ContainsAllItems(bufferedActual, bufferedExpected, predicate))
                         throw c.StandardError.DoesNotContainItems(bufferedExpected, bufferedActual, predicate, message);
@@ -393,8 +393,8 @@ namespace EasyAssertions
                 {
                     actual.ShouldBeA<IEnumerable<TActual>>(message);
 
-                    using IBuffer<TActual> bufferedActual = actual.Buffer();
-                    using IBuffer<TExpected> bufferedExpected = expectedSuperset.Buffer();
+                    using var bufferedActual = actual.Buffer();
+                    using var bufferedExpected = expectedSuperset.Buffer();
 
                     if (!c.Test.ContainsAllItems(bufferedExpected, bufferedActual, (e, a) => c.Test.ObjectsAreEqual(a, e)))
                         throw c.StandardError.ContainsExtraItem(bufferedExpected, bufferedActual, c.Test.ObjectsAreEqual, message);
@@ -414,8 +414,8 @@ namespace EasyAssertions
                 {
                     actual.ShouldBeA<IEnumerable<TActual>>(message);
 
-                    using IBuffer<TActual> bufferedActual = actual.Buffer();
-                    using IBuffer<TExpected> bufferedExpected = expectedSuperset.Buffer();
+                    using var bufferedActual = actual.Buffer();
+                    using var bufferedExpected = expectedSuperset.Buffer();
 
                     if (!c.Test.ContainsAllItems(bufferedExpected, bufferedActual, (e, a) => predicate(a, e)))
                         throw c.StandardError.ContainsExtraItem(bufferedExpected, bufferedActual, predicate, message);
@@ -445,7 +445,7 @@ namespace EasyAssertions
         {
             actual.ShouldBeA<IEnumerable<TActual>>(message);
 
-            using IBuffer<TActual> bufferedActual = actual.Buffer();
+            using var bufferedActual = actual.Buffer();
 
             if (c.Test.ContainsAllItems(bufferedActual, new[] { expectedToNotContain }, predicate))
                 throw c.StandardError.Contains(expectedToNotContain, bufferedActual, message: message);
@@ -463,8 +463,8 @@ namespace EasyAssertions
                 {
                     actual.ShouldBeA<IEnumerable<TActual>>(message);
 
-                    using IBuffer<TActual> bufferedActual = actual.Buffer();
-                    using IBuffer<TExpected> bufferedExpected = expectedToNotContain.Buffer();
+                    using var bufferedActual = actual.Buffer();
+                    using var bufferedExpected = expectedToNotContain.Buffer();
 
                     if (c.Test.ContainsAny(bufferedActual, bufferedExpected))
                         throw c.StandardError.Contains(bufferedExpected, bufferedActual, message);
@@ -483,8 +483,8 @@ namespace EasyAssertions
                 {
                     actual.ShouldBeA<IEnumerable<TActual>>(message);
 
-                    using IBuffer<TActual> bufferedActual = actual.Buffer();
-                    using IBuffer<TExpected> bufferedExpected = expectedToNotContain.Buffer();
+                    using var bufferedActual = actual.Buffer();
+                    using var bufferedExpected = expectedToNotContain.Buffer();
 
                     if (c.Test.ContainsAny(bufferedActual, bufferedExpected, predicate))
                         throw c.StandardError.Contains(bufferedExpected, bufferedActual, message);
@@ -519,8 +519,8 @@ namespace EasyAssertions
         {
             actual.ShouldBeA<IEnumerable<TActual>>(message);
 
-            using IBuffer<TActual> bufferedActual = actual.Buffer();
-            using IBuffer<TExpected> bufferedExpected = expected.Buffer();
+            using var bufferedActual = actual.Buffer();
+            using var bufferedExpected = expected.Buffer();
 
             if (!c.Test.ContainsOnlyExpectedItems(bufferedActual, bufferedExpected, predicate))
                 throw c.StandardError.DoesNotOnlyContain(bufferedExpected, bufferedActual, predicate, message);
@@ -546,7 +546,7 @@ namespace EasyAssertions
         {
             actual.ShouldBeA<IEnumerable<TActual>>(message);
 
-            using IBuffer<TActual> bufferedActual = actual.Buffer();
+            using var bufferedActual = actual.Buffer();
 
             if (c.Test.ContainsDuplicate(bufferedActual, predicate))
                 throw c.StandardError.ContainsDuplicate(bufferedActual, message);
@@ -564,8 +564,8 @@ namespace EasyAssertions
                 {
                     actual.ShouldBeA<IEnumerable<TActual>>(message);
 
-                    using IBuffer<TActual> bufferedActual = actual.Buffer();
-                    using IBuffer<TExpected> bufferedExpected = expected.Buffer();
+                    using var bufferedActual = actual.Buffer();
+                    using var bufferedExpected = expected.Buffer();
 
                     if (bufferedActual.Count != bufferedExpected.Count)
                         throw c.StandardError.LengthMismatch(bufferedExpected.Count, bufferedActual, message);
@@ -613,12 +613,12 @@ namespace EasyAssertions
                 {
                     actual.ShouldBeA<IEnumerable<TItem>>();
 
-                    using IBuffer<TItem> bufferedActual = actual.Buffer();
+                    using var bufferedActual = actual.Buffer();
 
                     if (bufferedActual.Count != assertions.Length)
                         throw c.StandardError.LengthMismatch(assertions.Length, bufferedActual);
 
-                    for (int i = 0; i < assertions.Length; i++)
+                    for (var i = 0; i < assertions.Length; i++)
                         actual.RegisterIndexedAssertion(i, c2 => actual.RegisterUserAssertion(assertions[i], () => assertions[i](bufferedActual[i])));
                 });
         }
@@ -634,8 +634,8 @@ namespace EasyAssertions
                 {
                     actual.ShouldBeA<IEnumerable<TItem>>();
 
-                    int i = 0;
-                    foreach (TItem item in actual)
+                    var i = 0;
+                    foreach (var item in actual)
                         item.RegisterIndexedAssertion(i, c2 => item.RegisterUserAssertion(assertion, () => assertion(item)));
                 });
         }

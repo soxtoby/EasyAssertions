@@ -16,7 +16,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void GetActualSegment()
         {
-            ExpressionSegment result = sut.GetActualSegment("foo.property.bar", 3);
+            var result = sut.GetActualSegment("foo.property.bar", 3);
 
             Assert.AreEqual(string.Empty, result.Expression);
             Assert.AreEqual(12, result.IndexOfNextSegment);
@@ -26,7 +26,7 @@ namespace EasyAssertions.UnitTests
         public void GetActualSegment_PropertyNotInSource_ReturnsEmptySegment()
         {
             const int fromIndex = 1;
-            ExpressionSegment result = sut.GetActualSegment("foo.bar", fromIndex);
+            var result = sut.GetActualSegment("foo.bar", fromIndex);
 
             Assert.AreEqual(string.Empty, result.Expression);
             Assert.AreEqual(fromIndex, result.IndexOfNextSegment);
@@ -35,7 +35,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void GetExpectedSegment()
         {
-            ExpressionSegment result = sut.GetExpectedSegment("foo.property.bar", 3);
+            var result = sut.GetExpectedSegment("foo.property.bar", 3);
 
             Assert.AreEqual(string.Empty, result.Expression);
             Assert.AreEqual(12, result.IndexOfNextSegment);
@@ -45,7 +45,7 @@ namespace EasyAssertions.UnitTests
         public void GetExpectedSegment_PropertyNotInSource_ReturnsEmptySegment()
         {
             const int fromIndex = 1;
-            ExpressionSegment result = sut.GetExpectedSegment("foo.bar", fromIndex);
+            var result = sut.GetExpectedSegment("foo.bar", fromIndex);
 
             Assert.AreEqual(string.Empty, result.Expression);
             Assert.AreEqual(fromIndex, result.IndexOfNextSegment);

@@ -16,11 +16,11 @@ namespace EasyAssertions
 
         private ExpressionSegment GetSegment(string expressionSource, int fromIndex)
         {
-            int startOfContinuationProperty = GetMethodCallIndex(expressionSource, fromIndex);
+            var startOfContinuationProperty = GetMethodCallIndex(expressionSource, fromIndex);
             if (startOfContinuationProperty == -1)
                 return new ExpressionSegment { IndexOfNextSegment = fromIndex };
 
-            int endOfContinuationProperty = startOfContinuationProperty + MethodName.Length + 1;
+            var endOfContinuationProperty = startOfContinuationProperty + MethodName.Length + 1;
             return new ExpressionSegment { IndexOfNextSegment = endOfContinuationProperty };
         }
     }

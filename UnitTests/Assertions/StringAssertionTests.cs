@@ -10,7 +10,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ShouldBeEmpty_StringIsEmpty_ReturnsEmptyString()
         {
-            Actual<string> result = string.Empty.ShouldBeEmpty();
+            var result = string.Empty.ShouldBeEmpty();
 
             Assert.AreEqual(string.Empty, result.And);
         }
@@ -34,7 +34,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ShouldBeEmpty_CorrectlyRegistersAssertion()
         {
-            string actualExpression = string.Empty;
+            var actualExpression = string.Empty;
 
             actualExpression.ShouldBeEmpty();
 
@@ -44,7 +44,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ShouldContain_StringContainsSubstring_ReturnsActualValue()
         {
-            Actual<string> result = "foo".ShouldContain("oo");
+            var result = "foo".ShouldContain("oo");
             Assert.AreEqual("foo", result.And);
         }
 
@@ -86,7 +86,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ShouldNotContain_StringDoesNotContainSubstring_ReturnsActualValue()
         {
-            Actual<string> result = "foo".ShouldNotContain("bar");
+            var result = "foo".ShouldNotContain("bar");
 
             Assert.AreEqual("foo", result.And);
         }
@@ -131,7 +131,7 @@ namespace EasyAssertions.UnitTests
         {
             const string actual = "foobar";
 
-            Actual<string> result = actual.ShouldStartWith("foo");
+            var result = actual.ShouldStartWith("foo");
 
             Assert.AreSame(actual, result.And);
         }
@@ -178,7 +178,7 @@ namespace EasyAssertions.UnitTests
         {
             const string actual = "foobar";
 
-            Actual<string> result = actual.ShouldEndWith("bar");
+            var result = actual.ShouldEndWith("bar");
 
             Assert.AreSame(actual, result.Value);
         }
@@ -224,7 +224,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ShouldBe_CaseSensitive_StringsAreEqual_ReturnsActualValue()
         {
-            Actual<string> result = "foo".ShouldBe("foo", Case.Sensitive);
+            var result = "foo".ShouldBe("foo", Case.Sensitive);
 
             Assert.AreEqual("foo", result.And);
         }
@@ -240,7 +240,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ShouldBe_CaseInsensitive_StringsAreEqual_ReturnsActualValue()
         {
-            Actual<string> result = "FOO".ShouldBe("foo", Case.Insensitive);
+            var result = "FOO".ShouldBe("foo", Case.Insensitive);
 
             Assert.AreEqual("FOO", result.And);
         }
@@ -283,7 +283,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ShouldMatchPattern_MatchesRegex_ReturnsActualValue()
         {
-            Actual<string> result = "foo".ShouldMatch(".*");
+            var result = "foo".ShouldMatch(".*");
 
             Assert.AreEqual("foo", result.And);
         }
@@ -326,7 +326,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ShouldMatchPattern_WithRegexOptions_MatchesRegex_ReturnsActualValue()
         {
-            Actual<string> result = "foo".ShouldMatch("FOO", RegexOptions.IgnoreCase);
+            var result = "foo".ShouldMatch("FOO", RegexOptions.IgnoreCase);
 
             Assert.AreEqual("foo", result.And);
         }
@@ -361,7 +361,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ShouldMatchRegex_MatchesRegex_ReturnsActualValue()
         {
-            Actual<string> result = "foo".ShouldMatch(new Regex(".*"));
+            var result = "foo".ShouldMatch(new Regex(".*"));
 
             Assert.AreEqual("foo", result.And);
         }
@@ -369,7 +369,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ShouldMatchRegex_DoesNotMatchRegex_FailsWithDoesNotMatchMessage()
         {
-            Regex regex = new Regex("bar");
+            var regex = new Regex("bar");
             Error.DoesNotMatch(regex, "foo", "baz").Returns(ExpectedException);
 
             AssertThrowsExpectedError(() => "foo".ShouldMatch(regex, "baz"));
@@ -385,7 +385,7 @@ namespace EasyAssertions.UnitTests
         public void ShouldMatchRegex_CorrectlyRegistersAssertion()
         {
             const string actualExpression = "foo";
-            Regex expectedExpression = new Regex("bar");
+            var expectedExpression = new Regex("bar");
             Error.DoesNotMatch(Arg.Any<Regex>(), Arg.Any<string>()).Returns(ExpectedException);
 
             AssertThrowsExpectedError(() => actualExpression.ShouldMatch(expectedExpression));
@@ -397,7 +397,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ShouldNotMatchPattern_DoesNotMatchRegex_ReturnsActualValue()
         {
-            Actual<string> result = "foo".ShouldNotMatch("bar");
+            var result = "foo".ShouldNotMatch("bar");
 
             Assert.AreEqual("foo", result.And);
         }
@@ -440,7 +440,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ShouldNotMatchPattern_WithRegexOptions_DoesNotMatchRegex_ReturnsActualValue()
         {
-            Actual<string> result = "foo".ShouldNotMatch("bar", RegexOptions.IgnoreCase);
+            var result = "foo".ShouldNotMatch("bar", RegexOptions.IgnoreCase);
 
             Assert.AreEqual("foo", result.And);
         }
@@ -475,7 +475,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ShouldNotMatchRegex_DoesNotMatchRegex_ReturnsActualValue()
         {
-            Actual<string> result = "foo".ShouldNotMatch(new Regex("bar"));
+            var result = "foo".ShouldNotMatch(new Regex("bar"));
 
             Assert.AreEqual("foo", result.And);
         }
@@ -483,7 +483,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ShouldNotMatchRegex_MatchesRegex_FailsWithMatchesMessage()
         {
-            Regex regex = new Regex("foo");
+            var regex = new Regex("foo");
             Error.Matches(regex, "foo", "bar").Returns(ExpectedException);
 
             AssertThrowsExpectedError(() => "foo".ShouldNotMatch(regex, "bar"));
@@ -499,7 +499,7 @@ namespace EasyAssertions.UnitTests
         public void ShouldNotMatchRegex_CorrectlyRegistersAssertion()
         {
             const string actualExpression = "foo";
-            Regex expectedExpression = new Regex(".");
+            var expectedExpression = new Regex(".");
             Error.Matches(Arg.Any<Regex>(), Arg.Any<string>()).Returns(ExpectedException);
 
             AssertThrowsExpectedError(() => actualExpression.ShouldNotMatch(expectedExpression));

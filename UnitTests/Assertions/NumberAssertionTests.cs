@@ -37,7 +37,7 @@ namespace EasyAssertions.UnitTests
             {
                 const float actual = 1f;
 
-                Actual<float> result = ((Func<Actual<float>>)(() => ShouldBe(actual, 1f, 1f)))();
+                var result = ((Func<Actual<float>>)(() => ShouldBe(actual, 1f, 1f)))();
 
                 Assert.AreEqual(actual, result.And);
             }
@@ -78,7 +78,7 @@ namespace EasyAssertions.UnitTests
             {
                 const float actual = 1f;
 
-                Actual<float> result = ((Func<Actual<float>>)(() => ShouldBe(actual, 1f, 1d)))();
+                var result = ((Func<Actual<float>>)(() => ShouldBe(actual, 1f, 1d)))();
 
                 Assert.AreEqual(actual, result.And);
             }
@@ -119,7 +119,7 @@ namespace EasyAssertions.UnitTests
             {
                 const double actual = 1d;
 
-                Actual<double> result = ((Func<Actual<double>>)(() => ShouldBe(actual, 1d, 0)))();
+                var result = ((Func<Actual<double>>)(() => ShouldBe(actual, 1d, 0)))();
 
                 Assert.AreEqual(actual, result.And);
             }
@@ -160,7 +160,7 @@ namespace EasyAssertions.UnitTests
             {
                 const double actual = 1d;
 
-                Actual<double> result = ((Func<Actual<double>>)(() => ShouldBe(actual, 1f, 0)))();
+                var result = ((Func<Actual<double>>)(() => ShouldBe(actual, 1f, 0)))();
 
                 Assert.AreEqual(actual, result.And);
             }
@@ -201,7 +201,7 @@ namespace EasyAssertions.UnitTests
             {
                 const float actual = 1f;
 
-                Actual<float> result = actual.ShouldNotBe(2f, 0);
+                var result = actual.ShouldNotBe(2f, 0);
 
                 Assert.AreEqual(actual, result.And);
             }
@@ -237,7 +237,7 @@ namespace EasyAssertions.UnitTests
             {
                 const double actual = 1d;
 
-                Actual<double> result = actual.ShouldNotBe(2d, 0);
+                var result = actual.ShouldNotBe(2d, 0);
 
                 Assert.AreEqual(actual, result.And);
             }
@@ -273,7 +273,7 @@ namespace EasyAssertions.UnitTests
             {
                 const int actual = 2;
 
-                Actual<int> result = actual.ShouldBeGreaterThan(1);
+                var result = actual.ShouldBeGreaterThan(1);
 
                 Assert.AreEqual(actual, result.And);
             }
@@ -309,7 +309,7 @@ namespace EasyAssertions.UnitTests
             {
                 const int actual = 1;
 
-                Actual<int> result = actual.ShouldBeLessThan(2);
+                var result = actual.ShouldBeLessThan(2);
 
                 Assert.AreEqual(actual, result.And);
             }
@@ -375,7 +375,7 @@ namespace EasyAssertions.UnitTests
             {
                 const float actual = 1f;
 
-                Actual<float> result = actual.ShouldNotBeNaN();
+                var result = actual.ShouldNotBeNaN();
 
                 Assert.AreEqual(actual, result.And);
             }
@@ -437,7 +437,7 @@ namespace EasyAssertions.UnitTests
             {
                 const double actual = 1f;
 
-                Actual<double> result = actual.ShouldNotBeNaN();
+                var result = actual.ShouldNotBeNaN();
 
                 Assert.AreEqual(actual, result.And);
             }

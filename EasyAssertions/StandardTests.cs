@@ -41,8 +41,8 @@ namespace EasyAssertions
         /// </summary>
         public bool CollectionStartsWith(IEnumerable actual, IEnumerable expectedToStartWith, Func<object, object, bool> areEqual)
         {
-            using IBuffer<object> bufferedActual = actual.Buffer();
-            using IBuffer<object> bufferedExpected = expectedToStartWith.Buffer();
+            using var bufferedActual = actual.Buffer();
+            using var bufferedExpected = expectedToStartWith.Buffer();
 
             return bufferedActual.Count >= bufferedExpected.Count
                 && CollectionsMatch(bufferedActual.Take(bufferedExpected.Count), bufferedExpected, areEqual);
@@ -53,8 +53,8 @@ namespace EasyAssertions
         /// </summary>
         public bool CollectionEndsWith(IEnumerable actual, IEnumerable expectedToEndWith, Func<object, object, bool> areEqual)
         {
-            using IBuffer<object> bufferedActual = actual.Buffer();
-            using IBuffer<object> bufferedExpected = expectedToEndWith.Buffer();
+            using var bufferedActual = actual.Buffer();
+            using var bufferedExpected = expectedToEndWith.Buffer();
 
             return bufferedActual.Count >= bufferedExpected.Count
                 && CollectionsMatch(bufferedActual.Skip(bufferedActual.Count - bufferedExpected.Count), bufferedExpected, areEqual);
@@ -67,8 +67,8 @@ namespace EasyAssertions
         /// </summary>
         public bool CollectionsMatch(IEnumerable actual, IEnumerable expected, Func<object, object, bool> areEqual)
         {
-            IEnumerator actualEnumerator = actual.GetEnumerator();
-            IEnumerator expectedEnumerator = expected.GetEnumerator();
+            var actualEnumerator = actual.GetEnumerator();
+            var expectedEnumerator = expected.GetEnumerator();
 
             try
             {
@@ -111,7 +111,7 @@ namespace EasyAssertions
         /// </summary>
         public bool IsEmpty<TActual>(TActual actual) where TActual : IEnumerable
         {
-            IEnumerator enumerator = actual.GetEnumerator();
+            var enumerator = actual.GetEnumerator();
             bool empty;
             try
             {
@@ -129,11 +129,11 @@ namespace EasyAssertions
         /// </summary>
         public bool ContainsAllItems<TSuper, TSub>(IEnumerable<TSuper> superset, IEnumerable<TSub> subset, Func<TSuper, TSub, bool> predicate)
         {
-            List<TSuper> remainingInSuperset = superset.ToList();
+            var remainingInSuperset = superset.ToList();
 
-            foreach (TSub expectedItem in subset)
+            foreach (var expectedItem in subset)
             {
-                int matchingIndex = remainingInSuperset.FindIndex(a => predicate(a, expectedItem));
+                var matchingIndex = remainingInSuperset.FindIndex(a => predicate(a, expectedItem));
                 if (matchingIndex == -1)
                     return false;
                 remainingInSuperset.RemoveAt(matchingIndex);
@@ -147,12 +147,12 @@ namespace EasyAssertions
         /// </summary>
         public bool ContainsAny(IEnumerable actual, IEnumerable itemsToLookFor)
         {
-            using IBuffer<object> bufferedItemsToLookFor = itemsToLookFor.Buffer();
+            using var bufferedItemsToLookFor = itemsToLookFor.Buffer();
 
             if (IsEmpty(bufferedItemsToLookFor))
                 return true;
 
-            HashSet<object> actualSet = new HashSet<object>(actual.Cast<object>());
+            var actualSet = new HashSet<object>(actual.Cast<object>());
             return bufferedItemsToLookFor.Any(actualSet.Contains);
         }
 
@@ -161,8 +161,8 @@ namespace EasyAssertions
         /// </summary>
         public bool ContainsAny<TActual, TExpected>(IEnumerable<TActual> actual, IEnumerable<TExpected> itemsToLookFor, Func<TActual, TExpected, bool> predicate)
         {
-            using IBuffer<TActual> bufferedActual = actual.Buffer();
-            using IBuffer<TExpected> bufferedItemsToLookFor = itemsToLookFor.Buffer();
+            using var bufferedActual = actual.Buffer();
+            using var bufferedItemsToLookFor = itemsToLookFor.Buffer();
 
             if (IsEmpty(bufferedItemsToLookFor))
                 return true;
@@ -176,11 +176,11 @@ namespace EasyAssertions
         /// </summary>
         public bool ContainsOnlyExpectedItems<TActual, TExpected>(IEnumerable<TActual> actual, IEnumerable<TExpected> expected, Func<TActual, TExpected, bool> predicate)
         {
-            List<TActual> remainingActual = actual.ToList();
+            var remainingActual = actual.ToList();
 
-            foreach (TExpected expectedItem in expected)
+            foreach (var expectedItem in expected)
             {
-                int matchingIndex = remainingActual.FindIndex(a => predicate(a, expectedItem));
+                var matchingIndex = remainingActual.FindIndex(a => predicate(a, expectedItem));
                 if (matchingIndex == -1)
                     return false;
                 remainingActual.RemoveAt(matchingIndex);
@@ -194,11 +194,11 @@ namespace EasyAssertions
         /// </summary>
         public bool ContainsDuplicate<T>(IEnumerable<T> items, Func<T, T, bool> predicate)
         {
-            List<T> itemList = items.ToList();
+            var itemList = items.ToList();
             while (itemList.Any())
             {
-                T firstItem = itemList[0];
-                int equivalentItems = itemList.RemoveAll(i => predicate(firstItem, i));
+                var firstItem = itemList[0];
+                var equivalentItems = itemList.RemoveAll(i => predicate(firstItem, i));
                 if (equivalentItems == 0)
                     itemList.RemoveAt(0);
                 else if (equivalentItems > 1)
@@ -214,8 +214,8 @@ namespace EasyAssertions
         {
             return CollectionsMatch(actualNodes, expectedNodes, (a, e) =>
                 {
-                    TActual actualNode = (TActual)a;
-                    TestNode<TExpected> expectedNode = (TestNode<TExpected>)e;
+                    var actualNode = (TActual)a;
+                    var expectedNode = (TestNode<TExpected>)e;
                     return areEqual(actualNode, expectedNode.Value)
                         && TreesMatch(getChildren(actualNode), expectedNode, getChildren, areEqual);
                 });

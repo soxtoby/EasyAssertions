@@ -78,12 +78,12 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void CollectionsMatch_MatchingNestedEnumerables_AreEqual()
         {
-            List<List<int>> actual = new List<List<int>>
+            var actual = new List<List<int>>
                 {
                     new List<int> { 1, 2, 3 },
                     new List<int> { 4, 5, 6 }
                 };
-            int[][] expected = new[]
+            var expected = new[]
                 {
                     new[] { 1, 2, 3 },
                     new[] { 4, 5, 6 }
@@ -94,8 +94,8 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void CollectionsMatch_OnlyEnumeratesOnce()
         {
-            TestEnumerable<int> actual = MakeEnumerable(1);
-            TestEnumerable<int> expected = MakeEnumerable(1);
+            var actual = MakeEnumerable(1);
+            var expected = MakeEnumerable(1);
 
             sut.CollectionsMatch(actual, expected, sut.ObjectsMatch);
 
@@ -130,8 +130,8 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void CollectionStartsWith_OnlyEnumeratesOnce()
         {
-            TestEnumerable<int> actual = MakeEnumerable(1);
-            TestEnumerable<int> expected = MakeEnumerable(1);
+            var actual = MakeEnumerable(1);
+            var expected = MakeEnumerable(1);
 
             sut.CollectionStartsWith(actual, expected, sut.ObjectsMatch);
 
@@ -166,8 +166,8 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void CollectionEndsWith_OnlyEnumeratesOnce()
         {
-            TestEnumerable<int> actual = MakeEnumerable(1);
-            TestEnumerable<int> expected = MakeEnumerable(1);
+            var actual = MakeEnumerable(1);
+            var expected = MakeEnumerable(1);
 
             sut.CollectionEndsWith(actual, expected, sut.ObjectsMatch);
 
@@ -226,8 +226,8 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ContainsAny_OnlyEnumeratesOnce()
         {
-            TestEnumerable<int> actual = MakeEnumerable(1);
-            TestEnumerable<int> expected = MakeEnumerable(1);
+            var actual = MakeEnumerable(1);
+            var expected = MakeEnumerable(1);
 
             sut.ContainsAny(actual, expected);
 
@@ -256,8 +256,8 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ContainsAny_CustomEquality_OnlyEnumeratesOnce()
         {
-            TestEnumerable<int> actual = MakeEnumerable(1);
-            TestEnumerable<int> expected = MakeEnumerable(1);
+            var actual = MakeEnumerable(1);
+            var expected = MakeEnumerable(1);
 
             sut.ContainsAny(actual, expected, (a, e) => a == e);
 
@@ -311,8 +311,8 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ContainsOnlyExpectedItems_OnlyEnumeratesOnce()
         {
-            TestEnumerable<Equatable> actual = MakeEnumerable(new Equatable(1), new Equatable(2));
-            TestEnumerable<int> expected = MakeEnumerable(2, 1);
+            var actual = MakeEnumerable(new Equatable(1), new Equatable(2));
+            var expected = MakeEnumerable(2, 1);
 
             sut.ContainsOnlyExpectedItems(actual, expected, (a, e) => a.Value == e);
 

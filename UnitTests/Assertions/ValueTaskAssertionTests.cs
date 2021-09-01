@@ -48,7 +48,7 @@ namespace EasyAssertions.UnitTests
         public void ShouldComplete_CorrectlyRegistersAssertion()
         {
             TaskReturns(0, TimeSpan.FromSeconds(1));
-            ValueTask actualExpression = VoidTask();
+            var actualExpression = VoidTask();
 
             actualExpression.ShouldComplete();
 
@@ -73,7 +73,7 @@ namespace EasyAssertions.UnitTests
         public void ShouldCompleteWithinMilliseconds_CorrectlyRegistersAssertion()
         {
             uint timeout = 1;
-            ValueTask actualExpression = VoidTask();
+            var actualExpression = VoidTask();
 
             AssertTimesOut(TimeSpan.FromMilliseconds(timeout), msg => actualExpression.ShouldComplete(timeout, msg));
 
@@ -91,7 +91,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ShouldCompleteWithinTimeSpan_NegativeTimeSpan_ThrowsArgumentOutOfRangeException()
         {
-            ArgumentOutOfRangeException result = Assert.Throws<ArgumentOutOfRangeException>(() => VoidTask().ShouldComplete(TimeSpan.FromTicks(-1)));
+            var result = Assert.Throws<ArgumentOutOfRangeException>(() => VoidTask().ShouldComplete(TimeSpan.FromTicks(-1)));
 
             Assert.AreEqual("timeout", result.ParamName);
         }
@@ -105,7 +105,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ShouldCompleteWithinTimeSpan_CorrectlyRegistersAssertion()
         {
-            ValueTask actualExpression = VoidTask();
+            var actualExpression = VoidTask();
 
             AssertTimesOut(TimeSpan.FromMilliseconds(1), msg => actualExpression.ShouldComplete(TimeSpan.FromMilliseconds(1), msg));
 
@@ -128,7 +128,7 @@ namespace EasyAssertions.UnitTests
         public void ShouldCompleteWithValue_CorrectlyRegistersAssertion()
         {
             TaskReturns(0, TimeSpan.FromSeconds(1));
-            ValueTask<int> actualExpression = task;
+            var actualExpression = task;
 
             actualExpression.ShouldComplete();
 
@@ -144,7 +144,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ShouldCompleteWithinMillisecondsWithValue_NegativeTimeSpan_ThrowsArgumentOutOfRangeException()
         {
-            ArgumentOutOfRangeException result = Assert.Throws<ArgumentOutOfRangeException>(() => task.ShouldComplete(TimeSpan.FromTicks(-1)));
+            var result = Assert.Throws<ArgumentOutOfRangeException>(() => task.ShouldComplete(TimeSpan.FromTicks(-1)));
 
             Assert.AreEqual("timeout", result.ParamName);
         }
@@ -158,7 +158,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ShouldCompleteWithinMillisecondsWithValue_CorrectlyRegistersAssertion()
         {
-            ValueTask<int> actualExpression = task;
+            var actualExpression = task;
             AssertTimesOut(TimeSpan.FromMilliseconds(1), msg => actualExpression.ShouldComplete(1, msg));
 
             Assert.AreEqual(nameof(actualExpression), TestExpression.GetActual());
@@ -179,7 +179,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ShouldCompleteWithinTimeSpanWithValue_CorrectlyRegistersAssertion()
         {
-            ValueTask<int> actualExpression = task;
+            var actualExpression = task;
             AssertTimesOut(TimeSpan.FromMilliseconds(1), msg => actualExpression.ShouldComplete(TimeSpan.FromMilliseconds(1), msg));
 
             Assert.AreEqual(nameof(actualExpression), TestExpression.GetActual());
@@ -213,7 +213,7 @@ namespace EasyAssertions.UnitTests
         public void ShouldFail_CorrectlyRegistersAssertion()
         {
             TaskFails(new Exception(), TimeSpan.FromSeconds(1));
-            ValueTask actualExpression = VoidTask();
+            var actualExpression = VoidTask();
 
             actualExpression.ShouldFail();
 
@@ -247,7 +247,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ShouldFailWithinMilliseconds_CorrectlyRegistersAssertion()
         {
-            ValueTask actualExpression = VoidTask();
+            var actualExpression = VoidTask();
 
             AssertFailsWithNoExceptionMessage(msg => actualExpression.ShouldFail(1, msg));
 
@@ -269,7 +269,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ShouldFailWithinTimeSpan_NegativeTimeSpan_ThrowsArgumentOutOfRangeException()
         {
-            ArgumentOutOfRangeException result = Assert.Throws<ArgumentOutOfRangeException>(() => VoidTask().ShouldFail(TimeSpan.FromTicks(-1)));
+            var result = Assert.Throws<ArgumentOutOfRangeException>(() => VoidTask().ShouldFail(TimeSpan.FromTicks(-1)));
 
             Assert.AreEqual("timeout", result.ParamName);
         }
@@ -289,7 +289,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ShouldFailWithinTimeSpan_CorrectlyRegistersAssertion()
         {
-            ValueTask actualExpression = VoidTask();
+            var actualExpression = VoidTask();
 
             AssertFailsWithNoExceptionMessage(msg => actualExpression.ShouldFail(TimeSpan.FromMilliseconds(1), msg));
 
@@ -324,7 +324,7 @@ namespace EasyAssertions.UnitTests
         public void ShouldFailWithValue_CorrectlyRegistersAssertion()
         {
             TaskFails(new Exception(), TimeSpan.FromSeconds(1));
-            ValueTask<int> actualExpression = task;
+            var actualExpression = task;
 
             actualExpression.ShouldFail();
 
@@ -358,7 +358,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ShouldFailWithinMillisecondsWithValue_CorrectlyRegistersAssertion()
         {
-            ValueTask<int> actualExpression = task;
+            var actualExpression = task;
 
             AssertFailsWithNoExceptionMessage(msg => actualExpression.ShouldFail(1, msg));
 
@@ -400,7 +400,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ShouldFailWithinTimeSpanWithValue_CorrectlyRegistersAssertion()
         {
-            ValueTask<int> actualExpression = task;
+            var actualExpression = task;
 
             AssertFailsWithNoExceptionMessage(msg => actualExpression.ShouldFail(TimeSpan.FromMilliseconds(1), msg));
 
@@ -413,7 +413,7 @@ namespace EasyAssertions.UnitTests
         {
             TaskReturns(expectedResult, timeout);
 
-            Actual<int> result = callAssertion();
+            var result = callAssertion();
 
             Assert.AreEqual(expectedResult, result.And);
         }
@@ -422,7 +422,7 @@ namespace EasyAssertions.UnitTests
         {
             TaskFails(expectedException, timeout);
 
-            ActualException<TException> result = callAssertion();
+            var result = callAssertion();
 
             Assert.AreSame(expectedException, result.And);
         }
@@ -433,7 +433,7 @@ namespace EasyAssertions.UnitTests
             wait(Arg.Any<Task>(), timeout).Returns(c => c.Arg<Task>().Wait(timeout));
             taskSource.SetCanceled();
 
-            ActualException<TException> result = callAssertion();
+            var result = callAssertion();
 
             Assert.IsInstanceOf<TaskCanceledException>(result.And);
         }
@@ -443,7 +443,7 @@ namespace EasyAssertions.UnitTests
             Error.TaskTimedOut(timeout, "foo").Returns(ExpectedException);
             TaskTimesOut(timeout);
 
-            Exception result = Assert.Throws<Exception>(() => callAssertion("foo"));
+            var result = Assert.Throws<Exception>(() => callAssertion("foo"));
 
             Assert.AreSame(ExpectedException, result);
         }
@@ -453,7 +453,7 @@ namespace EasyAssertions.UnitTests
             Error.WrongException(expectedExceptionType, actualException, null, "foo").Returns(ExpectedException);
             TaskFails(actualException, timeout);
 
-            Exception result = Assert.Throws<Exception>(() => callAssertion("foo"));
+            var result = Assert.Throws<Exception>(() => callAssertion("foo"));
 
             Assert.AreSame(ExpectedException, result);
         }
@@ -463,7 +463,7 @@ namespace EasyAssertions.UnitTests
             Error.NoException(typeof(TException), message: "foo").Returns(ExpectedException);
             TaskReturns(0);
 
-            Exception result = Assert.Throws<Exception>(() => callAssertion("foo"));
+            var result = Assert.Throws<Exception>(() => callAssertion("foo"));
 
             Assert.AreSame(ExpectedException, result);
         }

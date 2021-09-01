@@ -9,7 +9,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void Exception_ToString()
         {
-            EasyAssertionException sut = new EasyAssertionException("foo");
+            var sut = new EasyAssertionException("foo");
             StringAssert.StartsWith("foo" + Environment.NewLine + Environment.NewLine, sut.ToString());
         }
     }

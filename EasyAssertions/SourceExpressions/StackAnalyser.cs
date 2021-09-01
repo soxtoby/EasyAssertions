@@ -11,7 +11,7 @@ namespace EasyAssertions
 
         public static StackAnalyser ForCurrentStack()
         {
-            IEnumerable<StackFrame> currentStack = new StackTrace(true).GetFrames() ?? Enumerable.Empty<StackFrame>();
+            var currentStack = new StackTrace(true).GetFrames() ?? Enumerable.Empty<StackFrame>();
             return new StackAnalyser(currentStack.Skip(1));  // Skip top frame so index arguments are relative to caller, not this method
         }
 
@@ -22,7 +22,7 @@ namespace EasyAssertions
 
         public SourceAddress GetCallAddress(int methodFrameIndex)
         {
-            StackFrame frame = frames[methodFrameIndex + 1];
+            var frame = frames[methodFrameIndex + 1];
 
             return new SourceAddress
                 {
@@ -39,7 +39,7 @@ namespace EasyAssertions
 
             // Most of an assertion stack trace is usually from the test framework, which we don't care about,
             // so search for the first group from the top of the stack, and then we'll work our way back for the rest of the groups.
-            int firstGroupFrameIndex = FirstGroupFrameIndex(assertionFrameIndex, assertionGroupChain.First());
+            var firstGroupFrameIndex = FirstGroupFrameIndex(assertionFrameIndex, assertionGroupChain.First());
             return firstGroupFrameIndex < 0 ? 0
                 : assertionGroupChain.Count == 1 ? 1
                 : ParentGroupPosition(assertionFrameIndex, assertionGroupChain, firstGroupFrameIndex);
@@ -47,13 +47,13 @@ namespace EasyAssertions
 
         private int ParentGroupPosition(int assertionFrameIndex, IList<AssertionComponentGroup> assertionGroupChain, int firstGroupFrameIndex)
         {
-            SourceAddress groupAddress = assertionGroupChain[1].Address;
+            var groupAddress = assertionGroupChain[1].Address;
 
-            int nextGroupIndex = 1;
+            var nextGroupIndex = 1;
 
-            for (int i = firstGroupFrameIndex; i > assertionFrameIndex; i--)
+            for (var i = firstGroupFrameIndex; i > assertionFrameIndex; i--)
             {
-                StackFrame frame = frames[i];
+                var frame = frames[i];
                 if (AreSameAddress(groupAddress, frame))
                 {
                     nextGroupIndex++;
@@ -70,7 +70,7 @@ namespace EasyAssertions
 
         private int FirstGroupFrameIndex(int assertionFrameIndex, AssertionComponentGroup firstGroup)
         {
-            for (int i = assertionFrameIndex; i < frames.Count; i++)
+            for (var i = assertionFrameIndex; i < frames.Count; i++)
                 if (AreSameAddress(firstGroup.Address, frames[i]))
                     return i;
 
@@ -86,7 +86,7 @@ namespace EasyAssertions
 
         public string GetMethodName(int frameIndex)
         {
-            string methodName = GetMethod(frameIndex).Name;
+            var methodName = GetMethod(frameIndex).Name;
             return methodName.StartsWith("get_")
                 ? methodName.Substring(4)
                 : methodName;
@@ -94,7 +94,7 @@ namespace EasyAssertions
 
         public MethodBase GetMethod(int frameIndex)
         {
-            StackFrame assertionFrame = frames[frameIndex];
+            var assertionFrame = frames[frameIndex];
             return assertionFrame.GetMethod();
         }
     }

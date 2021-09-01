@@ -10,7 +10,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void Assert_ReturnsActualValue()
         {
-            Actual<string> result = "foo".Assert(s => s.Length.ShouldBe(3));
+            var result = "foo".Assert(s => s.Length.ShouldBe(3));
 
             Assert.AreEqual("foo", result.And);
         }
@@ -18,7 +18,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void And_ReturnsActualValue()
         {
-            Actual<string> result = "foo".Assert(s => { }).And(s => s.Length.ShouldBe(3));
+            var result = "foo".Assert(s => { }).And(s => s.Length.ShouldBe(3));
 
             Assert.AreEqual("foo", result.And);
         }
@@ -26,9 +26,9 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ActionAssert_Passes_ReturnsActual()
         {
-            object actual = new object();
+            var actual = new object();
 
-            Actual<object> result = actual.RegisterAssertion(c => { });
+            var result = actual.RegisterAssertion(c => { });
 
             Assert.AreSame(actual, result.And);
         }
@@ -36,9 +36,9 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void FuncAssert_Passes_ReturnsInnerActual()
         {
-            object innerActual = new object();
+            var innerActual = new object();
 
-            Actual<object> result = new object().RegisterAssertion(c => new Actual<object>(innerActual));
+            var result = new object().RegisterAssertion(c => new Actual<object>(innerActual));
 
             Assert.AreEqual(innerActual, result.And);
         }
@@ -48,12 +48,12 @@ namespace EasyAssertions.UnitTests
         {
             try
             {
-                Exception expectedException = Substitute.For<Exception>();
-                Func<string, Exception> exceptionFactory = Substitute.For<Func<string, Exception>>();
+                var expectedException = Substitute.For<Exception>();
+                var exceptionFactory = Substitute.For<Func<string, Exception>>();
                 exceptionFactory("foo").Returns(expectedException);
 
                 EasyAssertion.UseFrameworkExceptions(exceptionFactory, null);
-                Exception result = ErrorFactory.Instance.Custom("foo");
+                var result = ErrorFactory.Instance.Custom("foo");
 
                 Assert.AreSame(expectedException, result);
             }
@@ -68,13 +68,13 @@ namespace EasyAssertions.UnitTests
         {
             try
             {
-                Exception expectedInnerException = Substitute.For<Exception>();
-                Exception expectedResultException = Substitute.For<Exception>();
-                Func<string, Exception, Exception> exceptionFactory = Substitute.For<Func<string, Exception, Exception>>();
+                var expectedInnerException = Substitute.For<Exception>();
+                var expectedResultException = Substitute.For<Exception>();
+                var exceptionFactory = Substitute.For<Func<string, Exception, Exception>>();
                 exceptionFactory("foo", expectedInnerException).Returns(expectedResultException);
 
                 EasyAssertion.UseFrameworkExceptions(null, exceptionFactory);
-                Exception result = ErrorFactory.Instance.Custom("foo", expectedInnerException);
+                var result = ErrorFactory.Instance.Custom("foo", expectedInnerException);
 
                 Assert.AreSame(expectedResultException, result);
             }

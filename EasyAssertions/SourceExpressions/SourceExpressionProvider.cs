@@ -34,19 +34,19 @@ namespace EasyAssertions
                 return string.Empty;
 
             // The last group will be _inside_ the component that has the expected parameter
-            IEnumerable<AssertionComponentGroup> groupsUpToAssertion = assertionGroupChain.SkipLast(1);
+            var groupsUpToAssertion = assertionGroupChain.SkipLast(1);
 
             // In case the expected expression references the actual value, get the actual expression from outside the component
-            string actualExpression = GetActualExpression(assertionGroupChain.SkipLast(2));
+            var actualExpression = GetActualExpression(assertionGroupChain.SkipLast(2));
 
             return NormalizeIndentation(groupsUpToAssertion.Aggregate(string.Empty, (expression, group) => group.GetExpectedExpression(actualExpression, expression)));
         }
 
         private static string NormalizeIndentation(string input)
         {
-            string[] lines = input.Split('\n');
+            var lines = input.Split('\n');
 
-            int minIndent = lines
+            var minIndent = lines
                 .Skip(1)
                 .Select(l => l.Length - l.TrimStart(' ').Length)
                 .Aggregate(int.MaxValue, Math.Min);
@@ -64,7 +64,7 @@ namespace EasyAssertions
         {
             assertionFrameIndex++;
 
-            StackAnalyser analyser = StackAnalyser.ForCurrentStack();
+            var analyser = StackAnalyser.ForCurrentStack();
 
             RegisterComponent((address, methodName) => new AssertionMethod(address, methodName), assertionFrameIndex, analyser);
 
@@ -75,7 +75,7 @@ namespace EasyAssertions
         {
             assertionFrameIndex++;
 
-            StackAnalyser analyser = StackAnalyser.ForCurrentStack();
+            var analyser = StackAnalyser.ForCurrentStack();
 
             RegisterComponent((address, methodName) => new AssertionMethod(address, methodName), assertionFrameIndex, analyser);
 
@@ -92,7 +92,7 @@ namespace EasyAssertions
         {
             assertionFrameIndex++;
 
-            StackAnalyser analyser = StackAnalyser.ForCurrentStack();
+            var analyser = StackAnalyser.ForCurrentStack();
 
             RegisterComponent((address, methodName) => new AssertionMethod(address, methodName), assertionFrameIndex, analyser);
 
@@ -102,9 +102,9 @@ namespace EasyAssertions
 
         private void AddGroup(MethodBase innerAssertionMethod, int callFrameIndex, Func<SourceAddress, string, string, AssertionComponentGroup> createGroup, StackAnalyser analyser)
         {
-            SourceAddress callerAddress = analyser.GetCallAddress(callFrameIndex);
-            string actualAlias = GetExpressionAlias(innerAssertionMethod, 0);
-            string expectedAlias = GetExpressionAlias(innerAssertionMethod, 1);
+            var callerAddress = analyser.GetCallAddress(callFrameIndex);
+            var actualAlias = GetExpressionAlias(innerAssertionMethod, 0);
+            var expectedAlias = GetExpressionAlias(innerAssertionMethod, 1);
             assertionGroupChain.Add(createGroup(callerAddress, actualAlias, expectedAlias));
         }
 
@@ -117,16 +117,16 @@ namespace EasyAssertions
         {
             PopStackBackToAssertion(assertionFrameIndex, analyser);
 
-            SourceAddress callAddress = analyser.GetCallAddress(assertionFrameIndex);
-            string assertionName = analyser.GetMethodName(assertionFrameIndex);
-            AssertionComponent method = createMethod(callAddress, assertionName);
+            var callAddress = analyser.GetCallAddress(assertionFrameIndex);
+            var assertionName = analyser.GetMethodName(assertionFrameIndex);
+            var method = createMethod(callAddress, assertionName);
 
             CurrentGroup.AddComponent(method);
         }
 
         private void PopStackBackToAssertion(int assertionFrameIndex, StackAnalyser analyser)
         {
-            int groupPosition = analyser.GetParentGroupPosition(assertionFrameIndex, assertionGroupChain);
+            var groupPosition = analyser.GetParentGroupPosition(assertionFrameIndex, assertionGroupChain);
             assertionGroupChain.RemoveRange(groupPosition, assertionGroupChain.Count - groupPosition);
 
             if (assertionGroupChain.None())

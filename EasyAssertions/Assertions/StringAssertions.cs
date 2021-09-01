@@ -98,7 +98,7 @@ namespace EasyAssertions
                 {
                     actual.ShouldBeA<string>(message);
 
-                    StringComparison stringComparison = caseSensitivity == Case.Sensitive
+                    var stringComparison = caseSensitivity == Case.Sensitive
                         ? StringComparison.Ordinal
                         : StringComparison.OrdinalIgnoreCase;
 

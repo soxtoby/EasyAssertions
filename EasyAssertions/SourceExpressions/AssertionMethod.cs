@@ -6,7 +6,7 @@ namespace EasyAssertions
 
         public override ExpressionSegment GetActualSegment(string expressionSource, int fromIndex)
         {
-            int assertionIndex = GetMethodCallIndex(expressionSource, fromIndex);
+            var assertionIndex = GetMethodCallIndex(expressionSource, fromIndex);
             if (assertionIndex == -1)
                 return new ExpressionSegment { IndexOfNextSegment = fromIndex };
 
@@ -19,13 +19,13 @@ namespace EasyAssertions
 
         public override ExpressionSegment GetExpectedSegment(string expressionSource, int fromIndex)
         {
-            int assertionIndex = GetMethodCallIndex(expressionSource, fromIndex);
+            var assertionIndex = GetMethodCallIndex(expressionSource, fromIndex);
             if (assertionIndex == -1)
                 return new ExpressionSegment { IndexOfNextSegment = fromIndex };
 
-            int startOfFirstParam = AfterOpeningParen(expressionSource, assertionIndex);
-            int endOfFirstParam = BeforeNextComma(expressionSource, startOfFirstParam);
-            int endOfMethodCall = AfterClosingParen(expressionSource, assertionIndex);
+            var startOfFirstParam = AfterOpeningParen(expressionSource, assertionIndex);
+            var endOfFirstParam = BeforeNextComma(expressionSource, startOfFirstParam);
+            var endOfMethodCall = AfterClosingParen(expressionSource, assertionIndex);
 
             if (EndOfFirstParamIsInvalid(endOfFirstParam, endOfMethodCall))
                 endOfFirstParam = BeforeClosingParen(endOfMethodCall);

@@ -19,8 +19,8 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ResultOnSameLine()
         {
-            TestClass actualExpression = new TestClass(12);
-            TestClass expectedExpression = new TestClass(2);
+            var actualExpression = new TestClass(12);
+            var expectedExpression = new TestClass(2);
             Assert.Throws<EasyAssertionException>(() => actualExpression.ShouldBe(expectedExpression));
 
             Assert.AreEqual(nameof(actualExpression), sut.GetActualExpression());
@@ -30,8 +30,8 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ResultOnPreviousLine()
         {
-            TestClass actualExpression = new TestClass(12);
-            TestClass expectedExpression = new TestClass(2);
+            var actualExpression = new TestClass(12);
+            var expectedExpression = new TestClass(2);
             Assert.Throws<EasyAssertionException>(() => actualExpression
                 .ShouldBe(expectedExpression));
 
@@ -59,8 +59,8 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void MultiAssertionMessage_TakesExpressionFromFirstAssertion()
         {
-            TestClass actualExpression = new TestClass(12);
-            TestClass expectedExpression = new TestClass(2);
+            var actualExpression = new TestClass(12);
+            var expectedExpression = new TestClass(2);
             Assert.Throws<EasyAssertionException>(() =>
                 actualExpression.ShouldBeA<TestClass>()
                     .And.ShouldBe(expectedExpression));
@@ -72,8 +72,8 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ContinuedAssertion_CombinesChainedExpressions()
         {
-            TestClass actualExpression = new TestClass(12);
-            int expectedExpression = 2;
+            var actualExpression = new TestClass(12);
+            var expectedExpression = 2;
 
             Assert.Throws<EasyAssertionException>(() =>
                 actualExpression.ShouldBeA<TestClass>()
@@ -86,8 +86,8 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ExpressionInsideNestedAssertion_CombinesOuterAndInnerExpressions()
         {
-            TestClass actualExpression = new TestClass(12);
-            int expectedExpression = 2;
+            var actualExpression = new TestClass(12);
+            var expectedExpression = 2;
 
             Assert.Throws<EasyAssertionException>(() =>
                 actualExpression.Assert(a => a.Value.ShouldBe(expectedExpression)));
@@ -99,8 +99,8 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ExpressionSecondInsideNestedAssertion_CombinesOuterAndInnerExpressions()
         {
-            TestClass actualExpression = new TestClass(12);
-            int expectedExpression = 2;
+            var actualExpression = new TestClass(12);
+            var expectedExpression = 2;
 
             Assert.Throws<EasyAssertionException>(() =>
                 actualExpression.Assert(tc =>
@@ -116,8 +116,8 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ExpressionTwoLevelsIn_CombinesOuterMiddleAndInnerExpressions()
         {
-            TestClass actualExpression = new TestClass(12);
-            string expectedExpression = "2";
+            var actualExpression = new TestClass(12);
+            var expectedExpression = "2";
             Assert.Throws<EasyAssertionException>(() =>
                 actualExpression
                     .Assert(a => a.Value.ShouldBe(12)
@@ -130,8 +130,8 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ExpressionAfterNestedAssertion_CombinesChainedExpressions()
         {
-            TestClass actualExpression = new TestClass(12);
-            int expectedExpression = 2;
+            var actualExpression = new TestClass(12);
+            var expectedExpression = 2;
 
             Assert.Throws<EasyAssertionException>(() =>
                 actualExpression
@@ -146,7 +146,7 @@ namespace EasyAssertions.UnitTests
         public void ExpressionInsideIndexedAssertion_IncludesIndex()
         {
             TestClass?[] actualExpression = { null, new TestClass(12) };
-            int expectedExpression = 2;
+            var expectedExpression = 2;
 
             Assert.Throws<EasyAssertionException>(() =>
                 actualExpression.ItemsSatisfy(
@@ -161,7 +161,7 @@ namespace EasyAssertions.UnitTests
         public void ExpressionAfterIndexedAssertions_CombinesChainedExpressions()
         {
             TestClass[] actualExpression = { new TestClass(12) };
-            TestClass expectedExpression = new TestClass(2);
+            var expectedExpression = new TestClass(2);
 
             Assert.Throws<EasyAssertionException>(() =>
                 actualExpression
@@ -175,8 +175,8 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void SeparateExpressionAfterIndexedAssertion()
         {
-            TestClass actualExpression = new TestClass(12);
-            TestClass expectedExpression = new TestClass(2);
+            var actualExpression = new TestClass(12);
+            var expectedExpression = new TestClass(2);
 
             Assert.Throws<EasyAssertionException>(() =>
                 {
@@ -224,9 +224,9 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void SameAssertionCalledTwice()
         {
-            string actualExpression = "foo";
-            string expectedExpression = "bar";
-            for (int i = 0; i < 2; i++)
+            var actualExpression = "foo";
+            var expectedExpression = "bar";
+            for (var i = 0; i < 2; i++)
                 Assert.Throws<EasyAssertionException>(() => actualExpression.ShouldBe(expectedExpression));
 
             Assert.AreEqual(nameof(actualExpression), sut.GetActualExpression());
@@ -252,7 +252,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ExpectedExpression_ContainsActualExpression()
         {
-            TestClass actualExpression = new TestClass(1);
+            var actualExpression = new TestClass(1);
             Func<TestClass, int> valueOf = x => x.Value;
 
             Assert.Throws<EasyAssertionException>(() => actualExpression.Assert(a => a.Value.ShouldNotBe(valueOf(a))));

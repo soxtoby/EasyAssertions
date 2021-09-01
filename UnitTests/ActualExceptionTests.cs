@@ -16,8 +16,8 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void And_ReturnsException()
         {
-            Exception exception = new Exception();
-            ActualException<Exception> sut = new ActualException<Exception>(exception);
+            var exception = new Exception();
+            var sut = new ActualException<Exception>(exception);
 
             Assert.AreSame(exception, sut.And);
         }
@@ -25,9 +25,9 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void AndShouldNotBeA_ExceptionIsNotSpecifiedType_ReturnsSelf()
         {
-            ActualException<Exception> sut = new ActualException<Exception>(new Exception());
+            var sut = new ActualException<Exception>(new Exception());
 
-            ActualException<Exception> result = sut.AndShouldNotBeA<InvalidOperationException>();
+            var result = sut.AndShouldNotBeA<InvalidOperationException>();
 
             Assert.AreSame(sut, result);
         }
@@ -37,7 +37,7 @@ namespace EasyAssertions.UnitTests
         {
             Exception exception = new InvalidOperationException();
             Error.AreEqual(typeof(InvalidOperationException), typeof(InvalidOperationException), "foo").Returns(ExpectedException);
-            ActualException<Exception> sut = new ActualException<Exception>(exception);
+            var sut = new ActualException<Exception>(exception);
 
             AssertThrowsExpectedError(() => sut.AndShouldNotBeA<InvalidOperationException>("foo"));
         }

@@ -49,7 +49,7 @@ namespace EasyAssertions
 
         public IEnumerator<T> GetEnumerator()
         {
-            int i = -1;
+            var i = -1;
 
             while (EnumerateTo(++i))
                 yield return buffer[i];

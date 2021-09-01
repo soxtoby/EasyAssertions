@@ -39,16 +39,16 @@ namespace EasyAssertions
             if (calls.None())
                 return string.Empty;
 
-            SourceAddress assertionsAddress = calls.First().SourceAddress;
+            var assertionsAddress = calls.First().SourceAddress;
 
-            if (!Utils.TryReadAllLines(assertionsAddress, out string[] sourceLines))
+            if (!Utils.TryReadAllLines(assertionsAddress, out var sourceLines))
                 return string.Empty;
 
-            string expressionSource = sourceLines.Skip(assertionsAddress.LineIndex).Join(Environment.NewLine);
+            var expressionSource = sourceLines.Skip(assertionsAddress.LineIndex).Join(Environment.NewLine);
 
-            ExpressionSegment segment = new ExpressionSegment { IndexOfNextSegment = assertionsAddress.ExpressionIndex };
-            string currentResult = string.Empty;
-            foreach (AssertionComponent method in MethodCalls)
+            var segment = new ExpressionSegment { IndexOfNextSegment = assertionsAddress.ExpressionIndex };
+            var currentResult = string.Empty;
+            foreach (var method in MethodCalls)
             {
                 segment = getSegment(method, expressionSource, segment.IndexOfNextSegment);
                 currentResult = aggregateSegment(currentResult, segment);

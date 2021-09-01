@@ -11,10 +11,10 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ShouldBeValue_SameValue_ReturnsActualValue()
         {
-            TestEnum actual = TestEnum.One;
-            TestEnum expected = TestEnum.One;
+            var actual = TestEnum.One;
+            var expected = TestEnum.One;
 
-            Actual<TestEnum> result = actual.ShouldBeValue(expected);
+            var result = actual.ShouldBeValue(expected);
 
             Assert.AreEqual(actual, result.Value);
         }
@@ -22,8 +22,8 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ShouldBeValue_DifferentValue_FailsWithObjectsNotEqualMessage()
         {
-            TestEnum actual = TestEnum.One;
-            TestEnum expected = TestEnum.Two;
+            var actual = TestEnum.One;
+            var expected = TestEnum.Two;
             Error.NotEqual(expected, actual, "foo").Returns(ExpectedException);
 
             AssertThrowsExpectedError(() => actual.ShouldBe(expected, "foo"));
@@ -32,10 +32,10 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ShouldHaveFlag_HasFlag_ReturnsActualValue()
         {
-            FlagsEnum actual = FlagsEnum.One | FlagsEnum.Two;
-            FlagsEnum expectedFlag = FlagsEnum.Two;
+            var actual = FlagsEnum.One | FlagsEnum.Two;
+            var expectedFlag = FlagsEnum.Two;
 
-            Actual<FlagsEnum> result = actual.ShouldHaveFlag(expectedFlag);
+            var result = actual.ShouldHaveFlag(expectedFlag);
 
             Assert.AreEqual(actual, result.Value);
         }
@@ -49,8 +49,8 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ShouldHaveFlag_NotAFlagsEnum_FailsWithDoesNotContainFlagsAttributeMessage()
         {
-            TestEnum actual = TestEnum.One;
-            TestEnum expectedFlag = TestEnum.One;
+            var actual = TestEnum.One;
+            var expectedFlag = TestEnum.One;
             Error.DoesNotContain(Arg.Any<FlagsAttribute>(), Matches<object>(typeof(TestEnum).GetCustomAttributes(false)), "foo").Throws(ExpectedException);
             
             AssertThrowsExpectedError(() => actual.ShouldHaveFlag(expectedFlag, "foo"));
@@ -59,8 +59,8 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ShouldHaveFlag_DoesNotHaveFlag_FailsWithDoesNotContainFlagMessage()
         {
-            FlagsEnum actual = FlagsEnum.Two;
-            FlagsEnum expected = FlagsEnum.One;
+            var actual = FlagsEnum.Two;
+            var expected = FlagsEnum.One;
             Error.DoesNotContain(expected, Matches<FlagsEnum>(new[] { FlagsEnum.Two }), "foo").Throws(ExpectedException);
 
             AssertThrowsExpectedError(() => actual.ShouldHaveFlag(expected, "foo"));

@@ -79,7 +79,7 @@ namespace EasyAssertions
         /// </summary>
         public static ActualException<Exception> ShouldFail([NotNull] this Task? actualTask, string? message = null)
         {
-            Actual<Exception> result = actualTask.RegisterNotNullAssertion(c => actualTask.ShouldFailWith<Exception>(DefaultTimeout, message));
+            var result = actualTask.RegisterNotNullAssertion(c => actualTask.ShouldFailWith<Exception>(DefaultTimeout, message));
             return new ActualException<Exception>(result.Value);
         }
 
@@ -88,7 +88,7 @@ namespace EasyAssertions
         /// </summary>
         public static ActualException<Exception> ShouldFail([NotNull] this Task? actualTask, uint millisecondsTimeout, string? message = null)
         {
-            Actual<Exception> result = actualTask.RegisterNotNullAssertion(c => actualTask.ShouldFailWith<Exception>(TimeSpan.FromMilliseconds(millisecondsTimeout), message));
+            var result = actualTask.RegisterNotNullAssertion(c => actualTask.ShouldFailWith<Exception>(TimeSpan.FromMilliseconds(millisecondsTimeout), message));
             return new ActualException<Exception>(result.Value);
         }
 

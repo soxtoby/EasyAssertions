@@ -54,7 +54,7 @@ namespace EasyAssertions
         /// </summary>
         public void AddRange(IEnumerable<TestNode<T>> childNodes)
         {
-            foreach (TestNode<T> childNode in childNodes)
+            foreach (var childNode in childNodes)
                 Add(childNode);
         }
 

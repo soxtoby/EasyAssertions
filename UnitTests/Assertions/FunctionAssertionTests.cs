@@ -11,9 +11,9 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ActionShouldThrowType_ThrowsCorrectType_ReturnsException()
         {
-            ExceptionThrower thrower = new ExceptionThrower(ExpectedException);
+            var thrower = new ExceptionThrower(ExpectedException);
 
-            ActualException<Exception> result = Should.Throw<Exception>(() => thrower.Throw());
+            var result = Should.Throw<Exception>(() => thrower.Throw());
 
             Assert.AreSame(ExpectedException, result.And);
         }
@@ -31,8 +31,8 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ActionShouldThrowType_ThrowsWrongType_FailsWithWrongExceptionMessage()
         {
-            Exception innerException = new Exception();
-            ExceptionThrower thrower = new ExceptionThrower(innerException);
+            var innerException = new Exception();
+            var thrower = new ExceptionThrower(innerException);
             Expression<Action> throwsException = () => thrower.Throw();
             Error.WrongException(typeof(InvalidOperationException), innerException, throwsException, "foo").Returns(ExpectedException);
 
@@ -43,9 +43,9 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void FuncShouldThrowType_ThrowsCorrectType_ReturnsException()
         {
-            ExceptionThrower thrower = new ExceptionThrower(ExpectedException);
+            var thrower = new ExceptionThrower(ExpectedException);
 
-            ActualException<Exception> result = Should.Throw<Exception>(() => thrower.ThrowingProperty);
+            var result = Should.Throw<Exception>(() => thrower.ThrowingProperty);
 
             Assert.AreSame(ExpectedException, result.And);
         }
@@ -63,9 +63,9 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ActionShouldThrow_Throws_ReturnsException()
         {
-            ExceptionThrower thrower = new ExceptionThrower(ExpectedException);
+            var thrower = new ExceptionThrower(ExpectedException);
 
-            ActualException<Exception> result = Should.Throw(() => thrower.Throw());
+            var result = Should.Throw(() => thrower.Throw());
 
             Assert.AreSame(ExpectedException, result.And);
         }
@@ -83,9 +83,9 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void FuncShouldThrow_Throws_ReturnsException()
         {
-            ExceptionThrower thrower = new ExceptionThrower(ExpectedException);
+            var thrower = new ExceptionThrower(ExpectedException);
 
-            ActualException<Exception> result = Should.Throw(() => thrower.ThrowingProperty);
+            var result = Should.Throw(() => thrower.ThrowingProperty);
 
             Assert.AreSame(ExpectedException, result.And);
         }

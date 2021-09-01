@@ -13,10 +13,10 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ShouldMatchTree_TreeMatches_ReturnsActual()
         {
-            object actualItem = new object();
+            var actualItem = new object();
             IEnumerable<object> actual = new[] { actualItem };
 
-            Actual<IEnumerable<object>> result = actual.ShouldMatch(new[] { actualItem.Node() }, NoChildren);
+            var result = actual.ShouldMatch(new[] { actualItem.Node() }, NoChildren);
 
             Assert.AreSame(actual, result.And);
         }
@@ -68,10 +68,10 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ShouldMatchTree_CustomEquality_TreeMatches_ReturnsActual()
         {
-            object actualItem = new object();
+            var actualItem = new object();
             IEnumerable<object> actual = new[] { actualItem };
 
-            Actual<IEnumerable<object>> result = actual.ShouldMatch(new[] { new object().Node() }, NoChildren, (a, e) => a == actualItem);
+            var result = actual.ShouldMatch(new[] { new object().Node() }, NoChildren, (a, e) => a == actualItem);
 
             Assert.AreSame(actual, result.And);
         }
@@ -81,7 +81,7 @@ namespace EasyAssertions.UnitTests
         {
             int[] actual = { 1 };
             TestNode<int>[] expected = { 1 };
-            Func<int, int, bool> equality = Substitute.For<Func<int, int, bool>>();
+            var equality = Substitute.For<Func<int, int, bool>>();
             Func<object, object, bool> formatterEquality = null!;
             Error.TreesDoNotMatch(Matches<TestNode<int>>(expected), Matches<int>(actual), NoChildren, Arg.Do<Func<object, object, bool>>(func => formatterEquality = func), "foo").Returns(ExpectedException);
 
@@ -123,7 +123,7 @@ namespace EasyAssertions.UnitTests
         {
             int[] actualExpression = { 1 };
             TestNode<int>[] expectedExpression = { 1 };
-            Func<int, int, bool> equality = Substitute.For<Func<int, int, bool>>();
+            var equality = Substitute.For<Func<int, int, bool>>();
             Error.TreesDoNotMatch(Arg.Any<IEnumerable<TestNode<int>>>(), Arg.Any<IEnumerable<int>>(), Arg.Any<Func<int, IEnumerable<int>>>(), Arg.Any<Func<object, object, bool>>()).Returns(ExpectedException);
 
             AssertThrowsExpectedError(() => actualExpression.ShouldMatch(expectedExpression, NoChildren, equality));

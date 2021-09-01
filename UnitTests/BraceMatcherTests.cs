@@ -8,7 +8,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void UnmatchedBraces_ReturnsNegativeOne()
         {
-            int result = BraceMatcher.FindClosingBrace("(");
+            var result = BraceMatcher.FindClosingBrace("(");
 
             Assert.AreEqual(-1, result);
         }
@@ -16,7 +16,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void EmptyBraces()
         {
-            int result = BraceMatcher.FindClosingBrace("()");
+            var result = BraceMatcher.FindClosingBrace("()");
 
             Assert.AreEqual(1, result);
         }
@@ -24,7 +24,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void TwoPairs_MatchesFirstPairOnly()
         {
-            int result = BraceMatcher.FindClosingBrace("()()");
+            var result = BraceMatcher.FindClosingBrace("()()");
 
             Assert.AreEqual(1, result);
         }
@@ -32,7 +32,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void TwoPairs_StartAfterFirst_MatchesSecondPair()
         {
-            int result = BraceMatcher.FindClosingBrace("()()", 2);
+            var result = BraceMatcher.FindClosingBrace("()()", 2);
 
             Assert.AreEqual(3, result);
         }
@@ -40,7 +40,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void NestedBraces()
         {
-            int result = BraceMatcher.FindClosingBrace("(())");
+            var result = BraceMatcher.FindClosingBrace("(())");
 
             Assert.AreEqual(3, result);
         }
@@ -48,7 +48,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void BracesInsideString_AreIgnored()
         {
-            int result = BraceMatcher.FindClosingBrace(@"( "")"" )");
+            var result = BraceMatcher.FindClosingBrace(@"( "")"" )");
 
             Assert.AreEqual(6, result);
         }
@@ -56,7 +56,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void BracesInsideStringWithEscapedQuotes_AreIgnored()
         {
-            int result = BraceMatcher.FindClosingBrace(@"( "" \"" ) "" )");
+            var result = BraceMatcher.FindClosingBrace(@"( "" \"" ) "" )");
 
             Assert.AreEqual(11, result);
         }
@@ -64,7 +64,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void FindNextComma_ReturnsIndexOfComma()
         {
-            int result = BraceMatcher.FindNext("method(param1, param2, param3)", ',', 7);
+            var result = BraceMatcher.FindNext("method(param1, param2, param3)", ',', 7);
 
             Assert.AreEqual(13, result);
         }
@@ -72,7 +72,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void FindNextComma_NoComma_ReturnsNegativeOne()
         {
-            int result = BraceMatcher.FindNext("foo", ',');
+            var result = BraceMatcher.FindNext("foo", ',');
 
             Assert.AreEqual(-1, result);
         }
@@ -80,7 +80,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void FindNextComma_IgnoresCommasInsideBraces()
         {
-            int result = BraceMatcher.FindNext("new[] { 1, 2 }, param2, param3", ',');
+            var result = BraceMatcher.FindNext("new[] { 1, 2 }, param2, param3", ',');
 
             Assert.AreEqual(14, result);
         }
@@ -88,7 +88,7 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void FindNextComma_NoCommaOutsideBraces_ReturnsNegativeOne()
         {
-            int result = BraceMatcher.FindNext("new[] { 1, 2 }", ',');
+            var result = BraceMatcher.FindNext("new[] { 1, 2 }", ',');
 
             Assert.AreEqual(-1, result);
         }

@@ -19,8 +19,8 @@ namespace EasyAssertions
 
         public override string GetActualExpression(string parentExpression)
         {
-            string aliasedExpression = base.GetActualExpression(parentExpression);
-            string resolvedExpression = ReplaceAliasWithExpression(aliasedExpression, actualAlias, parentExpression);
+            var aliasedExpression = base.GetActualExpression(parentExpression);
+            var resolvedExpression = ReplaceAliasWithExpression(aliasedExpression, actualAlias, parentExpression);
 
             return resolvedExpression == aliasedExpression // If actual alias wasn't used explicitly, just use the expression we have so far
                 ? parentExpression
@@ -29,7 +29,7 @@ namespace EasyAssertions
 
         public override string GetExpectedExpression(string actualExpression, string parentExpression)
         {
-            string expectedExpression = base.GetExpectedExpression(actualExpression, parentExpression);
+            var expectedExpression = base.GetExpectedExpression(actualExpression, parentExpression);
             return ReplaceAliasWithExpression(ReplaceAliasWithExpression(expectedExpression, actualAlias, actualExpression), expectedAlias, parentExpression);
         }
 

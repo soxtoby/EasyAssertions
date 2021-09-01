@@ -34,8 +34,8 @@ namespace EasyAssertions
                     if (typeof(T).GetCustomAttributes(typeof(FlagsAttribute), false).None())
                         throw c.StandardError.DoesNotContain(new FlagsAttribute(), typeof(T).GetCustomAttributes(false), message);
 
-                    Enum actualEnum = (actual as Enum)!;
-                    Enum expectedFlagEnum = (expectedFlag as Enum)!;
+                    var actualEnum = (actual as Enum)!;
+                    var expectedFlagEnum = (expectedFlag as Enum)!;
                     if (!actualEnum.HasFlag(expectedFlagEnum))
                         throw c.StandardError.DoesNotContain(expectedFlag, Flags<T>(actualEnum), message);
                 });
@@ -43,7 +43,7 @@ namespace EasyAssertions
 
         private static IEnumerable<T> Flags<T>(Enum actualEnum) where T : struct
         {
-            object zeroValue = Enum.Parse(typeof(T), "0");
+            var zeroValue = Enum.Parse(typeof(T), "0");
             return Enum.GetValues(typeof(T))
                 .Cast<Enum>()
                 .Where(v => !v.Equals(zeroValue) && actualEnum.HasFlag(v))

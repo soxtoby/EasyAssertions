@@ -1,6 +1,6 @@
 namespace EasyAssertions
 {
-    internal class Continuation : AssertionComponent
+    class Continuation : AssertionComponent
     {
         public Continuation(SourceAddress sourceAddress, string methodName) : base(sourceAddress, methodName) { }
 
@@ -14,7 +14,7 @@ namespace EasyAssertions
             return GetSegment(expressionSource, fromIndex);
         }
 
-        private ExpressionSegment GetSegment(string expressionSource, int fromIndex)
+        ExpressionSegment GetSegment(string expressionSource, int fromIndex)
         {
             var startOfContinuationProperty = GetMethodCallIndex(expressionSource, fromIndex);
             if (startOfContinuationProperty == -1)

@@ -3,19 +3,19 @@ using System.Linq;
 
 namespace EasyAssertions
 {
-    internal abstract class BraceMatcher
+    abstract class BraceMatcher
     {
-        private const char OpenParen = '(';
-        private const char CloseParen = ')';
-        private const char OpenBrace = '{';
-        private const char CloseBrace = '}';
-        private const char DoubleQuotes = '"';
-        private const char Backslash = '\\';
+        const char OpenParen = '(';
+        const char CloseParen = ')';
+        const char OpenBrace = '{';
+        const char CloseBrace = '}';
+        const char DoubleQuotes = '"';
+        const char Backslash = '\\';
 
-        private readonly string source;
+        readonly string source;
         protected readonly Stack<char> ExpectedClosingBraces = new();
-        private bool inString;
-        private bool escapeNextChar;
+        bool inString;
+        bool escapeNextChar;
 
         public static int FindClosingBrace(string source, int startIndex = 0)
         {
@@ -32,7 +32,7 @@ namespace EasyAssertions
             this.source = source;
         }
 
-        private int MatchFrom(int startIndex)
+        int MatchFrom(int startIndex)
         {
             inString = false;
             escapeNextChar = false;
@@ -40,7 +40,7 @@ namespace EasyAssertions
                 .IndexOfOrDefault(EvaluateChar, startIndex, -1);
         }
 
-        private bool EvaluateChar(char c)
+        bool EvaluateChar(char c)
         {
             if (IsUnescapedQuotes(c))
                 inString = !inString;
@@ -50,13 +50,13 @@ namespace EasyAssertions
                 : EvaluateCodeChar(c);
         }
 
-        private bool IsUnescapedQuotes(char c)
+        bool IsUnescapedQuotes(char c)
         {
             return !escapeNextChar
                 && c == DoubleQuotes;
         }
 
-        private bool EvaluateStringChar(char c)
+        bool EvaluateStringChar(char c)
         {
             if (escapeNextChar)
                 escapeNextChar = false;
@@ -83,7 +83,7 @@ namespace EasyAssertions
             return false;
         }
 
-        private bool IsExpectedClosingBrace(char c)
+        bool IsExpectedClosingBrace(char c)
         {
             return ExpectedClosingBraces.Any() && c == ExpectedClosingBraces.Peek();
         }
@@ -95,7 +95,7 @@ namespace EasyAssertions
         }
     }
 
-    internal class ClosingBraceFinder : BraceMatcher
+    class ClosingBraceFinder : BraceMatcher
     {
         public ClosingBraceFinder(string source) : base(source) { }
 
@@ -106,9 +106,9 @@ namespace EasyAssertions
         }
     }
 
-    internal class CharFinder : BraceMatcher
+    class CharFinder : BraceMatcher
     {
-        private readonly char charToFind;
+        readonly char charToFind;
 
         public CharFinder(string source, char charToFind)
             : base(source)

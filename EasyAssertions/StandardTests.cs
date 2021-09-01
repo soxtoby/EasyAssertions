@@ -221,7 +221,7 @@ namespace EasyAssertions
                 });
         }
 
-        private static void Dispose(object obj)
+        static void Dispose(object obj)
         {
             (obj as IDisposable)?.Dispose();
         }

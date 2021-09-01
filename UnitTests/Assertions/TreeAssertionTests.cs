@@ -132,7 +132,7 @@ namespace EasyAssertions.UnitTests
             Assert.AreEqual(nameof(expectedExpression), TestExpression.GetExpected());
         }
 
-        private static IEnumerable<T> NoChildren<T>(T node)
+        static IEnumerable<T> NoChildren<T>(T node)
         {
             return Enumerable.Empty<T>();
         }

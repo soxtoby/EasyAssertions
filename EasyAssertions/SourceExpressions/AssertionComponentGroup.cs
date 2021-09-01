@@ -4,9 +4,9 @@ using System.Linq;
 
 namespace EasyAssertions
 {
-    internal abstract class AssertionComponentGroup
+    abstract class AssertionComponentGroup
     {
-        private readonly List<AssertionComponent> calls = new();
+        readonly List<AssertionComponent> calls = new();
 
         protected IEnumerable<AssertionComponent> MethodCalls => calls;
 
@@ -34,7 +34,7 @@ namespace EasyAssertions
                 .Trim();
         }
 
-        private string AggregateMethodCalls(Func<AssertionComponent, string, int, ExpressionSegment> getSegment, Func<string, ExpressionSegment, string> aggregateSegment)
+        string AggregateMethodCalls(Func<AssertionComponent, string, int, ExpressionSegment> getSegment, Func<string, ExpressionSegment, string> aggregateSegment)
         {
             if (calls.None())
                 return string.Empty;

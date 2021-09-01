@@ -1,6 +1,6 @@
 namespace EasyAssertions
 {
-    internal struct SourceAddress
+    struct SourceAddress
     {
         public string? FileName;
         public int LineIndex;

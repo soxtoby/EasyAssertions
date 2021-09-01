@@ -5,9 +5,9 @@ using System.Reflection;
 
 namespace EasyAssertions
 {
-    internal class StackAnalyser
+    class StackAnalyser
     {
-        private readonly List<StackFrame> frames;
+        readonly List<StackFrame> frames;
 
         public static StackAnalyser ForCurrentStack()
         {
@@ -15,7 +15,7 @@ namespace EasyAssertions
             return new StackAnalyser(currentStack.Skip(1));  // Skip top frame so index arguments are relative to caller, not this method
         }
 
-        private StackAnalyser(IEnumerable<StackFrame> stackFrames)
+        StackAnalyser(IEnumerable<StackFrame> stackFrames)
         {
             frames = stackFrames.ToList();
         }
@@ -45,7 +45,7 @@ namespace EasyAssertions
                 : ParentGroupPosition(assertionFrameIndex, assertionGroupChain, firstGroupFrameIndex);
         }
 
-        private int ParentGroupPosition(int assertionFrameIndex, IList<AssertionComponentGroup> assertionGroupChain, int firstGroupFrameIndex)
+        int ParentGroupPosition(int assertionFrameIndex, IList<AssertionComponentGroup> assertionGroupChain, int firstGroupFrameIndex)
         {
             var groupAddress = assertionGroupChain[1].Address;
 
@@ -68,7 +68,7 @@ namespace EasyAssertions
             return nextGroupIndex;
         }
 
-        private int FirstGroupFrameIndex(int assertionFrameIndex, AssertionComponentGroup firstGroup)
+        int FirstGroupFrameIndex(int assertionFrameIndex, AssertionComponentGroup firstGroup)
         {
             for (var i = assertionFrameIndex; i < frames.Count; i++)
                 if (AreSameAddress(firstGroup.Address, frames[i]))
@@ -77,7 +77,7 @@ namespace EasyAssertions
             return -1;
         }
 
-        private static bool AreSameAddress(SourceAddress groupAddress, StackFrame frame)
+        static bool AreSameAddress(SourceAddress groupAddress, StackFrame frame)
         {
             return frame.GetFileLineNumber() - 1 == groupAddress.LineIndex
                 && frame.GetFileColumnNumber() - 1 == groupAddress.ExpressionIndex

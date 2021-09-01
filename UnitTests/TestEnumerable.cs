@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace EasyAssertions.UnitTests
 {
-    internal class TestEnumerable<T> : IEnumerable<T>
+    class TestEnumerable<T> : IEnumerable<T>
     {
-        private readonly IEnumerable<T> items;
+        readonly IEnumerable<T> items;
 
         public int EnumerationCount { get; private set; }
         public bool EnumerationCompleted { get; private set; }

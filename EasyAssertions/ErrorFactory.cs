@@ -6,10 +6,10 @@ namespace EasyAssertions
     {
         public static readonly ErrorFactory Instance = new();
 
-        private ErrorFactory() {}
+        ErrorFactory() {}
 
-        private Func<string, Exception>? createMessageException;
-        private Func<string, Exception, Exception>? createInnerExceptionException;
+        Func<string, Exception>? createMessageException;
+        Func<string, Exception, Exception>? createInnerExceptionException;
 
         public void UseFrameworkExceptions(Func<string, Exception>? messageExceptionFactory, Func<string, Exception, Exception>? innerExceptionExceptionFactory)
         {
@@ -43,14 +43,14 @@ namespace EasyAssertions
             return Failure(message, innerException);
         }
 
-        private Exception Failure(string failureMessage)
+        Exception Failure(string failureMessage)
         {
             return createMessageException != null
                 ? createMessageException(failureMessage)
                 : new EasyAssertionException(failureMessage);
         }
 
-        private Exception Failure(string failureMessage, Exception innerException)
+        Exception Failure(string failureMessage, Exception innerException)
         {
             return createInnerExceptionException != null
                 ? createInnerExceptionException(failureMessage, innerException)

@@ -8,7 +8,7 @@ namespace EasyAssertions.UnitTests
     [TestFixture]
     public class SourceExpressionProviderTests
     {
-        private SourceExpressionProvider sut = null!;
+        SourceExpressionProvider sut = null!;
 
         [SetUp]
         public void SetUp()
@@ -260,7 +260,7 @@ namespace EasyAssertions.UnitTests
             Assert.AreEqual($"{nameof(valueOf)}({nameof(actualExpression)})", sut.GetExpectedExpression());
         }
 
-        private class TestClass
+        class TestClass
         {
             public readonly int Value;
 

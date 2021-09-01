@@ -12,7 +12,7 @@ namespace EasyAssertions
     /// </summary>
     public static class CollectionAssertions
     {
-        private const string UnorderedCollectionComparisonError = "Do not compare unordered collections with ordered sequences. Use an assertion that does not test ordering instead.";
+        const string UnorderedCollectionComparisonError = "Do not compare unordered collections with ordered sequences. Use an assertion that does not test ordering instead.";
 
         /// <summary>Disallowed comparison.</summary>
         [Obsolete(UnorderedCollectionComparisonError, true)]
@@ -123,7 +123,7 @@ namespace EasyAssertions
             return actual.RegisterNotNullAssertion(c => AssertLength(actual, expectedLength, message, c));
         }
 
-        private static void AssertLength<TActual>([NotNull] TActual? actual, int expectedLength, string? message, IAssertionContext c) where TActual : IEnumerable
+        static void AssertLength<TActual>([NotNull] TActual? actual, int expectedLength, string? message, IAssertionContext c) where TActual : IEnumerable
         {
             actual.ShouldBeA<TActual>(message);
 
@@ -177,7 +177,7 @@ namespace EasyAssertions
             return actual.RegisterNotNullAssertion(c => AssertMatch(actual, expected, predicate, message, c));
         }
 
-        private static void AssertMatch<TActual, TExpected>([NotNull] IEnumerable<TActual>? actual, IEnumerable<TExpected> expected, Func<TActual, TExpected, bool> predicate, string? message, IAssertionContext c)
+        static void AssertMatch<TActual, TExpected>([NotNull] IEnumerable<TActual>? actual, IEnumerable<TExpected> expected, Func<TActual, TExpected, bool> predicate, string? message, IAssertionContext c)
         {
             actual.ShouldBeA<IEnumerable<TActual>>(message);
 
@@ -232,7 +232,7 @@ namespace EasyAssertions
             return actual.RegisterNotNullAssertion(c => AssertNotMatch(actual, notExpected, predicate, message, c));
         }
 
-        private static void AssertNotMatch<TActual, TExpected>([NotNull] IEnumerable<TActual>? actual, IEnumerable<TExpected> notExpected, Func<TActual, TExpected, bool> predicate, string? message, IAssertionContext c)
+        static void AssertNotMatch<TActual, TExpected>([NotNull] IEnumerable<TActual>? actual, IEnumerable<TExpected> notExpected, Func<TActual, TExpected, bool> predicate, string? message, IAssertionContext c)
         {
             actual.ShouldBeA<IEnumerable<TActual>>(message);
 
@@ -265,7 +265,7 @@ namespace EasyAssertions
             return actual.RegisterNotNullAssertion(c => AssertStartsWith(actual, expectedStart, predicate, message, c));
         }
 
-        private static void AssertStartsWith<TActual, TExpected>([NotNull] IEnumerable<TActual>? actual, IEnumerable<TExpected> expectedStart, Func<TActual, TExpected, bool> predicate, string? message, IAssertionContext c)
+        static void AssertStartsWith<TActual, TExpected>([NotNull] IEnumerable<TActual>? actual, IEnumerable<TExpected> expectedStart, Func<TActual, TExpected, bool> predicate, string? message, IAssertionContext c)
         {
             actual.ShouldBeA<IEnumerable<TActual>>(message);
 
@@ -298,7 +298,7 @@ namespace EasyAssertions
             return actual.RegisterNotNullAssertion(c => AssertEndsWith(actual, expectedEnd, predicate, message, c));
         }
 
-        private static void AssertEndsWith<TActual, TExpected>([NotNull] IEnumerable<TActual>? actual, IEnumerable<TExpected> expectedEnd, Func<TActual, TExpected, bool> predicate, string? message, IAssertionContext c)
+        static void AssertEndsWith<TActual, TExpected>([NotNull] IEnumerable<TActual>? actual, IEnumerable<TExpected> expectedEnd, Func<TActual, TExpected, bool> predicate, string? message, IAssertionContext c)
         {
             actual.ShouldBeA<IEnumerable<TActual>>(message);
 
@@ -328,7 +328,7 @@ namespace EasyAssertions
             return actual.RegisterNotNullAssertion(c => AssertContains(actual, expected, predicate, message, c));
         }
 
-        private static void AssertContains<TActual, TExpected>([NotNull] IEnumerable<TActual>? actual, TExpected expected, Func<TActual, TExpected, bool> predicate, string? message, IAssertionContext c)
+        static void AssertContains<TActual, TExpected>([NotNull] IEnumerable<TActual>? actual, TExpected expected, Func<TActual, TExpected, bool> predicate, string? message, IAssertionContext c)
         {
             actual.ShouldBeA<IEnumerable<TActual>>(message);
 
@@ -441,7 +441,7 @@ namespace EasyAssertions
             return actual.RegisterNotNullAssertion(c => AssertDoesNotContain(actual, expectedToNotContain, predicate, message, c));
         }
 
-        private static void AssertDoesNotContain<TActual, TExpected>([NotNull] IEnumerable<TActual>? actual, TExpected expectedToNotContain, Func<TActual, TExpected, bool> predicate, string? message, IAssertionContext c)
+        static void AssertDoesNotContain<TActual, TExpected>([NotNull] IEnumerable<TActual>? actual, TExpected expectedToNotContain, Func<TActual, TExpected, bool> predicate, string? message, IAssertionContext c)
         {
             actual.ShouldBeA<IEnumerable<TActual>>(message);
 
@@ -515,7 +515,7 @@ namespace EasyAssertions
             return actual.RegisterNotNullAssertion(c => AssertOnlyContains(actual, expected, predicate, message, c));
         }
 
-        private static void AssertOnlyContains<TActual, TExpected>([NotNull] IEnumerable<TActual>? actual, IEnumerable<TExpected> expected, Func<TActual, TExpected, bool> predicate, string? message, IAssertionContext c)
+        static void AssertOnlyContains<TActual, TExpected>([NotNull] IEnumerable<TActual>? actual, IEnumerable<TExpected> expected, Func<TActual, TExpected, bool> predicate, string? message, IAssertionContext c)
         {
             actual.ShouldBeA<IEnumerable<TActual>>(message);
 
@@ -542,7 +542,7 @@ namespace EasyAssertions
             return actual.RegisterNotNullAssertion(c => AssertDistinct(actual, predicate, message, c));
         }
 
-        private static void AssertDistinct<TActual>([NotNull] IEnumerable<TActual>? actual, Func<TActual, TActual, bool> predicate, string? message, IAssertionContext c)
+        static void AssertDistinct<TActual>([NotNull] IEnumerable<TActual>? actual, Func<TActual, TActual, bool> predicate, string? message, IAssertionContext c)
         {
             actual.ShouldBeA<IEnumerable<TActual>>(message);
 

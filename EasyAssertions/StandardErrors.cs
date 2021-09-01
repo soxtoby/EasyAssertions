@@ -10,13 +10,13 @@ namespace EasyAssertions
 {
     class StandardErrors : IStandardErrors
     {
-        private static IStandardErrors? current;
+        static IStandardErrors? current;
         public static IStandardErrors Current => current ?? new StandardErrors(StandardTests.Instance, ErrorFactory.Instance);
 
-        private readonly StandardTests test;
-        private readonly ErrorFactory error;
+        readonly StandardTests test;
+        readonly ErrorFactory error;
 
-        private StandardErrors(StandardTests standardTests, ErrorFactory errorFactory)
+        StandardErrors(StandardTests standardTests, ErrorFactory errorFactory)
         {
             test = standardTests;
             error = errorFactory;
@@ -53,7 +53,7 @@ but was   {Value(actual, expected, differenceIndex)}
 Difference at index {differenceIndex}." + message.OnNewLine());
         }
 
-        private static bool CharactersMatch(string expected, string actual, int index, Case caseSensitivity)
+        static bool CharactersMatch(string expected, string actual, int index, Case caseSensitivity)
         {
             var stringComparison = caseSensitivity == Case.Sensitive
                 ? StringComparison.Ordinal
@@ -148,7 +148,7 @@ but was {Count(actualList,
             return DoesNotContainItems(expectedItems, actualItems, missingExpected, missingIndices, message);
         }
 
-        private Exception DoesNotContainItems<TActual, TExpected>(List<TExpected> expectedItems, List<TActual> actualItems, List<TExpected> missingExpected, List<int> missingIndices, string? message)
+        Exception DoesNotContainItems<TActual, TExpected>(List<TExpected> expectedItems, List<TActual> actualItems, List<TExpected> missingExpected, List<int> missingIndices, string? message)
         {
             var expectedSource = ExpectedSourceIfDifferentToValue(expectedItems);
             return error.Custom(expectedSource == null
@@ -231,7 +231,7 @@ but was {Sample(actualItems)}" + message.OnNewLine());
             return ContainsExtraItem(expectedItems, extraActual, message);
         }
 
-        private Exception ContainsExtraItem<TActual, TExpected>(List<TExpected> expectedItems, List<TActual> extraActual, string? message)
+        Exception ContainsExtraItem<TActual, TExpected>(List<TExpected> expectedItems, List<TActual> extraActual, string? message)
         {
             var expectedSource = ExpectedSourceIfDifferentToValue(expectedItems);
             return error.Custom(expectedSource != null
@@ -243,7 +243,7 @@ should only contain {Sample(expectedItems)}
 but also contains {Sample(extraActual)}" + message.OnNewLine());
         }
 
-        private static void FindDifferences<TActual, TExpected>(IEnumerable<TExpected> expected, IEnumerable<TActual> actual, Func<TActual, TExpected, bool> predicate, out List<TExpected> missingExpected, out List<TActual> extraActual, out List<int> missingIndices)
+        static void FindDifferences<TActual, TExpected>(IEnumerable<TExpected> expected, IEnumerable<TActual> actual, Func<TActual, TExpected, bool> predicate, out List<TExpected> missingExpected, out List<TActual> extraActual, out List<int> missingIndices)
         {
             missingExpected = new List<TExpected>();
             extraActual = actual.ToList();
@@ -342,7 +342,7 @@ but was            {Value(actualItem)}" + message.OnNewLine());
             return DiffersAtIndex(differenceIndex, expectedValue, actualValue, message);
         }
 
-        private Exception NotLongEnough(List<object?> expectedItems, List<object?> actualItems, string? message)
+        Exception NotLongEnough(List<object?> expectedItems, List<object?> actualItems, string? message)
         {
             return error.WithActualExpression($@"
 should have at least {expectedItems.Count} {Count(expectedItems, "element", "elements")}
@@ -352,7 +352,7 @@ but {Count(actualItems,
                 $"had {actualItems.Count} elements: {Sample(actualItems)}")}" + message.OnNewLine());
         }
 
-        private Exception DiffersAtIndex(int differenceIndex, object? expectedValue, object? actualValue, string? message)
+        Exception DiffersAtIndex(int differenceIndex, object? expectedValue, object? actualValue, string? message)
         {
             return error.WithActualExpression($@"
 differs at index {differenceIndex}.
@@ -365,7 +365,7 @@ but was   {Value(actualValue)}" + message.OnNewLine());
             return error.Custom(TreesDoNotMatch(expected, actual, getChildren, predicate, message, Enumerable.Empty<TActual>())!);
         }
 
-        private string? TreesDoNotMatch<TActual, TExpected>(IEnumerable<TestNode<TExpected>> expected, IEnumerable<TActual> actual, Func<TActual, IEnumerable<TActual>> getChildren, Func<object?, object?, bool> predicate, string? message, IEnumerable<TActual> path)
+        string? TreesDoNotMatch<TActual, TExpected>(IEnumerable<TestNode<TExpected>> expected, IEnumerable<TActual> actual, Func<TActual, IEnumerable<TActual>> getChildren, Func<object?, object?, bool> predicate, string? message, IEnumerable<TActual> path)
         {
             if (test.CollectionsMatch(actual, expected.Values(), predicate))
                 return ChildrenDoNotMatch(expected, actual, getChildren, predicate, message, path);
@@ -378,7 +378,7 @@ but was   {Value(actualValue)}" + message.OnNewLine());
                 : TreeNodeValueDoesNotMatch(expectedItems, actualItems, predicate, message, path);
         }
 
-        private static string TreeNodeChildrenLengthMismatch<TActual>(ICollection<object?> expectedItems, ICollection<object?> actualItems, string? message, IEnumerable<TActual> path)
+        static string TreeNodeChildrenLengthMismatch<TActual>(ICollection<object?> expectedItems, ICollection<object?> actualItems, string? message, IEnumerable<TActual> path)
         {
             var pathItems = path.Cast<object>().ToList();
             var expectedSource = ExpectedSourceIfDifferentToValue(expectedItems);
@@ -391,7 +391,7 @@ but {Count(actualItems,
                 $"had {actualItems.Count} children: {Sample(actualItems)}")}" + message.OnNewLine();
         }
 
-        private static string TreeNodeValueDoesNotMatch<TActual>(IList<object?> expectedItems, IList<object?> actualItems, Func<object?, object?, bool> predicate, string? message, IEnumerable<TActual> path)
+        static string TreeNodeValueDoesNotMatch<TActual>(IList<object?> expectedItems, IList<object?> actualItems, Func<object?, object?, bool> predicate, string? message, IEnumerable<TActual> path)
         {
             var differenceIndex = FindDifference(expectedItems, actualItems, predicate, out var expectedItem, out var actualItem);
             var pathItems = path.Cast<object>().ToList();
@@ -404,20 +404,20 @@ should be {Value(expectedItem)}
 but was   {Value(actualItem)}" + message.OnNewLine();
         }
 
-        private string? ChildrenDoNotMatch<TActual, TExpected>(IEnumerable<TestNode<TExpected>> expected, IEnumerable<TActual> actual, Func<TActual, IEnumerable<TActual>> getChildren, Func<object?, object?, bool> predicate, string? message, IEnumerable<TActual> path)
+        string? ChildrenDoNotMatch<TActual, TExpected>(IEnumerable<TestNode<TExpected>> expected, IEnumerable<TActual> actual, Func<TActual, IEnumerable<TActual>> getChildren, Func<object?, object?, bool> predicate, string? message, IEnumerable<TActual> path)
         {
             return expected.Zip(actual, (e, a) => TreesDoNotMatch(e, getChildren(a), getChildren, predicate, message, path.Concat(new[] { a })))
                 .FirstOrDefault(m => m != null);
         }
 
-        private static int FindDifference(IEnumerable expected, IEnumerable actual, Func<object?, object?, bool> areEqual, out object? expectedValue, out object? actualValue)
+        static int FindDifference(IEnumerable expected, IEnumerable actual, Func<object?, object?, bool> areEqual, out object? expectedValue, out object? actualValue)
         {
             var expectedList = expected.Cast<object?>().ToList();
             var actualList = actual.Cast<object?>().ToList();
             return FindDifference(expectedList, actualList, areEqual, out expectedValue, out actualValue);
         }
 
-        private static int FindDifference(IList<object?> expectedList, IList<object?> actualList, Func<object?, object?, bool> areEqual, out object? expectedValue, out object? actualValue)
+        static int FindDifference(IList<object?> expectedList, IList<object?> actualList, Func<object?, object?, bool> areEqual, out object? expectedValue, out object? actualValue)
         {
             var differenceIndex = Enumerable.Range(0, expectedList.Count)
                 .First(i => !areEqual(actualList[i], expectedList[i]));

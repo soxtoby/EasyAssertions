@@ -7,7 +7,7 @@
     {
         static ITestExpressionProvider? currentProvider;
 
-        private static ITestExpressionProvider CurrentProvider => currentProvider ?? SourceExpressionProvider.ForCurrentThread;
+        static ITestExpressionProvider CurrentProvider => currentProvider ?? SourceExpressionProvider.ForCurrentThread;
 
         /// <summary>
         /// Builds the source representation of the value being asserted on.

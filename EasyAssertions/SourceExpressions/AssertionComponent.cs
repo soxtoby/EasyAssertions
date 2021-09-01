@@ -2,7 +2,7 @@ using System;
 
 namespace EasyAssertions
 {
-    internal abstract class AssertionComponent
+    abstract class AssertionComponent
     {
         public readonly SourceAddress SourceAddress;
         protected readonly string MethodName;

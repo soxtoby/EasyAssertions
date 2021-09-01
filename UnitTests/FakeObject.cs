@@ -1,8 +1,8 @@
 ﻿namespace EasyAssertions.UnitTests
 {
-    internal class FakeObject
+    class FakeObject
     {
-        private readonly string toString;
+        readonly string toString;
 
         public FakeObject(string toString)
         {

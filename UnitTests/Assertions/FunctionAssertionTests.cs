@@ -100,9 +100,9 @@ namespace EasyAssertions.UnitTests
                 Should.Throw(noThrow, "foo"));
         }
 
-        private class ExceptionThrower
+        class ExceptionThrower
         {
-            private readonly Exception exception;
+            readonly Exception exception;
 
             public ExceptionThrower(Exception exception)
             {

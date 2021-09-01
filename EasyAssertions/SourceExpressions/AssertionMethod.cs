@@ -1,6 +1,6 @@
 namespace EasyAssertions
 {
-    internal class AssertionMethod : AssertionComponent
+    class AssertionMethod : AssertionComponent
     {
         public AssertionMethod(SourceAddress sourceAddress, string methodName) : base(sourceAddress, methodName) { }
 
@@ -37,27 +37,27 @@ namespace EasyAssertions
                 };
         }
 
-        private static int AfterOpeningParen(string expressionSource, int assertionIndex)
+        static int AfterOpeningParen(string expressionSource, int assertionIndex)
         {
             return expressionSource.IndexOf('(', assertionIndex) + 1;
         }
 
-        private static int BeforeNextComma(string expressionSource, int startOfFirstParam)
+        static int BeforeNextComma(string expressionSource, int startOfFirstParam)
         {
             return BraceMatcher.FindNext(expressionSource, ',', startOfFirstParam);
         }
 
-        private static int AfterClosingParen(string expressionSource, int assertionIndex)
+        static int AfterClosingParen(string expressionSource, int assertionIndex)
         {
             return BraceMatcher.FindClosingBrace(expressionSource, assertionIndex) + 1;
         }
 
-        private static bool EndOfFirstParamIsInvalid(int endOfFirstParam, int endOfMethodCall)
+        static bool EndOfFirstParamIsInvalid(int endOfFirstParam, int endOfMethodCall)
         {
             return endOfFirstParam < 0 || endOfFirstParam > endOfMethodCall;
         }
 
-        private static int BeforeClosingParen(int endOfMethodCall)
+        static int BeforeClosingParen(int endOfMethodCall)
         {
             return endOfMethodCall - 1;
         }

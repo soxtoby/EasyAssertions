@@ -42,7 +42,7 @@ namespace EasyAssertions
             return Test<Exception>(expression, message, expression.Compile());
         }
 
-        private static ActualException<TException> Test<TException>(LambdaExpression expression, string? message, Action executeExpression)
+        static ActualException<TException> Test<TException>(LambdaExpression expression, string? message, Action executeExpression)
             where TException : Exception
         {
             try

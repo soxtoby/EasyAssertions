@@ -2306,20 +2306,20 @@ namespace EasyAssertions.UnitTests
             }
         }
 
-        private static TestEnumerable<T> MakeEnumerable<T>(params T[] items) => new TestEnumerable<T>(items);
+        static TestEnumerable<T> MakeEnumerable<T>(params T[] items) => new TestEnumerable<T>(items);
 
-        private static Equatable Equatable(int value) => new Equatable(value);
+        static Equatable Equatable(int value) => new Equatable(value);
 
-        private static bool ValueEquals(Equatable actual, int expected) => actual.Value == expected;
+        static bool ValueEquals(Equatable actual, int expected) => actual.Value == expected;
 
-        private Exception EnumerateArgs(CallInfo call)
+        Exception EnumerateArgs(CallInfo call)
         {
             foreach (var enumerable in call.Args().OfType<IEnumerable>())
                 enumerable.Cast<object>().ToList();
             return ExpectedException;
         }
 
-        private class TestKeyedCollection : KeyedCollection<char, string>
+        class TestKeyedCollection : KeyedCollection<char, string>
         {
             protected override char GetKeyForItem(string item)
             {

@@ -13,10 +13,10 @@ namespace EasyAssertions.UnitTests
     [TestFixture]
     public class StandardErrorsTests
     {
-        private ITestExpressionProvider expressionProvider = null!;
-        private readonly IStandardErrors sut = StandardErrors.Current;
-        private const string ActualExpression = "test expression";
-        private const string ExpectedExpression = "expected expression";
+        ITestExpressionProvider expressionProvider = null!;
+        readonly IStandardErrors sut = StandardErrors.Current;
+        const string ActualExpression = "test expression";
+        const string ExpectedExpression = "expected expression";
 
         [SetUp]
         public void SetUp()
@@ -1022,12 +1022,12 @@ foo", result);
             StringAssert.EndsWith(NewLine + "foo", result);
         }
 
-        private static IEnumerable<int> NoChildren(int i)
+        static IEnumerable<int> NoChildren(int i)
         {
             return Enumerable.Empty<int>();
         }
 
-        private static bool TestNodesMatch(object a, object e)
+        static bool TestNodesMatch(object a, object e)
         {
             return (int)e == ((TestNode<int>)a).Value;
         }
@@ -1396,6 +1396,6 @@ foo", result);
 
         }
 
-        private static TestEnumerable<T> MakeEnumerable<T>(params T[] items) => new TestEnumerable<T>(items);
+        static TestEnumerable<T> MakeEnumerable<T>(params T[] items) => new TestEnumerable<T>(items);
     }
 }

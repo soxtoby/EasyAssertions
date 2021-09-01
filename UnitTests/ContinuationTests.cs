@@ -5,7 +5,7 @@ namespace EasyAssertions.UnitTests
     [TestFixture]
     public class ContinuationTests
     {
-        private Continuation sut = null!;
+        Continuation sut = null!;
 
         [SetUp]
         public void SetUp()

@@ -41,7 +41,7 @@ namespace EasyAssertions
                 });
         }
 
-        private static IEnumerable<T> Flags<T>(Enum actualEnum) where T : struct
+        static IEnumerable<T> Flags<T>(Enum actualEnum) where T : struct
         {
             var zeroValue = Enum.Parse(typeof(T), "0");
             return Enum.GetValues(typeof(T))

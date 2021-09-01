@@ -5,25 +5,24 @@ using System.Reflection;
 
 namespace EasyAssertions
 {
-    internal class SourceExpressionProvider : ITestExpressionProvider
+    class SourceExpressionProvider : ITestExpressionProvider
     {
-        private readonly List<AssertionComponentGroup> assertionGroupChain = new();
+        readonly List<AssertionComponentGroup> assertionGroupChain = new();
 
-        private AssertionComponentGroup CurrentGroup => assertionGroupChain.Last();
+        AssertionComponentGroup CurrentGroup => assertionGroupChain.Last();
 
-        [ThreadStatic]
-        private static SourceExpressionProvider? threadInstance;
+        [ThreadStatic] static SourceExpressionProvider? threadInstance;
 
         public static SourceExpressionProvider ForCurrentThread => threadInstance ??= new SourceExpressionProvider();
 
-        private SourceExpressionProvider() { }
+        SourceExpressionProvider() { }
 
         public string GetActualExpression()
         {
             return GetActualExpression(assertionGroupChain);
         }
 
-        private static string GetActualExpression(IEnumerable<AssertionComponentGroup> assertionComponentGroups)
+        static string GetActualExpression(IEnumerable<AssertionComponentGroup> assertionComponentGroups)
         {
             return NormalizeIndentation(assertionComponentGroups.Aggregate(string.Empty, (expression, group) => group.GetActualExpression(expression)));
         }
@@ -42,7 +41,7 @@ namespace EasyAssertions
             return NormalizeIndentation(groupsUpToAssertion.Aggregate(string.Empty, (expression, group) => group.GetExpectedExpression(actualExpression, expression)));
         }
 
-        private static string NormalizeIndentation(string input)
+        static string NormalizeIndentation(string input)
         {
             var lines = input.Split('\n');
 
@@ -82,7 +81,7 @@ namespace EasyAssertions
             EnterNestedAssertion(method, assertionFrameIndex, analyser);
         }
 
-        private void EnterNestedAssertion(MethodBase innerAssertionMethod, int assertionFrameIndex, StackAnalyser analyser)
+        void EnterNestedAssertion(MethodBase innerAssertionMethod, int assertionFrameIndex, StackAnalyser analyser)
         {
             AddGroup(innerAssertionMethod, assertionFrameIndex, (callAddress, actualAlias, expectedAlias) =>
                 new NestedAssertionGroup(callAddress, actualAlias, expectedAlias), analyser);
@@ -100,7 +99,7 @@ namespace EasyAssertions
                 new IndexedAssertionGroup(callAddress, actualAlias, expectedAlias, index), analyser);
         }
 
-        private void AddGroup(MethodBase innerAssertionMethod, int callFrameIndex, Func<SourceAddress, string, string, AssertionComponentGroup> createGroup, StackAnalyser analyser)
+        void AddGroup(MethodBase innerAssertionMethod, int callFrameIndex, Func<SourceAddress, string, string, AssertionComponentGroup> createGroup, StackAnalyser analyser)
         {
             var callerAddress = analyser.GetCallAddress(callFrameIndex);
             var actualAlias = GetExpressionAlias(innerAssertionMethod, 0);
@@ -113,7 +112,7 @@ namespace EasyAssertions
             RegisterComponent((address, methodName) => new Continuation(address, methodName), continuationFrameIndex + 1, StackAnalyser.ForCurrentStack());
         }
 
-        private void RegisterComponent(Func<SourceAddress, string, AssertionComponent> createMethod, int assertionFrameIndex, StackAnalyser analyser)
+        void RegisterComponent(Func<SourceAddress, string, AssertionComponent> createMethod, int assertionFrameIndex, StackAnalyser analyser)
         {
             PopStackBackToAssertion(assertionFrameIndex, analyser);
 
@@ -124,7 +123,7 @@ namespace EasyAssertions
             CurrentGroup.AddComponent(method);
         }
 
-        private void PopStackBackToAssertion(int assertionFrameIndex, StackAnalyser analyser)
+        void PopStackBackToAssertion(int assertionFrameIndex, StackAnalyser analyser)
         {
             var groupPosition = analyser.GetParentGroupPosition(assertionFrameIndex, assertionGroupChain);
             assertionGroupChain.RemoveRange(groupPosition, assertionGroupChain.Count - groupPosition);
@@ -133,7 +132,7 @@ namespace EasyAssertions
                 assertionGroupChain.Add(new BaseGroup());
         }
 
-        private static string GetExpressionAlias(MethodBase innerAssertion, int parameterIndex)
+        static string GetExpressionAlias(MethodBase innerAssertion, int parameterIndex)
         {
             return innerAssertion.GetParameters().ElementAtOrDefault(parameterIndex)?.Name ?? string.Empty;
         }

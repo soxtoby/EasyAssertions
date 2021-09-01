@@ -8,10 +8,10 @@ namespace EasyAssertions.UnitTests
 {
     public class TaskAssertionTests : AssertionTests
     {
-        private TaskCompletionSource<int> taskSource = null!;
-        private Func<Task, TimeSpan, bool> defaultWaitForTask = null!;
-        private Func<Task, TimeSpan, bool> wait = null!;
-        private Task<int> task = null!;
+        TaskCompletionSource<int> taskSource = null!;
+        Func<Task, TimeSpan, bool> defaultWaitForTask = null!;
+        Func<Task, TimeSpan, bool> wait = null!;
+        Task<int> task = null!;
 
         [SetUp]
         public void SetUp()
@@ -496,7 +496,7 @@ namespace EasyAssertions.UnitTests
             Assert.AreEqual(nameof(actualExpression), TestExpression.GetActual());
         }
 
-        private void AssertReturnsResult(int expectedResult, TimeSpan timeout, Func<Actual<int>> callAssertion)
+        void AssertReturnsResult(int expectedResult, TimeSpan timeout, Func<Actual<int>> callAssertion)
         {
             TaskReturns(expectedResult, timeout);
 
@@ -505,7 +505,7 @@ namespace EasyAssertions.UnitTests
             Assert.AreEqual(expectedResult, result.And);
         }
 
-        private void AssertReturnsException<TException>(TException expectedException, TimeSpan timeout, Func<ActualException<TException>> callAssertion) where TException : Exception
+        void AssertReturnsException<TException>(TException expectedException, TimeSpan timeout, Func<ActualException<TException>> callAssertion) where TException : Exception
         {
             TaskFails(expectedException, timeout);
 
@@ -514,7 +514,7 @@ namespace EasyAssertions.UnitTests
             Assert.AreSame(expectedException, result.And);
         }
 
-        private void AssertReturnsTaskCanceledException<TException>(TimeSpan timeout, Func<ActualException<TException>> callAssertion)
+        void AssertReturnsTaskCanceledException<TException>(TimeSpan timeout, Func<ActualException<TException>> callAssertion)
             where TException : Exception
         {
             wait(task, timeout).Returns(c => task.Wait(timeout));
@@ -525,7 +525,7 @@ namespace EasyAssertions.UnitTests
             Assert.IsInstanceOf<TaskCanceledException>(result.And);
         }
 
-        private void AssertTimesOut(TimeSpan timeout, Action<string> callAssertion)
+        void AssertTimesOut(TimeSpan timeout, Action<string> callAssertion)
         {
             Error.TaskTimedOut(timeout, "foo").Returns(ExpectedException);
             TaskTimesOut(timeout);
@@ -535,7 +535,7 @@ namespace EasyAssertions.UnitTests
             Assert.AreSame(ExpectedException, result);
         }
 
-        private void AssertFailsWithWrongExceptionMessage<TException>(Type expectedExceptionType, Exception actualException, TimeSpan timeout, Func<string, ActualException<TException>> callAssertion) where TException : Exception
+        void AssertFailsWithWrongExceptionMessage<TException>(Type expectedExceptionType, Exception actualException, TimeSpan timeout, Func<string, ActualException<TException>> callAssertion) where TException : Exception
         {
             Error.WrongException(expectedExceptionType, actualException, null, "foo").Returns(ExpectedException);
             TaskFails(actualException, timeout);
@@ -545,7 +545,7 @@ namespace EasyAssertions.UnitTests
             Assert.AreSame(ExpectedException, result);
         }
 
-        private void AssertFailsWithNoExceptionMessage<TException>(Func<string, ActualException<TException>> callAssertion) where TException : Exception
+        void AssertFailsWithNoExceptionMessage<TException>(Func<string, ActualException<TException>> callAssertion) where TException : Exception
         {
             Error.NoException(typeof(TException), message: "foo").Returns(ExpectedException);
             TaskReturns(0, Arg.Any<TimeSpan>());
@@ -555,19 +555,19 @@ namespace EasyAssertions.UnitTests
             Assert.AreSame(ExpectedException, result);
         }
 
-        private void TaskReturns(int expectedValue, TimeSpan timeout)
+        void TaskReturns(int expectedValue, TimeSpan timeout)
         {
             wait(task, timeout).Returns(true);
             taskSource.SetResult(expectedValue);
         }
 
-        private void TaskFails(Exception expectedException, TimeSpan timeout)
+        void TaskFails(Exception expectedException, TimeSpan timeout)
         {
             wait(task, timeout).Throws(new AggregateException(expectedException));
             taskSource.SetException(expectedException);
         }
 
-        private void TaskTimesOut(TimeSpan timeout)
+        void TaskTimesOut(TimeSpan timeout)
         {
             wait(task, timeout).Returns(false);
         }

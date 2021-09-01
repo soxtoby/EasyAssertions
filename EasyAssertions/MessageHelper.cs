@@ -13,12 +13,12 @@ namespace EasyAssertions
     /// </summary>
     public static class MessageHelper
     {
-        private const int SampleSize = 10;
-        private const int MaxStringWidth = 60;
-        private const int IdealArrowIndex = 20;
-        private static readonly Regex NewCollectionPattern = new(@"^new.*\{.*\}", RegexOptions.Compiled);
-        private static readonly Regex MemberPattern = new(@"value\(.*?\)\.", RegexOptions.Compiled);
-        private static readonly Regex BoxingPattern = new(@"^Convert\((.*)\)$", RegexOptions.Compiled);
+        const int SampleSize = 10;
+        const int MaxStringWidth = 60;
+        const int IdealArrowIndex = 20;
+        static readonly Regex NewCollectionPattern = new(@"^new.*\{.*\}", RegexOptions.Compiled);
+        static readonly Regex MemberPattern = new(@"value\(.*?\)\.", RegexOptions.Compiled);
+        static readonly Regex BoxingPattern = new(@"^Convert\((.*)\)$", RegexOptions.Compiled);
 
         /// <summary>
         /// Returns the source representation of the actual value.
@@ -66,36 +66,36 @@ namespace EasyAssertions
                 : expectedExpression.NullIfEmpty();
         }
 
-        private static bool MatchesExpectedValueOutput(string expectedExpression, object? expectedValue)
+        static bool MatchesExpectedValueOutput(string expectedExpression, object? expectedValue)
         {
             var expectedValueOutput = string.Empty + expectedValue;
             return expectedExpression == expectedValueOutput;
         }
 
-        private static bool IsStringLiteral(string expectedExpression)
+        static bool IsStringLiteral(string expectedExpression)
         {
             return expectedExpression.TrimStart('@').FirstOrDefault() == '"';
         }
 
-        private static bool IsNumericLiteral(string expectedExpression)
+        static bool IsNumericLiteral(string expectedExpression)
         {
             var firstChar = expectedExpression.FirstOrDefault();
             return firstChar >= 48
                    && firstChar <= 57;
         }
 
-        private static bool IsBooleanLiteral(string expectedExpression, object? expectedValue)
+        static bool IsBooleanLiteral(string expectedExpression, object? expectedValue)
         {
             return expectedValue is bool
                    && expectedExpression == expectedValue.ToString().ToLower();
         }
 
-        private static bool IsCharLiteral(string expectedExpression)
+        static bool IsCharLiteral(string expectedExpression)
         {
             return expectedExpression.FirstOrDefault() == '\'';
         }
 
-        private static bool IsNullLiteral(string expectedExpression)
+        static bool IsNullLiteral(string expectedExpression)
         {
             return expectedExpression == "null";
         }
@@ -222,7 +222,7 @@ namespace EasyAssertions
             return new string(' ', arrowIndex + 1) + '^';   // + 1 for the quotes wrapped around string values
         }
 
-        private static string Snippet(string wholeString, string otherString, int failureIndex)
+        static string Snippet(string wholeString, string otherString, int failureIndex)
         {
             var fromIndex = SnippetStart(wholeString, otherString, failureIndex);
             var snippetLength = MaxStringWidth;
@@ -249,18 +249,18 @@ namespace EasyAssertions
             return prefix + StringEscape(wholeString.Substring(fromIndex, snippetLength)) + suffix;
         }
 
-        private static int SnippetStart(string wholeString, string otherString, int failureIndex)
+        static int SnippetStart(string wholeString, string otherString, int failureIndex)
         {
             var maxLength = Math.Max(wholeString.Length, otherString.Length);
             return Math.Max(0, Math.Min(failureIndex - IdealArrowIndex, maxLength - MaxStringWidth));
         }
 
-        private static string StringEscape(string value)
+        static string StringEscape(string value)
         {
             return Escapes.Aggregate(value, (s, escape) => s.Replace(escape.Key.ToString(CultureInfo.InvariantCulture), escape.Value));
         }
 
-        private static readonly Dictionary<char, string> Escapes = new Dictionary<char, string>
+        static readonly Dictionary<char, string> Escapes = new Dictionary<char, string>
             {
                 { '\r', "\\r" },
                 { '\n', "\\n" }

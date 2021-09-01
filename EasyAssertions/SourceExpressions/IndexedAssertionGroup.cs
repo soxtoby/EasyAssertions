@@ -1,8 +1,8 @@
 namespace EasyAssertions
 {
-    internal class IndexedAssertionGroup : NestedAssertionGroup
+    class IndexedAssertionGroup : NestedAssertionGroup
     {
-        private readonly int index;
+        readonly int index;
 
         public IndexedAssertionGroup(SourceAddress callAddress, string actualAlias, string expectedAlias, int index)
             : base(callAddress, actualAlias, expectedAlias)

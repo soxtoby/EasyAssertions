@@ -7,7 +7,7 @@ namespace EasyAssertions
     /// </summary>
     public static class NumberAssertions
     {
-        private const string EqualityComparisonError = "Do not compare floating point numbers directly with other types. Please specify a tolerance instead.";
+        const string EqualityComparisonError = "Do not compare floating point numbers directly with other types. Please specify a tolerance instead.";
 
         /// <summary>Disallowed comparison.</summary>
         [Obsolete(EqualityComparisonError, true)]

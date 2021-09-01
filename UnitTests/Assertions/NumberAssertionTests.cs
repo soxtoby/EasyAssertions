@@ -65,7 +65,7 @@ namespace EasyAssertions.UnitTests
                 Assert.AreEqual(nameof(expectedExpression), TestExpression.GetExpected());
             }
 
-            private static Actual<float> ShouldBe(float actual, float expected, double tolerance, string? message = null)
+            static Actual<float> ShouldBe(float actual, float expected, double tolerance, string? message = null)
             {
                 return actual.ShouldBe(expected, tolerance, message);
             }
@@ -106,7 +106,7 @@ namespace EasyAssertions.UnitTests
                 Assert.AreEqual(nameof(expectedExpression), TestExpression.GetExpected());
             }
 
-            private static Actual<float> ShouldBe(float actual, double expected, double tolerance, string? message = null)
+            static Actual<float> ShouldBe(float actual, double expected, double tolerance, string? message = null)
             {
                 return actual.ShouldBe(expected, tolerance, message);
             }
@@ -147,7 +147,7 @@ namespace EasyAssertions.UnitTests
                 Assert.AreEqual(nameof(expectedExpression), TestExpression.GetExpected());
             }
 
-            private static Actual<double> ShouldBe(double actual, double expected, double tolerance, string? message = null)
+            static Actual<double> ShouldBe(double actual, double expected, double tolerance, string? message = null)
             {
                 return actual.ShouldBe(expected, tolerance, message);
             }
@@ -188,7 +188,7 @@ namespace EasyAssertions.UnitTests
                 Assert.AreEqual(nameof(expectedExpression), TestExpression.GetExpected());
             }
 
-            private static Actual<double> ShouldBe(double actual, float expected, double tolerance, string? message = null)
+            static Actual<double> ShouldBe(double actual, float expected, double tolerance, string? message = null)
             {
                 return actual.ShouldBe(expected, tolerance, message);
             }

@@ -137,7 +137,7 @@ namespace EasyAssertions
             return actual.RegisterNotNullAssertion(c => AssertMatch(actual, regex, message, c));
         }
 
-        private static void AssertMatch([NotNull] string? actual, Regex regex, string? message, IAssertionContext context)
+        static void AssertMatch([NotNull] string? actual, Regex regex, string? message, IAssertionContext context)
         {
             actual.ShouldBeA<string>(message);
 
@@ -175,7 +175,7 @@ namespace EasyAssertions
             return actual.RegisterNotNullAssertion(c => AssertDoesNotMatch(actual, regex, message, c));
         }
 
-        private static void AssertDoesNotMatch(string? actual, Regex regex, string? message, IAssertionContext context)
+        static void AssertDoesNotMatch(string? actual, Regex regex, string? message, IAssertionContext context)
         {
             actual.ShouldBeA<string>(message);
 

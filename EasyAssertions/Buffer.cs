@@ -39,8 +39,8 @@ namespace EasyAssertions
 
     class Buffer<T> : IBuffer<T>
     {
-        private readonly List<T> buffer = new();
-        private readonly IEnumerator<T> sourceEnumerator;
+        readonly List<T> buffer = new();
+        readonly IEnumerator<T> sourceEnumerator;
 
         public Buffer(IEnumerable<T> source)
         {
@@ -81,7 +81,7 @@ namespace EasyAssertions
             }
         }
 
-        private bool EnumerateTo(int index)
+        bool EnumerateTo(int index)
         {
             while (index >= buffer.Count)
             {

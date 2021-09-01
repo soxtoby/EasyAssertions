@@ -2,11 +2,11 @@ using System.Text.RegularExpressions;
 
 namespace EasyAssertions
 {
-    internal class NestedAssertionGroup : AssertionComponentGroup
+    class NestedAssertionGroup : AssertionComponentGroup
     {
-        private const string WordBoundary = @"\b";
-        private readonly string actualAlias;
-        private readonly string expectedAlias;
+        const string WordBoundary = @"\b";
+        readonly string actualAlias;
+        readonly string expectedAlias;
 
         public NestedAssertionGroup(SourceAddress callAddress, string actualAlias, string expectedAlias)
         {
@@ -33,13 +33,13 @@ namespace EasyAssertions
             return ReplaceAliasWithExpression(ReplaceAliasWithExpression(expectedExpression, actualAlias, actualExpression), expectedAlias, parentExpression);
         }
 
-        private static string ReplaceAliasWithExpression(string expressionWithAlias, string alias, string parentExpression)
+        static string ReplaceAliasWithExpression(string expressionWithAlias, string alias, string parentExpression)
         {
             return string.IsNullOrEmpty(alias)
                 ? expressionWithAlias
                 : ExpressionAliasPattern(alias).Replace(expressionWithAlias, parentExpression);
         }
 
-        private static Regex ExpressionAliasPattern(string alias) => new Regex(WordBoundary + Regex.Escape(alias) + WordBoundary);
+        static Regex ExpressionAliasPattern(string alias) => new Regex(WordBoundary + Regex.Escape(alias) + WordBoundary);
     }
 }

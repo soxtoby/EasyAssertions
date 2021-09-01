@@ -7,7 +7,7 @@ namespace EasyAssertions.UnitTests
     [TestFixture]
     public class StandardTestsTests
     {
-        private StandardTests sut = null!;
+        StandardTests sut = null!;
 
         [SetUp]
         public void SetUp()
@@ -473,14 +473,14 @@ namespace EasyAssertions.UnitTests
                 (a, e) => a.Value == e));
         }
 
-        private static bool ValueEquals(Equatable a, int e)
+        static bool ValueEquals(Equatable a, int e)
         {
             return a.Value == e;
         }
 
-        private static TestEnumerable<T> MakeEnumerable<T>(params T[] items) => new TestEnumerable<T>(items);
+        static TestEnumerable<T> MakeEnumerable<T>(params T[] items) => new TestEnumerable<T>(items);
 
-        private class ActualNode
+        class ActualNode
         {
             public readonly int Value;
             public readonly List<ActualNode> Children = new List<ActualNode>();

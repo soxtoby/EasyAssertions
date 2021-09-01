@@ -1,6 +1,6 @@
 namespace EasyAssertions
 {
-    internal class ExpressionSegment
+    class ExpressionSegment
     {
         public string Expression;
         public int IndexOfNextSegment;

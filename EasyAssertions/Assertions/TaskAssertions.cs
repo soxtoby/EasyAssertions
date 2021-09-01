@@ -10,7 +10,7 @@ namespace EasyAssertions
     public static class TaskAssertions
     {
         internal static Func<Task, TimeSpan, bool> WaitForTask = (task, timeout) => task.Wait(timeout);
-        private static readonly TimeSpan DefaultTimeout = TimeSpan.FromSeconds(1);
+        internal static readonly TimeSpan DefaultTimeout = TimeSpan.FromSeconds(1);
 
         /// <summary>
         /// Assert that a task completes successfully.
@@ -152,7 +152,7 @@ namespace EasyAssertions
                 });
         }
 
-        private static ArgumentOutOfRangeException NegativeTimeoutException(TimeSpan timeout)
+        internal static ArgumentOutOfRangeException NegativeTimeoutException(TimeSpan timeout)
         {
             return new ArgumentOutOfRangeException(nameof(timeout), timeout, $"{nameof(timeout)} must be {nameof(TimeSpan)}.{nameof(TimeSpan.Zero)} or greater.");
         }

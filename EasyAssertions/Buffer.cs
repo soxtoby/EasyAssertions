@@ -13,7 +13,7 @@ namespace EasyAssertions
         /// <summary>
         /// Gets the element at the specified index.
         /// </summary>
-        /// <exception cref="ArgumentOutOfRangeException"><paramref name="index"/> is less than 0.-or-index is equal to or greater than <see cref="Count"/></exception>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="index"/> is less than 0, or <paramref name="index"/> is equal to or greater than <see cref="Count"/></exception>
         T this[int index] { get; }
 
         /// <summary>

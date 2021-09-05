@@ -13,6 +13,7 @@ namespace EasyAssertions
     public static class CollectionAssertions
     {
         const string UnorderedCollectionComparisonError = "Do not compare unordered collections with ordered sequences. Use an assertion that does not test ordering instead.";
+        const string AssertionReturnsBooleanError = "Assertion callbacks should use assertions rather than returning booleans.";
 
         /// <summary>Disallowed comparison.</summary>
         [Obsolete(UnorderedCollectionComparisonError, true)]
@@ -38,6 +39,12 @@ namespace EasyAssertions
         /// <summary>Disallowed comparison.</summary>
         [Obsolete(UnorderedCollectionComparisonError, true)]
         public static void ShouldMatchReferences<TActual, TExpected>(this IEnumerable<TActual>? actual, ISet<TExpected>? expected, string? message = null) { }
+        /// <summary>Disallowed comparison.</summary>
+        [Obsolete(AssertionReturnsBooleanError, true)]
+        public static void ItemsSatisfy<TItem>([NotNull] this IEnumerable<TItem>? actual, params Func<TItem, bool>[] assertions) { }
+        /// <summary>Disallowed comparison.</summary>
+        [Obsolete(AssertionReturnsBooleanError, true)]
+        public static void AllItemsSatisfy<TItem>([NotNull] this IEnumerable<TItem>? actual, Func<TItem, bool> assertion) { }
 
         /// <summary>
         /// Asserts that a sequence has no elements in it.

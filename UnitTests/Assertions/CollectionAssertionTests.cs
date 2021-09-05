@@ -32,6 +32,8 @@ namespace EasyAssertions.UnitTests
             new HashSet<string>().ShouldMatchReferences(new[] { "foo" }, "message");
             new[] { "foo" }.ShouldMatchReferences(new HashSet<string>());
             new[] { "foo" }.ShouldMatchReferences(new HashSet<string>(), "message");
+            new[] { "foo" }.ItemsSatisfy(v => v == "foo");
+            new[] { "foo" }.AllItemsSatisfy(v => v == "foo");
         }/**/
 
         class ShouldBeEmpty : CollectionAssertionTests
@@ -2170,8 +2172,8 @@ namespace EasyAssertions.UnitTests
                 var gotSecondItem = false;
 
                 new[] { 1, 2 }.ItemsSatisfy(
-                    i => gotFirstItem = i == 1,
-                    i => gotSecondItem = i == 2);
+                    i => { gotFirstItem = i == 1; },
+                    i => { gotSecondItem = i == 2; });
 
                 Assert.IsTrue(gotFirstItem, "first item");
                 Assert.IsTrue(gotSecondItem, "second item");
@@ -2287,7 +2289,7 @@ namespace EasyAssertions.UnitTests
             [Test]
             public void AssertionIsNull_ThrowsArgumentNullException()
             {
-                var result = Assert.Throws<ArgumentNullException>(() => new int[0].AllItemsSatisfy(null));
+                var result = Assert.Throws<ArgumentNullException>(() => new int[0].AllItemsSatisfy((Action<int>?)null));
 
                 Assert.AreEqual("assertion", result.ParamName);
             }

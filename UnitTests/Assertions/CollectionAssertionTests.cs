@@ -34,7 +34,7 @@ namespace EasyAssertions.UnitTests
             new[] { "foo" }.ShouldMatchReferences(new HashSet<string>(), "message");
         }/**/
 
-        class ShouldbeEmpty : CollectionAssertionTests
+        class ShouldBeEmpty : CollectionAssertionTests
         {
             [Test]
             public void IsEmpty_ReturnsActualValue()

@@ -8,19 +8,7 @@ namespace EasyAssertions
     /// Represents a buffered <see cref="IEnumerable{T}"/>.
     /// The buffer can be enumerated multiple times without enumerating the source enumerable more than once.
     /// </summary>
-    public interface IBuffer<out T> : IEnumerable<T>, IDisposable
-    {
-        /// <summary>
-        /// Gets the element at the specified index.
-        /// </summary>
-        /// <exception cref="ArgumentOutOfRangeException"><paramref name="index"/> is less than 0, or <paramref name="index"/> is equal to or greater than <see cref="Count"/></exception>
-        T this[int index] { get; }
-
-        /// <summary>
-        /// Gets the number of elements in the source enumerable.
-        /// </summary>
-        int Count { get; }
-    }
+    public interface IBuffer<out T> : IReadOnlyList<T>, IDisposable { }
 
     /// <summary>
     /// Wraps an <see cref="IEnumerable{T}"/> in a buffer.

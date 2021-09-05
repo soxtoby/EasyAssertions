@@ -40,7 +40,7 @@ namespace EasyAssertions.UnitTests
         }
 
         [Test]
-        public void MulltiLineActual_AlignsIndents()
+        public void MultiLineActual_AlignsIndents()
         {
             var actual = new { one = new { two = new { three = 3 } } };
 
@@ -260,6 +260,17 @@ namespace EasyAssertions.UnitTests
             Assert.AreEqual($"{nameof(valueOf)}({nameof(actualExpression)})", sut.GetExpectedExpression());
         }
 
+        [Test]
+        public void ExpectedExpression_PassedThroughIndexedUserAssertion()
+        {
+            var expectedExpression = new TestClass(1);
+            var expectedIndex = 3;
+
+            Assert.Throws<EasyAssertionException>(() => new TestClass(2).TestIndexedUserAssertion(expectedExpression, expectedIndex, (a, e) => a.ShouldBe(e)));
+
+            Assert.AreEqual($"{nameof(expectedExpression)}[{expectedIndex}]", sut.GetExpectedExpression());
+        }
+
         class TestClass
         {
             public readonly int Value;
@@ -297,6 +308,14 @@ namespace EasyAssertions.UnitTests
         public static Actual<object> TestFuncAssert(this object? actual)
         {
             return actual.RegisterAssertion(c => actual.ShouldNotBeNull());
+        }
+
+        public static Actual<object> TestIndexedUserAssertion(this object actual, object expected, int index, Action<object, object> userAssertion)
+        {
+            return actual.RegisterNotNullAssertion(c =>
+                {
+                    actual.RegisterIndexedAssertion(index, c2 => actual.RegisterUserAssertion(userAssertion, () => userAssertion(actual, expected)));
+                });
         }
     }
 }

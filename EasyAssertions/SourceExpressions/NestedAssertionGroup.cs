@@ -22,7 +22,7 @@ namespace EasyAssertions
             var aliasedExpression = base.GetActualExpression(parentExpression);
             var resolvedExpression = ReplaceAliasWithExpression(aliasedExpression, actualAlias, parentExpression);
 
-            return resolvedExpression == aliasedExpression // If actual alias wasn't used explicitly, just use the expression we have so far
+            return resolvedExpression == aliasedExpression // Ignore group if the actual alias wasn't used explicitly
                 ? parentExpression
                 : resolvedExpression;
         }
@@ -30,7 +30,11 @@ namespace EasyAssertions
         public override string GetExpectedExpression(string actualExpression, string parentExpression)
         {
             var expectedExpression = base.GetExpectedExpression(actualExpression, parentExpression);
-            return ReplaceAliasWithExpression(ReplaceAliasWithExpression(expectedExpression, actualAlias, actualExpression), expectedAlias, parentExpression);
+            var resolvedExpression = ReplaceAliasWithExpression(ReplaceAliasWithExpression(expectedExpression, actualAlias, actualExpression), expectedAlias, parentExpression);
+
+            return string.IsNullOrEmpty(resolvedExpression) // Ignore group if no expected value was used
+                ? parentExpression
+                : resolvedExpression;
         }
 
         static string ReplaceAliasWithExpression(string expressionWithAlias, string alias, string parentExpression)

@@ -298,7 +298,7 @@ namespace EasyAssertions.UnitTests
                 var expectedExpression = 2;
                 Error.LengthMismatch(Arg.Any<int>(), Arg.Any<IEnumerable>()).Returns(ExpectedException);
 
-                Assert.Throws<Exception>(() => actualExpression.ShouldBeLength(expectedExpression));
+                AssertThrowsExpectedError(() => actualExpression.ShouldBeLength(expectedExpression));
 
                 Assert.AreEqual(nameof(actualExpression), TestExpression.GetActual());
                 Assert.AreEqual(nameof(expectedExpression), TestExpression.GetExpected());
@@ -362,7 +362,7 @@ namespace EasyAssertions.UnitTests
                 int[] actualExpression = { 1, 2 };
                 Error.DoNotMatch(Arg.Any<IEnumerable<int>>(), Arg.Any<IEnumerable<int>>(), Arg.Any<Func<int, int, bool>>()).Returns(ExpectedException);
 
-                Assert.Throws<Exception>(() => actualExpression.ShouldMatch(expectedExpression));
+                AssertThrowsExpectedError(() => actualExpression.ShouldMatch(expectedExpression));
 
                 Assert.AreEqual(nameof(actualExpression), TestExpression.GetActual());
                 Assert.AreEqual(nameof(expectedExpression), TestExpression.GetExpected());
@@ -404,7 +404,7 @@ namespace EasyAssertions.UnitTests
             }
 
             [Test]
-            public void ActualIsNull_FailsWithTypeNotEqualMessage()
+            public void ActualIsNull_FailsWithTypesNotEqualMessage()
             {
                 AssertFailsWithTypesNotEqualMessage(typeof(IEnumerable<string>), null, msg => ((IEnumerable<string>)null).ShouldMatch(Enumerable.Empty<string>(), (s, s1) => false, msg));
             }
@@ -429,7 +429,7 @@ namespace EasyAssertions.UnitTests
                 Func<int, int, bool> predicate = (a, e) => a == e / 2;
                 Error.DoNotMatch(Arg.Any<IEnumerable<int>>(), Arg.Any<IEnumerable<int>>(), Arg.Any<Func<int, int, bool>>()).Returns(ExpectedException);
 
-                Assert.Throws<Exception>(() => actualExpression.ShouldMatch(expectedExpression, predicate));
+                AssertThrowsExpectedError(() => actualExpression.ShouldMatch(expectedExpression, predicate));
 
                 Assert.AreEqual(nameof(actualExpression), TestExpression.GetActual());
                 Assert.AreEqual(nameof(expectedExpression), TestExpression.GetExpected());
@@ -493,7 +493,7 @@ namespace EasyAssertions.UnitTests
                 float[] expectedExpression = { 11f, 21f };
                 Error.DoNotMatch(Arg.Any<IEnumerable<float>>(), Arg.Any<IEnumerable<float>>(), Arg.Any<Func<float, float, bool>>()).Returns(ExpectedException);
 
-                Assert.Throws<Exception>(() => actualExpression.ShouldMatch(expectedExpression, 0.9f));
+                AssertThrowsExpectedError(() => actualExpression.ShouldMatch(expectedExpression, 0.9f));
 
                 Assert.AreEqual(nameof(actualExpression), TestExpression.GetActual());
                 Assert.AreEqual(nameof(expectedExpression), TestExpression.GetExpected());
@@ -557,10 +557,76 @@ namespace EasyAssertions.UnitTests
                 double[] expectedExpression = { 11d, 21d };
                 Error.DoNotMatch(Arg.Any<IEnumerable<double>>(), Arg.Any<IEnumerable<double>>(), Arg.Any<Func<double, double, bool>>()).Returns(ExpectedException);
 
-                Assert.Throws<Exception>(() => actualExpression.ShouldMatch(expectedExpression, 0.9d));
+                AssertThrowsExpectedError(() => actualExpression.ShouldMatch(expectedExpression, 0.9d));
 
                 Assert.AreEqual(nameof(actualExpression), TestExpression.GetActual());
                 Assert.AreEqual(nameof(expectedExpression), TestExpression.GetExpected());
+            }
+        }
+
+        class ShouldMatch_Assertion : CollectionAssertionTests
+        {
+            [Test]
+            public void MatchingEnumerable_ReturnsActualValue()
+            {
+                IEnumerable<int> actual = new[] { 1, 2 };
+
+                AssertReturnsActual(actual, () => actual.ShouldMatch(new[] { 1, 2 }, (a, e) => a.ShouldBe(e)));
+            }
+
+            [Test]
+            public void NonMatchingEnumerables_FailsWithSpecificError()
+            {
+                int[] actual = { 1, 2, 4 };
+                int[] expected = { 2, 4, 6 };
+                Error.NotEqual(3, 4).Returns(ExpectedException);
+
+                AssertThrowsExpectedError(() => actual.ShouldMatch(expected, (a, e) => a.ShouldBe(e / 2)));
+            }
+
+            [Test]
+            public void MatchingEnumerables_OnlyEnumeratesOnce()
+            {
+                var actual = MakeEnumerable(1);
+                var expected = MakeEnumerable(1);
+
+                actual.ShouldMatch(expected, (a, b) => a.ShouldBe(b));
+
+                Assert.AreEqual(1, actual.EnumerationCount);
+                Assert.AreEqual(1, expected.EnumerationCount);
+            }
+
+            [Test]
+            public void ActualIsNull_FailsWithTypesNotEqualMessage()
+            {
+                Error.NotEqual(typeof(IEnumerable<string>), null).Returns(ExpectedException);
+
+                AssertThrowsExpectedError(() => ((IEnumerable<string>?)null).ShouldMatch(Enumerable.Empty<string>(), (a, e) => a.ShouldBe(e)));
+            }
+
+            [Test]
+            public void ExpectedIsNull_ThrowsArgumentNullException()
+            {
+                AssertArgumentNullException("expected", () => new Equatable[0].ShouldMatch((IEnumerable<int>)null, (a, e) => a.Value.ShouldBe(e)));
+            }
+
+            [Test]
+            public void AssertionIsNull_ThrowsArgumentNullException()
+            {
+                AssertArgumentNullException("assertion", () => new Equatable[0].ShouldMatch(new int[0], (Action<Equatable, int>?)null));
+            }
+
+            [Test]
+            public void CorrectlyRegistersAssertion()
+            {
+                int[] actualExpression = { 1, 2, 4 };
+                int[] expectedExpression = { 2, 4, 6 };
+                Error.NotEqual(3, 4).Returns(ExpectedException);
+
+                AssertThrowsExpectedError(() => actualExpression.ShouldMatch(expectedExpression, (a, e) => a.ShouldBe(e / 2)));
+
+                Assert.AreEqual($"{nameof(actualExpression)}[2]", TestExpression.GetActual());
+                Assert.AreEqual($"{nameof(expectedExpression)}[2] / 2", TestExpression.GetExpected());
             }
         }
 
@@ -946,7 +1012,7 @@ namespace EasyAssertions.UnitTests
                 int[] expectedExpression = { 2 };
                 Error.DoesNotStartWith(Arg.Any<IEnumerable<int>>(), Arg.Any<IEnumerable<int>>(), Arg.Any<Func<int, int, bool>>()).Returns(ExpectedException);
 
-                Assert.Throws<Exception>(() => actualExpression.ShouldStartWith(expectedExpression, (a, e) => a == e));
+                AssertThrowsExpectedError(() => actualExpression.ShouldStartWith(expectedExpression, (a, e) => a == e));
 
                 Assert.AreEqual(nameof(actualExpression), TestExpression.GetActual());
                 Assert.AreEqual(nameof(expectedExpression), TestExpression.GetExpected());
@@ -1073,7 +1139,7 @@ namespace EasyAssertions.UnitTests
                 int[] expectedExpression = { 2 };
                 Error.DoesNotEndWith(Arg.Any<IEnumerable<int>>(), Arg.Any<IEnumerable<int>>(), Arg.Any<Func<int, int, bool>>()).Returns(ExpectedException);
 
-                Assert.Throws<Exception>(() => actualExpression.ShouldEndWith(expectedExpression, (a, e) => a == e));
+                AssertThrowsExpectedError(() => actualExpression.ShouldEndWith(expectedExpression, (a, e) => a == e));
 
                 Assert.AreEqual(nameof(actualExpression), TestExpression.GetActual());
                 Assert.AreEqual(nameof(expectedExpression), TestExpression.GetExpected());
@@ -1125,7 +1191,7 @@ namespace EasyAssertions.UnitTests
                 const int expectedExpression = 3;
                 Error.DoesNotContain(Arg.Any<object>(), Arg.Any<IEnumerable>()).Returns(ExpectedException);
 
-                Assert.Throws<Exception>(() => actualExpression.ShouldContain(expectedExpression));
+                AssertThrowsExpectedError(() => actualExpression.ShouldContain(expectedExpression));
 
                 Assert.AreEqual(nameof(actualExpression), TestExpression.GetActual());
                 Assert.AreEqual(nameof(expectedExpression), TestExpression.GetExpected());
@@ -1183,7 +1249,7 @@ namespace EasyAssertions.UnitTests
                 const int expectedExpression = 3;
                 Error.DoesNotContain(Arg.Any<object>(), Arg.Any<IEnumerable>()).Returns(ExpectedException);
 
-                Assert.Throws<Exception>(() => actualExpression.ShouldContain(expectedExpression, ValueEquals));
+                AssertThrowsExpectedError(() => actualExpression.ShouldContain(expectedExpression, ValueEquals));
 
                 Assert.AreEqual(nameof(actualExpression), TestExpression.GetActual());
                 Assert.AreEqual(nameof(expectedExpression), TestExpression.GetExpected());
@@ -1234,7 +1300,7 @@ namespace EasyAssertions.UnitTests
                 var expectedExpression = Equatable(1);
                 Error.Contains(Arg.Any<object>(), Arg.Any<IEnumerable>()).Returns(ExpectedException);
 
-                Assert.Throws<Exception>(() => actualExpression.ShouldNotContain(expectedExpression));
+                AssertThrowsExpectedError(() => actualExpression.ShouldNotContain(expectedExpression));
 
                 Assert.AreEqual(nameof(actualExpression), TestExpression.GetActual());
                 Assert.AreEqual(nameof(expectedExpression), TestExpression.GetExpected());
@@ -1291,7 +1357,7 @@ namespace EasyAssertions.UnitTests
                 var expectedExpression = 1;
                 Error.Contains(Arg.Any<object>(), Arg.Any<IEnumerable>()).Returns(ExpectedException);
 
-                Assert.Throws<Exception>(() => actualExpression.ShouldNotContain(expectedExpression, ValueEquals));
+                AssertThrowsExpectedError(() => actualExpression.ShouldNotContain(expectedExpression, ValueEquals));
 
                 Assert.AreEqual(nameof(actualExpression), TestExpression.GetActual());
                 Assert.AreEqual(nameof(expectedExpression), TestExpression.GetExpected());
@@ -1361,7 +1427,7 @@ namespace EasyAssertions.UnitTests
                 Equatable[] expectedExpression = { Equatable(1), Equatable(4) };
                 Error.DoesNotContainItems(Arg.Any<IEnumerable<Equatable>>(), Arg.Any<IEnumerable<Equatable>>(), Arg.Any<Func<Equatable, Equatable, bool>>()).Returns(ExpectedException);
 
-                Assert.Throws<Exception>(() => actualExpression.ShouldContainItems(expectedExpression));
+                AssertThrowsExpectedError(() => actualExpression.ShouldContainItems(expectedExpression));
 
                 Assert.AreEqual(nameof(actualExpression), TestExpression.GetActual());
                 Assert.AreEqual(nameof(expectedExpression), TestExpression.GetExpected());
@@ -1437,7 +1503,7 @@ namespace EasyAssertions.UnitTests
                 int[] expectedExpression = { 1, 4 };
                 Error.DoesNotContainItems(Arg.Any<IEnumerable<int>>(), Arg.Any<IEnumerable<Equatable>>(), ValueEquals).Returns(ExpectedException);
 
-                Assert.Throws<Exception>(() => actualExpression.ShouldContainItems(expectedExpression, ValueEquals));
+                AssertThrowsExpectedError(() => actualExpression.ShouldContainItems(expectedExpression, ValueEquals));
 
                 Assert.AreEqual(nameof(actualExpression), TestExpression.GetActual());
                 Assert.AreEqual(nameof(expectedExpression), TestExpression.GetExpected());
@@ -1507,7 +1573,7 @@ namespace EasyAssertions.UnitTests
                 Equatable[] expectedExpression = { Equatable(1) };
                 Error.ContainsExtraItem(Arg.Any<IEnumerable<Equatable>>(), Arg.Any<IEnumerable<Equatable>>(), StandardTests.Instance.ObjectsAreEqual).Returns(ExpectedException);
 
-                Assert.Throws<Exception>(() => actualExpression.ItemsShouldBeIn(expectedExpression));
+                AssertThrowsExpectedError(() => actualExpression.ItemsShouldBeIn(expectedExpression));
 
                 Assert.AreEqual(nameof(actualExpression), TestExpression.GetActual());
                 Assert.AreEqual(nameof(expectedExpression), TestExpression.GetExpected());
@@ -1583,7 +1649,7 @@ namespace EasyAssertions.UnitTests
                 int[] expectedExpression = { 1 };
                 Error.ContainsExtraItem(Arg.Any<IEnumerable<int>>(), Arg.Any<IEnumerable<Equatable>>(), ValueEquals).Returns(ExpectedException);
 
-                Assert.Throws<Exception>(() => actualExpression.ItemsShouldBeIn(expectedExpression, ValueEquals));
+                AssertThrowsExpectedError(() => actualExpression.ItemsShouldBeIn(expectedExpression, ValueEquals));
 
                 Assert.AreEqual(nameof(actualExpression), TestExpression.GetActual());
                 Assert.AreEqual(nameof(expectedExpression), TestExpression.GetExpected());
@@ -1643,7 +1709,7 @@ namespace EasyAssertions.UnitTests
                 Equatable[] expectedExpression = { Equatable(3), Equatable(2) };
                 Error.Contains(Arg.Any<IEnumerable>(), Arg.Any<IEnumerable>()).Returns(ExpectedException);
 
-                Assert.Throws<Exception>(() => actualExpression.ShouldNotContainItems(expectedExpression));
+                AssertThrowsExpectedError(() => actualExpression.ShouldNotContainItems(expectedExpression));
 
                 Assert.AreEqual(nameof(actualExpression), TestExpression.GetActual());
                 Assert.AreEqual(nameof(expectedExpression), TestExpression.GetExpected());
@@ -1703,7 +1769,7 @@ namespace EasyAssertions.UnitTests
                 int[] expectedExpression = { 3, 2 };
                 Error.Contains(Arg.Any<IEnumerable>(), Arg.Any<IEnumerable>()).Returns(ExpectedException);
 
-                Assert.Throws<Exception>(() => actualExpression.ShouldNotContainItems(expectedExpression, ValueEquals));
+                AssertThrowsExpectedError(() => actualExpression.ShouldNotContainItems(expectedExpression, ValueEquals));
 
                 Assert.AreEqual(nameof(actualExpression), TestExpression.GetActual());
                 Assert.AreEqual(nameof(expectedExpression), TestExpression.GetExpected());
@@ -1783,7 +1849,7 @@ namespace EasyAssertions.UnitTests
                 Equatable[] expectedExpression = { Equatable(1) };
                 Error.DoesNotOnlyContain(Arg.Any<IEnumerable<Equatable>>(), Arg.Any<IEnumerable<Equatable>>(), Arg.Any<Func<Equatable, Equatable, bool>>()).Returns(ExpectedException);
 
-                Assert.Throws<Exception>(() => actualExpression.ShouldOnlyContain(expectedExpression));
+                AssertThrowsExpectedError(() => actualExpression.ShouldOnlyContain(expectedExpression));
 
                 Assert.AreEqual(nameof(actualExpression), TestExpression.GetActual());
                 Assert.AreEqual(nameof(expectedExpression), TestExpression.GetExpected());
@@ -1883,7 +1949,7 @@ namespace EasyAssertions.UnitTests
                 int[] expectedExpression = { 1 };
                 Error.DoesNotOnlyContain(Arg.Any<IEnumerable<int>>(), Arg.Any<IEnumerable<Equatable>>(), Arg.Any<Func<Equatable, int, bool>>()).Returns(ExpectedException);
 
-                Assert.Throws<Exception>(() => actualExpression.ShouldOnlyContain(expectedExpression, ValueEquals));
+                AssertThrowsExpectedError(() => actualExpression.ShouldOnlyContain(expectedExpression, ValueEquals));
 
                 Assert.AreEqual(nameof(actualExpression), TestExpression.GetActual());
                 Assert.AreEqual(nameof(expectedExpression), TestExpression.GetExpected());
@@ -2068,7 +2134,7 @@ namespace EasyAssertions.UnitTests
                 int[] actualExpression = { 1, 2 };
                 Error.DoNotMatch(Arg.Any<IEnumerable<int>>(), Arg.Any<IEnumerable<int>>(), Arg.Any<Func<int, int, bool>>()).Returns(ExpectedException);
 
-                Assert.Throws<Exception>(() => actualExpression.ShouldMatch(expectedExpression));
+                AssertThrowsExpectedError(() => actualExpression.ShouldMatch(expectedExpression));
 
                 Assert.AreEqual(nameof(actualExpression), TestExpression.GetActual());
                 Assert.AreEqual(nameof(expectedExpression), TestExpression.GetExpected());
@@ -2108,7 +2174,7 @@ namespace EasyAssertions.UnitTests
                 var expectedExpression = 'a';
                 Error.DoesNotContain(Arg.Any<object>(), Arg.Any<IEnumerable>(), Arg.Any<string>()).Returns(ExpectedException);
 
-                Assert.Throws<Exception>(() => actualExpression.ShouldContainKey(expectedExpression));
+                AssertThrowsExpectedError(() => actualExpression.ShouldContainKey(expectedExpression));
 
                 Assert.AreEqual(nameof(actualExpression), TestExpression.GetActual());
                 Assert.AreEqual(nameof(expectedExpression), TestExpression.GetExpected());
@@ -2148,7 +2214,7 @@ namespace EasyAssertions.UnitTests
                 var expectedExpression = 'f';
                 Error.Contains(Arg.Any<object>(), Arg.Any<IEnumerable>(), Arg.Any<string>()).Returns(ExpectedException);
 
-                Assert.Throws<Exception>(() => actualExpression.ShouldNotContainKey(expectedExpression));
+                AssertThrowsExpectedError(() => actualExpression.ShouldNotContainKey(expectedExpression));
 
                 Assert.AreEqual(nameof(actualExpression), TestExpression.GetActual());
                 Assert.AreEqual(nameof(expectedExpression), TestExpression.GetExpected());
@@ -2249,7 +2315,7 @@ namespace EasyAssertions.UnitTests
                 var expectedExpression = 2;
                 Error.NotEqual(Arg.Any<object>(), Arg.Any<object>(), Arg.Any<string>()).Returns(ExpectedException);
 
-                Assert.Throws<Exception>(() => actualExpression.ItemsSatisfy(item => item.ShouldBe(expectedExpression)));
+                AssertThrowsExpectedError(() => actualExpression.ItemsSatisfy(item => item.ShouldBe(expectedExpression)));
 
                 Assert.AreEqual($"{nameof(actualExpression)}[0]", TestExpression.GetActual());
                 Assert.AreEqual(nameof(expectedExpression), TestExpression.GetExpected());
@@ -2301,7 +2367,7 @@ namespace EasyAssertions.UnitTests
                 var expectedExpression = 2;
                 Error.NotEqual(Arg.Any<object>(), Arg.Any<object>(), Arg.Any<string>()).Returns(ExpectedException);
 
-                Assert.Throws<Exception>(() => actualExpression.AllItemsSatisfy(item => item.ShouldBe(expectedExpression)));
+                AssertThrowsExpectedError(() => actualExpression.AllItemsSatisfy(item => item.ShouldBe(expectedExpression)));
 
                 Assert.AreEqual($"{nameof(actualExpression)}[0]", TestExpression.GetActual());
                 Assert.AreEqual(nameof(expectedExpression), TestExpression.GetExpected());

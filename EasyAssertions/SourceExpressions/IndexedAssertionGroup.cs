@@ -12,7 +12,12 @@ namespace EasyAssertions
 
         public override string GetActualExpression(string parentExpression)
         {
-            return base.GetActualExpression(parentExpression + '[' + index + ']');
+            return base.GetActualExpression($"{parentExpression}[{index}]");
+        }
+
+        public override string GetExpectedExpression(string actualExpression, string parentExpression)
+        {
+            return base.GetExpectedExpression(actualExpression, $"{parentExpression}[{index}]");
         }
     }
 }

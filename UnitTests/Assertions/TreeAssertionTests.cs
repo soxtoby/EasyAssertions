@@ -32,7 +32,7 @@ namespace EasyAssertions.UnitTests
         }
 
         [Test]
-        public void ShouldMatchTree_ActualIsNull_FailsWithTypedNotEqualMessage()
+        public void ShouldMatchTree_ActualIsNull_FailsWithTypesNotEqualMessage()
         {
             IEnumerable<int>? actual = null;
             Error.NotEqual(typeof(IEnumerable<int>), null, "foo").Returns(ExpectedException);
@@ -92,7 +92,7 @@ namespace EasyAssertions.UnitTests
         }
 
         [Test]
-        public void ShouldMatchTree_CustomEquality_ActualIsNull_FailsWithTypedNotEqualMessage()
+        public void ShouldMatchTree_CustomEquality_ActualIsNull_FailsWithTypesNotEqualMessage()
         {
             IEnumerable<int>? actual = null;
             Error.NotEqual(typeof(IEnumerable<int>), null, "foo").Returns(ExpectedException);

@@ -196,6 +196,29 @@ namespace EasyAssertions
         }
 
         /// <summary>
+        /// Asserts that two sequences contain the same items in the same order, using a custom equality function.
+        /// </summary>
+        public static Actual<IEnumerable<TActual>> ShouldMatch<TActual, TExpected>([NotNull] this IEnumerable<TActual>? actual, IEnumerable<TExpected> expected, Action<TActual, TExpected> assertion)
+        {
+            if (expected == null) throw new ArgumentNullException(nameof(expected));
+            if (assertion == null) throw new ArgumentNullException(nameof(assertion));
+
+            return actual.RegisterNotNullAssertion(c =>
+                {
+                    actual.ShouldBeA<IEnumerable<TActual>>();
+
+                    using var bufferedActual = actual.Buffer();
+                    using var bufferedExpected = expected.Buffer();
+
+                    if (bufferedActual.Count != bufferedExpected.Count)
+                        throw c.StandardError.LengthMismatch(bufferedExpected.Count, bufferedActual);
+
+                    for (var i = 0; i < bufferedExpected.Count; i++)
+                        actual.RegisterIndexedAssertion(i, _ => actual.RegisterUserAssertion(assertion, () => assertion(bufferedActual[i], bufferedExpected[i])));
+                });
+        }
+
+        /// <summary>
         /// Asserts that two sequences do not contain the same items in the same order.
         /// <see cref="IEnumerable"/> items are compared recursively.
         /// Non-<c>IEnumerable</c> items are compared using the default equality comparer.

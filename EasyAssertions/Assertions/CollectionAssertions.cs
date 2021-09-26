@@ -41,10 +41,10 @@ namespace EasyAssertions
         public static void ShouldMatchReferences<TActual, TExpected>(this IEnumerable<TActual>? actual, ISet<TExpected>? expected, string? message = null) { }
         /// <summary>Disallowed comparison.</summary>
         [Obsolete(AssertionReturnsBooleanError, true)]
-        public static void ItemsSatisfy<TItem>([NotNull] this IEnumerable<TItem>? actual, params Func<TItem, bool>[] assertions) { }
+        public static void ItemsSatisfy<TItem>(this IEnumerable<TItem>? actual, params Func<TItem, bool>[] assertions) { }
         /// <summary>Disallowed comparison.</summary>
         [Obsolete(AssertionReturnsBooleanError, true)]
-        public static void AllItemsSatisfy<TItem>([NotNull] this IEnumerable<TItem>? actual, Func<TItem, bool> assertion) { }
+        public static void AllItemsSatisfy<TItem>(this IEnumerable<TItem>? actual, Func<TItem, bool> assertion) { }
 
         /// <summary>
         /// Asserts that a sequence has no elements in it.
@@ -115,7 +115,7 @@ namespace EasyAssertions
                     using var bufferedActual = actual.Buffer();
                     var i = 0;
                     foreach (var item in bufferedActual)
-                        item.RegisterIndexedAssertion(i++, c2 => item.ShouldBeA<TExpected>(message));
+                        actual.RegisterAssertion(c2 => item.ShouldBeA<TExpected>(message), $"[{i++}]");
 
                     return new Actual<IEnumerable<TExpected>>(actual.Cast<TExpected>());
                 });
@@ -214,7 +214,7 @@ namespace EasyAssertions
                         throw c.StandardError.LengthMismatch(bufferedExpected.Count, bufferedActual);
 
                     for (var i = 0; i < bufferedExpected.Count; i++)
-                        actual.RegisterIndexedAssertion(i, _ => actual.RegisterUserAssertion(assertion, () => assertion(bufferedActual[i], bufferedExpected[i])));
+                        c.Call(() => assertion(bufferedActual[i], bufferedExpected[i]), $"[{i}]", $"[{i}]");
                 });
         }
 
@@ -649,7 +649,7 @@ namespace EasyAssertions
                         throw c.StandardError.LengthMismatch(assertions.Length, bufferedActual);
 
                     for (var i = 0; i < assertions.Length; i++)
-                        actual.RegisterIndexedAssertion(i, c2 => actual.RegisterUserAssertion(assertions[i], () => assertions[i](bufferedActual[i])));
+                        c.Call(() => assertions[i](bufferedActual[i]), $"[{i}]");
                 });
         }
 
@@ -666,7 +666,7 @@ namespace EasyAssertions
 
                     var i = 0;
                     foreach (var item in actual)
-                        item.RegisterIndexedAssertion(i, c2 => item.RegisterUserAssertion(assertion, () => assertion(item)));
+                        c.Call(() => assertion(item), $"[{i++}]");
                 });
         }
     }

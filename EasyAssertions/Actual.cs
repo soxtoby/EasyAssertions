@@ -20,7 +20,7 @@
         {
             get
             {
-                SourceExpressionProvider.ForCurrentThread.RegisterContinuation(0);
+                Value.RegisterAssertion(c => { });
                 return Value;
             }
         }

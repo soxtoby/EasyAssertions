@@ -57,7 +57,7 @@ namespace EasyAssertions.UnitTests
         }
 
         [Test]
-        public void MultiAssertionMessage_TakesExpressionFromFirstAssertion()
+        public void MultiAssertionMessage_TakesActualExpressionFromFirstAssertion()
         {
             var actualExpression = new TestClass(12);
             var expectedExpression = new TestClass(2);
@@ -312,10 +312,7 @@ namespace EasyAssertions.UnitTests
 
         public static Actual<object> TestIndexedUserAssertion(this object actual, object expected, int index, Action<object, object> userAssertion)
         {
-            return actual.RegisterNotNullAssertion(c =>
-                {
-                    actual.RegisterIndexedAssertion(index, c2 => actual.RegisterUserAssertion(userAssertion, () => userAssertion(actual, expected)));
-                });
+            return actual.RegisterNotNullAssertion(c => c.Call(() => userAssertion(actual, expected), $"[{index}]", $"[{index}]"));
         }
     }
 }

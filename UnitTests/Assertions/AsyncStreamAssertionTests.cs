@@ -45,10 +45,9 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ShouldCompleteWithValue_CorrectlyRegistersAssertion()
         {
-            TaskReturns(0, TimeSpan.FromSeconds(1));
             var actualExpression = stream;
 
-            actualExpression.ShouldComplete();
+            AssertTimesOut(TimeSpan.FromSeconds(1), msg => actualExpression.ShouldComplete(msg));
 
             Assert.AreEqual(nameof(actualExpression), TestExpression.GetActual());
         }
@@ -128,10 +127,9 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ShouldFail_CorrectlyRegistersAssertion()
         {
-            TaskFails(new Exception(), TimeSpan.FromSeconds(1));
             var actualExpression = stream;
 
-            actualExpression.ShouldFail();
+            AssertFailsWithNoExceptionMessage(msg => actualExpression.ShouldFail(msg));
 
             Assert.AreEqual(nameof(actualExpression), TestExpression.GetActual());
         }

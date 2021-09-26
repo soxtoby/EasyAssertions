@@ -6,7 +6,7 @@ namespace EasyAssertions.UnitTests
 {
     public class NumberAssertionTests : AssertionTests
     {
-        /*// None of the lines in the following method should compile 
+        /*// None of the lines in the following method should compile
         public void ShouldNotCompile()
         {
             1f.ShouldBe(1d);
@@ -360,9 +360,10 @@ namespace EasyAssertions.UnitTests
             [Test]
             public void CorrectlyRegistersAssertion()
             {
-                const float actualExpression = float.NaN;
+                const float actualExpression = 1f;
+                Error.NotEqual(Arg.Any<object?>(), Arg.Any<object?>(), Arg.Any<string?>()).Returns(ExpectedException);
 
-                actualExpression.ShouldBeNaN();
+                AssertThrowsExpectedError(() => actualExpression.ShouldBeNaN());
 
                 Assert.AreEqual(nameof(actualExpression), TestExpression.GetActual());
             }
@@ -392,9 +393,10 @@ namespace EasyAssertions.UnitTests
             [Test]
             public void CorrectlyRegistersAssertion()
             {
-                const float actualExpression = 1;
+                const float actualExpression = float.NaN;
+                Error.AreEqual(Arg.Any<object?>(), Arg.Any<object?>(), Arg.Any<string?>()).Returns(ExpectedException);
 
-                actualExpression.ShouldNotBeNaN();
+                AssertThrowsExpectedError(() => actualExpression.ShouldNotBeNaN());
 
                 Assert.AreEqual(nameof(actualExpression), TestExpression.GetActual());
             }
@@ -422,9 +424,10 @@ namespace EasyAssertions.UnitTests
             [Test]
             public void CorrectlyRegistersAssertion()
             {
-                const double actualExpression = double.NaN;
+                const double actualExpression = 1d;
+                Error.NotEqual(Arg.Any<object?>(), Arg.Any<object?>(), Arg.Any<string?>()).Returns(ExpectedException);
 
-                actualExpression.ShouldBeNaN();
+                AssertThrowsExpectedError(() => actualExpression.ShouldBeNaN());
 
                 Assert.AreEqual(nameof(actualExpression), TestExpression.GetActual());
             }
@@ -454,9 +457,10 @@ namespace EasyAssertions.UnitTests
             [Test]
             public void CorrectlyRegistersAssertion()
             {
-                const double actualExpression = 1;
+                const double actualExpression = double.NaN;
+                Error.AreEqual(Arg.Any<object?>(), Arg.Any<object?>(), Arg.Any<string?>()).Returns(ExpectedException);
 
-                actualExpression.ShouldNotBeNaN();
+                AssertThrowsExpectedError(() => actualExpression.ShouldNotBeNaN());
 
                 Assert.AreEqual(nameof(actualExpression), TestExpression.GetActual());
             }

@@ -76,9 +76,10 @@ namespace EasyAssertions.UnitTests
             [Test]
             public void CorrectlyRegistersAssertion()
             {
-                var actualExpression = Enumerable.Empty<string>();
+                var actualExpression = new[] { "foo" };
+                Error.NotEmpty(Arg.Any<IEnumerable>(), Arg.Any<string?>()).Returns(ExpectedException);
 
-                actualExpression.ShouldBeEmpty();
+                AssertThrowsExpectedError(() => actualExpression.ShouldBeEmpty());
 
                 Assert.AreEqual(nameof(actualExpression), TestExpression.GetActual());
             }
@@ -113,9 +114,10 @@ namespace EasyAssertions.UnitTests
             [Test]
             public void CorrectlyRegistersAssertion()
             {
-                int[] actualExpression = { 1 };
+                var actualExpression = Array.Empty<int>();
+                Error.IsEmpty(Arg.Any<string?>()).Returns(ExpectedException);
 
-                actualExpression.ShouldNotBeEmpty();
+                AssertThrowsExpectedError(() => actualExpression.ShouldNotBeEmpty());
 
                 Assert.AreEqual(nameof(actualExpression), TestExpression.GetActual());
             }
@@ -161,9 +163,10 @@ namespace EasyAssertions.UnitTests
             [Test]
             public void CorrectlyRegistersAssertion()
             {
-                int[] actualExpression = { 1 };
+                var actualExpression = MakeEnumerable(1, 2);
+                Error.LengthMismatch(Arg.Any<int>(), Arg.Any<IEnumerable>(), Arg.Any<string>()).Returns(ExpectedException);
 
-                actualExpression.ShouldBeSingular();
+                AssertThrowsExpectedError(() => actualExpression.ShouldBeSingular());
 
                 Assert.AreEqual(nameof(actualExpression), TestExpression.GetActual());
             }
@@ -1997,9 +2000,10 @@ namespace EasyAssertions.UnitTests
             [Test]
             public void CorrectlyRegistersAssertion()
             {
-                Equatable[] actualExpression = { Equatable(1) };
+                Equatable[] actualExpression = { Equatable(1), Equatable(1) };
+                Error.ContainsDuplicate(Arg.Any<IEnumerable>(), Arg.Any<string>()).Returns(ExpectedException);
 
-                actualExpression.ShouldBeDistinct();
+                AssertThrowsExpectedError(() => actualExpression.ShouldBeDistinct());
 
                 Assert.AreEqual(nameof(actualExpression), TestExpression.GetActual());
             }

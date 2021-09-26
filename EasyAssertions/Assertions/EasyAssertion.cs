@@ -14,7 +14,7 @@ namespace EasyAssertions
         /// </summary>
         public static Actual<TActual> Assert<TActual>([NoEnumeration] this TActual actual, [InstantHandle] Action<TActual> assert)
         {
-            return actual.RegisterUserAssertion(assert, () => assert(actual));
+            return actual.RegisterAssertion(c => c.Call(() => assert(actual)));
         }
 
         /// <summary>
@@ -22,18 +22,16 @@ namespace EasyAssertions
         /// </summary>
         public static Actual<TActual> And<TActual>([NoEnumeration] this Actual<TActual> actual, [InstantHandle] Action<TActual> assert)
         {
-            return actual.Value.RegisterUserAssertion(assert, () => assert(actual.Value));
+            return actual.Value.RegisterAssertion(c => c.Call(() => assert(actual.Value)));
         }
 
         /// <summary>
         /// Registers an assertion action for purposes of tracking the current position in the assertion expression's source code.
         /// Use this for custom assertions that act directly on the actual value.
         /// </summary>
-        public static Actual<TActual> RegisterAssertion<TActual>([NoEnumeration] this TActual actual, [InstantHandle] Action<IAssertionContext> assert)
+        public static Actual<TActual> RegisterAssertion<TActual>([NoEnumeration] this TActual actual, [InstantHandle] Action<IAssertionContext> assert, string actualSuffix = "", string expectedSuffix = "")
         {
-            SourceExpressionProvider.ForCurrentThread.EnterAssertion(1);
-            assert(new AssertionContext());
-            SourceExpressionProvider.ForCurrentThread.ExitAssertion();
+            SourceExpressionProvider.ForCurrentThread.RunAssertion(assert, actualSuffix, expectedSuffix);
             return new Actual<TActual>(actual);
         }
 
@@ -41,12 +39,10 @@ namespace EasyAssertions
         /// Registers an assertion action for purposes of tracking the current position in the assertion expression's source code.
         /// Use this for custom assertions that act directly on the actual value, and assert that it is not null.
         /// </summary>
-        public static Actual<TActual> RegisterNotNullAssertion<TActual>([NoEnumeration] [NotNull] this TActual? actual, [InstantHandle] Action<IAssertionContext> assert)
+        public static Actual<TActual> RegisterNotNullAssertion<TActual>([NoEnumeration] [NotNull] this TActual? actual, [InstantHandle] Action<IAssertionContext> assert, string actualSuffix = "", string expectedSuffix = "")
             where TActual : notnull
         {
-            SourceExpressionProvider.ForCurrentThread.EnterAssertion(1);
-            assert(new AssertionContext());
-            SourceExpressionProvider.ForCurrentThread.ExitAssertion();
+            SourceExpressionProvider.ForCurrentThread.RunAssertion(assert, actualSuffix, expectedSuffix);
 
             if (actual is null)
                 throw new ArgumentException("Actual value was null, but assertion didn't throw", nameof(assert));
@@ -61,11 +57,12 @@ namespace EasyAssertions
         /// <returns>
         /// The return value of the registered assertion function.
         /// </returns>
-        public static Actual<TReturnActual> RegisterAssertion<TActual, TReturnActual>([NoEnumeration] this TActual actual, [InstantHandle] Func<IAssertionContext, Actual<TReturnActual>> assert)
+        public static Actual<TReturnActual> RegisterAssertion<TActual, TReturnActual>([NoEnumeration] this TActual actual, [InstantHandle] Func<IAssertionContext, Actual<TReturnActual>> assert, string actualSuffix = "", string expectedSuffix = "")
         {
-            SourceExpressionProvider.ForCurrentThread.EnterAssertion(1);
-            var ret = assert(new AssertionContext());
-            SourceExpressionProvider.ForCurrentThread.ExitAssertion();
+            Actual<TReturnActual> ret = default!;
+
+            SourceExpressionProvider.ForCurrentThread.RunAssertion(c => ret = assert(c), actualSuffix, expectedSuffix);
+
             return ret;
         }
 
@@ -76,43 +73,17 @@ namespace EasyAssertions
         /// <returns>
         /// The return value of the registered assertion function.
         /// </returns>
-        public static Actual<TReturnActual> RegisterNotNullAssertion<TActual, TReturnActual>([NoEnumeration] [NotNull] this TActual? actual, [InstantHandle] Func<IAssertionContext, Actual<TReturnActual>> assert)
+        public static Actual<TReturnActual> RegisterNotNullAssertion<TActual, TReturnActual>([NoEnumeration] [NotNull] this TActual? actual, [InstantHandle] Func<IAssertionContext, Actual<TReturnActual>> assert, string actualSuffix = "", string expectedSuffix = "")
             where TActual : notnull
         {
-            SourceExpressionProvider.ForCurrentThread.EnterAssertion(1);
-            var ret = assert(new AssertionContext());
-            SourceExpressionProvider.ForCurrentThread.ExitAssertion();
+            Actual<TReturnActual> ret = default!;
+
+            SourceExpressionProvider.ForCurrentThread.RunAssertion(c => ret = assert(c), actualSuffix, expectedSuffix);
 
             if (actual is null)
                 throw new ArgumentException("Actual value was null, but assertion didn't throw", nameof(assert));
 
             return ret;
-        }
-
-        /// <summary>
-        /// Registers an assertion action that is associated with an index into the actual object.
-        /// The first parameter of the item assertion method is assumed to be the actual value.
-        /// Use this when executing a user-provided assertion on an item in a sequence.
-        /// </summary>
-        public static void RegisterIndexedAssertion<TActual>([NoEnumeration] this TActual actual, int index, [InstantHandle] Action<IAssertionContext> assert)
-        {
-            SourceExpressionProvider.ForCurrentThread.EnterIndexedAssertion(index, 1);
-            assert(new AssertionContext());
-            SourceExpressionProvider.ForCurrentThread.ExitAssertion();
-        }
-
-        /// <summary>
-        /// Registers a user assertion, for purposes of following the assertion expression into the user's assertion function.
-        /// </summary>
-        /// <param name="actual">The value being asserted on.</param>
-        /// <param name="userAssertion">A reference to the user's assertion delegate. The first parameter is assumed to be the actual value.</param>
-        /// <param name="runUserAssertion">An <see cref="Action"/> that executes the user's assertion delegate.</param>
-        public static Actual<TActual> RegisterUserAssertion<TActual>([NoEnumeration] this TActual actual, Delegate userAssertion, [InstantHandle] Action runUserAssertion)
-        {
-            SourceExpressionProvider.ForCurrentThread.EnterAssertion(userAssertion.Method, 1);
-            runUserAssertion();
-            SourceExpressionProvider.ForCurrentThread.ExitAssertion();
-            return new Actual<TActual>(actual);
         }
 
         /// <summary>

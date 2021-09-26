@@ -1,65 +1,36 @@
+using System.Reflection;
+
 namespace EasyAssertions
 {
-    class AssertionMethod : AssertionComponent
+    class AssertionMethod : AssertionCall
     {
-        public AssertionMethod(SourceAddress sourceAddress, string methodName) : base(sourceAddress, methodName) { }
+        const string GetterPrefix = "get_";
 
-        public override ExpressionSegment GetActualSegment(string expressionSource, int fromIndex)
+        public AssertionMethod(MethodBase assertionMethod, SourceAddress callAddress, int callOffset)
+            : base(assertionMethod)
         {
-            var assertionIndex = GetMethodCallIndex(expressionSource, fromIndex);
-            if (assertionIndex == -1)
-                return new ExpressionSegment { IndexOfNextSegment = fromIndex };
-
-            return new ExpressionSegment
-                {
-                    Expression = expressionSource.Substring(fromIndex, assertionIndex - fromIndex),
-                    IndexOfNextSegment = AfterClosingParen(expressionSource, assertionIndex)
-                };
+            CallAddress = callAddress;
+            CallOffset = callOffset;
         }
 
-        public override ExpressionSegment GetExpectedSegment(string expressionSource, int fromIndex)
-        {
-            var assertionIndex = GetMethodCallIndex(expressionSource, fromIndex);
-            if (assertionIndex == -1)
-                return new ExpressionSegment { IndexOfNextSegment = fromIndex };
+        public override AssertionFrame CreateFrame(AssertionFrame? outerFrame, string actualSuffix, string expectedSuffix) =>
+            new AssertionStatement(this, outerFrame, actualSuffix, expectedSuffix);
 
-            var startOfFirstParam = AfterOpeningParen(expressionSource, assertionIndex);
-            var endOfFirstParam = BeforeNextComma(expressionSource, startOfFirstParam);
-            var endOfMethodCall = AfterClosingParen(expressionSource, assertionIndex);
+        public string AssertionName => IsProperty ? AssertionMethod.Name[GetterPrefix.Length..] : AssertionMethod.Name;
 
-            if (EndOfFirstParamIsInvalid(endOfFirstParam, endOfMethodCall))
-                endOfFirstParam = BeforeClosingParen(endOfMethodCall);
+        public bool IsProperty => AssertionMethod.Name.StartsWith(GetterPrefix);
 
-            return new ExpressionSegment
-                {
-                    Expression = expressionSource.Substring(startOfFirstParam, endOfFirstParam - startOfFirstParam),
-                    IndexOfNextSegment = endOfMethodCall
-                };
-        }
+        /// <summary>
+        /// Where the method was called from, at the start of the expression (should be the start of the actual variable)
+        /// </summary>
+        public SourceAddress CallAddress { get; }
 
-        static int AfterOpeningParen(string expressionSource, int assertionIndex)
-        {
-            return expressionSource.IndexOf('(', assertionIndex) + 1;
-        }
+        /// <summary>
+        /// Offset from the start of the native JIT-compiled code for the method that is being executed.
+        /// Only used for differentiating between method calls in the same expression.
+        /// </summary>
+        public int CallOffset { get; }
 
-        static int BeforeNextComma(string expressionSource, int startOfFirstParam)
-        {
-            return BraceMatcher.FindNext(expressionSource, ',', startOfFirstParam);
-        }
-
-        static int AfterClosingParen(string expressionSource, int assertionIndex)
-        {
-            return BraceMatcher.FindClosingBrace(expressionSource, assertionIndex) + 1;
-        }
-
-        static bool EndOfFirstParamIsInvalid(int endOfFirstParam, int endOfMethodCall)
-        {
-            return endOfFirstParam < 0 || endOfFirstParam > endOfMethodCall;
-        }
-
-        static int BeforeClosingParen(int endOfMethodCall)
-        {
-            return endOfMethodCall - 1;
-        }
+        public override string ToString() => AssertionName;
     }
 }

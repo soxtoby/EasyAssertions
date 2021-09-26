@@ -37,37 +37,6 @@ namespace EasyAssertions
                 : value;
         }
 
-        public static int IndexOfOrDefault<T>(this IEnumerable<T> sequence, Func<T, bool> predicate, int startIndex, int defaultValue)
-        {
-            var i = startIndex;
-            foreach (var item in sequence.Skip(startIndex))
-            {
-                if (predicate(item))
-                    return i;
-                i++;
-            }
-            return defaultValue;
-        }
-
-        public static bool TryReadAllLines(SourceAddress assertionsAddress, out string[] sourceLines)
-        {
-            sourceLines = new string[0];
-
-            var fileName = assertionsAddress.FileName;
-            if (fileName == null)
-                return false;
-
-            try
-            {
-                sourceLines = File.ReadAllLines(fileName);
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
-        }
-
         public static IEnumerable<T> SkipLast<T>(this IEnumerable<T> sequence, int count)
         {
             var queue = new Queue<T>();
@@ -98,6 +67,29 @@ namespace EasyAssertions
         public static IBuffer<T> Buffer<T>(this IEnumerable<T> source)
         {
             return new Buffer<T>(source);
+        }
+
+        public static bool TryReadSource(SourceAddress address, out ReadOnlySpan<char> sourceSpan)
+        {
+            try
+            {
+                if (address.FilePath is not null)
+                {
+                    sourceSpan = File.ReadAllLines(address.FilePath)
+                        .Skip(address.LineNumber - 1)
+                        .Join(Environment.NewLine)
+                        .AsSpan()
+                        .Slice(address.ColumnNumber - 1);
+                    return true;
+                }
+            }
+            catch
+            {
+                // ignored
+            }
+
+            sourceSpan = default;
+            return false;
         }
     }
 }

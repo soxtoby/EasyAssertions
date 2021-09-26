@@ -19,14 +19,12 @@ namespace EasyAssertions.UnitTests
             Error = Substitute.ForPartsOf<TestErrors>();
             ExpectedException = new Exception();
             StandardErrors.Override(Error);
-            SourceExpressionProvider.ForCurrentThread.Reset();
         }
 
         [TearDown]
         public void BaseTearDown()
         {
             StandardErrors.Default();
-            SourceExpressionProvider.ForCurrentThread.Reset();
         }
 
         protected static void AssertReturnsActual<T>(T actual, Func<Actual<T>> assert)

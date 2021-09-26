@@ -1,9 +1,7 @@
 namespace EasyAssertions
 {
-    struct SourceAddress
+    record SourceAddress(string? FilePath, int LineNumber, int ColumnNumber)
     {
-        public string? FileName;
-        public int LineIndex;
-        public int ExpressionIndex;
+        public override string ToString() => $"{FilePath}:{LineNumber}:{ColumnNumber}";
     }
 }

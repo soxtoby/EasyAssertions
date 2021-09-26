@@ -34,9 +34,10 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ShouldBeEmpty_CorrectlyRegistersAssertion()
         {
-            var actualExpression = string.Empty;
+            var actualExpression = "foo";
+            Error.NotEmpty(Arg.Any<string>(), Arg.Any<string?>()).Returns(ExpectedException);
 
-            actualExpression.ShouldBeEmpty();
+            AssertThrowsExpectedError(() => actualExpression.ShouldBeEmpty());
 
             Assert.AreEqual(nameof(actualExpression), TestExpression.GetActual());
         }

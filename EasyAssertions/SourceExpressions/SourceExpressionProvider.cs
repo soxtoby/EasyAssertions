@@ -1,45 +1,73 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
+using System.Linq.Expressions;
 
 namespace EasyAssertions
 {
     class SourceExpressionProvider : ITestExpressionProvider
     {
-        readonly List<AssertionComponentGroup> assertionGroupChain = new();
-
-        AssertionComponentGroup CurrentGroup => assertionGroupChain.Last();
+        List<AssertionFrame> stack = new();
+        int currentStackIndex;
+        int lastStackIndex;
 
         [ThreadStatic] static SourceExpressionProvider? threadInstance;
-
         public static SourceExpressionProvider ForCurrentThread => threadInstance ??= new SourceExpressionProvider();
 
         SourceExpressionProvider() { }
 
-        public string GetActualExpression()
+        public void RunAssertion(Action<IAssertionContext> assert, string actualSuffix = "", string expectedSuffix = "") =>
+            TrackAssertion(assert, StackAnalyser.MethodCall(2), actualSuffix, expectedSuffix);
+
+        public void InvokeAssertion(Expression<Action> callAssertionMethod, string actualSuffix = "", string expectedSuffix = "") =>
+            TrackAssertion(c => callAssertionMethod.Compile()(), new AssertionInvocation(callAssertionMethod), actualSuffix, expectedSuffix);
+
+        void TrackAssertion(Action<IAssertionContext> assert, AssertionCall assertion, string actualSuffix, string expectedSuffix)
         {
-            return GetActualExpression(assertionGroupChain);
+            try
+            {
+                EnterAssertion(assertion, actualSuffix, expectedSuffix);
+                assert(new AssertionContext());
+                ExitAssertion(true);
+            }
+            catch
+            {
+                ExitAssertion(false);
+                throw;
+            }
         }
 
-        static string GetActualExpression(IEnumerable<AssertionComponentGroup> assertionComponentGroups)
+        void EnterAssertion(AssertionCall assertion, string actualSuffix, string expectedSuffix)
         {
-            return NormalizeIndentation(assertionComponentGroups.Aggregate(string.Empty, (expression, group) => group.GetActualExpression(expression)));
+            if (CurrentAssertionFrame?.TryChainAssertion(assertion) == true)
+                DiscardPastCurrentFrame();
+            else
+                Push(assertion, actualSuffix, expectedSuffix);
+
+            currentStackIndex++;
+            lastStackIndex = currentStackIndex - 1;
         }
 
-        public string GetExpectedExpression()
+        void DiscardPastCurrentFrame()
         {
-            if (assertionGroupChain.Count < 2)
-                return string.Empty;
-
-            // The last group will be _inside_ the component that has the expected parameter
-            var groupsUpToAssertion = assertionGroupChain.SkipLast(1);
-
-            // In case the expected expression references the actual value, get the actual expression from outside the component
-            var actualExpression = GetActualExpression(assertionGroupChain.SkipLast(2));
-
-            return NormalizeIndentation(groupsUpToAssertion.Aggregate(string.Empty, (expression, group) => group.GetExpectedExpression(actualExpression, expression)));
+            stack = stack.Take(currentStackIndex + 1).ToList();
         }
+
+        void Push(AssertionCall assertion, string actualSuffix, string expectedSuffix)
+        {
+            stack = stack.Take(currentStackIndex).ToList();
+            stack.Add(assertion.CreateFrame(stack.LastOrDefault(), actualSuffix, expectedSuffix));
+        }
+
+        void ExitAssertion(bool success)
+        {
+            currentStackIndex--;
+            if (success)
+                lastStackIndex--;
+        }
+
+        public string GetActualExpression() => NormalizeIndentation(LastAssertionFrame?.GetActualExpression() ?? string.Empty);
+        public string GetExpectedExpression() => NormalizeIndentation(LastAssertionFrame?.GetExpectedExpression() ?? string.Empty);
 
         static string NormalizeIndentation(string input)
         {
@@ -59,92 +87,7 @@ namespace EasyAssertions
                     .Join("\n");
         }
 
-        public void EnterAssertion(int assertionFrameIndex)
-        {
-            assertionFrameIndex++;
-
-            var analyser = StackAnalyser.ForCurrentStack();
-
-            RegisterComponent((address, methodName) => new AssertionMethod(address, methodName), assertionFrameIndex, analyser);
-
-            EnterNestedAssertion(analyser.GetMethod(assertionFrameIndex), assertionFrameIndex, analyser);
-        }
-
-        public void EnterAssertion(MethodInfo method, int assertionFrameIndex)
-        {
-            assertionFrameIndex++;
-
-            var analyser = StackAnalyser.ForCurrentStack();
-
-            RegisterComponent((address, methodName) => new AssertionMethod(address, methodName), assertionFrameIndex, analyser);
-
-            EnterNestedAssertion(method, assertionFrameIndex, analyser);
-        }
-
-        void EnterNestedAssertion(MethodBase innerAssertionMethod, int assertionFrameIndex, StackAnalyser analyser)
-        {
-            AddGroup(innerAssertionMethod, assertionFrameIndex, (callAddress, actualAlias, expectedAlias) =>
-                new NestedAssertionGroup(callAddress, actualAlias, expectedAlias), analyser);
-        }
-
-        public void EnterIndexedAssertion(int index, int assertionFrameIndex)
-        {
-            assertionFrameIndex++;
-
-            var analyser = StackAnalyser.ForCurrentStack();
-
-            RegisterComponent((address, methodName) => new AssertionMethod(address, methodName), assertionFrameIndex, analyser);
-
-            AddGroup(analyser.GetMethod(assertionFrameIndex), assertionFrameIndex, (callAddress, actualAlias, expectedAlias) =>
-                new IndexedAssertionGroup(callAddress, actualAlias, expectedAlias, index), analyser);
-        }
-
-        void AddGroup(MethodBase innerAssertionMethod, int callFrameIndex, Func<SourceAddress, string, string, AssertionComponentGroup> createGroup, StackAnalyser analyser)
-        {
-            var callerAddress = analyser.GetCallAddress(callFrameIndex);
-            var actualAlias = GetExpressionAlias(innerAssertionMethod, 0);
-            var expectedAlias = GetExpressionAlias(innerAssertionMethod, 1);
-            assertionGroupChain.Add(createGroup(callerAddress, actualAlias, expectedAlias));
-        }
-
-        public void RegisterContinuation(int continuationFrameIndex)
-        {
-            RegisterComponent((address, methodName) => new Continuation(address, methodName), continuationFrameIndex + 1, StackAnalyser.ForCurrentStack());
-        }
-
-        void RegisterComponent(Func<SourceAddress, string, AssertionComponent> createMethod, int assertionFrameIndex, StackAnalyser analyser)
-        {
-            PopStackBackToAssertion(assertionFrameIndex, analyser);
-
-            var callAddress = analyser.GetCallAddress(assertionFrameIndex);
-            var assertionName = analyser.GetMethodName(assertionFrameIndex);
-            var method = createMethod(callAddress, assertionName);
-
-            CurrentGroup.AddComponent(method);
-        }
-
-        void PopStackBackToAssertion(int assertionFrameIndex, StackAnalyser analyser)
-        {
-            var groupPosition = analyser.GetParentGroupPosition(assertionFrameIndex, assertionGroupChain);
-            assertionGroupChain.RemoveRange(groupPosition, assertionGroupChain.Count - groupPosition);
-
-            if (assertionGroupChain.None())
-                assertionGroupChain.Add(new BaseGroup());
-        }
-
-        static string GetExpressionAlias(MethodBase innerAssertion, int parameterIndex)
-        {
-            return innerAssertion.GetParameters().ElementAtOrDefault(parameterIndex)?.Name ?? string.Empty;
-        }
-
-        public void ExitAssertion()
-        {
-            assertionGroupChain.Remove(CurrentGroup);
-        }
-
-        public void Reset()
-        {
-            assertionGroupChain.Clear();
-        }
+        AssertionFrame? CurrentAssertionFrame => stack.ElementAtOrDefault(currentStackIndex);
+        AssertionFrame? LastAssertionFrame => stack.ElementAtOrDefault(lastStackIndex);
     }
 }

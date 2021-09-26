@@ -52,10 +52,9 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ShouldComplete_CorrectlyRegistersAssertion()
         {
-            TaskReturns(0, TimeSpan.FromSeconds(1));
             Task actualExpression = task;
 
-            actualExpression.ShouldComplete();
+            AssertTimesOut(TimeSpan.FromSeconds(1), msg => actualExpression.ShouldComplete(msg));
 
             Assert.AreEqual(nameof(actualExpression), TestExpression.GetActual());
         }
@@ -150,10 +149,9 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ShouldCompleteWithValue_CorrectlyRegistersAssertion()
         {
-            TaskReturns(0, TimeSpan.FromSeconds(1));
             var actualExpression = task;
 
-            actualExpression.ShouldComplete();
+            AssertTimesOut(TimeSpan.FromSeconds(1),msg => actualExpression.ShouldComplete(msg));
 
             Assert.AreEqual(nameof(actualExpression), TestExpression.GetActual());
         }
@@ -259,10 +257,9 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ShouldFailWithType_CorrectlyRegistersAssertion()
         {
-            TaskFails(new Exception(), TimeSpan.FromSeconds(1));
             var actualExpression = task;
 
-            actualExpression.ShouldFailWith<Exception>();
+            AssertTimesOut(TimeSpan.FromSeconds(1), msg => actualExpression.ShouldFailWith<Exception>(msg));
 
             Assert.AreEqual(nameof(actualExpression), TestExpression.GetActual());
         }
@@ -400,10 +397,9 @@ namespace EasyAssertions.UnitTests
         [Test]
         public void ShouldFail_CorrectlyRegistersAssertion()
         {
-            TaskFails(new Exception(), TimeSpan.FromSeconds(1));
             var actualExpression = task;
 
-            actualExpression.ShouldFail();
+            AssertTimesOut(TimeSpan.FromSeconds(1), msg => actualExpression.ShouldFail(msg));
 
             Assert.AreEqual(nameof(actualExpression), TestExpression.GetActual());
         }

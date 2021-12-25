@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Threading;
 
 namespace EasyAssertions
 {
@@ -11,8 +12,8 @@ namespace EasyAssertions
         int currentStackIndex;
         int lastStackIndex;
 
-        [ThreadStatic] static SourceExpressionProvider? threadInstance;
-        public static SourceExpressionProvider ForCurrentThread => threadInstance ??= new SourceExpressionProvider();
+        static readonly AsyncLocal<SourceExpressionProvider> LocalInstance = new();
+        public static SourceExpressionProvider Current => LocalInstance.Value ??= new SourceExpressionProvider();
 
         SourceExpressionProvider() { }
 

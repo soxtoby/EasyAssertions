@@ -31,7 +31,7 @@ namespace EasyAssertions
         /// </summary>
         public static Actual<TActual> RegisterAssertion<TActual>([NoEnumeration] this TActual actual, [InstantHandle] Action<IAssertionContext> assert, string actualSuffix = "", string expectedSuffix = "")
         {
-            SourceExpressionProvider.ForCurrentThread.RunAssertion(assert, actualSuffix, expectedSuffix);
+            SourceExpressionProvider.Current.RunAssertion(assert, actualSuffix, expectedSuffix);
             return new Actual<TActual>(actual);
         }
 
@@ -42,7 +42,7 @@ namespace EasyAssertions
         public static Actual<TActual> RegisterNotNullAssertion<TActual>([NoEnumeration] [NotNull] this TActual? actual, [InstantHandle] Action<IAssertionContext> assert, string actualSuffix = "", string expectedSuffix = "")
             where TActual : notnull
         {
-            SourceExpressionProvider.ForCurrentThread.RunAssertion(assert, actualSuffix, expectedSuffix);
+            SourceExpressionProvider.Current.RunAssertion(assert, actualSuffix, expectedSuffix);
 
             if (actual is null)
                 throw new ArgumentException("Actual value was null, but assertion didn't throw", nameof(assert));
@@ -61,7 +61,7 @@ namespace EasyAssertions
         {
             Actual<TReturnActual> ret = default!;
 
-            SourceExpressionProvider.ForCurrentThread.RunAssertion(c => ret = assert(c), actualSuffix, expectedSuffix);
+            SourceExpressionProvider.Current.RunAssertion(c => ret = assert(c), actualSuffix, expectedSuffix);
 
             return ret;
         }
@@ -78,7 +78,7 @@ namespace EasyAssertions
         {
             Actual<TReturnActual> ret = default!;
 
-            SourceExpressionProvider.ForCurrentThread.RunAssertion(c => ret = assert(c), actualSuffix, expectedSuffix);
+            SourceExpressionProvider.Current.RunAssertion(c => ret = assert(c), actualSuffix, expectedSuffix);
 
             if (actual is null)
                 throw new ArgumentException("Actual value was null, but assertion didn't throw", nameof(assert));

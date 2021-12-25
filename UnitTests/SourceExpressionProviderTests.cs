@@ -13,7 +13,7 @@ namespace EasyAssertions.UnitTests
         [SetUp]
         public void SetUp()
         {
-            sut = SourceExpressionProvider.ForCurrentThread;
+            sut = SourceExpressionProvider.Current;
         }
 
         [Test]

@@ -41,6 +41,6 @@ namespace EasyAssertions
         public IErrorFactory Error => ErrorFactory.Instance;
 
         public void Call(Expression<Action> callAssertionMethod, string actualSuffix = "", string expectedSuffix = "") =>
-            SourceExpressionProvider.ForCurrentThread.InvokeAssertion(callAssertionMethod, actualSuffix, expectedSuffix);
+            SourceExpressionProvider.Current.InvokeAssertion(callAssertionMethod, actualSuffix, expectedSuffix);
     }
 }

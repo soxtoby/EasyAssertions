@@ -26,7 +26,7 @@ namespace EasyAssertions.UnitTests
             var expected = TestEnum.Two;
             Error.NotEqual(expected, actual, "foo").Returns(ExpectedException);
 
-            AssertThrowsExpectedError(() => actual.ShouldBe(expected, "foo"));
+            AssertThrowsExpectedError(() => actual.ShouldBeValue(expected, "foo"));
         }
 
         [Test]

@@ -13,7 +13,7 @@ namespace EasyAssertions
         /// </summary>
         public static Actual<TActual> ShouldBe<TActual, TExpected>([NotNull] this TActual? actual, TExpected expected, string? message = null)
             where TExpected : TActual
-            where TActual : notnull
+            where TActual : class
         {
             return actual.RegisterNotNullAssertion(c =>
                 {
@@ -25,6 +25,21 @@ namespace EasyAssertions
                         throw c.StandardError.NotEqual(expected, actual, message);
                     }
                 });
+        }
+
+        /// <summary>
+        /// Asserts that two values are equal, using the default equality comparer.
+        /// </summary>
+        public static Actual<TActual> ShouldBe<TActual>(this TActual actual, TActual expected, string? message = null)
+            where TActual : struct
+        {
+            actual.RegisterAssertion(c =>
+                {
+                    if (!c.Test.ObjectsAreEqual(actual, expected))
+                        throw c.StandardError.NotEqual(expected, actual, message);
+                });
+
+            return new Actual<TActual>(actual);
         }
 
         /// <summary>
@@ -50,6 +65,20 @@ namespace EasyAssertions
         /// </summary>
         public static Actual<TActual> ShouldNotBe<TActual, TNotExpected>(this TActual actual, TNotExpected notExpected, string? message = null)
             where TNotExpected : TActual
+            where TActual : class?
+        {
+            return actual.RegisterAssertion(c =>
+                {
+                    if (c.Test.ObjectsAreEqual(actual, notExpected))
+                        throw c.StandardError.AreEqual(notExpected, actual, message);
+                });
+        }
+
+        /// <summary>
+        /// Asserts that two vales are not equal, using the default equality comparer.
+        /// </summary>
+        public static Actual<TActual> ShouldNotBe<TActual>(this TActual actual, TActual notExpected, string? message = null)
+            where TActual : struct
         {
             return actual.RegisterAssertion(c =>
                 {

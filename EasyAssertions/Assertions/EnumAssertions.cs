@@ -12,6 +12,7 @@ namespace EasyAssertions
         /// <summary>
         /// Asserts that two value types are equal, using the default equality comparer.
         /// </summary>
+        [Obsolete("Use ShouldBe instead.")]
         public static Actual<T> ShouldBeValue<T>(this T actual, T expected, string? message = null) where T : struct
         {
             return actual.RegisterAssertion(c =>
@@ -22,7 +23,7 @@ namespace EasyAssertions
         }
 
         /// <summary>
-        /// Asserts that a <code>[Flags]</code> enum has the specified flag set.
+        /// Asserts that a <c>[Flags]</c> enum has the specified flag set.
         /// </summary>
         public static Actual<T> ShouldHaveFlag<T>(this T actual, T expectedFlag, string? message = null) where T : struct
         {

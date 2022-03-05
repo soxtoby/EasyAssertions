@@ -14,7 +14,7 @@ namespace EasyAssertions.UnitTests
         }/**/
 
         [Test]
-        public void ShouldBe_SameValueReturnsActualValue()
+        public void ShouldBe_Class_SameValueReturnsActualValue()
         {
             var actual = new Equatable(1);
             var expected = new Equatable(1);
@@ -24,7 +24,7 @@ namespace EasyAssertions.UnitTests
         }
 
         [Test]
-        public void ShouldBe_DifferentObjects_FailsWithObjectsNotEqualMessage()
+        public void ShouldBe_Class_DifferentObjects_FailsWithObjectsNotEqualMessage()
         {
             var obj1 = new object();
             var obj2 = new object();
@@ -34,7 +34,7 @@ namespace EasyAssertions.UnitTests
         }
 
         [Test]
-        public void ShouldBe_DifferentStrings_FailsWithStringsNotEqualMessage()
+        public void ShouldBe_Class_DifferentStrings_FailsWithStringsNotEqualMessage()
         {
             Error.NotEqual("foo", "bar", message: "baz").Returns(ExpectedException);
 
@@ -42,10 +42,43 @@ namespace EasyAssertions.UnitTests
         }
 
         [Test]
-        public void ShouldBe_CorrectlyRegistersAssertion()
+        public void ShouldBe_Class_CorrectlyRegistersAssertion()
         {
             var actualExpression = new Equatable(1);
             var expectedExpression = new Equatable(2);
+            Error.NotEqual(Arg.Any<object>(), Arg.Any<object>()).Returns(ExpectedException);
+
+            AssertThrowsExpectedError(() => actualExpression.ShouldBe(expectedExpression));
+
+            Assert.AreEqual(nameof(actualExpression), TestExpression.GetActual());
+            Assert.AreEqual(nameof(expectedExpression), TestExpression.GetExpected());
+        }
+
+        [Test]
+        public void ShouldBe_Value_SameValueReturnsActualValue()
+        {
+            var actual = 1;
+            var expected = 1;
+            var result = actual.ShouldBe(expected);
+
+            Assert.AreEqual(actual, result.And);
+        }
+
+        [Test]
+        public void ShouldBe_Value_DifferentValues_FailsWithObjectsNotEqualMessage()
+        {
+            var value1 = 1;
+            var value2 = 2;
+            Error.NotEqual(value2, value1, "foo").Returns(ExpectedException);
+
+            AssertThrowsExpectedError(() => value1.ShouldBe(value2, "foo"));
+        }
+
+        [Test]
+        public void ShouldBe_Value_CorrectlyRegistersAssertion()
+        {
+            var actualExpression = 1;
+            var expectedExpression = 2;
             Error.NotEqual(Arg.Any<object>(), Arg.Any<object>()).Returns(ExpectedException);
 
             AssertThrowsExpectedError(() => actualExpression.ShouldBe(expectedExpression));
@@ -98,7 +131,7 @@ namespace EasyAssertions.UnitTests
         }
 
         [Test]
-        public void ShouldNotBe_DifferentValue_ReturnsActualValue()
+        public void ShouldNotBe_Class_DifferentValue_ReturnsActualValue()
         {
             var actual = new Equatable(1);
 
@@ -108,7 +141,7 @@ namespace EasyAssertions.UnitTests
         }
 
         [Test]
-        public void ShouldNotBe_EqualValue_FailsWithObjectsEqualMessage()
+        public void ShouldNotBe_Class_EqualValue_FailsWithObjectsEqualMessage()
         {
             var actual = new Equatable(1);
             var notExpected = new Equatable(1);
@@ -118,10 +151,43 @@ namespace EasyAssertions.UnitTests
         }
 
         [Test]
-        public void ShouldNotBe_CorrectlyRegistersAssertion()
+        public void ShouldNotBe_Class_CorrectlyRegistersAssertion()
         {
             var actualExpression = new Equatable(1);
             var expectedExpression = new Equatable(1);
+            Error.AreEqual(Arg.Any<object>(), Arg.Any<object>()).Returns(ExpectedException);
+
+            AssertThrowsExpectedError(() => actualExpression.ShouldNotBe(expectedExpression));
+
+            Assert.AreEqual(nameof(actualExpression), TestExpression.GetActual());
+            Assert.AreEqual(nameof(expectedExpression), TestExpression.GetExpected());
+        }
+
+        [Test]
+        public void ShouldNotBe_Value_DifferentValue_ReturnsActualValue()
+        {
+            var actual = 1;
+
+            var result = actual.ShouldNotBe(2);
+
+            Assert.AreEqual(actual, result.Value);
+        }
+
+        [Test]
+        public void ShouldNotBe_Value_EqualValue_FailsWithObjectsEqualMessage()
+        {
+            var actual = 1;
+            var notExpected = 1;
+            Error.AreEqual(notExpected, actual, "foo").Returns(ExpectedException);
+
+            AssertThrowsExpectedError(() => actual.ShouldNotBe(notExpected, "foo"));
+        }
+
+        [Test]
+        public void ShouldNotBe_Value_CorrectlyRegistersAssertion()
+        {
+            var actualExpression = 1;
+            var expectedExpression = 1;
             Error.AreEqual(Arg.Any<object>(), Arg.Any<object>()).Returns(ExpectedException);
 
             AssertThrowsExpectedError(() => actualExpression.ShouldNotBe(expectedExpression));

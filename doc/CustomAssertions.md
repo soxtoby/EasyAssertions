@@ -4,7 +4,7 @@ Creating custom assertions has been made as easy as possible, but you _do_ need 
 # Anatomy of an Assertion Method
 Let's say you wanted to assert that the numbers in a `List<int>` add up to a particular number.
 ```c#
-numberOfEvilRobots = 10;
+int numberOfEvilRobots = 10;
 List<int> evilRobotsDestroyed = KillAllTheRobots();
 evilRobotsDestroyed.ShouldTotal(numberOfEvilRobots);
 ```
@@ -38,9 +38,9 @@ This method is functional, but when it fails, the message just says something li
 which doesn't really give us much information. _What_ totalled 8? And why?
 
 # Building a Better Error Message
-EasyAssertions contains a `FailureMessage` class to help build useful messages. `FailureMessage` is a static class, so you can use its methods directly by statically importing it with:
+EasyAssertions contains a `MessageHelper` class to help build useful messages. `MessageHelper` is a static class, so you can use its methods directly by statically importing it with:
 ```c#
-using static EasyAssertions.FailureMessage;
+using static EasyAssertions.MessageHelper;
 ```
 For our `ShouldTotal` assertion, building an error message might look like this:
 ```c#
@@ -49,7 +49,7 @@ should total {Expected(expectedTotal, @"
              ")}
 but totalled {Value(actual.Sum())}");
 ```
-In this example, we're using three members from `FailureMessage`:
+In this example, we're using three members from `MessageHelper`:
 
 1. `ActualExpression` - outputs the **actual expression** (the text of the source code that was asserted on with `ShouldTotal`).
 2. `Expected` - outputs the **expected expression** and the expected value. The string full of whitespace, passed in as the second argument, is to line things up on separate lines.
@@ -59,7 +59,7 @@ Putting `ActualExpression` at the top of an error message is so common that `ass
 
 Also note that we're making use of verbatim strings so we can put new-lines directly into the message. This may look a little odd, but makes it much easier to line up different parts of the message.
 
-Replacing our simple message with our new `FailureMessage`-based message, our assertion now fails with something like
+Replacing our simple message with our new `MessageHelper`-based message, our assertion now fails with something like
 ```
 evilRobotsDestroyed
 should total numberOfEvilRobots
@@ -68,7 +68,7 @@ but totalled <8>
 ```
 which gives us a much better idea of what's being asserted on. It'd be nice to know what was in that list though.
 
-Fortunately, `FailureMessage` provides some handy methods for outputting the contents of collections.
+Fortunately, `MessageHelper` provides some handy methods for outputting the contents of collections.
 We can replace our message with
 ```c#
 throw assertionContext.Error.Custom($@"{ActualExpression}
@@ -113,7 +113,7 @@ totalling {Value(actual.Sum())}" + message.OnNewLine());
 
 Finally, we can assert like we've always wanted to:
 ```c#
-numberOfEvilRobots = 10;
+int numberOfEvilRobots = 10;
 List<int> evilRobotsDestroyed = KillAllTheRobots();
 evilRobotsDestroyed.ShouldTotal(numberOfEvilRobots, "You are killed by the remaining robots.");
 ```

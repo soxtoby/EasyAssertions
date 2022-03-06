@@ -1,3 +1,70 @@
+# v3.0.0
+## New Features
+ - Added nullable annotations everywhere.
+ - `ValueTask` assertions - `ShouldComplete` and `ShouldFail`.
+   - Unfortunately there's no way to specify the exception type directly, but you can chain a type assertion, e.g. `task.ShouldFail().And.ShouldBeA<ArgumentException>()`
+ - `IAsyncEnumerable` assertions - `ShouldComplete` and `ShouldFail`.
+   - `ShouldComplete` returns an `IReadOnlyList` so you can assert on the items afterwards.
+ - A `ShouldMatch` collection assertion that takes in an assertion callback instead of an equality function. This makes it easier to re-use assertion code, and will often provide more useful error messages.
+ - Separate `ShouldBe` and `ShouldNotBe` assertions for classes and value types, for better value type IntelliSense.
+ - Improvements for custom assertions
+   - Added `RegisterNotNullAssertion` for custom assertions that assert that the actual value isn't null. Tells the compiler that the actual value isn't null after the assertion has been called.
+   - Replaced `RegisterUserAssertion` with simpler `Call` method on `IAssertionContext`, which just takes in a single expression that calls the assertion.
+   - `Register(NotNull)Assertion` and `Call` methods optionally take in suffixes to add to the actual and expected expressions, for better expressions when asserting on contents of objects.
+
+## Bug Fixes
+ - `ItemsSatisfy` and `AllItemsSatisfy` no longer allow passing in a predicate accidentally.
+ - `ShouldBeNull` can no longer be called on non-nullable types.
+ - Assertions are tracked within the async context, rather than the thread context, which should fix a lot of problems with incorrect source code in errors.
+
+## Breaking Changes
+ - `RegisterUserAssertion` has been removed. Use `Call` instead.
+```c#
+    // Before
+    public static Actual<T> MyCustomAssertion(this T actual, Action<T> assertion)
+    {
+        return actual.RegisterAssertion(c => {
+            actual.RegisterUserAssertion(assertion, () => assertion(actual));
+        });
+    }
+    
+    // After
+    public static Actual<T> MyCustomAssertion(this T actual, Action<T> assertion)
+    {
+        return actual.RegisterAssertion(c => {
+            c.Call(() => assertion(actual));
+        });
+    }
+```
+ - `RegisterIndexedAssertion` has been removed. Pass a suffix into `RegisterAssertion` or `Call` instead.
+```c#
+    // Before
+    public static Actual<T> MyIndexedAssertion(this List<T> actual, T expected)
+    {
+        return actual.RegisterAssertion(c => {
+            actual.RegisterIndexedAssertion(1, () => actual[1].ShouldBe(expected));
+        });
+    }
+    
+    // After
+    public static Actual<T> MyIndexedAssertion(this List<T> actual, T expected)
+    {
+        return actual.RegisterAssertion(c => {
+            actual.RegisterAssertion(c2 => actual[1].ShouldBe(expected), "[1]");
+        });
+        
+        // or
+        
+        return actual.RegisterAssertion(c => {
+            actual[1].ShouldBe(expected);
+        }, "[1]");
+    }
+```
+ - `ShouldBeValue` has been marked as obsolete. Use `ShouldBe` instead.
+ - .NET framework requirement has been bumped up to .NET 4.6.1
+ - Added dependencies on `IndexRange`, `System.Linq.Async`, and `System.Memory`.
+ - `TestExpressionProvider` interface has been renamed to `ITestExpressionProvider`.
+
 # v2.2.0
 ## New Features
  - .NET Standard 2.0 support
@@ -5,7 +72,7 @@
 # v2.1.0
 ## New Features
  - Enum assertions ([981787b](https://github.com/soxtoby/EasyAssertions/commit/981787b5b9f337ea471c4c42753221a9c4e38d67), [#5](https://github.com/soxtoby/EasyAssertions/issues/5)).
-   -  `ShouldBeValue`, for asserting that value types are equal (mostly useful for enum IntelliSense)
+   - `ShouldBeValue`, for asserting that value types are equal (mostly useful for enum IntelliSense)
    - `ShouldHaveFlag`, for asserting that a flags enum has a particular flag.
 
 ## Bug Fixes
@@ -69,7 +136,7 @@ public static Actual<int> ShouldBeZero(int actual) {
 }
 ```
 
-Addtionally, `EasyAssertion.RegisterIndexedAssert` has been changed to the extension method `RegisterIndexedAssertion` with a similar format as `RegisterAssertion`. `EasyAssertion.RegisterInnerAssert` has been changed to the extension method `RegisterUserAssert` which has much clearer semantics.
+Additionally, `EasyAssertion.RegisterIndexedAssert` has been changed to the extension method `RegisterIndexedAssertion` with a similar format as `RegisterAssertion`. `EasyAssertion.RegisterInnerAssert` has been changed to the extension method `RegisterUserAssert` which has much clearer semantics.
 
 ### Assertion failure messages
 The dependency on SmartFormat has been removed, and all `FailureMessage` types have been replaced with a single static helper class called `MessageHelper`, which makes it easy to build useful error messages with plain C# interpolated strings. See [Creating Custom Assertions](doc/CustomAssertions.md) for more information.

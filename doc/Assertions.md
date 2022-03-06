@@ -93,6 +93,18 @@ objects.ShouldMatchReferences(new[] { a, b });
 // Assert on each item
 collection.AllItemsSatisfy(i => i.ShouldNotBe(3));
 collection.ItemsSatisfy(i1 => i1.ShouldBe(1), i2 => i2.ShouldBe(2));
+collection.ShouldMatch(new[] { 2, 4, 6 }, (a, e) => a.ShouldBe(e / 2));
+```
+
+# Async Streams
+```c#
+var stream = new[] { 1, 2, 3 }.ToAsyncEnumerable();
+stream.ShouldComplete()
+    .And.ShouldMatch(new[] { 1, 2, 3 });
+    
+IAsyncEnumerable<int> ErrorStream() => throw new NotImplementedException();
+ErrorStream().ShouldFail()
+    .And.ShouldBeA<NotImplementedException>();
 ```
 
 # Types
@@ -119,6 +131,23 @@ var failingTask = Task.Run(() => { throw new NotImplementedException(); });
 failingTask.ShouldFailWith<NotImplementedException>();     // Default timeout of 1s
 failingTask.ShouldFailWith<NotImplementedException>(100); // ms
 failingTask.ShouldFailWith<NotImplementedException>(TimeSpan.FromMilliseconds(100));
+failingTask.ShouldFail()
+    .AndShouldNotBeA<ArgumentNullException>();
+```
+
+# Value Tasks
+```c#
+var completedTask = new ValueTask<int>(1);
+completedTask.ShouldComplete();    // Default timeout of 1s
+completedTask.ShouldComplete(100); // ms
+completedTask.ShouldComplete(TimeSpan.FromMilliseconds(100));
+
+var failingTask = new ValueTask<int>(Task.Run(() => { throw new NotImplementedException(); }));
+failingTask.ShouldFail();    // Default timeout of 1s
+failingTask.ShouldFail(100); // ms
+failingTask.ShouldFail(TimeSpan.FromMilliseconds(100));
+failingTask.ShouldFail()
+    .And.ShouldBeA<NotImplementedExceptin>()
 failingTask.ShouldFail()
     .AndShouldNotBeA<ArgumentNullException>();
 ```

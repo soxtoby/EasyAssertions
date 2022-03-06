@@ -7,7 +7,7 @@
     <Company />
     <Product />
     <Description>Easy-to-use fluent assertions with actually useful failure messages.</Description>
-    <Copyright>Simon Oxtoby 2021</Copyright>
+    <Copyright>Simon Oxtoby 2022</Copyright>
     <PackageProjectUrl>https://github.com/soxtoby/EasyAssertions</PackageProjectUrl>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageTags>testing assertion unittesting</PackageTags>

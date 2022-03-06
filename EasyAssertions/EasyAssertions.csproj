@@ -12,8 +12,9 @@
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageTags>testing assertion unittesting</PackageTags>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <LangVersion>9</LangVersion>
+    <LangVersion>10</LangVersion>
     <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

@@ -1,33 +1,31 @@
 using System.Collections;
-using System.Collections.Generic;
 
-namespace EasyAssertions.UnitTests
+namespace EasyAssertions.UnitTests;
+
+class TestEnumerable<T> : IEnumerable<T>
 {
-    class TestEnumerable<T> : IEnumerable<T>
+    readonly IEnumerable<T> items;
+
+    public int EnumerationCount { get; private set; }
+    public bool EnumerationCompleted { get; private set; }
+
+    public TestEnumerable(IEnumerable<T> items)
     {
-        readonly IEnumerable<T> items;
+        this.items = items;
+    }
 
-        public int EnumerationCount { get; private set; }
-        public bool EnumerationCompleted { get; private set; }
-
-        public TestEnumerable(IEnumerable<T> items)
+    public IEnumerator<T> GetEnumerator()
+    {
+        EnumerationCount++;
+        foreach (var item in items)
         {
-            this.items = items;
+            yield return item;
         }
+        EnumerationCompleted = true;
+    }
 
-        public IEnumerator<T> GetEnumerator()
-        {
-            EnumerationCount++;
-            foreach (var item in items)
-            {
-                yield return item;
-            }
-            EnumerationCompleted = true;
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
+    IEnumerator IEnumerable.GetEnumerator()
+    {
+        return GetEnumerator();
     }
 }

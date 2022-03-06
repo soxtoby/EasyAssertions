@@ -1,16 +1,14 @@
-﻿using System;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 
-namespace EasyAssertions.UnitTests
+namespace EasyAssertions.UnitTests;
+
+[TestFixture]
+public class EasyAssertionExceptionTests
 {
-    [TestFixture]
-    public class EasyAssertionExceptionTests
+    [Test]
+    public void Exception_ToString()
     {
-        [Test]
-        public void Exception_ToString()
-        {
-            var sut = new EasyAssertionException("foo");
-            StringAssert.StartsWith("foo" + Environment.NewLine + Environment.NewLine, sut.ToString());
-        }
+        var sut = new EasyAssertionException("foo");
+        StringAssert.StartsWith("foo" + Environment.NewLine + Environment.NewLine, sut.ToString());
     }
 }

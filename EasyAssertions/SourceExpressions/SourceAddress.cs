@@ -1,7 +1,6 @@
-namespace EasyAssertions
+namespace EasyAssertions;
+
+record SourceAddress(string? FilePath, int LineNumber, int ColumnNumber)
 {
-    record SourceAddress(string? FilePath, int LineNumber, int ColumnNumber)
-    {
-        public override string ToString() => $"{FilePath}:{LineNumber}:{ColumnNumber}";
-    }
+    public override string ToString() => $"{FilePath}:{LineNumber}:{ColumnNumber}";
 }

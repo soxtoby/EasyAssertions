@@ -2,16 +2,12 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.0</TargetFramework>
-
     <IsPackable>false</IsPackable>
-
     <AssemblyName>EasyAssertions.UnitTests</AssemblyName>
-
     <RootNamespace>EasyAssertions.UnitTests</RootNamespace>
-
-    <LangVersion>9</LangVersion>
-
+    <LangVersion>10</LangVersion>
     <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
   <ItemGroup>

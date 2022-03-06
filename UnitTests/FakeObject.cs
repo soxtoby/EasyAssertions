@@ -1,17 +1,16 @@
-﻿namespace EasyAssertions.UnitTests
+﻿namespace EasyAssertions.UnitTests;
+
+class FakeObject
 {
-    class FakeObject
+    readonly string toString;
+
+    public FakeObject(string toString)
     {
-        readonly string toString;
+        this.toString = toString;
+    }
 
-        public FakeObject(string toString)
-        {
-            this.toString = toString;
-        }
-
-        public override string ToString()
-        {
-            return toString;
-        }
+    public override string ToString()
+    {
+        return toString;
     }
 }

@@ -1,45 +1,43 @@
 ﻿using NSubstitute;
 using NUnit.Framework;
-using System;
 
-namespace EasyAssertions.UnitTests
+namespace EasyAssertions.UnitTests;
+
+[TestFixture]
+public class ActualExceptionTests : AssertionTests
 {
-    [TestFixture]
-    public class ActualExceptionTests : AssertionTests
+    [Test]
+    public void CannotConstructWithNull()
     {
-        [Test]
-        public void CannotConstructWithNull()
-        {
-            AssertArgumentNullException("actual", () => new ActualException<Exception>(null!));
-        }
+        AssertArgumentNullException("actual", () => new ActualException<Exception>(null!));
+    }
 
-        [Test]
-        public void And_ReturnsException()
-        {
-            var exception = new Exception();
-            var sut = new ActualException<Exception>(exception);
+    [Test]
+    public void And_ReturnsException()
+    {
+        var exception = new Exception();
+        var sut = new ActualException<Exception>(exception);
 
-            Assert.AreSame(exception, sut.And);
-        }
+        Assert.AreSame(exception, sut.And);
+    }
 
-        [Test]
-        public void AndShouldNotBeA_ExceptionIsNotSpecifiedType_ReturnsSelf()
-        {
-            var sut = new ActualException<Exception>(new Exception());
+    [Test]
+    public void AndShouldNotBeA_ExceptionIsNotSpecifiedType_ReturnsSelf()
+    {
+        var sut = new ActualException<Exception>(new Exception());
 
-            var result = sut.AndShouldNotBeA<InvalidOperationException>();
+        var result = sut.AndShouldNotBeA<InvalidOperationException>();
 
-            Assert.AreSame(sut, result);
-        }
+        Assert.AreSame(sut, result);
+    }
 
-        [Test]
-        public void AndShouldNotBeA_ExceptionIsSpecifiedType_FailsWithTypesAreEqualMessage()
-        {
-            Exception exception = new InvalidOperationException();
-            Error.AreEqual(typeof(InvalidOperationException), typeof(InvalidOperationException), "foo").Returns(ExpectedException);
-            var sut = new ActualException<Exception>(exception);
+    [Test]
+    public void AndShouldNotBeA_ExceptionIsSpecifiedType_FailsWithTypesAreEqualMessage()
+    {
+        Exception exception = new InvalidOperationException();
+        Error.AreEqual(typeof(InvalidOperationException), typeof(InvalidOperationException), "foo").Returns(ExpectedException);
+        var sut = new ActualException<Exception>(exception);
 
-            AssertThrowsExpectedError(() => sut.AndShouldNotBeA<InvalidOperationException>("foo"));
-        }
+        AssertThrowsExpectedError(() => sut.AndShouldNotBeA<InvalidOperationException>("foo"));
     }
 }

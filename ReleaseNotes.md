@@ -1,3 +1,7 @@
+# v3.0.2
+## Bug Fixes
+ - Removed the `ShouldBe` on nullable structs that was marked as `Obsolete` to push people to `ShouldBeValue` - the small improvement in intellisense isn't worth breaking existing code.    
+
 # v3.0.1
 ## New Features
  - `ShouldBeValue` for nullable value types.
@@ -10,7 +14,7 @@
  - Moved `ShouldBeValue` from `EnumAssertions` to `ObjectAssertions`.
 
 # v3.0.0
-**NOTE:** This release caused too many problems with the `class` constraint on `ShouldBe` - use v3.0.1 instead.
+**NOTE:** This release caused too many problems with the `class` constraint on `ShouldBe` - use v3.0.2 instead.
 
 ## New Features
  - Added nullable annotations everywhere.

@@ -11,7 +11,6 @@ public class ObjectAssertionTests : AssertionTests
     {
         1.ShouldBeNull();
         1.ShouldNotBeNull();
-        ((int?)1).ShouldBe(1);
     }/**/
 
     [Test]

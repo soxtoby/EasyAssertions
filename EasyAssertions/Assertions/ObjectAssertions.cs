@@ -8,10 +8,6 @@ namespace EasyAssertions;
 /// </summary>
 public static class ObjectAssertions
 {
-    /// <summary>Disallowed comparison.</summary>
-    [Obsolete("Use ShouldBeValue instead", true)]
-    public static void ShouldBe<TActual>(this TActual? actual, TActual expected, string? message = null) where TActual : struct { }
-
     /// <summary>
     /// Asserts that two objects are equal, using the default equality comparer.
     /// </summary>

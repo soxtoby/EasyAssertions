@@ -25,6 +25,24 @@ public static class ObjectAssertions
                 }
             });
     }
+    
+    /// <summary>
+    /// Asserts that a nullable value is equal to another value, using the default equality comparer.
+    /// </summary>
+    public static Actual<TActual> ShouldBe<TActual>(this TActual? actual, TActual expected, string? message = null) 
+        where TActual : struct
+    {
+        actual.RegisterAssertion(c =>
+            {
+                if (!actual.HasValue)
+                    throw c.StandardError.NotEqual(expected, actual, message);
+
+                if (!c.Test.ObjectsAreEqual(actual.Value, expected))
+                    throw c.StandardError.NotEqual(expected, actual, message);
+            });
+
+        return new Actual<TActual>(actual!.Value);
+    }
 
     /// <summary>
     /// Asserts that two values are equal, using the default equality comparer.

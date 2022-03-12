@@ -53,6 +53,49 @@ public class ObjectAssertionTests : AssertionTests
         Assert.AreEqual(nameof(actualExpression), TestExpression.GetActual());
         Assert.AreEqual(nameof(expectedExpression), TestExpression.GetExpected());
     }
+    
+    [Test]
+    public void ShouldBe_NullableStruct_ValueEqualsExpected_ReturnsActualValue()
+    {
+        int? actual = 1;
+
+        Actual<int> result = actual.ShouldBe(1);
+
+        Assert.AreEqual(1, result.And);
+    }
+
+    [Test]
+    public void ShouldBe_NullableStruct_NoValue_FailsWithObjectsNotEqualMessage()
+    {
+        int? actual = null;
+        const int expected = 1;
+        Error.NotEqual(expected, actual, "foo").Returns(ExpectedException);
+
+        AssertThrowsExpectedError(() => actual.ShouldBe(expected, "foo"));
+    }
+
+    [Test]
+    public void ShouldBe_NullableStruct_ValueIsDifferent_FailsWithObjectsNotEqualMessage()
+    {
+        int? actual = 1;
+        const int expected = 2;
+        Error.NotEqual(expected, actual, "foo").Returns(ExpectedException);
+
+        AssertThrowsExpectedError(() => actual.ShouldBe(expected, "foo"));
+    }
+
+    [Test]
+    public void ShouldBe_NullableStruct_CorrectlyRegistersAssertion()
+    {
+        int? actualExpression = 1;
+        const int expectedExpression = 2;
+        Error.NotEqual(Arg.Any<object>(), Arg.Any<object>()).Returns(ExpectedException);
+
+        Assert.Throws<Exception>(() => actualExpression.ShouldBe(expectedExpression));
+
+        Assert.AreEqual(nameof(actualExpression), TestExpression.GetActual());
+        Assert.AreEqual(nameof(expectedExpression), TestExpression.GetExpected());
+    }
 
     [Test]
     public void ShouldBeValue_SameValueReturnsActualValue()

@@ -1,4 +1,17 @@
+# v3.0.1
+## New Features
+ - `ShouldBeValue` for nullable value types.
+ - `ShouldNotBeValue` for value types.
+
+## Bug Fixes
+ - Removed `class` constraint from `ShouldBe`.
+
+## Breaking Changes
+ - Moved `ShouldBeValue` from `EnumAssertions` to `ObjectAssertions`.
+
 # v3.0.0
+**NOTE:** This release caused too many problems with the `class` constraint on `ShouldBe` - use v3.0.1 instead.
+
 ## New Features
  - Added nullable annotations everywhere.
  - `ValueTask` assertions - `ShouldComplete` and `ShouldFail`.
@@ -6,7 +19,7 @@
  - `IAsyncEnumerable` assertions - `ShouldComplete` and `ShouldFail`.
    - `ShouldComplete` returns an `IReadOnlyList` so you can assert on the items afterwards.
  - A `ShouldMatch` collection assertion that takes in an assertion callback instead of an equality function. This makes it easier to re-use assertion code, and will often provide more useful error messages.
- - Separate `ShouldBe` and `ShouldNotBe` assertions for classes and value types, for better value type IntelliSense.
+ - ~~Separate `ShouldBe` and `ShouldNotBe` assertions for classes and value types, for better value type IntelliSense.~~ Rolled back in subsequent release because it caused too many problems.
  - Improvements for custom assertions
    - Added `RegisterNotNullAssertion` for custom assertions that assert that the actual value isn't null. Tells the compiler that the actual value isn't null after the assertion has been called.
    - Replaced `RegisterUserAssertion` with simpler `Call` method on `IAssertionContext`, which just takes in a single expression that calls the assertion.
@@ -60,7 +73,7 @@
         }, "[1]");
     }
 ```
- - `ShouldBeValue` has been marked as obsolete. Use `ShouldBe` instead.
+ - ~~ShouldBeValue has been marked as obsolete. Use `ShouldBe` instead.~~ Rolled back in subsequent release because it caused too many problems.
  - .NET framework requirement has been bumped up to .NET 4.6.1
  - Added dependencies on `IndexRange`, `System.Linq.Async`, and `System.Memory`.
  - `TestExpressionProvider` interface has been renamed to `ITestExpressionProvider`.

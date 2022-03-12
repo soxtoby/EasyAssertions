@@ -6,19 +6,6 @@
 public static class EnumAssertions
 {
     /// <summary>
-    /// Asserts that two value types are equal, using the default equality comparer.
-    /// </summary>
-    [Obsolete("Use ShouldBe instead.")]
-    public static Actual<T> ShouldBeValue<T>(this T actual, T expected, string? message = null) where T : struct
-    {
-        return actual.RegisterAssertion(c =>
-            {
-                if (!c.Test.ObjectsAreEqual(actual, expected))
-                    throw c.StandardError.NotEqual(expected, actual, message);
-            });
-    }
-
-    /// <summary>
     /// Asserts that a <c>[Flags]</c> enum has the specified flag set.
     /// </summary>
     public static Actual<T> ShouldHaveFlag<T>(this T actual, T expectedFlag, string? message = null) where T : struct

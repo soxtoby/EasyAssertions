@@ -10,10 +10,12 @@ public class ObjectAssertionTests : AssertionTests
     public void ShouldNotCompile()
     {
         1.ShouldBeNull();
+        1.ShouldNotBeNull();
+        ((int?)1).ShouldBe(1);
     }/**/
 
     [Test]
-    public void ShouldBe_Class_SameValueReturnsActualValue()
+    public void ShouldBe_SameValueReturnsActualValue()
     {
         var actual = new Equatable(1);
         var expected = new Equatable(1);
@@ -23,7 +25,7 @@ public class ObjectAssertionTests : AssertionTests
     }
 
     [Test]
-    public void ShouldBe_Class_DifferentObjects_FailsWithObjectsNotEqualMessage()
+    public void ShouldBe_DifferentObjects_FailsWithObjectsNotEqualMessage()
     {
         var obj1 = new object();
         var obj2 = new object();
@@ -33,7 +35,7 @@ public class ObjectAssertionTests : AssertionTests
     }
 
     [Test]
-    public void ShouldBe_Class_DifferentStrings_FailsWithStringsNotEqualMessage()
+    public void ShouldBe_DifferentStrings_FailsWithStringsNotEqualMessage()
     {
         Error.NotEqual("foo", "bar", message: "baz").Returns(ExpectedException);
 
@@ -41,7 +43,7 @@ public class ObjectAssertionTests : AssertionTests
     }
 
     [Test]
-    public void ShouldBe_Class_CorrectlyRegistersAssertion()
+    public void ShouldBe_CorrectlyRegistersAssertion()
     {
         var actualExpression = new Equatable(1);
         var expectedExpression = new Equatable(2);
@@ -54,83 +56,83 @@ public class ObjectAssertionTests : AssertionTests
     }
 
     [Test]
-    public void ShouldBe_Value_SameValueReturnsActualValue()
+    public void ShouldBeValue_SameValueReturnsActualValue()
     {
         var actual = 1;
         var expected = 1;
-        var result = actual.ShouldBe(expected);
+        var result = actual.ShouldBeValue(expected);
 
         Assert.AreEqual(actual, result.And);
     }
 
     [Test]
-    public void ShouldBe_Value_DifferentValues_FailsWithObjectsNotEqualMessage()
+    public void ShouldBeValue_DifferentValues_FailsWithObjectsNotEqualMessage()
     {
         var value1 = 1;
         var value2 = 2;
         Error.NotEqual(value2, value1, "foo").Returns(ExpectedException);
 
-        AssertThrowsExpectedError(() => value1.ShouldBe(value2, "foo"));
+        AssertThrowsExpectedError(() => value1.ShouldBeValue(value2, "foo"));
     }
 
     [Test]
-    public void ShouldBe_Value_CorrectlyRegistersAssertion()
+    public void ShouldBeValue_CorrectlyRegistersAssertion()
     {
         var actualExpression = 1;
         var expectedExpression = 2;
         Error.NotEqual(Arg.Any<object>(), Arg.Any<object>()).Returns(ExpectedException);
 
-        AssertThrowsExpectedError(() => actualExpression.ShouldBe(expectedExpression));
+        AssertThrowsExpectedError(() => actualExpression.ShouldBeValue(expectedExpression));
 
         Assert.AreEqual(nameof(actualExpression), TestExpression.GetActual());
         Assert.AreEqual(nameof(expectedExpression), TestExpression.GetExpected());
     }
 
     [Test]
-    public void NullableShouldBe_ValueEqualsExpected_ReturnsActualValue()
+    public void ShouldBeValue_Nullable_ValueEqualsExpected_ReturnsActualValue()
     {
         int? actual = 1;
 
-        var result = actual.ShouldBe(1);
+        var result = actual.ShouldBeValue(1);
 
         Assert.AreEqual(1, result.And);
     }
 
     [Test]
-    public void NullableShouldBe_NoValue_FailsWithObjectsNotEqualMessage()
+    public void ShouldBeValue_Nullable_NoValue_FailsWithObjectsNotEqualMessage()
     {
         int? actual = null;
         const int expected = 1;
         Error.NotEqual(expected, actual, "foo").Returns(ExpectedException);
 
-        AssertThrowsExpectedError(() => actual.ShouldBe(expected, "foo"));
+        AssertThrowsExpectedError(() => actual.ShouldBeValue(expected, "foo"));
     }
 
     [Test]
-    public void NullableShouldBe_ValueIsDifferent_FailsWithObjectsNotEqualMessage()
+    public void ShouldBeValue_Nullable_ValueIsDifferent_FailsWithObjectsNotEqualMessage()
     {
         int? actual = 1;
         const int expected = 2;
         Error.NotEqual(expected, actual, "foo").Returns(ExpectedException);
 
-        AssertThrowsExpectedError(() => actual.ShouldBe(expected, "foo"));
+        AssertThrowsExpectedError(() => actual.ShouldBeValue(expected, "foo"));
     }
 
     [Test]
-    public void NullableShouldBe_CorrectlyRegistersAssertion()
+    public void ShouldBeValue_Nullable_CorrectlyRegistersAssertion()
     {
         int? actualExpression = 1;
         const int expectedExpression = 2;
         Error.NotEqual(Arg.Any<object>(), Arg.Any<object>()).Returns(ExpectedException);
 
-        Assert.Throws<Exception>(() => actualExpression.ShouldBe(expectedExpression));
+        Assert.Throws<Exception>(() => actualExpression.ShouldBeValue(expectedExpression));
 
         Assert.AreEqual(nameof(actualExpression), TestExpression.GetActual());
         Assert.AreEqual(nameof(expectedExpression), TestExpression.GetExpected());
     }
 
     [Test]
-    public void ShouldNotBe_Class_DifferentValue_ReturnsActualValue()
+    public void ShouldNotBe_DifferentValue_ReturnsActualValue()
     {
         var actual = new Equatable(1);
 
@@ -140,7 +142,7 @@ public class ObjectAssertionTests : AssertionTests
     }
 
     [Test]
-    public void ShouldNotBe_Class_EqualValue_FailsWithObjectsEqualMessage()
+    public void ShouldNotBe_EqualValue_FailsWithObjectsEqualMessage()
     {
         var actual = new Equatable(1);
         var notExpected = new Equatable(1);
@@ -150,7 +152,7 @@ public class ObjectAssertionTests : AssertionTests
     }
 
     [Test]
-    public void ShouldNotBe_Class_CorrectlyRegistersAssertion()
+    public void ShouldNotBe_CorrectlyRegistersAssertion()
     {
         var actualExpression = new Equatable(1);
         var expectedExpression = new Equatable(1);
@@ -163,33 +165,66 @@ public class ObjectAssertionTests : AssertionTests
     }
 
     [Test]
-    public void ShouldNotBe_Value_DifferentValue_ReturnsActualValue()
+    public void ShouldNotBeValue_DifferentValue_ReturnsActualValue()
     {
         var actual = 1;
 
-        var result = actual.ShouldNotBe(2);
+        var result = actual.ShouldNotBeValue(2);
 
         Assert.AreEqual(actual, result.Value);
     }
 
     [Test]
-    public void ShouldNotBe_Value_EqualValue_FailsWithObjectsEqualMessage()
+    public void ShouldNotBeValue_EqualValue_FailsWithObjectsEqualMessage()
     {
         var actual = 1;
         var notExpected = 1;
         Error.AreEqual(notExpected, actual, "foo").Returns(ExpectedException);
 
-        AssertThrowsExpectedError(() => actual.ShouldNotBe(notExpected, "foo"));
+        AssertThrowsExpectedError(() => actual.ShouldNotBeValue(notExpected, "foo"));
     }
 
     [Test]
-    public void ShouldNotBe_Value_CorrectlyRegistersAssertion()
+    public void ShouldNotBeValue_CorrectlyRegistersAssertion()
     {
         var actualExpression = 1;
         var expectedExpression = 1;
         Error.AreEqual(Arg.Any<object>(), Arg.Any<object>()).Returns(ExpectedException);
 
-        AssertThrowsExpectedError(() => actualExpression.ShouldNotBe(expectedExpression));
+        AssertThrowsExpectedError(() => actualExpression.ShouldNotBeValue(expectedExpression));
+
+        Assert.AreEqual(nameof(actualExpression), TestExpression.GetActual());
+        Assert.AreEqual(nameof(expectedExpression), TestExpression.GetExpected());
+    }
+
+    [Test]
+    public void ShouldNotBeValue_Nullable_DifferentValue_ReturnsActualValue()
+    {
+        int? actual = 1;
+
+        var result = actual.ShouldNotBeValue(2);
+
+        Assert.AreEqual(actual, result.Value);
+    }
+
+    [Test]
+    public void ShouldNotBeValue_Nullable_EqualValue_FailsWithObjectsEqualMessage()
+    {
+        int? actual = 1;
+        var notExpected = 1;
+        Error.AreEqual(notExpected, actual, "foo").Returns(ExpectedException);
+
+        AssertThrowsExpectedError(() => actual.ShouldNotBeValue(notExpected, "foo"));
+    }
+
+    [Test]
+    public void ShouldNotBeValue_Nullable_CorrectlyRegistersAssertion()
+    {
+        int? actualExpression = 1;
+        var expectedExpression = 1;
+        Error.AreEqual(Arg.Any<object>(), Arg.Any<object>()).Returns(ExpectedException);
+
+        AssertThrowsExpectedError(() => actualExpression.ShouldNotBeValue(expectedExpression));
 
         Assert.AreEqual(nameof(actualExpression), TestExpression.GetActual());
         Assert.AreEqual(nameof(expectedExpression), TestExpression.GetExpected());
@@ -248,7 +283,7 @@ public class ObjectAssertionTests : AssertionTests
     }
 
     [Test]
-    public void ShouldNotBeNull_NotNull_ReturnsActualValue()
+    public void ShouldNotBeNull_Class_NotNull_ReturnsActualValue()
     {
         var actual = new object();
 
@@ -258,7 +293,7 @@ public class ObjectAssertionTests : AssertionTests
     }
 
     [Test]
-    public void ShouldNotBeNull_IsNull_FailsWithIsNullMessage()
+    public void ShouldNotBeNull_Class_IsNull_FailsWithIsNullMessage()
     {
         Error.IsNull("foo").Returns(ExpectedException);
 
@@ -266,9 +301,38 @@ public class ObjectAssertionTests : AssertionTests
     }
 
     [Test]
-    public void ShouldNotBeNull_CorrectlyRegistersAssertion()
+    public void ShouldNotBeNull_Class_CorrectlyRegistersAssertion()
     {
         object? actualExpression = null;
+        Error.IsNull(Arg.Any<string?>()).Returns(ExpectedException);
+
+        AssertThrowsExpectedError(() => actualExpression.ShouldNotBeNull());
+
+        Assert.AreEqual(nameof(actualExpression), TestExpression.GetActual());
+    }
+
+    [Test]
+    public void ShouldNotBeNull_NullableStruct_NotNull_ReturnsActualValue()
+    {
+        int? actual = 1;
+
+        var result = actual.ShouldNotBeNull();
+
+        Assert.AreEqual(actual, result.And);
+    }
+
+    [Test]
+    public void ShouldNotBeNull_NullableStruct_IsNull_FailsWithIsNullMessage()
+    {
+        Error.IsNull("foo").Returns(ExpectedException);
+
+        AssertThrowsExpectedError(() => ((int?)null).ShouldNotBeNull("foo"));
+    }
+
+    [Test]
+    public void ShouldNotBeNull_NullableStruct_CorrectlyRegistersAssertion()
+    {
+        int? actualExpression = null;
         Error.IsNull(Arg.Any<string?>()).Returns(ExpectedException);
 
         AssertThrowsExpectedError(() => actualExpression.ShouldNotBeNull());

@@ -269,6 +269,26 @@ public class SourceExpressionProviderTests
         Assert.AreEqual($"{nameof(expectedExpression)}[{expectedIndex}]", sut.GetExpectedExpression());
     }
 
+    [Test]
+    public void MultiThreads_ShouldNotMessUpStack()
+    {
+        RunTasksParallel(200, TimeSpan.FromSeconds(30), InnerAssertionTask);
+        void InnerAssertionTask()
+        {
+            0.ShouldBe(0);
+            Assert.AreEqual(0, sut.CurrentStackIndex);
+        }
+        void RunTasksParallel(int count, TimeSpan maxRunTime, Action action)
+        {
+            Task[] tasks = Enumerable.Range(0, count)
+                .Select(i => Task.Factory.StartNew(action))
+                .ToArray();
+
+            Task.WaitAll(tasks, maxRunTime).ShouldBe(true);
+            Assert.AreEqual(0, sut.CurrentStackIndex);
+        }
+    }
+
     class TestClass
     {
         public readonly int Value;

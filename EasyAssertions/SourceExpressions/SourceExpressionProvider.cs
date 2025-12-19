@@ -7,6 +7,7 @@ class SourceExpressionProvider : ITestExpressionProvider
     List<AssertionFrame> stack = new();
     int currentStackIndex;
     int lastStackIndex;
+    readonly object lockObject = new {};
 
     static readonly AsyncLocal<SourceExpressionProvider> LocalInstance = new();
     public static SourceExpressionProvider Current => LocalInstance.Value ??= new SourceExpressionProvider();
@@ -21,16 +22,19 @@ class SourceExpressionProvider : ITestExpressionProvider
 
     void TrackAssertion(Action<IAssertionContext> assert, AssertionCall assertion, string actualSuffix, string expectedSuffix)
     {
-        try
+        lock (lockObject)
         {
-            EnterAssertion(assertion, actualSuffix, expectedSuffix);
-            assert(new AssertionContext());
-            ExitAssertion(true);
-        }
-        catch
-        {
-            ExitAssertion(false);
-            throw;
+            try
+            {
+                EnterAssertion(assertion, actualSuffix, expectedSuffix);
+                assert(new AssertionContext());
+                ExitAssertion(true);
+            }
+            catch
+            {
+                ExitAssertion(false);
+                throw;
+            }
         }
     }
 
@@ -63,8 +67,17 @@ class SourceExpressionProvider : ITestExpressionProvider
             lastStackIndex--;
     }
 
-    public string GetActualExpression() => NormalizeIndentation(LastAssertionFrame?.GetActualExpression() ?? string.Empty);
-    public string GetExpectedExpression() => NormalizeIndentation(LastAssertionFrame?.GetExpectedExpression() ?? string.Empty);
+    public string GetActualExpression()
+    {
+        lock (lockObject)
+            return NormalizeIndentation(LastAssertionFrame?.GetActualExpression() ?? string.Empty);
+    }
+
+    public string GetExpectedExpression()
+    {
+        lock (lockObject)
+            return NormalizeIndentation(LastAssertionFrame?.GetExpectedExpression() ?? string.Empty);
+    }
 
     static string NormalizeIndentation(string input)
     {
@@ -86,4 +99,12 @@ class SourceExpressionProvider : ITestExpressionProvider
 
     AssertionFrame? CurrentAssertionFrame => stack.ElementAtOrDefault(currentStackIndex);
     AssertionFrame? LastAssertionFrame => stack.ElementAtOrDefault(lastStackIndex);
+    internal int CurrentStackIndex
+    {
+        get
+        {
+            lock(lockObject)
+                return currentStackIndex;
+        }
+    }
 }

@@ -31,3 +31,4 @@ packages
 *.ncrunchproject
 .vs
 .idea
+dist/

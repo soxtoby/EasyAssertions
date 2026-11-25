@@ -1,0 +1,22 @@
+<Solution>
+  <Folder Name="/doc/">
+    <File Path="doc/Assertions.md" />
+    <File Path="doc/CustomAssertions.md" />
+    <File Path="doc/Readme.md" />
+  </Folder>
+  <Folder Name="/scripts/">
+    <File Path="scripts/build.cs" />
+    <File Path="scripts/pack.cs" />
+    <File Path="scripts/prepare-release.cs" />
+    <File Path="scripts/release.cs" />
+    <File Path="scripts/test.cs" />
+  </Folder>
+  <Folder Name="/Solution Items/">
+    <File Path="AGENTS.md" />
+    <File Path="CHANGELOG.md" />
+    <File Path="License.txt" />
+    <File Path="Readme.md" />
+  </Folder>
+  <Project Path="EasyAssertions/EasyAssertions.csproj" />
+  <Project Path="UnitTests/UnitTests.csproj" />
+</Solution>

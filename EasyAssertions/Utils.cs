@@ -71,7 +71,7 @@ static class Utils
         {
             if (address.FilePath is not null)
             {
-                sourceSpan = File.ReadAllLines(address.FilePath)
+                sourceSpan = File.ReadAllLines(DeterministicSourcePathResolver.Default.Resolve(address.FilePath, address.CompiledAssembly))
                     .Skip(address.LineNumber - 1)
                     .Join(Environment.NewLine)
                     .AsSpan()

@@ -57,7 +57,7 @@ class AssertionStatement : AssertionFrame
 
     public override string GetExpectedExpression()
     {
-        var expression = sources.Value.Last().ExpectedExpression;
+        var expression = sources.Value.LastOrDefault()?.ExpectedExpression ?? string.Empty;
 
         if (ExpressionContainsAlias(expression, OuterActualAlias))
             expression = ReplaceAliasWithExpression(expression, OuterActualAlias, OuterFrame!.GetActualExpression());

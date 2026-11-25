@@ -13,7 +13,7 @@ static class StackAnalyser
         var callerFrame = currentStack.GetFrame(methodFrameIndex + 1);
 
         var method = methodFrame.GetMethod();
-        var callingExpressionAddress = new SourceAddress(callerFrame.GetFileName(), callerFrame.GetFileLineNumber(), callerFrame.GetFileColumnNumber());
+        var callingExpressionAddress = new SourceAddress(callerFrame.GetFileName(), callerFrame.GetFileLineNumber(), callerFrame.GetFileColumnNumber(), callerFrame.GetMethod()?.Module.Assembly);
 
         return new AssertionMethod(method, callingExpressionAddress, callerFrame.GetNativeOffset());
     }

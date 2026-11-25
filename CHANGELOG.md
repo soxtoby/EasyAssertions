@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## v4.0.1
+
 ### Fixed
 - Failure messages show the source expressions of tests built with deterministic source paths, such as with `ContinuousIntegrationBuild` enabled, which record source files under `/_/`. Previously, a test whose source file couldn't be found threw an `InvalidOperationException` instead of reporting its assertion failure.
 

@@ -30,7 +30,7 @@ public static class EasyAssertion
     /// </summary>
     public static Actual<TActual> RegisterAssertion<TActual>([NoEnumeration] this TActual actual, [InstantHandle] Action<IAssertionContext> assert, string actualSuffix = "", string expectedSuffix = "")
     {
-        SourceExpressionProvider.Current.RunAssertion(assert, actualSuffix, expectedSuffix);
+        SourceExpressionProvider.Instance.RunAssertion(assert, actualSuffix, expectedSuffix);
         return new Actual<TActual>(actual);
     }
 
@@ -41,7 +41,7 @@ public static class EasyAssertion
     public static Actual<TActual> RegisterNotNullAssertion<TActual>([NoEnumeration] [NotNull] this TActual? actual, [InstantHandle] Action<IAssertionContext> assert, string actualSuffix = "", string expectedSuffix = "")
         where TActual : notnull
     {
-        SourceExpressionProvider.Current.RunAssertion(assert, actualSuffix, expectedSuffix);
+        SourceExpressionProvider.Instance.RunAssertion(assert, actualSuffix, expectedSuffix);
 
         if (actual is null)
             throw new ArgumentException("Actual value was null, but assertion didn't throw", nameof(assert));
@@ -60,7 +60,7 @@ public static class EasyAssertion
     {
         Actual<TReturnActual> ret = default!;
 
-        SourceExpressionProvider.Current.RunAssertion(c => ret = assert(c), actualSuffix, expectedSuffix);
+        SourceExpressionProvider.Instance.RunAssertion(c => ret = assert(c), actualSuffix, expectedSuffix);
 
         return ret;
     }
@@ -77,7 +77,7 @@ public static class EasyAssertion
     {
         Actual<TReturnActual> ret = default!;
 
-        SourceExpressionProvider.Current.RunAssertion(c => ret = assert(c), actualSuffix, expectedSuffix);
+        SourceExpressionProvider.Instance.RunAssertion(c => ret = assert(c), actualSuffix, expectedSuffix);
 
         if (actual is null)
             throw new ArgumentException("Actual value was null, but assertion didn't throw", nameof(assert));

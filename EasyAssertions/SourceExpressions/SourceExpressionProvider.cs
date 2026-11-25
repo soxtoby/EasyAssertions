@@ -4,12 +4,13 @@ namespace EasyAssertions;
 
 class SourceExpressionProvider : ITestExpressionProvider
 {
-    List<AssertionFrame> stack = new();
-    int currentStackIndex;
-    int lastStackIndex;
+    /// <summary>
+    /// Flows across awaits and into tasks started by the current flow.
+    /// Each flow replaces the stack rather than changing it, so concurrent flows don't see each other's assertions.
+    /// </summary>
+    static readonly AsyncLocal<AssertionStack?> LocalStack = new();
 
-    static readonly AsyncLocal<SourceExpressionProvider> LocalInstance = new();
-    public static SourceExpressionProvider Current => LocalInstance.Value ??= new SourceExpressionProvider();
+    public static SourceExpressionProvider Instance { get; } = new();
 
     SourceExpressionProvider() { }
 
@@ -19,52 +20,24 @@ class SourceExpressionProvider : ITestExpressionProvider
     public void InvokeAssertion(Expression<Action> callAssertionMethod, string actualSuffix = "", string expectedSuffix = "") =>
         TrackAssertion(c => callAssertionMethod.Compile()(), new AssertionInvocation(callAssertionMethod), actualSuffix, expectedSuffix);
 
-    void TrackAssertion(Action<IAssertionContext> assert, AssertionCall assertion, string actualSuffix, string expectedSuffix)
+    static void TrackAssertion(Action<IAssertionContext> assert, AssertionCall assertion, string actualSuffix, string expectedSuffix)
     {
+        Stack = Stack.Enter(assertion, actualSuffix, expectedSuffix);
+
         try
         {
-            EnterAssertion(assertion, actualSuffix, expectedSuffix);
             assert(new AssertionContext());
-            ExitAssertion(true);
+            Stack = Stack.Exit(true);
         }
         catch
         {
-            ExitAssertion(false);
+            Stack = Stack.Exit(false);
             throw;
         }
     }
 
-    void EnterAssertion(AssertionCall assertion, string actualSuffix, string expectedSuffix)
-    {
-        if (CurrentAssertionFrame?.TryChainAssertion(assertion) == true)
-            DiscardPastCurrentFrame();
-        else
-            Push(assertion, actualSuffix, expectedSuffix);
-
-        currentStackIndex++;
-        lastStackIndex = currentStackIndex - 1;
-    }
-
-    void DiscardPastCurrentFrame()
-    {
-        stack = stack.Take(currentStackIndex + 1).ToList();
-    }
-
-    void Push(AssertionCall assertion, string actualSuffix, string expectedSuffix)
-    {
-        stack = stack.Take(currentStackIndex).ToList();
-        stack.Add(assertion.CreateFrame(stack.LastOrDefault(), actualSuffix, expectedSuffix));
-    }
-
-    void ExitAssertion(bool success)
-    {
-        currentStackIndex--;
-        if (success)
-            lastStackIndex--;
-    }
-
-    public string GetActualExpression() => NormalizeIndentation(LastAssertionFrame?.GetActualExpression() ?? string.Empty);
-    public string GetExpectedExpression() => NormalizeIndentation(LastAssertionFrame?.GetExpectedExpression() ?? string.Empty);
+    public string GetActualExpression() => NormalizeIndentation(Stack.LastFrame?.GetActualExpression() ?? string.Empty);
+    public string GetExpectedExpression() => NormalizeIndentation(Stack.LastFrame?.GetExpectedExpression() ?? string.Empty);
 
     static string NormalizeIndentation(string input)
     {
@@ -84,6 +57,9 @@ class SourceExpressionProvider : ITestExpressionProvider
                 .Join("\n");
     }
 
-    AssertionFrame? CurrentAssertionFrame => stack.ElementAtOrDefault(currentStackIndex);
-    AssertionFrame? LastAssertionFrame => stack.ElementAtOrDefault(lastStackIndex);
+    static AssertionStack Stack
+    {
+        get => LocalStack.Value ?? AssertionStack.Empty;
+        set => LocalStack.Value = value;
+    }
 }

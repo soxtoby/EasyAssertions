@@ -39,5 +39,5 @@ class AssertionContext : IAssertionContext
     public IErrorFactory Error => ErrorFactory.Instance;
 
     public void Call(Expression<Action> callAssertionMethod, string actualSuffix = "", string expectedSuffix = "") =>
-        SourceExpressionProvider.Current.InvokeAssertion(callAssertionMethod, actualSuffix, expectedSuffix);
+        SourceExpressionProvider.Instance.InvokeAssertion(callAssertionMethod, actualSuffix, expectedSuffix);
 }

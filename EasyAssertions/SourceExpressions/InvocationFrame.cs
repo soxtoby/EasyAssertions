@@ -15,7 +15,7 @@ class InvocationFrame : AssertionFrame
     }
 
     protected override AssertionCall LastCall => invocation;
-    public override bool TryChainAssertion(AssertionCall _) => false;
+    public override AssertionFrame? ChainAssertion(AssertionCall _) => null;
     public override string GetActualExpression() => (OuterFrame?.GetActualExpression() ?? string.Empty) + actualSuffix;
     public override string GetExpectedExpression() => (OuterFrame?.GetExpectedExpression() ?? string.Empty) + expectedSuffix;
     public override string ToString() => invocation.ToString();

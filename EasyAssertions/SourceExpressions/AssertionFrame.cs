@@ -25,5 +25,9 @@ abstract class AssertionFrame
 
     public abstract string GetActualExpression();
     public abstract string GetExpectedExpression();
-    public abstract bool TryChainAssertion(AssertionCall assertion);
+    /// <summary>
+    /// Returns a new frame with the assertion chained onto this frame's statement,
+    /// or null if the assertion starts a new statement.
+    /// </summary>
+    public abstract AssertionFrame? ChainAssertion(AssertionCall assertion);
 }

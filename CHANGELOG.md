@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+## v4.0.2
+
+### Fixed
+- Assertions running at the same time on threads that share an execution context, such as inside PLINQ queries, `Parallel.ForEach`, or tasks started from a test, no longer intermittently throw exceptions like `IndexOutOfRangeException` from EasyAssertions' source expression tracking, and their failure messages show their own source expressions instead of another thread's.
+
 ## v4.0.1
 
 ### Fixed

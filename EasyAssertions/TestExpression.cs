@@ -7,7 +7,7 @@ public static class TestExpression
 {
     static ITestExpressionProvider? currentProvider;
 
-    static ITestExpressionProvider CurrentProvider => currentProvider ?? SourceExpressionProvider.Current;
+    static ITestExpressionProvider CurrentProvider => currentProvider ?? SourceExpressionProvider.Instance;
 
     /// <summary>
     /// Builds the source representation of the value being asserted on.

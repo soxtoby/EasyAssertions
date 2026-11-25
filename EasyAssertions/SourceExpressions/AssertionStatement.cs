@@ -1,5 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 
 namespace EasyAssertions;
 
@@ -8,37 +7,33 @@ class AssertionStatement : AssertionFrame
     const string WordBoundary = @"\b";
     readonly string actualSuffix;
     readonly string expectedSuffix;
-    readonly List<AssertionMethod> assertions = new();
-    Lazy<IEnumerable<AssertionSource>> sources;
+    readonly IReadOnlyList<AssertionMethod> assertions;
+    readonly Lazy<IEnumerable<AssertionSource>> sources;
 
     public AssertionStatement(AssertionMethod firstAssertion, AssertionFrame? outerFrame, string actualSuffix, string expectedSuffix)
+        : this(new[] { firstAssertion }, outerFrame, actualSuffix, expectedSuffix) { }
+
+    AssertionStatement(IReadOnlyList<AssertionMethod> assertions, AssertionFrame? outerFrame, string actualSuffix, string expectedSuffix)
         : base(outerFrame)
     {
+        this.assertions = assertions;
         this.actualSuffix = actualSuffix;
         this.expectedSuffix = expectedSuffix;
-        Add(firstAssertion);
+        sources = new Lazy<IEnumerable<AssertionSource>>(ParseSource);
     }
 
-    public override bool TryChainAssertion(AssertionCall assertion)
+    public override AssertionFrame? ChainAssertion(AssertionCall assertion)
     {
         if (assertion is not AssertionMethod assertionMethod)
-            return false;
+            return null;
 
         if (!assertionMethod.CallAddress.Equals(Address))
-            return false;
+            return null;
 
         if (assertionMethod.CallOffset == Offset)
-            return false; // Must be running statement in a loop - this counts as a new statement
+            return null; // Must be running statement in a loop - this counts as a new statement
 
-        Add(assertionMethod);
-        return true;
-    }
-
-    [MemberNotNull(nameof(sources))]
-    void Add(AssertionMethod assertion)
-    {
-        assertions.Add(assertion);
-        sources = new Lazy<IEnumerable<AssertionSource>>(ParseSource);
+        return new AssertionStatement(assertions.Append(assertionMethod).ToList(), OuterFrame, actualSuffix, expectedSuffix);
     }
 
     public override string GetActualExpression()
@@ -74,7 +69,7 @@ class AssertionStatement : AssertionFrame
 
         if (Utils.TryReadSource(Address, out var remainingSource))
         {
-            foreach (var call in (IEnumerable<AssertionMethod>)assertions)
+            foreach (var call in assertions)
             {
                 var callIndex = remainingSource.FindCode($".{call.AssertionName}");
                 if (callIndex >= 0)

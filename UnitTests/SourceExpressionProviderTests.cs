@@ -1,5 +1,6 @@
 ﻿using NUnit.Framework;
 using System.Linq.Expressions;
+using static System.Environment;
 
 namespace EasyAssertions.UnitTests;
 
@@ -11,7 +12,7 @@ public class SourceExpressionProviderTests
     [SetUp]
     public void SetUp()
     {
-        sut = SourceExpressionProvider.Current;
+        sut = SourceExpressionProvider.Instance;
     }
 
     [Test]
@@ -267,6 +268,101 @@ public class SourceExpressionProviderTests
         Assert.Throws<EasyAssertionException>(() => new TestClass(2).TestIndexedUserAssertion(expectedExpression, expectedIndex, (a, e) => a.ShouldBe(e)));
 
         Assert.AreEqual($"{nameof(expectedExpression)}[{expectedIndex}]", sut.GetExpectedExpression());
+    }
+
+    [Test]
+    public void AssertionFailsWhileAssertionRunsOnAnotherThread_MessageHasOwnExpressions()
+    {
+        var actualExpression = new TestClass(12);
+        var expectedExpression = new TestClass(2);
+        1.ShouldBe(1); // Leaves tracking state in this execution context for other threads to inherit
+
+        var result = WhileAssertionRunsOnAnotherThread(() =>
+            Assert.Throws<EasyAssertionException>(() => actualExpression.ShouldBe(expectedExpression)));
+
+        Assert.AreEqual(nameof(actualExpression) + NewLine
+            + "should be " + nameof(expectedExpression) + NewLine
+            + "          <(2)>" + NewLine
+            + "but was   <(12)>", result!.Message);
+    }
+
+    [Test]
+    public void ConcurrentChainedAssertionsFail_EachMessageHasOwnExpressions()
+    {
+        var actualExpression = new TestClass(12);
+        var expectedExpression = 2;
+        1.ShouldBe(1); // Leaves tracking state in this execution context for other threads to inherit
+
+        var result = Enumerable.Range(0, 1000)
+            .AsParallel()
+            .Select(_ => FailureMessage(() => actualExpression.ShouldBeA<TestClass>().And.Value.ShouldBe(expectedExpression)))
+            .Distinct()
+            .ToList();
+
+        CollectionAssert.AreEqual(new[]
+            {
+                $"{nameof(actualExpression)}.{nameof(TestClass.Value)}" + NewLine
+                + "should be " + nameof(expectedExpression) + NewLine
+                + "          <2>" + NewLine
+                + "but was   <12>"
+            }, result);
+    }
+
+    [Test]
+    public void ChainedAssertionResumesOnAnotherThreadAfterAwait_CombinesChainedExpressions()
+    {
+        var actualExpression = new TestClass(12);
+        var expectedExpression = 2;
+
+        var result = Assert.ThrowsAsync<EasyAssertionException>(async () =>
+            actualExpression.ShouldBeA<TestClass>()
+                .And.Value.ShouldBe(await OnAnotherThread(expectedExpression)));
+
+        Assert.AreEqual($"{nameof(actualExpression)}.{nameof(TestClass.Value)}" + NewLine
+            + $"should be await {nameof(OnAnotherThread)}({nameof(expectedExpression)})" + NewLine
+            + "          <2>" + NewLine
+            + "but was   <12>", result!.Message);
+    }
+
+    static TResult WhileAssertionRunsOnAnotherThread<TResult>(Func<TResult> act)
+    {
+        var otherAssertionStarted = new TaskCompletionSource<bool>();
+        var otherAssertionReleased = new TaskCompletionSource<bool>();
+        var otherAssertion = Task.Run(() => new TestClass(1).Assert(_ =>
+            {
+                otherAssertionStarted.SetResult(true);
+                otherAssertionReleased.Task.Wait();
+            }));
+        Task.WaitAny(otherAssertionStarted.Task, otherAssertion); // Doesn't hang if the other assertion throws before it starts
+
+        try
+        {
+            return act();
+        }
+        finally
+        {
+            otherAssertionReleased.SetResult(true);
+            otherAssertion.Wait();
+        }
+    }
+
+    static string? FailureMessage(Action assertion)
+    {
+        try
+        {
+            assertion();
+            return null;
+        }
+        catch (EasyAssertionException e)
+        {
+            return e.Message;
+        }
+    }
+
+    static async Task<T> OnAnotherThread<T>(T value)
+    {
+        await Task.Delay(1).ConfigureAwait(false);
+        return value;
     }
 
     class TestClass
